@@ -1,0 +1,966 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Cargueiro espacial",
+  "kind": "freighter",
+  "pieces": [
+    {
+      "id": "p1268",
+      "name": "Base de exibição",
+      "type": "cylinder",
+      "pos": [
+        0,
+        0.15,
+        0
+      ],
+      "size": [
+        3,
+        3,
+        0.3
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1269",
+      "name": "Haste",
+      "type": "cylinder",
+      "pos": [
+        0,
+        1.35,
+        0
+      ],
+      "size": [
+        0.3,
+        0.3,
+        2.1
+      ],
+      "color": "#505958",
+      "stage": 0,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1270",
+      "name": "Placa",
+      "type": "sign",
+      "pos": [
+        0,
+        0.3,
+        1.52
+      ],
+      "size": [
+        1.8,
+        0.3,
+        0.06
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "CARGUEIRO"
+    },
+    {
+      "id": "p1271",
+      "name": "Casco inferior",
+      "type": "disc",
+      "pos": [
+        0,
+        2.9,
+        0
+      ],
+      "size": [
+        9,
+        0.8,
+        9
+      ],
+      "color": "#a3a7a8",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1272",
+      "name": "Mandíbula",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        2.95,
+        5.1
+      ],
+      "size": [
+        1.6,
+        0.55,
+        3.4
+      ],
+      "color": "#a3a7a8",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1273",
+      "name": "Grade da mandíbula",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        2.95,
+        6.82
+      ],
+      "size": [
+        1.5,
+        0.4,
+        0.06
+      ],
+      "color": "#6f7472",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1274",
+      "name": "Mandíbula",
+      "type": "brick",
+      "pos": [
+        1.25,
+        2.95,
+        5.1
+      ],
+      "size": [
+        1.6,
+        0.55,
+        3.4
+      ],
+      "color": "#a3a7a8",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1275",
+      "name": "Grade da mandíbula",
+      "type": "brick",
+      "pos": [
+        1.25,
+        2.95,
+        6.82
+      ],
+      "size": [
+        1.5,
+        0.4,
+        0.06
+      ],
+      "color": "#6f7472",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1276",
+      "name": "Casco superior",
+      "type": "disc",
+      "pos": [
+        0,
+        3.35,
+        0
+      ],
+      "size": [
+        8.4,
+        0.5,
+        8.4
+      ],
+      "color": "#b8bcbd",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1277",
+      "name": "Anel central",
+      "type": "cylinder",
+      "pos": [
+        0,
+        3.62,
+        0
+      ],
+      "size": [
+        3.2,
+        3.2,
+        0.25
+      ],
+      "color": "#a3a7a8",
+      "stage": 2,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1278",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        2.5406687144060385,
+        3.68,
+        1.0523794390039969
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        67,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1279",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        1.052379439003997,
+        3.68,
+        2.5406687144060385
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        22,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1280",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        -1.0523794390039967,
+        3.68,
+        2.5406687144060385
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -23,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1281",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        -2.5406687144060385,
+        3.68,
+        1.052379439003997
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -68,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1282",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        -2.5406687144060394,
+        3.68,
+        -1.0523794390039953
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -113,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1283",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        -1.0523794390039962,
+        3.68,
+        -2.540668714406039
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -158,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1284",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        1.0523794390039976,
+        3.68,
+        -2.540668714406038
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -203,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1285",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        2.540668714406039,
+        3.68,
+        -1.0523794390039962
+      ],
+      "size": [
+        1.7,
+        0.3,
+        1.1
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        -248,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1286",
+      "name": "Painel da mandíbula",
+      "type": "greeble",
+      "pos": [
+        -1.25,
+        3.3,
+        5.1
+      ],
+      "size": [
+        1.4,
+        0.25,
+        3
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1287",
+      "name": "Painel da mandíbula",
+      "type": "greeble",
+      "pos": [
+        1.25,
+        3.3,
+        5.1
+      ],
+      "size": [
+        1.4,
+        0.25,
+        3
+      ],
+      "color": "#a3a7a8",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1288",
+      "name": "Faixa vermelha",
+      "type": "tile",
+      "pos": [
+        1.6,
+        3.66,
+        -1.5
+      ],
+      "size": [
+        0.9,
+        0.06,
+        0.6
+      ],
+      "color": "#9b3a2a",
+      "stage": 3,
+      "rot": [
+        0,
+        30,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1289",
+      "name": "Faixa vermelha",
+      "type": "tile",
+      "pos": [
+        -1.9,
+        3.66,
+        0.9
+      ],
+      "size": [
+        0.9,
+        0.06,
+        0.6
+      ],
+      "color": "#9b3a2a",
+      "stage": 3,
+      "rot": [
+        0,
+        -20,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1290",
+      "name": "Faixa vermelha",
+      "type": "tile",
+      "pos": [
+        0.5,
+        3.66,
+        2.3
+      ],
+      "size": [
+        0.9,
+        0.06,
+        0.6
+      ],
+      "color": "#9b3a2a",
+      "stage": 3,
+      "rot": [
+        0,
+        10,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1291",
+      "name": "Tubo da cabine",
+      "type": "cylinder",
+      "pos": [
+        4.3,
+        3.05,
+        2.6
+      ],
+      "size": [
+        0.9,
+        0.9,
+        2.6
+      ],
+      "color": "#b8bcbd",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1292",
+      "name": "Cabine",
+      "type": "sphere",
+      "pos": [
+        4.3,
+        3.05,
+        4.1
+      ],
+      "size": [
+        1.15,
+        1.15,
+        1
+      ],
+      "color": "#b8bcbd",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1293",
+      "name": "Janela da cabine",
+      "type": "light",
+      "pos": [
+        4.3,
+        3.12,
+        4.6
+      ],
+      "size": [
+        0.7,
+        0.45,
+        0.08
+      ],
+      "color": "#ffd9a0",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1294",
+      "name": "Ligação da cabine",
+      "type": "brick",
+      "pos": [
+        3.75,
+        3,
+        1.6
+      ],
+      "size": [
+        1.2,
+        0.55,
+        1
+      ],
+      "color": "#a3a7a8",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1295",
+      "name": "Antena parabólica",
+      "type": "dish",
+      "pos": [
+        -2.3,
+        4.15,
+        1.4
+      ],
+      "size": [
+        1.6,
+        1,
+        1.6
+      ],
+      "color": "#c9cfd2",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1296",
+      "name": "Torre de canhões",
+      "type": "cylinder",
+      "pos": [
+        0,
+        3.9,
+        0
+      ],
+      "size": [
+        1.3,
+        1.3,
+        0.35
+      ],
+      "color": "#6f7472",
+      "stage": 5,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1297",
+      "name": "Canhão",
+      "type": "cylinder",
+      "pos": [
+        -0.2,
+        4.05,
+        0.75
+      ],
+      "size": [
+        0.1,
+        0.1,
+        1.1
+      ],
+      "color": "#505958",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1298",
+      "name": "Canhão",
+      "type": "cylinder",
+      "pos": [
+        0.2,
+        4.05,
+        0.75
+      ],
+      "size": [
+        0.1,
+        0.1,
+        1.1
+      ],
+      "color": "#505958",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1299",
+      "name": "Motor de propulsão",
+      "type": "light",
+      "pos": [
+        -3.091229748542538,
+        3.05,
+        -3.201062111506998
+      ],
+      "size": [
+        1.6,
+        0.32,
+        0.12
+      ],
+      "color": "#7fd3ff",
+      "stage": 6,
+      "rot": [
+        0,
+        44,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1300",
+      "name": "Motor de propulsão",
+      "type": "light",
+      "pos": [
+        -1.6669993407008086,
+        3.05,
+        -4.125968152822204
+      ],
+      "size": [
+        1.6,
+        0.32,
+        0.12
+      ],
+      "color": "#7fd3ff",
+      "stage": 6,
+      "rot": [
+        0,
+        22,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1301",
+      "name": "Motor de propulsão",
+      "type": "light",
+      "pos": [
+        0,
+        3.05,
+        -4.45
+      ],
+      "size": [
+        1.6,
+        0.32,
+        0.12
+      ],
+      "color": "#7fd3ff",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1302",
+      "name": "Motor de propulsão",
+      "type": "light",
+      "pos": [
+        1.6669993407008086,
+        3.05,
+        -4.125968152822204
+      ],
+      "size": [
+        1.6,
+        0.32,
+        0.12
+      ],
+      "color": "#7fd3ff",
+      "stage": 6,
+      "rot": [
+        0,
+        -22,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1303",
+      "name": "Motor de propulsão",
+      "type": "light",
+      "pos": [
+        3.091229748542538,
+        3.05,
+        -3.201062111506998
+      ],
+      "size": [
+        1.6,
+        0.32,
+        0.12
+      ],
+      "color": "#7fd3ff",
+      "stage": 6,
+      "rot": [
+        0,
+        -44,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1304",
+      "name": "Luz de pouso",
+      "type": "light",
+      "pos": [
+        -1.25,
+        2.62,
+        6.5
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.22
+      ],
+      "color": "#ffe7a3",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1305",
+      "name": "Luz de pouso",
+      "type": "light",
+      "pos": [
+        1.25,
+        2.62,
+        6.5
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.22
+      ],
+      "color": "#ffe7a3",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1306",
+      "name": "Faixa da mandíbula",
+      "type": "tile",
+      "pos": [
+        -1.25,
+        3.45,
+        6.2
+      ],
+      "size": [
+        1.2,
+        0.06,
+        0.4
+      ],
+      "color": "#9b3a2a",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    },
+    {
+      "id": "p1307",
+      "name": "Faixa da mandíbula",
+      "type": "tile",
+      "pos": [
+        1.25,
+        3.45,
+        6.2
+      ],
+      "size": [
+        1.2,
+        0.06,
+        0.4
+      ],
+      "color": "#9b3a2a",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "float"
+    }
+  ]
+}

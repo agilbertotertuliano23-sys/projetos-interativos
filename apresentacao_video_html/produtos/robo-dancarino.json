@@ -1,0 +1,717 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Robô dançarino",
+  "kind": "dancer",
+  "pieces": [
+    {
+      "id": "p1099",
+      "name": "Base de exibição",
+      "type": "tile",
+      "pos": [
+        0,
+        0.06,
+        0
+      ],
+      "size": [
+        7.4,
+        0.12,
+        5
+      ],
+      "color": "#2b2b2b",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1100",
+      "name": "Hub programável",
+      "type": "hub",
+      "pos": [
+        0,
+        0.92,
+        -0.6
+      ],
+      "size": [
+        3.2,
+        1.6,
+        2.2
+      ],
+      "color": "#f5cd2f",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1101",
+      "name": "Pé",
+      "type": "technic",
+      "pos": [
+        -1.9,
+        0.42,
+        1.25
+      ],
+      "size": [
+        1.5,
+        0.55,
+        0.6
+      ],
+      "color": "#2e5fa8",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1102",
+      "name": "Pé",
+      "type": "technic",
+      "pos": [
+        1.9,
+        0.42,
+        1.25
+      ],
+      "size": [
+        1.5,
+        0.55,
+        0.6
+      ],
+      "color": "#2e5fa8",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1103",
+      "name": "Motor da base",
+      "type": "motor",
+      "pos": [
+        -3,
+        0.62,
+        0.2
+      ],
+      "size": [
+        1.5,
+        1,
+        1
+      ],
+      "color": "#3fb8d4",
+      "stage": 0,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1104",
+      "name": "Perna esquerda",
+      "type": "technic",
+      "pos": [
+        -1.325,
+        2.575,
+        1.1
+      ],
+      "size": [
+        4.0180841205728886,
+        0.4,
+        0.4
+      ],
+      "color": "#3fb8d4",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        73
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1105",
+      "name": "Perna direita",
+      "type": "technic",
+      "pos": [
+        1.325,
+        2.575,
+        1.1
+      ],
+      "size": [
+        4.0180841205728886,
+        0.4,
+        0.4
+      ],
+      "color": "#3fb8d4",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        107
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1106",
+      "name": "Viga interna",
+      "type": "technic",
+      "pos": [
+        -1.275,
+        2.6,
+        0.75
+      ],
+      "size": [
+        3.5302266216207707,
+        0.25,
+        0.25
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        74
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1107",
+      "name": "Viga interna",
+      "type": "technic",
+      "pos": [
+        1.275,
+        2.6,
+        0.75
+      ],
+      "size": [
+        3.5302266216207707,
+        0.25,
+        0.25
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        106
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1108",
+      "name": "Biela",
+      "type": "technic",
+      "pos": [
+        -2.075,
+        1.6500000000000001,
+        1.4
+      ],
+      "size": [
+        1.520690632574555,
+        0.16,
+        0.16
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        46
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1109",
+      "name": "Quadril",
+      "type": "brick",
+      "pos": [
+        0,
+        4.75,
+        0.9
+      ],
+      "size": [
+        2.1,
+        0.55,
+        0.9
+      ],
+      "color": "#c9cfc6",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1110",
+      "name": "Viga do quadril",
+      "type": "technic",
+      "pos": [
+        0,
+        4.75,
+        1.42
+      ],
+      "size": [
+        2.2,
+        0.35,
+        0.35
+      ],
+      "color": "#1d1d1d",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1111",
+      "name": "Motor grande",
+      "type": "motor",
+      "pos": [
+        0,
+        6,
+        0.85
+      ],
+      "size": [
+        1.4,
+        1.9,
+        1.1
+      ],
+      "color": "#3fb8d4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1112",
+      "name": "Motor branco",
+      "type": "motor",
+      "pos": [
+        0,
+        7.4,
+        0.85
+      ],
+      "size": [
+        1.6,
+        0.95,
+        1.1
+      ],
+      "color": "#f2f2ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1113",
+      "name": "Engrenagem",
+      "type": "gear",
+      "pos": [
+        0.88,
+        7.4,
+        0.85
+      ],
+      "size": [
+        0.75,
+        0.75,
+        0.2
+      ],
+      "color": "#c9cfc6",
+      "stage": 3,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1114",
+      "name": "Ombro",
+      "type": "motor",
+      "pos": [
+        -1.35,
+        7.4,
+        0.85
+      ],
+      "size": [
+        1.1,
+        0.8,
+        0.9
+      ],
+      "color": "#e0359a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1115",
+      "name": "Ombro",
+      "type": "motor",
+      "pos": [
+        1.35,
+        7.4,
+        0.85
+      ],
+      "size": [
+        1.1,
+        0.8,
+        0.9
+      ],
+      "color": "#e0359a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1116",
+      "name": "Braço esquerdo",
+      "type": "technic",
+      "pos": [
+        -2.65,
+        6.875,
+        0.85
+      ],
+      "size": [
+        1.7755280904564699,
+        0.22,
+        0.22
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        -148
+      ],
+      "studs": false,
+      "motion": "wave"
+    },
+    {
+      "id": "p1117",
+      "name": "Mão esquerda",
+      "type": "technic",
+      "pos": [
+        -3.95,
+        6.05,
+        0.85
+      ],
+      "size": [
+        1.4,
+        0.5,
+        0.5
+      ],
+      "color": "#f5cd2f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        30
+      ],
+      "studs": false,
+      "motion": "wave"
+    },
+    {
+      "id": "p1118",
+      "name": "Braço direito",
+      "type": "technic",
+      "pos": [
+        2.5999999999999996,
+        7.85,
+        0.85
+      ],
+      "size": [
+        1.6124515496597098,
+        0.22,
+        0.22
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        30
+      ],
+      "studs": false,
+      "motion": "wave"
+    },
+    {
+      "id": "p1119",
+      "name": "Mão direita",
+      "type": "technic",
+      "pos": [
+        3.85,
+        8.55,
+        0.85
+      ],
+      "size": [
+        1.4,
+        0.5,
+        0.5
+      ],
+      "color": "#f5cd2f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        28
+      ],
+      "studs": false,
+      "motion": "wave"
+    },
+    {
+      "id": "p1120",
+      "name": "Pescoço",
+      "type": "brick",
+      "pos": [
+        0,
+        8.25,
+        0.85
+      ],
+      "size": [
+        0.35,
+        0.5,
+        0.35
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1121",
+      "name": "Sensor de cor",
+      "type": "brick",
+      "pos": [
+        0,
+        8.95,
+        0.85
+      ],
+      "size": [
+        0.95,
+        0.95,
+        0.95
+      ],
+      "color": "#f2f2ee",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1122",
+      "name": "Lente",
+      "type": "eye",
+      "pos": [
+        0,
+        8.95,
+        1.36
+      ],
+      "size": [
+        0.62,
+        0.62,
+        0.22
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1123",
+      "name": "Topo do sensor",
+      "type": "tile",
+      "pos": [
+        0,
+        9.46,
+        0.85
+      ],
+      "size": [
+        0.97,
+        0.08,
+        0.97
+      ],
+      "color": "#1d1d1d",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "dance"
+    },
+    {
+      "id": "p1124",
+      "name": "Cabo",
+      "type": "cable",
+      "pos": [
+        0.9,
+        4.6,
+        -0.4
+      ],
+      "size": [
+        1.6,
+        6.2,
+        0.8
+      ],
+      "color": "#f4f4f0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1125",
+      "name": "Cabo",
+      "type": "cable",
+      "pos": [
+        -2.2,
+        1.75,
+        -0.5
+      ],
+      "size": [
+        1.6,
+        1.4,
+        0.9
+      ],
+      "color": "#f4f4f0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        180
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1126",
+      "name": "Cabo",
+      "type": "cable",
+      "pos": [
+        -1.9,
+        5,
+        -0.2
+      ],
+      "size": [
+        1.4,
+        5.2,
+        1
+      ],
+      "color": "#f4f4f0",
+      "stage": 7,
+      "rot": [
+        0,
+        180,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1127",
+      "name": "Nota musical",
+      "type": "sign",
+      "pos": [
+        3.4,
+        4.8,
+        0.6
+      ],
+      "size": [
+        0.8,
+        0.8,
+        0.06
+      ],
+      "color": "#f5cd2f",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "♪",
+      "motion": "float"
+    },
+    {
+      "id": "p1128",
+      "name": "Nota musical",
+      "type": "sign",
+      "pos": [
+        -3.4,
+        8.6,
+        0.6
+      ],
+      "size": [
+        0.8,
+        0.8,
+        0.06
+      ],
+      "color": "#f5cd2f",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "♫",
+      "motion": "float"
+    }
+  ]
+}

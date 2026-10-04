@@ -36,6 +36,96 @@
     ]
   },
   {
+    "model": "dioramas",
+    "slug": "ilhas-de-dioramas",
+    "title": "Ilhas de dioramas",
+    "kind": "dioramas",
+    "description": "Sete mundos em pequenas ilhas: obra, selva, deserto, portal, ilha pirata, castelo e cidade, cada um com seu personagem.",
+    "pieces": 101,
+    "stages": [
+      "Canteiro de obras",
+      "Selva",
+      "Templo do deserto",
+      "Portal",
+      "Ilha pirata",
+      "Castelo",
+      "Cidade",
+      "Os heróis de cada ilha"
+    ]
+  },
+  {
+    "model": "dancer",
+    "slug": "robo-dancarino",
+    "title": "Robô dançarino",
+    "kind": "dancer",
+    "description": "Hub programável com matriz de luzes, motores, vigas Technic e cabos. Ligue a cena viva e ele dança.",
+    "pieces": 30,
+    "stages": [
+      "Hub programável",
+      "Vigas Technic azuis",
+      "Estrutura central",
+      "Motores empilhados",
+      "Motores rosa",
+      "Vigas e mãos amarelas",
+      "Sensor de cor",
+      "Cabos e notas"
+    ]
+  },
+  {
+    "model": "dragon",
+    "slug": "dragao-oriental",
+    "title": "Dragão oriental",
+    "kind": "dragon",
+    "description": "Um dragão em espiral ao redor de um pilar de rocha, com garras, bigodes, esferas de cristal e raios de energia.",
+    "pieces": 139,
+    "stages": [
+      "Base preta",
+      "Pilar de pedra",
+      "Esferas, raios e aprendiz",
+      "Espiral inferior",
+      "Espiral superior",
+      "Braços e garras",
+      "Cabeça, chifres e bigodes",
+      "Cauda e juba"
+    ]
+  },
+  {
+    "model": "freighter",
+    "slug": "cargueiro-espacial",
+    "title": "Cargueiro espacial",
+    "kind": "freighter",
+    "description": "Casco em disco, mandíbulas, cabine lateral, antena parabólica e motores azuis. Flutua sobre o suporte.",
+    "pieces": 40,
+    "stages": [
+      "Base e haste",
+      "Disco e mandíbulas",
+      "Disco superior e anel",
+      "Painéis detalhados",
+      "Tubo da cabine",
+      "Antena parabólica e canhões",
+      "Faixa de propulsão",
+      "Luzes e acabamento"
+    ]
+  },
+  {
+    "model": "skyline",
+    "slug": "skyline-nova-york",
+    "title": "Skyline de Nova York",
+    "kind": "skyline",
+    "description": "Estátua da Liberdade, Empire State, Chrysler e One World Trade Center sobre o mapa da cidade.",
+    "pieces": 50,
+    "stages": [
+      "Base e placa",
+      "Estátua da Liberdade",
+      "Empire State: base",
+      "Empire State: torre",
+      "Edifício Chrysler",
+      "Edifício intermediário",
+      "One World Trade Center",
+      "Porto e detalhes"
+    ]
+  },
+  {
     "preset": "robotPreset",
     "slug": "robo-explorador",
     "title": "Robô explorador",

@@ -10,11 +10,21 @@ A tela inicial tem três colunas:
 
 - **À esquerda, os recursos da maquete:** montagem passo a passo, vista explodida, corte por andar, dia e noite, cena viva, giro 360°, vistas (frente, fundos, lado e topo), personagens que acenam, manual com lista de peças e o atalho para personalizar.
 - **No centro, a maquete em 3D.** Ela começa pela **Casa moderna**.
-- **À direita, o seletor de maquetes** com miniaturas 3D (Casa moderna, Sobrado urbano, Praça LEGO, Turma de personagens, Robô explorador, Casa modular, Veículo explorador e Foguete orbital) e as etapas de montagem.
+- **À direita, o seletor de maquetes** com miniaturas 3D das 13 maquetes e as etapas de montagem: Casa moderna, Sobrado urbano, Ilhas de dioramas, Robô dançarino, Dragão oriental, Cargueiro espacial, Skyline de Nova York, Praça LEGO, Turma de personagens, Robô explorador, Casa modular, Veículo explorador e Foguete orbital.
 
 Em telas menores, o seletor e as etapas descem para baixo da maquete. No celular, tudo fica em uma coluna.
 
 O **Robô explorador** recria, com geometria 3D editável, o robô e a montagem do vídeo `Gravação de Tela 2026-09-29 013028.mp4`. É uma reconstrução visual, não uma extração exata da malha original do vídeo.
+
+## Maquetes inspiradas nas referências
+
+Foram montadas com peças genéricas e nomes próprios, sem marcas, logotipos ou personagens licenciados:
+
+- **Robô dançarino** (30 peças): hub programável com matriz de luzes animada, motores azul, branco e rosa, vigas Technic, sensor de cor, cabos e notas musicais. Com a cena viva ligada, o tronco pula e os braços acenam.
+- **Dragão oriental** (139 peças): corpo verde com ventre bege em espiral ao redor de um pilar de rochas, garras, chifres, bigodes, sete esferas de cristal, raios de energia e um aprendiz.
+- **Cargueiro espacial** (40 peças): casco em disco, mandíbulas, painéis detalhados, cabine lateral iluminada, antena parabólica, canhões e motores azuis. A nave flutua sobre o suporte.
+- **Skyline de Nova York** (50 peças): Estátua da Liberdade, Empire State, Chrysler, um edifício intermediário e o One World Trade Center sobre o mapa.
+- **Ilhas de dioramas** (101 peças): sete ilhas (obra, selva, deserto, portal, ilha pirata, castelo e cidade), cada uma com seu personagem. O barco balança, o portal gira e o semáforo troca de cor.
 
 ## As casas
 
@@ -29,6 +39,7 @@ Abra **produtos/index.html** para acessar a coleção. Cada apresentação é um
 
 - `produtos/casa-moderna.html`: casa moderna com torre ripada, interior mobiliado e piscina; 70 peças.
 - `produtos/sobrado-urbano.html`: sobrado de três andares com varanda e terraço; 76 peças.
+- `produtos/ilhas-de-dioramas.html`, `produtos/robo-dancarino.html`, `produtos/dragao-oriental.html`, `produtos/cargueiro-espacial.html` e `produtos/skyline-nova-york.html`: as cinco maquetes inspiradas nas referências.
 - `produtos/robo-explorador.html`: robô inspirado no vídeo; 134 peças.
 - `produtos/casa-modular.html`: terreno, paredes, fachada, esquadrias, telhado, chaminé e árvores; 58 peças.
 - `produtos/veiculo-explorador.html`: chassi, rodas, carroceria, cabine, teto, capô, faróis e para-choques; 19 peças.
@@ -43,17 +54,19 @@ Para gerar o material de **uma criação sua**, abra **Construir → Material de
 ## Construir suas próprias coisas
 
 1. Clique em **Construir → Bancada vazia**. Você também pode começar pelos exemplos **Robô**, **Casa moderna**, **Sobrado urbano**, **Casa**, **Veículo**, **Foguete**, **Praça LEGO** ou **Turma de personagens**.
-2. A biblioteca tem quatro abas:
+2. A biblioteca tem cinco abas:
    - **Formas**: bloco, placa, cubo, viga, arco, rampa, cilindro, esfera, cone, roda, painel e olho.
    - **LEGO**: placa lisa, bloco redondo com pino, viga Technic com furos, escada, janela com vidro, porta com moldura, cerca, engrenagem, anel, flor, árvore e poste de luz.
    - **Casa**: palmeira, painel de vidro, guarda-corpo, ripado de madeira, água, espreguiçadeira, sofá, cama, mesa, cadeira, estante com livros, cozinha, luminária pendente e fogueira. Cada uma começa com uma cor natural, que pode ser trocada no painel.
-   - **Personagens**: dez minifiguras prontas (Exploradora, Astronauta, Construtora, Chef, Rainha, Herói, Mago, Criança com balão, Moradora e Morador) e um botão para sortear um personagem.
+   - **Extras**: hub programável, motor, cabo flexível, esfera de cristal, raio de energia, disco, antena parabólica, painel detalhado, painel de luz, tronco de pirâmide, placa com texto, portal, barco, trilhos, semáforo e rocha.
+   - **Personagens**: catorze minifiguras prontas (Exploradora, Astronauta, Construtora, Chef, Rainha, Herói, Mago, Criança com balão, Moradora, Morador, Aprendiz, Pirata, Policial e Arqueóloga) e um botão para sortear um personagem.
 3. Clique em uma peça na cena. Edite largura, altura, profundidade, posição, cor e rotação em qualquer ângulo. As mesmas formas podem virar móveis, cenários, máquinas, animais, personagens ou estruturas abstratas.
 4. Arraste a peça no plano X/Z. Ajuste a altura em **Y**. A opção de grade alinha as posições a intervalos de 0,25 unidade.
-5. Selecione um personagem para customizar: a cor do painel veste o tronco; também é possível trocar pele, pernas, cor do cabelo ou chapéu e cor dos detalhes. Escolha entre 10 cabelos e chapéus, 6 expressões, 6 estampas e 6 acessórios (mochila, capa, ferramenta, escudo, balão). **Sortear visual** gera uma combinação nova. **Acenar**, **Pular** e **Dançar** animam o personagem.
+5. Selecione um personagem para customizar: a cor do painel veste o tronco; também é possível trocar pele, pernas, cor do cabelo ou chapéu e cor dos detalhes. Escolha entre 11 cabelos e chapéus (incluindo o chapéu pirata), 6 expressões, 6 estampas e 6 acessórios (mochila, capa, ferramenta, escudo, balão). **Sortear visual** gera uma combinação nova. **Acenar**, **Pular** e **Dançar** animam o personagem.
 6. Com **Empilhar ao arrastar** ativo, a peça arrastada pousa no topo das peças abaixo dela, como um bloco de encaixe. Os pinos entram na peça de cima e não somam altura.
-7. Defina a **etapa de montagem** de cada peça. **Reproduzir minha montagem** anima a sua própria construção.
-8. Use **Salvar projeto** para baixar um JSON e **Abrir um projeto** para continuar depois. O editor também tenta salvar automaticamente neste navegador.
+7. Em **Movimento na cena viva**, qualquer peça pode flutuar com o conjunto, balançar na água, girar, rodar de frente, dançar, dançar e acenar ou pulsar. Na **Placa com texto**, escreva até 24 caracteres.
+8. Defina a **etapa de montagem** de cada peça. **Reproduzir minha montagem** anima a sua própria construção.
+9. Use **Salvar projeto** para baixar um JSON e **Abrir um projeto** para continuar depois. O editor também tenta salvar automaticamente neste navegador.
 
 Há até **400 peças** por projeto. Cada dimensão vai de 0,01 a 10 unidades e cada coordenada de −30 a 30. A construção combina formas geométricas; não inclui escultura de malhas, recortes booleanos ou simulação física de encaixes. As peças podem se sobrepor livremente.
 

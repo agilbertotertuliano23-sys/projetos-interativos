@@ -5,7 +5,7 @@
   "kind": "modern",
   "pieces": [
     {
-      "id": "p492",
+      "id": "p852",
       "name": "Gramado",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "p493",
+      "id": "p853",
       "name": "Praia",
       "type": "brick",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p494",
+      "id": "p854",
       "name": "Mar",
       "type": "water",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p495",
+      "id": "p855",
       "name": "Deck de madeira",
       "type": "tile",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p496",
+      "id": "p856",
       "name": "Piso térreo",
       "type": "tile",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "p497",
+      "id": "p857",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "p498",
+      "id": "p858",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "p499",
+      "id": "p859",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "p500",
+      "id": "p860",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "p501",
+      "id": "p861",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p502",
+      "id": "p862",
       "name": "Pilar",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "p503",
+      "id": "p863",
       "name": "Porta de vidro",
       "type": "window",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "p504",
+      "id": "p864",
       "name": "Porta de vidro",
       "type": "window",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "p505",
+      "id": "p865",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "p506",
+      "id": "p866",
       "name": "Ripado da torre",
       "type": "slats",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "p507",
+      "id": "p867",
       "name": "Janela da torre",
       "type": "window",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "p508",
+      "id": "p868",
       "name": "Cozinha",
       "type": "kitchen",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "p509",
+      "id": "p869",
       "name": "Mesa redonda",
       "type": "table",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "p510",
+      "id": "p870",
       "name": "Banqueta",
       "type": "chair",
       "pos": [
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "p511",
+      "id": "p871",
       "name": "Banqueta",
       "type": "chair",
       "pos": [
@@ -465,7 +465,7 @@
       "studs": false
     },
     {
-      "id": "p512",
+      "id": "p872",
       "name": "Mesa de jantar",
       "type": "table",
       "pos": [
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "p513",
+      "id": "p873",
       "name": "Cadeira",
       "type": "chair",
       "pos": [
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "p514",
+      "id": "p874",
       "name": "Cadeira",
       "type": "chair",
       "pos": [
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "p515",
+      "id": "p875",
       "name": "Sofá",
       "type": "sofa",
       "pos": [
@@ -557,7 +557,7 @@
       "studs": false
     },
     {
-      "id": "p516",
+      "id": "p876",
       "name": "Mesa de centro",
       "type": "table",
       "pos": [
@@ -580,7 +580,7 @@
       "studs": false
     },
     {
-      "id": "p517",
+      "id": "p877",
       "name": "Vaso de flores",
       "type": "plant",
       "pos": [
@@ -603,7 +603,7 @@
       "studs": false
     },
     {
-      "id": "p518",
+      "id": "p878",
       "name": "Laje",
       "type": "brick",
       "pos": [
@@ -626,7 +626,7 @@
       "studs": false
     },
     {
-      "id": "p519",
+      "id": "p879",
       "name": "Piso superior",
       "type": "tile",
       "pos": [
@@ -649,7 +649,7 @@
       "studs": false
     },
     {
-      "id": "p520",
+      "id": "p880",
       "name": "Fachada superior",
       "type": "brick",
       "pos": [
@@ -672,7 +672,7 @@
       "studs": false
     },
     {
-      "id": "p521",
+      "id": "p881",
       "name": "Fachada superior",
       "type": "brick",
       "pos": [
@@ -695,7 +695,7 @@
       "studs": false
     },
     {
-      "id": "p522",
+      "id": "p882",
       "name": "Fachada superior",
       "type": "brick",
       "pos": [
@@ -718,7 +718,7 @@
       "studs": false
     },
     {
-      "id": "p523",
+      "id": "p883",
       "name": "Fachada superior",
       "type": "brick",
       "pos": [
@@ -741,7 +741,7 @@
       "studs": false
     },
     {
-      "id": "p524",
+      "id": "p884",
       "name": "Janela larga",
       "type": "window",
       "pos": [
@@ -764,7 +764,7 @@
       "studs": false
     },
     {
-      "id": "p525",
+      "id": "p885",
       "name": "Parede lateral superior",
       "type": "brick",
       "pos": [
@@ -787,7 +787,7 @@
       "studs": false
     },
     {
-      "id": "p526",
+      "id": "p886",
       "name": "Porta da varanda",
       "type": "glasspanel",
       "pos": [
@@ -810,7 +810,7 @@
       "studs": false
     },
     {
-      "id": "p527",
+      "id": "p887",
       "name": "Guarda-corpo",
       "type": "railing",
       "pos": [
@@ -833,7 +833,7 @@
       "studs": false
     },
     {
-      "id": "p528",
+      "id": "p888",
       "name": "Vaso da varanda",
       "type": "plant",
       "pos": [
@@ -856,7 +856,7 @@
       "studs": false
     },
     {
-      "id": "p529",
+      "id": "p889",
       "name": "Cama",
       "type": "bed",
       "pos": [
@@ -879,7 +879,7 @@
       "studs": false
     },
     {
-      "id": "p530",
+      "id": "p890",
       "name": "Escrivaninha",
       "type": "table",
       "pos": [
@@ -902,7 +902,7 @@
       "studs": false
     },
     {
-      "id": "p531",
+      "id": "p891",
       "name": "Cadeira do escritório",
       "type": "chair",
       "pos": [
@@ -925,7 +925,7 @@
       "studs": false
     },
     {
-      "id": "p532",
+      "id": "p892",
       "name": "Estante",
       "type": "shelf",
       "pos": [
@@ -948,7 +948,7 @@
       "studs": false
     },
     {
-      "id": "p533",
+      "id": "p893",
       "name": "Ripado da torre",
       "type": "slats",
       "pos": [
@@ -971,7 +971,7 @@
       "studs": false
     },
     {
-      "id": "p534",
+      "id": "p894",
       "name": "Janela da torre",
       "type": "window",
       "pos": [
@@ -994,7 +994,7 @@
       "studs": false
     },
     {
-      "id": "p535",
+      "id": "p895",
       "name": "Ripado lateral",
       "type": "slats",
       "pos": [
@@ -1017,7 +1017,7 @@
       "studs": false
     },
     {
-      "id": "p536",
+      "id": "p896",
       "name": "Poltrona",
       "type": "sofa",
       "pos": [
@@ -1040,7 +1040,7 @@
       "studs": false
     },
     {
-      "id": "p537",
+      "id": "p897",
       "name": "Estante colorida",
       "type": "shelf",
       "pos": [
@@ -1063,7 +1063,7 @@
       "studs": false
     },
     {
-      "id": "p538",
+      "id": "p898",
       "name": "Arvoreta",
       "type": "tree",
       "pos": [
@@ -1086,7 +1086,7 @@
       "studs": false
     },
     {
-      "id": "p539",
+      "id": "p899",
       "name": "Laje da torre",
       "type": "brick",
       "pos": [
@@ -1109,7 +1109,7 @@
       "studs": false
     },
     {
-      "id": "p540",
+      "id": "p900",
       "name": "Piso da torre",
       "type": "tile",
       "pos": [
@@ -1132,7 +1132,7 @@
       "studs": false
     },
     {
-      "id": "p541",
+      "id": "p901",
       "name": "Ripado da torre",
       "type": "slats",
       "pos": [
@@ -1155,7 +1155,7 @@
       "studs": false
     },
     {
-      "id": "p542",
+      "id": "p902",
       "name": "Janela da torre",
       "type": "window",
       "pos": [
@@ -1178,7 +1178,7 @@
       "studs": false
     },
     {
-      "id": "p543",
+      "id": "p903",
       "name": "Parede da torre",
       "type": "brick",
       "pos": [
@@ -1201,7 +1201,7 @@
       "studs": false
     },
     {
-      "id": "p544",
+      "id": "p904",
       "name": "Cobertura",
       "type": "brick",
       "pos": [
@@ -1224,7 +1224,7 @@
       "studs": false
     },
     {
-      "id": "p545",
+      "id": "p905",
       "name": "Cobertura da torre",
       "type": "brick",
       "pos": [
@@ -1247,7 +1247,7 @@
       "studs": false
     },
     {
-      "id": "p546",
+      "id": "p906",
       "name": "Lustre de vidro",
       "type": "pendant",
       "pos": [
@@ -1270,7 +1270,7 @@
       "studs": false
     },
     {
-      "id": "p547",
+      "id": "p907",
       "name": "Palmeira do terraço",
       "type": "palm",
       "pos": [
@@ -1293,7 +1293,7 @@
       "studs": false
     },
     {
-      "id": "p548",
+      "id": "p908",
       "name": "Piscina",
       "type": "water",
       "pos": [
@@ -1316,7 +1316,7 @@
       "studs": false
     },
     {
-      "id": "p549",
+      "id": "p909",
       "name": "Borda da piscina",
       "type": "tile",
       "pos": [
@@ -1339,7 +1339,7 @@
       "studs": false
     },
     {
-      "id": "p550",
+      "id": "p910",
       "name": "Borda da piscina",
       "type": "tile",
       "pos": [
@@ -1362,7 +1362,7 @@
       "studs": false
     },
     {
-      "id": "p551",
+      "id": "p911",
       "name": "Borda da piscina",
       "type": "tile",
       "pos": [
@@ -1385,7 +1385,7 @@
       "studs": false
     },
     {
-      "id": "p552",
+      "id": "p912",
       "name": "Borda da piscina",
       "type": "tile",
       "pos": [
@@ -1408,7 +1408,7 @@
       "studs": false
     },
     {
-      "id": "p553",
+      "id": "p913",
       "name": "Patinho",
       "type": "sphere",
       "pos": [
@@ -1431,7 +1431,7 @@
       "studs": false
     },
     {
-      "id": "p554",
+      "id": "p914",
       "name": "Cabeça do patinho",
       "type": "sphere",
       "pos": [
@@ -1454,7 +1454,7 @@
       "studs": false
     },
     {
-      "id": "p555",
+      "id": "p915",
       "name": "Espreguiçadeira",
       "type": "lounger",
       "pos": [
@@ -1477,7 +1477,7 @@
       "studs": false
     },
     {
-      "id": "p556",
+      "id": "p916",
       "name": "Espreguiçadeira",
       "type": "lounger",
       "pos": [
@@ -1500,7 +1500,7 @@
       "studs": false
     },
     {
-      "id": "p557",
+      "id": "p917",
       "name": "Fogueira",
       "type": "campfire",
       "pos": [
@@ -1523,7 +1523,7 @@
       "studs": false
     },
     {
-      "id": "p558",
+      "id": "p918",
       "name": "Palmeira",
       "type": "palm",
       "pos": [
@@ -1546,7 +1546,7 @@
       "studs": false
     },
     {
-      "id": "p559",
+      "id": "p919",
       "name": "Palmeira",
       "type": "palm",
       "pos": [
@@ -1569,7 +1569,7 @@
       "studs": false
     },
     {
-      "id": "p560",
+      "id": "p920",
       "name": "Moradora",
       "type": "figure",
       "pos": [
@@ -1602,7 +1602,7 @@
       }
     },
     {
-      "id": "p561",
+      "id": "p921",
       "name": "Morador",
       "type": "figure",
       "pos": [

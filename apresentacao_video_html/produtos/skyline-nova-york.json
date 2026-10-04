@@ -1,0 +1,1159 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Skyline de Nova York",
+  "kind": "skyline",
+  "pieces": [
+    {
+      "id": "p1308",
+      "name": "Base",
+      "type": "brick",
+      "pos": [
+        0,
+        0.25,
+        0
+      ],
+      "size": [
+        10,
+        0.5,
+        2.4
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1309",
+      "name": "Mapa",
+      "type": "tile",
+      "pos": [
+        0,
+        0.53,
+        0
+      ],
+      "size": [
+        9.8,
+        0.06,
+        2.2
+      ],
+      "color": "#e8e8e4",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1310",
+      "name": "Placa",
+      "type": "sign",
+      "pos": [
+        0,
+        0.25,
+        1.23
+      ],
+      "size": [
+        3,
+        0.36,
+        0.06
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "NOVA YORK"
+    },
+    {
+      "id": "p1311",
+      "name": "Forte",
+      "type": "tile",
+      "pos": [
+        -4,
+        0.62,
+        0.2
+      ],
+      "size": [
+        1.6,
+        0.12,
+        1.6
+      ],
+      "color": "#d9c08a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1312",
+      "name": "Pedestal",
+      "type": "brick",
+      "pos": [
+        -4,
+        1.03,
+        0.2
+      ],
+      "size": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "color": "#d9c08a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1313",
+      "name": "Topo do pedestal",
+      "type": "brick",
+      "pos": [
+        -4,
+        1.5,
+        0.2
+      ],
+      "size": [
+        0.5,
+        0.24,
+        0.5
+      ],
+      "color": "#d9c08a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1314",
+      "name": "Manto",
+      "type": "cone",
+      "pos": [
+        -4,
+        1.99,
+        0.2
+      ],
+      "size": [
+        0.46,
+        0.75,
+        0.46
+      ],
+      "color": "#6fa58f",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1315",
+      "name": "Cabeça",
+      "type": "sphere",
+      "pos": [
+        -4,
+        2.43,
+        0.2
+      ],
+      "size": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "color": "#6fa58f",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1316",
+      "name": "Coroa",
+      "type": "cone",
+      "pos": [
+        -4,
+        2.56,
+        0.2
+      ],
+      "size": [
+        0.26,
+        0.1,
+        0.26
+      ],
+      "color": "#6fa58f",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1317",
+      "name": "Braço erguido",
+      "type": "cylinder",
+      "pos": [
+        -3.88,
+        2.6,
+        0.2
+      ],
+      "size": [
+        0.06,
+        0.06,
+        0.5
+      ],
+      "color": "#6fa58f",
+      "stage": 1,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1318",
+      "name": "Tocha",
+      "type": "orb",
+      "pos": [
+        -3.88,
+        2.9,
+        0.2
+      ],
+      "size": [
+        0.12,
+        0.14,
+        0.12
+      ],
+      "color": "#f9ae01",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1319",
+      "name": "Empire State: base",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        1.06,
+        0
+      ],
+      "size": [
+        2.4,
+        1,
+        1.6
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1320",
+      "name": "Fachada da base",
+      "type": "slats",
+      "pos": [
+        -1.4,
+        1.06,
+        0.82
+      ],
+      "size": [
+        2.4,
+        1,
+        0.1
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1321",
+      "name": "Empire State: recuo",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        1.91,
+        0
+      ],
+      "size": [
+        2,
+        0.7,
+        1.3
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1322",
+      "name": "Fachada do recuo",
+      "type": "slats",
+      "pos": [
+        -1.4,
+        1.91,
+        0.67
+      ],
+      "size": [
+        2,
+        0.7,
+        0.1
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1323",
+      "name": "Empire State: torre",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        3.86,
+        0
+      ],
+      "size": [
+        1.5,
+        3.2,
+        1
+      ],
+      "color": "#d9c08a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1324",
+      "name": "Fachada da torre",
+      "type": "slats",
+      "pos": [
+        -1.4,
+        3.86,
+        0.52
+      ],
+      "size": [
+        1.5,
+        3.2,
+        0.1
+      ],
+      "color": "#d9c08a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1325",
+      "name": "Empire State: topo",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        5.76,
+        0
+      ],
+      "size": [
+        1.1,
+        0.6,
+        0.75
+      ],
+      "color": "#d9c08a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1326",
+      "name": "Empire State: coroa",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        6.31,
+        0
+      ],
+      "size": [
+        0.7,
+        0.5,
+        0.5
+      ],
+      "color": "#d9c08a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1327",
+      "name": "Mirante",
+      "type": "cylinder",
+      "pos": [
+        -1.4,
+        6.81,
+        0
+      ],
+      "size": [
+        0.4,
+        0.4,
+        0.5
+      ],
+      "color": "#c0c4c6",
+      "stage": 3,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1328",
+      "name": "Agulha",
+      "type": "cone",
+      "pos": [
+        -1.4,
+        7.41,
+        0
+      ],
+      "size": [
+        0.25,
+        0.7,
+        0.25
+      ],
+      "color": "#c0c4c6",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1329",
+      "name": "Antena",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        8.06,
+        0
+      ],
+      "size": [
+        0.05,
+        0.6,
+        0.05
+      ],
+      "color": "#c0c4c6",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1330",
+      "name": "Chrysler: corpo",
+      "type": "brick",
+      "pos": [
+        1.1,
+        2.76,
+        0
+      ],
+      "size": [
+        1.1,
+        4.4,
+        1
+      ],
+      "color": "#d6d6d1",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1331",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        1.1,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1332",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        1.6,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1333",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        2.1,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1334",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        2.6,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1335",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        3.1,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1336",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        3.6,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1337",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        4.1,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1338",
+      "name": "Faixa de janelas",
+      "type": "brick",
+      "pos": [
+        1.1,
+        4.6,
+        0.51
+      ],
+      "size": [
+        1.12,
+        0.08,
+        0.06
+      ],
+      "color": "#4d5254",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1339",
+      "name": "Coroa em arco",
+      "type": "arch",
+      "pos": [
+        1.1,
+        5.2,
+        0.42
+      ],
+      "size": [
+        0.95,
+        0.6,
+        0.14
+      ],
+      "color": "#c0c4c6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1340",
+      "name": "Coroa em arco",
+      "type": "arch",
+      "pos": [
+        1.1,
+        5.6,
+        0.34
+      ],
+      "size": [
+        0.75,
+        0.5,
+        0.14
+      ],
+      "color": "#c0c4c6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1341",
+      "name": "Coroa em arco",
+      "type": "arch",
+      "pos": [
+        1.1,
+        5.95,
+        0.26
+      ],
+      "size": [
+        0.55,
+        0.4,
+        0.14
+      ],
+      "color": "#c0c4c6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1342",
+      "name": "Coroa",
+      "type": "cone",
+      "pos": [
+        1.1,
+        5.6,
+        0
+      ],
+      "size": [
+        0.9,
+        1.2,
+        0.9
+      ],
+      "color": "#c0c4c6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1343",
+      "name": "Agulha",
+      "type": "brick",
+      "pos": [
+        1.1,
+        6.8,
+        0
+      ],
+      "size": [
+        0.06,
+        1.2,
+        0.06
+      ],
+      "color": "#c0c4c6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1344",
+      "name": "Edifício de vidro",
+      "type": "brick",
+      "pos": [
+        2.55,
+        2.11,
+        0
+      ],
+      "size": [
+        1.1,
+        3.1,
+        1
+      ],
+      "color": "#8fb3cf",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1345",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        0.9,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1346",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        1.4,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1347",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        1.9,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1348",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        2.4,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1349",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        2.9,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1350",
+      "name": "Faixa bege",
+      "type": "brick",
+      "pos": [
+        2.55,
+        3.4,
+        0
+      ],
+      "size": [
+        1.14,
+        0.12,
+        1.04
+      ],
+      "color": "#d9c08a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1351",
+      "name": "Pódio",
+      "type": "brick",
+      "pos": [
+        4,
+        1.06,
+        0
+      ],
+      "size": [
+        1.4,
+        1,
+        1.4
+      ],
+      "color": "#a9b0b5",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1352",
+      "name": "Torre de vidro",
+      "type": "frustum",
+      "pos": [
+        4,
+        4.86,
+        0
+      ],
+      "size": [
+        1.3,
+        6.6,
+        1.3
+      ],
+      "color": "#7d9fbe",
+      "stage": 6,
+      "rot": [
+        0,
+        45,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1353",
+      "name": "Mastro",
+      "type": "brick",
+      "pos": [
+        4,
+        8.76,
+        0
+      ],
+      "size": [
+        0.06,
+        1.2,
+        0.06
+      ],
+      "color": "#c0c4c6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1354",
+      "name": "Porto",
+      "type": "water",
+      "pos": [
+        -3.9,
+        0.57,
+        -0.75
+      ],
+      "size": [
+        1.8,
+        0.06,
+        0.6
+      ],
+      "color": "#3fa7d6",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1355",
+      "name": "Rua",
+      "type": "tile",
+      "pos": [
+        -2.6,
+        0.565,
+        0.9
+      ],
+      "size": [
+        0.9,
+        0.02,
+        0.12
+      ],
+      "color": "#bdbdb7",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1356",
+      "name": "Rua",
+      "type": "tile",
+      "pos": [
+        -0.1,
+        0.565,
+        0.9
+      ],
+      "size": [
+        0.9,
+        0.02,
+        0.12
+      ],
+      "color": "#bdbdb7",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1357",
+      "name": "Rua",
+      "type": "tile",
+      "pos": [
+        3.3,
+        0.565,
+        0.9
+      ],
+      "size": [
+        0.9,
+        0.02,
+        0.12
+      ],
+      "color": "#bdbdb7",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}

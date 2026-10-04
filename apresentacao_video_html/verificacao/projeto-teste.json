@@ -5,7 +5,7 @@
   "kind": "custom",
   "pieces": [
     {
-      "id": "custom-muu6hfaz-638",
+      "id": "custom-muu797zf-1068",
       "name": "Bloco 2 × 4",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu6hfll-640",
+      "id": "custom-muu798al-1070",
       "name": "Placa 2 × 4",
       "type": "plate",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu6hfr6-642",
+      "id": "custom-muu798g3-1072",
       "name": "Bloco 1 × 1",
       "type": "brick",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu6hfuv-644",
+      "id": "custom-muu798l9-1074",
       "name": "Viga",
       "type": "brick",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hfyd-646",
+      "id": "custom-muu798ox-1076",
       "name": "Arco",
       "type": "arch",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hg1v-648",
+      "id": "custom-muu798sr-1078",
       "name": "Rampa",
       "type": "wedge",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hg5j-650",
+      "id": "custom-muu798wk-1080",
       "name": "Cilindro",
       "type": "cylinder",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hg8s-652",
+      "id": "custom-muu79909-1082",
       "name": "Esfera",
       "type": "sphere",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgbz-654",
+      "id": "custom-muu7993c-1084",
       "name": "Cone",
       "type": "cone",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgf9-656",
+      "id": "custom-muu7997g-1086",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgjd-658",
+      "id": "custom-muu799c4-1088",
       "name": "Painel",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgmq-660",
+      "id": "custom-muu799fr-1090",
       "name": "Olho",
       "type": "eye",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgtp-662",
+      "id": "custom-muu799nc-1092",
       "name": "Placa lisa 2 × 2",
       "type": "tile",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgvf-664",
+      "id": "custom-muu799pp-1094",
       "name": "Bloco redondo 1 × 1",
       "type": "round",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hgyy-666",
+      "id": "custom-muu799sz-1096",
       "name": "Viga Technic",
       "type": "technic",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hh1x-668",
+      "id": "custom-muu799xf-1098",
       "name": "Escada",
       "type": "stairs",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hh64-670",
+      "id": "custom-muu79a1p-1100",
       "name": "Janela",
       "type": "window",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hh9e-672",
+      "id": "custom-muu79a5s-1102",
       "name": "Porta",
       "type": "door",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhck-674",
+      "id": "custom-muu79a9f-1104",
       "name": "Cerca",
       "type": "fence",
       "pos": [
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhfv-676",
+      "id": "custom-muu79acn-1106",
       "name": "Engrenagem",
       "type": "gear",
       "pos": [
@@ -465,7 +465,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhjk-678",
+      "id": "custom-muu79agj-1108",
       "name": "Anel",
       "type": "ring",
       "pos": [
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhmx-680",
+      "id": "custom-muu79anc-1110",
       "name": "Flor",
       "type": "plant",
       "pos": [
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhvk-682",
+      "id": "custom-muu79ats-1112",
       "name": "Árvore",
       "type": "tree",
       "pos": [
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hhzy-684",
+      "id": "custom-muu79b1c-1114",
       "name": "Poste de luz",
       "type": "lamp",
       "pos": [
@@ -557,7 +557,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hidc-686",
+      "id": "custom-muu79bfc-1116",
       "name": "Palmeira",
       "type": "palm",
       "pos": [
@@ -580,7 +580,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hik4-688",
+      "id": "custom-muu79bm0-1118",
       "name": "Painel de vidro",
       "type": "glasspanel",
       "pos": [
@@ -603,7 +603,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hir4-690",
+      "id": "custom-muu79bue-1120",
       "name": "Guarda-corpo",
       "type": "railing",
       "pos": [
@@ -626,7 +626,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hixp-692",
+      "id": "custom-muu79c1o-1122",
       "name": "Ripado de madeira",
       "type": "slats",
       "pos": [
@@ -649,7 +649,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hj45-694",
+      "id": "custom-muu79c9e-1124",
       "name": "Água",
       "type": "water",
       "pos": [
@@ -672,7 +672,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hjc4-696",
+      "id": "custom-muu79chd-1126",
       "name": "Espreguiçadeira",
       "type": "lounger",
       "pos": [
@@ -695,7 +695,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hjii-698",
+      "id": "custom-muu79coi-1128",
       "name": "Sofá",
       "type": "sofa",
       "pos": [
@@ -718,7 +718,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hjqm-700",
+      "id": "custom-muu79cvt-1130",
       "name": "Cama",
       "type": "bed",
       "pos": [
@@ -741,7 +741,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hjwm-702",
+      "id": "custom-muu79d32-1132",
       "name": "Mesa",
       "type": "table",
       "pos": [
@@ -764,7 +764,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hk3i-704",
+      "id": "custom-muu79db4-1134",
       "name": "Cadeira",
       "type": "chair",
       "pos": [
@@ -787,7 +787,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hkdk-706",
+      "id": "custom-muu79dm4-1136",
       "name": "Estante",
       "type": "shelf",
       "pos": [
@@ -810,7 +810,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hkho-708",
+      "id": "custom-muu79dq4-1138",
       "name": "Cozinha",
       "type": "kitchen",
       "pos": [
@@ -833,7 +833,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hkor-710",
+      "id": "custom-muu79dx8-1140",
       "name": "Luminária pendente",
       "type": "pendant",
       "pos": [
@@ -856,7 +856,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hkvs-712",
+      "id": "custom-muu79e3k-1142",
       "name": "Fogueira",
       "type": "campfire",
       "pos": [
@@ -879,7 +879,400 @@
       "studs": false
     },
     {
-      "id": "custom-muu6hlas-714",
+      "id": "custom-muu79eg9-1144",
+      "name": "Hub programável",
+      "type": "hub",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2.2,
+        1.1,
+        1.6
+      ],
+      "color": "#f5cd2f",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79emv-1146",
+      "name": "Motor",
+      "type": "motor",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.2,
+        1,
+        1
+      ],
+      "color": "#3fb8d4",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79ev2-1148",
+      "name": "Cabo flexível",
+      "type": "cable",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.6,
+        1.6,
+        0.6
+      ],
+      "color": "#f4f4f0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79f1l-1150",
+      "name": "Esfera de cristal",
+      "type": "orb",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": "#f39c12",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79fc3-1152",
+      "name": "Raio de energia",
+      "type": "bolt",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.8,
+        1.8,
+        0.12
+      ],
+      "color": "#ffd23f",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79fhq-1154",
+      "name": "Disco",
+      "type": "disc",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        3,
+        0.6,
+        3
+      ],
+      "color": "#9ea2a3",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79fpo-1156",
+      "name": "Antena parabólica",
+      "type": "dish",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.4,
+        1,
+        1.4
+      ],
+      "color": "#c9cfd2",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79fxi-1158",
+      "name": "Painel detalhado",
+      "type": "greeble",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.6,
+        0.3,
+        1.2
+      ],
+      "color": "#9ea2a3",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79g3k-1160",
+      "name": "Painel de luz",
+      "type": "light",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1,
+        0.3,
+        0.15
+      ],
+      "color": "#7fd3ff",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79gaa-1162",
+      "name": "Tronco de pirâmide",
+      "type": "frustum",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.2,
+        2,
+        1.2
+      ],
+      "color": "#7d9fbe",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79ghr-1164",
+      "name": "Placa com texto",
+      "type": "sign",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        0.5,
+        0.08
+      ],
+      "color": "#1d1d1d",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "MONO"
+    },
+    {
+      "id": "custom-muu79gpj-1166",
+      "name": "Portal",
+      "type": "portal",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        2,
+        0.35
+      ],
+      "color": "#3aa0ff",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79gvy-1168",
+      "name": "Barco",
+      "type": "boat",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.6,
+        1.6,
+        0.8
+      ],
+      "color": "#8b5a2b",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79h2d-1170",
+      "name": "Trilhos",
+      "type": "rails",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        3,
+        0.12,
+        1
+      ],
+      "color": "#8e9592",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79h8o-1172",
+      "name": "Semáforo",
+      "type": "traffic",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.35,
+        1.6,
+        0.3
+      ],
+      "color": "#2b2b2b",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79hfl-1174",
+      "name": "Rocha",
+      "type": "rock",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1,
+        0.8,
+        1
+      ],
+      "color": "#7d8280",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu79hok-1176",
+      "name": "Placa com texto",
+      "type": "sign",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        0.5,
+        0.08
+      ],
+      "color": "#1d1d1d",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "text": "MINHA CIDADE"
+    },
+    {
+      "id": "custom-muu79i6x-1178",
       "name": "Exploradora",
       "type": "figure",
       "pos": [
@@ -912,7 +1305,7 @@
       }
     },
     {
-      "id": "custom-muu6hljh-716",
+      "id": "custom-muu79iej-1180",
       "name": "Personagem",
       "type": "figure",
       "pos": [
@@ -935,17 +1328,17 @@
       "studs": false,
       "fig": {
         "skin": "#8d5524",
-        "legs": "#6b3fa0",
+        "legs": "#294c45",
         "hair": "crown",
-        "hairColor": "#3d3a7a",
+        "hairColor": "#5b3a29",
         "face": "wink",
         "print": "tie",
         "accessory": "cape",
-        "accColor": "#294c45"
+        "accColor": "#6b3fa0"
       }
     },
     {
-      "id": "custom-muu6hnxg-718",
+      "id": "custom-muu79kw7-1182",
       "name": "Personagem · cópia",
       "type": "figure",
       "pos": [
@@ -968,13 +1361,13 @@
       "studs": false,
       "fig": {
         "skin": "#8d5524",
-        "legs": "#6b3fa0",
+        "legs": "#294c45",
         "hair": "crown",
-        "hairColor": "#3d3a7a",
+        "hairColor": "#5b3a29",
         "face": "wink",
         "print": "tie",
         "accessory": "cape",
-        "accColor": "#294c45"
+        "accColor": "#6b3fa0"
       }
     }
   ]

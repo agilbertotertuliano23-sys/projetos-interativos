@@ -37,6 +37,96 @@
       "automaticManual": true
     },
     {
+      "title": "Ilhas de dioramas",
+      "pieces": 101,
+      "stages": [
+        "Canteiro de obras",
+        "Selva",
+        "Templo do deserto",
+        "Portal",
+        "Ilha pirata",
+        "Castelo",
+        "Cidade",
+        "Os heróis de cada ilha"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Robô dançarino",
+      "pieces": 30,
+      "stages": [
+        "Hub programável",
+        "Vigas Technic azuis",
+        "Estrutura central",
+        "Motores empilhados",
+        "Motores rosa",
+        "Vigas e mãos amarelas",
+        "Sensor de cor",
+        "Cabos e notas"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Dragão oriental",
+      "pieces": 139,
+      "stages": [
+        "Base preta",
+        "Pilar de pedra",
+        "Esferas, raios e aprendiz",
+        "Espiral inferior",
+        "Espiral superior",
+        "Braços e garras",
+        "Cabeça, chifres e bigodes",
+        "Cauda e juba"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Cargueiro espacial",
+      "pieces": 40,
+      "stages": [
+        "Base e haste",
+        "Disco e mandíbulas",
+        "Disco superior e anel",
+        "Painéis detalhados",
+        "Tubo da cabine",
+        "Antena parabólica e canhões",
+        "Faixa de propulsão",
+        "Luzes e acabamento"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Skyline de Nova York",
+      "pieces": 50,
+      "stages": [
+        "Base e placa",
+        "Estátua da Liberdade",
+        "Empire State: base",
+        "Empire State: torre",
+        "Edifício Chrysler",
+        "Edifício intermediário",
+        "One World Trade Center",
+        "Porto e detalhes"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
       "title": "Robô explorador",
       "pieces": 134,
       "stages": [

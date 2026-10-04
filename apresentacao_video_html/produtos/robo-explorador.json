@@ -5,7 +5,7 @@
   "kind": "robot",
   "pieces": [
     {
-      "id": "p638",
+      "id": "p1358",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": false
     },
     {
-      "id": "p639",
+      "id": "p1359",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p640",
+      "id": "p1360",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p641",
+      "id": "p1361",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p642",
+      "id": "p1362",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": true
     },
     {
-      "id": "p643",
+      "id": "p1363",
       "name": "Base do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": true
     },
     {
-      "id": "p644",
+      "id": "p1364",
       "name": "Ponta do pé esquerdo",
       "type": "brick",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": true
     },
     {
-      "id": "p645",
+      "id": "p1365",
       "name": "Calcanhar esquerdo",
       "type": "brick",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": true
     },
     {
-      "id": "p646",
+      "id": "p1366",
       "name": "Perna esquerdo",
       "type": "brick",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": true
     },
     {
-      "id": "p647",
+      "id": "p1367",
       "name": "Friso da perna esquerdo",
       "type": "brick",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p648",
+      "id": "p1368",
       "name": "Friso da perna esquerdo",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "p649",
+      "id": "p1369",
       "name": "Friso da perna esquerdo",
       "type": "brick",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "p650",
+      "id": "p1370",
       "name": "Friso da perna esquerdo",
       "type": "brick",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "p651",
+      "id": "p1371",
       "name": "Friso da perna esquerdo",
       "type": "brick",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "p652",
+      "id": "p1372",
       "name": "Pino do tornozelo esquerdo",
       "type": "cylinder",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "p653",
+      "id": "p1373",
       "name": "Pino do tornozelo esquerdo",
       "type": "cylinder",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "p654",
+      "id": "p1374",
       "name": "Articulação esquerdo",
       "type": "brick",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "p655",
+      "id": "p1375",
       "name": "Armadura esquerdo 1",
       "type": "brick",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "p656",
+      "id": "p1376",
       "name": "Armadura esquerdo 2",
       "type": "brick",
       "pos": [
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "p657",
+      "id": "p1377",
       "name": "Armadura esquerdo 3",
       "type": "brick",
       "pos": [
@@ -465,7 +465,7 @@
       "studs": false
     },
     {
-      "id": "p658",
+      "id": "p1378",
       "name": "Armadura esquerdo 4",
       "type": "brick",
       "pos": [
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "p659",
+      "id": "p1379",
       "name": "Armadura esquerdo 5",
       "type": "brick",
       "pos": [
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "p660",
+      "id": "p1380",
       "name": "Junta superior esquerdo",
       "type": "brick",
       "pos": [
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "p661",
+      "id": "p1381",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -557,7 +557,7 @@
       "studs": false
     },
     {
-      "id": "p662",
+      "id": "p1382",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -580,7 +580,7 @@
       "studs": false
     },
     {
-      "id": "p663",
+      "id": "p1383",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -603,7 +603,7 @@
       "studs": false
     },
     {
-      "id": "p664",
+      "id": "p1384",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -626,7 +626,7 @@
       "studs": false
     },
     {
-      "id": "p665",
+      "id": "p1385",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -649,7 +649,7 @@
       "studs": true
     },
     {
-      "id": "p666",
+      "id": "p1386",
       "name": "Base do pé direito",
       "type": "brick",
       "pos": [
@@ -672,7 +672,7 @@
       "studs": true
     },
     {
-      "id": "p667",
+      "id": "p1387",
       "name": "Ponta do pé direito",
       "type": "brick",
       "pos": [
@@ -695,7 +695,7 @@
       "studs": true
     },
     {
-      "id": "p668",
+      "id": "p1388",
       "name": "Calcanhar direito",
       "type": "brick",
       "pos": [
@@ -718,7 +718,7 @@
       "studs": true
     },
     {
-      "id": "p669",
+      "id": "p1389",
       "name": "Perna direito",
       "type": "brick",
       "pos": [
@@ -741,7 +741,7 @@
       "studs": true
     },
     {
-      "id": "p670",
+      "id": "p1390",
       "name": "Friso da perna direito",
       "type": "brick",
       "pos": [
@@ -764,7 +764,7 @@
       "studs": false
     },
     {
-      "id": "p671",
+      "id": "p1391",
       "name": "Friso da perna direito",
       "type": "brick",
       "pos": [
@@ -787,7 +787,7 @@
       "studs": false
     },
     {
-      "id": "p672",
+      "id": "p1392",
       "name": "Friso da perna direito",
       "type": "brick",
       "pos": [
@@ -810,7 +810,7 @@
       "studs": false
     },
     {
-      "id": "p673",
+      "id": "p1393",
       "name": "Friso da perna direito",
       "type": "brick",
       "pos": [
@@ -833,7 +833,7 @@
       "studs": false
     },
     {
-      "id": "p674",
+      "id": "p1394",
       "name": "Friso da perna direito",
       "type": "brick",
       "pos": [
@@ -856,7 +856,7 @@
       "studs": false
     },
     {
-      "id": "p675",
+      "id": "p1395",
       "name": "Pino do tornozelo direito",
       "type": "cylinder",
       "pos": [
@@ -879,7 +879,7 @@
       "studs": false
     },
     {
-      "id": "p676",
+      "id": "p1396",
       "name": "Pino do tornozelo direito",
       "type": "cylinder",
       "pos": [
@@ -902,7 +902,7 @@
       "studs": false
     },
     {
-      "id": "p677",
+      "id": "p1397",
       "name": "Articulação direito",
       "type": "brick",
       "pos": [
@@ -925,7 +925,7 @@
       "studs": false
     },
     {
-      "id": "p678",
+      "id": "p1398",
       "name": "Armadura direito 1",
       "type": "brick",
       "pos": [
@@ -948,7 +948,7 @@
       "studs": false
     },
     {
-      "id": "p679",
+      "id": "p1399",
       "name": "Armadura direito 2",
       "type": "brick",
       "pos": [
@@ -971,7 +971,7 @@
       "studs": false
     },
     {
-      "id": "p680",
+      "id": "p1400",
       "name": "Armadura direito 3",
       "type": "brick",
       "pos": [
@@ -994,7 +994,7 @@
       "studs": false
     },
     {
-      "id": "p681",
+      "id": "p1401",
       "name": "Armadura direito 4",
       "type": "brick",
       "pos": [
@@ -1017,7 +1017,7 @@
       "studs": false
     },
     {
-      "id": "p682",
+      "id": "p1402",
       "name": "Armadura direito 5",
       "type": "brick",
       "pos": [
@@ -1040,7 +1040,7 @@
       "studs": false
     },
     {
-      "id": "p683",
+      "id": "p1403",
       "name": "Junta superior direito",
       "type": "brick",
       "pos": [
@@ -1063,7 +1063,7 @@
       "studs": false
     },
     {
-      "id": "p684",
+      "id": "p1404",
       "name": "Quadril central",
       "type": "brick",
       "pos": [
@@ -1086,7 +1086,7 @@
       "studs": false
     },
     {
-      "id": "p685",
+      "id": "p1405",
       "name": "Estrutura inferior",
       "type": "brick",
       "pos": [
@@ -1109,7 +1109,7 @@
       "studs": false
     },
     {
-      "id": "p686",
+      "id": "p1406",
       "name": "Acabamento inferior",
       "type": "brick",
       "pos": [
@@ -1132,7 +1132,7 @@
       "studs": false
     },
     {
-      "id": "p687",
+      "id": "p1407",
       "name": "Estrutura inferior",
       "type": "brick",
       "pos": [
@@ -1155,7 +1155,7 @@
       "studs": false
     },
     {
-      "id": "p688",
+      "id": "p1408",
       "name": "Acabamento inferior",
       "type": "brick",
       "pos": [
@@ -1178,7 +1178,7 @@
       "studs": false
     },
     {
-      "id": "p689",
+      "id": "p1409",
       "name": "Cinta estrutural",
       "type": "brick",
       "pos": [
@@ -1201,7 +1201,7 @@
       "studs": false
     },
     {
-      "id": "p690",
+      "id": "p1410",
       "name": "Cinta estrutural",
       "type": "brick",
       "pos": [
@@ -1224,7 +1224,7 @@
       "studs": false
     },
     {
-      "id": "p691",
+      "id": "p1411",
       "name": "Cinta estrutural",
       "type": "brick",
       "pos": [
@@ -1247,7 +1247,7 @@
       "studs": false
     },
     {
-      "id": "p692",
+      "id": "p1412",
       "name": "Núcleo do torso",
       "type": "brick",
       "pos": [
@@ -1270,7 +1270,7 @@
       "studs": false
     },
     {
-      "id": "p693",
+      "id": "p1413",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1293,7 +1293,7 @@
       "studs": false
     },
     {
-      "id": "p694",
+      "id": "p1414",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1316,7 +1316,7 @@
       "studs": false
     },
     {
-      "id": "p695",
+      "id": "p1415",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1339,7 +1339,7 @@
       "studs": false
     },
     {
-      "id": "p696",
+      "id": "p1416",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1362,7 +1362,7 @@
       "studs": false
     },
     {
-      "id": "p697",
+      "id": "p1417",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1385,7 +1385,7 @@
       "studs": false
     },
     {
-      "id": "p698",
+      "id": "p1418",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1408,7 +1408,7 @@
       "studs": false
     },
     {
-      "id": "p699",
+      "id": "p1419",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1431,7 +1431,7 @@
       "studs": false
     },
     {
-      "id": "p700",
+      "id": "p1420",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1454,7 +1454,7 @@
       "studs": false
     },
     {
-      "id": "p701",
+      "id": "p1421",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1477,7 +1477,7 @@
       "studs": false
     },
     {
-      "id": "p702",
+      "id": "p1422",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1500,7 +1500,7 @@
       "studs": false
     },
     {
-      "id": "p703",
+      "id": "p1423",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1523,7 +1523,7 @@
       "studs": false
     },
     {
-      "id": "p704",
+      "id": "p1424",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1546,7 +1546,7 @@
       "studs": false
     },
     {
-      "id": "p705",
+      "id": "p1425",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1569,7 +1569,7 @@
       "studs": false
     },
     {
-      "id": "p706",
+      "id": "p1426",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1592,7 +1592,7 @@
       "studs": false
     },
     {
-      "id": "p707",
+      "id": "p1427",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1615,7 +1615,7 @@
       "studs": false
     },
     {
-      "id": "p708",
+      "id": "p1428",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1638,7 +1638,7 @@
       "studs": false
     },
     {
-      "id": "p709",
+      "id": "p1429",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1661,7 +1661,7 @@
       "studs": false
     },
     {
-      "id": "p710",
+      "id": "p1430",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1684,7 +1684,7 @@
       "studs": false
     },
     {
-      "id": "p711",
+      "id": "p1431",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1707,7 +1707,7 @@
       "studs": false
     },
     {
-      "id": "p712",
+      "id": "p1432",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1730,7 +1730,7 @@
       "studs": false
     },
     {
-      "id": "p713",
+      "id": "p1433",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1753,7 +1753,7 @@
       "studs": false
     },
     {
-      "id": "p714",
+      "id": "p1434",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1776,7 +1776,7 @@
       "studs": false
     },
     {
-      "id": "p715",
+      "id": "p1435",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1799,7 +1799,7 @@
       "studs": false
     },
     {
-      "id": "p716",
+      "id": "p1436",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1822,7 +1822,7 @@
       "studs": false
     },
     {
-      "id": "p717",
+      "id": "p1437",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1845,7 +1845,7 @@
       "studs": false
     },
     {
-      "id": "p718",
+      "id": "p1438",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1868,7 +1868,7 @@
       "studs": false
     },
     {
-      "id": "p719",
+      "id": "p1439",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1891,7 +1891,7 @@
       "studs": false
     },
     {
-      "id": "p720",
+      "id": "p1440",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -1914,7 +1914,7 @@
       "studs": false
     },
     {
-      "id": "p721",
+      "id": "p1441",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1937,7 +1937,7 @@
       "studs": false
     },
     {
-      "id": "p722",
+      "id": "p1442",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -1960,7 +1960,7 @@
       "studs": false
     },
     {
-      "id": "p723",
+      "id": "p1443",
       "name": "Painel lateral do torso",
       "type": "brick",
       "pos": [
@@ -1983,7 +1983,7 @@
       "studs": false
     },
     {
-      "id": "p724",
+      "id": "p1444",
       "name": "Painel frontal do torso",
       "type": "brick",
       "pos": [
@@ -2006,7 +2006,7 @@
       "studs": false
     },
     {
-      "id": "p725",
+      "id": "p1445",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -2029,7 +2029,7 @@
       "studs": false
     },
     {
-      "id": "p726",
+      "id": "p1446",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -2052,7 +2052,7 @@
       "studs": false
     },
     {
-      "id": "p727",
+      "id": "p1447",
       "name": "Painel traseiro do torso",
       "type": "brick",
       "pos": [
@@ -2075,7 +2075,7 @@
       "studs": false
     },
     {
-      "id": "p728",
+      "id": "p1448",
       "name": "Cobertura do torso",
       "type": "brick",
       "pos": [
@@ -2098,7 +2098,7 @@
       "studs": false
     },
     {
-      "id": "p729",
+      "id": "p1449",
       "name": "Cobertura do torso",
       "type": "brick",
       "pos": [
@@ -2121,7 +2121,7 @@
       "studs": false
     },
     {
-      "id": "p730",
+      "id": "p1450",
       "name": "Cobertura do torso",
       "type": "brick",
       "pos": [
@@ -2144,7 +2144,7 @@
       "studs": false
     },
     {
-      "id": "p731",
+      "id": "p1451",
       "name": "Cobertura do torso",
       "type": "brick",
       "pos": [
@@ -2167,7 +2167,7 @@
       "studs": false
     },
     {
-      "id": "p732",
+      "id": "p1452",
       "name": "Conector do torso",
       "type": "cylinder",
       "pos": [
@@ -2190,7 +2190,7 @@
       "studs": false
     },
     {
-      "id": "p733",
+      "id": "p1453",
       "name": "Conector do torso",
       "type": "cylinder",
       "pos": [
@@ -2213,7 +2213,7 @@
       "studs": false
     },
     {
-      "id": "p734",
+      "id": "p1454",
       "name": "Conector do torso",
       "type": "cylinder",
       "pos": [
@@ -2236,7 +2236,7 @@
       "studs": false
     },
     {
-      "id": "p735",
+      "id": "p1455",
       "name": "Conector do torso",
       "type": "cylinder",
       "pos": [
@@ -2259,7 +2259,7 @@
       "studs": false
     },
     {
-      "id": "p736",
+      "id": "p1456",
       "name": "Pescoço articulado",
       "type": "brick",
       "pos": [
@@ -2282,7 +2282,7 @@
       "studs": true
     },
     {
-      "id": "p737",
+      "id": "p1457",
       "name": "Coluna de suporte",
       "type": "brick",
       "pos": [
@@ -2305,7 +2305,7 @@
       "studs": false
     },
     {
-      "id": "p738",
+      "id": "p1458",
       "name": "Eixo do pescoço",
       "type": "cylinder",
       "pos": [
@@ -2328,7 +2328,7 @@
       "studs": false
     },
     {
-      "id": "p739",
+      "id": "p1459",
       "name": "Eixo do pescoço",
       "type": "cylinder",
       "pos": [
@@ -2351,7 +2351,7 @@
       "studs": false
     },
     {
-      "id": "p740",
+      "id": "p1460",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2374,7 +2374,7 @@
       "studs": false
     },
     {
-      "id": "p741",
+      "id": "p1461",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2397,7 +2397,7 @@
       "studs": false
     },
     {
-      "id": "p742",
+      "id": "p1462",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2420,7 +2420,7 @@
       "studs": false
     },
     {
-      "id": "p743",
+      "id": "p1463",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2443,7 +2443,7 @@
       "studs": false
     },
     {
-      "id": "p744",
+      "id": "p1464",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2466,7 +2466,7 @@
       "studs": false
     },
     {
-      "id": "p745",
+      "id": "p1465",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2489,7 +2489,7 @@
       "studs": false
     },
     {
-      "id": "p746",
+      "id": "p1466",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2512,7 +2512,7 @@
       "studs": false
     },
     {
-      "id": "p747",
+      "id": "p1467",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2535,7 +2535,7 @@
       "studs": false
     },
     {
-      "id": "p748",
+      "id": "p1468",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2558,7 +2558,7 @@
       "studs": true
     },
     {
-      "id": "p749",
+      "id": "p1469",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2581,7 +2581,7 @@
       "studs": true
     },
     {
-      "id": "p750",
+      "id": "p1470",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2604,7 +2604,7 @@
       "studs": true
     },
     {
-      "id": "p751",
+      "id": "p1471",
       "name": "Base da cabeça",
       "type": "brick",
       "pos": [
@@ -2627,7 +2627,7 @@
       "studs": true
     },
     {
-      "id": "p752",
+      "id": "p1472",
       "name": "Interior do visor",
       "type": "brick",
       "pos": [
@@ -2650,7 +2650,7 @@
       "studs": false
     },
     {
-      "id": "p753",
+      "id": "p1473",
       "name": "Borda da cabeça",
       "type": "brick",
       "pos": [
@@ -2673,7 +2673,7 @@
       "studs": false
     },
     {
-      "id": "p754",
+      "id": "p1474",
       "name": "Borda da cabeça",
       "type": "brick",
       "pos": [
@@ -2696,7 +2696,7 @@
       "studs": false
     },
     {
-      "id": "p755",
+      "id": "p1475",
       "name": "Borda da cabeça",
       "type": "brick",
       "pos": [
@@ -2719,7 +2719,7 @@
       "studs": false
     },
     {
-      "id": "p756",
+      "id": "p1476",
       "name": "Borda da cabeça",
       "type": "brick",
       "pos": [
@@ -2742,7 +2742,7 @@
       "studs": false
     },
     {
-      "id": "p757",
+      "id": "p1477",
       "name": "Arco da carenagem 1",
       "type": "arch",
       "pos": [
@@ -2765,7 +2765,7 @@
       "studs": false
     },
     {
-      "id": "p758",
+      "id": "p1478",
       "name": "Arco da carenagem 2",
       "type": "arch",
       "pos": [
@@ -2788,7 +2788,7 @@
       "studs": false
     },
     {
-      "id": "p759",
+      "id": "p1479",
       "name": "Arco da carenagem 3",
       "type": "arch",
       "pos": [
@@ -2811,7 +2811,7 @@
       "studs": false
     },
     {
-      "id": "p760",
+      "id": "p1480",
       "name": "Arco da carenagem 4",
       "type": "arch",
       "pos": [
@@ -2834,7 +2834,7 @@
       "studs": false
     },
     {
-      "id": "p761",
+      "id": "p1481",
       "name": "Arco da carenagem 5",
       "type": "arch",
       "pos": [
@@ -2857,7 +2857,7 @@
       "studs": false
     },
     {
-      "id": "p762",
+      "id": "p1482",
       "name": "Arco da carenagem 6",
       "type": "arch",
       "pos": [
@@ -2880,7 +2880,7 @@
       "studs": false
     },
     {
-      "id": "p763",
+      "id": "p1483",
       "name": "Arco da carenagem 7",
       "type": "arch",
       "pos": [
@@ -2903,7 +2903,7 @@
       "studs": false
     },
     {
-      "id": "p764",
+      "id": "p1484",
       "name": "Arco da carenagem 8",
       "type": "arch",
       "pos": [
@@ -2926,7 +2926,7 @@
       "studs": false
     },
     {
-      "id": "p765",
+      "id": "p1485",
       "name": "Fechamento traseiro",
       "type": "brick",
       "pos": [
@@ -2949,7 +2949,7 @@
       "studs": false
     },
     {
-      "id": "p766",
+      "id": "p1486",
       "name": "Fechamento traseiro",
       "type": "brick",
       "pos": [
@@ -2972,7 +2972,7 @@
       "studs": false
     },
     {
-      "id": "p767",
+      "id": "p1487",
       "name": "Fechamento traseiro",
       "type": "brick",
       "pos": [
@@ -2995,7 +2995,7 @@
       "studs": false
     },
     {
-      "id": "p768",
+      "id": "p1488",
       "name": "Fechamento traseiro",
       "type": "brick",
       "pos": [
@@ -3018,7 +3018,7 @@
       "studs": false
     },
     {
-      "id": "p769",
+      "id": "p1489",
       "name": "Olho do explorador",
       "type": "eye",
       "pos": [
@@ -3041,7 +3041,7 @@
       "studs": false
     },
     {
-      "id": "p770",
+      "id": "p1490",
       "name": "Pino da base da cabeça",
       "type": "cylinder",
       "pos": [
@@ -3064,7 +3064,7 @@
       "studs": false
     },
     {
-      "id": "p771",
+      "id": "p1491",
       "name": "Pino da base da cabeça",
       "type": "cylinder",
       "pos": [

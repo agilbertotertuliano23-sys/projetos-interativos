@@ -6,6 +6,11 @@ const root=path.resolve(__dirname,'..'),out=path.join(root,'produtos');fs.mkdirS
 const products=[
   {preset:'modernPreset',slug:'casa-moderna',title:'Casa moderna',kind:'modern',description:'Térreo envidraçado, torre ripada de três andares, interior mobiliado, piscina, palmeiras, fogueira e moradores.'},
   {preset:'townhousePreset',slug:'sobrado-urbano',title:'Sobrado urbano',kind:'townhouse',description:'Três andares com entrada recuada, toldo, varanda florida, brise de madeira e terraço na cobertura.'},
+  {model:'dioramas',slug:'ilhas-de-dioramas',title:'Ilhas de dioramas',kind:'dioramas',description:'Sete mundos em pequenas ilhas: obra, selva, deserto, portal, ilha pirata, castelo e cidade, cada um com seu personagem.'},
+  {model:'dancer',slug:'robo-dancarino',title:'Robô dançarino',kind:'dancer',description:'Hub programável com matriz de luzes, motores, vigas Technic e cabos. Ligue a cena viva e ele dança.'},
+  {model:'dragon',slug:'dragao-oriental',title:'Dragão oriental',kind:'dragon',description:'Um dragão em espiral ao redor de um pilar de rocha, com garras, bigodes, esferas de cristal e raios de energia.'},
+  {model:'freighter',slug:'cargueiro-espacial',title:'Cargueiro espacial',kind:'freighter',description:'Casco em disco, mandíbulas, cabine lateral, antena parabólica e motores azuis. Flutua sobre o suporte.'},
+  {model:'skyline',slug:'skyline-nova-york',title:'Skyline de Nova York',kind:'skyline',description:'Estátua da Liberdade, Empire State, Chrysler e One World Trade Center sobre o mapa da cidade.'},
   {preset:'robotPreset',slug:'robo-explorador',title:'Robô explorador',kind:'robot',description:'Pés laranja, articulações, torso e carenagem curva. A reconstrução inspirada no vídeo de referência.'},
   {preset:'housePreset',slug:'casa-modular',title:'Casa modular',kind:'house',description:'Do terreno ao telhado. Acompanhe as paredes, as esquadrias e cada detalhe da casa.'},
   {preset:'carPreset',slug:'veiculo-explorador',title:'Veículo explorador',kind:'car',description:'Chassi, rodas, carroceria e cabine. Cada conjunto tem seu momento de encaixe.'},
@@ -20,7 +25,8 @@ const products=[
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(60000);
   await page.goto(pathToFileURL(path.join(root,'index.html')).href);await page.waitForFunction(()=>window.mono);
   for(const product of products){
-   await page.locator('#editMode').click();await page.locator('#'+product.preset).click();await page.locator('#confirmAction').click();
+   if(product.model){await page.locator('#presentMode').click();await page.locator(`[data-model="${product.model}"]`).click();if(await page.locator('#confirmDialog').isVisible())await page.locator('#confirmAction').click();await page.locator('#editMode').click();}
+   else{await page.locator('#editMode').click();await page.locator('#'+product.preset).click();await page.locator('#confirmAction').click();}
    await page.locator('#projectTitle').fill(product.title);await page.locator('#projectTitle').press('Tab');
    const data=await page.evaluate(()=>mono.getProject());product.pieces=data.pieces.length;assert.equal(data.kind,product.kind);
    fs.writeFileSync(path.join(out,product.slug+'.json'),JSON.stringify(data,null,2));

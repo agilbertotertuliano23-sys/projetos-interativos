@@ -1,0 +1,2406 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Ilhas de dioramas",
+  "kind": "dioramas",
+  "pieces": [
+    {
+      "id": "p998",
+      "name": "Base · obra",
+      "type": "brick",
+      "pos": [
+        -6.2,
+        0.2,
+        2.4
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p999",
+      "name": "Terreno · obra",
+      "type": "brick",
+      "pos": [
+        -6.2,
+        0.75,
+        2.4
+      ],
+      "size": [
+        2.9,
+        0.7,
+        2.9
+      ],
+      "color": "#a7aaa6",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1000",
+      "name": "Superfície · obra",
+      "type": "brick",
+      "pos": [
+        -6.2,
+        1.2,
+        2.4
+      ],
+      "size": [
+        2.9,
+        0.2,
+        2.9
+      ],
+      "color": "#c9b27c",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1001",
+      "name": "Escavadeira",
+      "type": "brick",
+      "pos": [
+        -6.6,
+        1.78,
+        2
+      ],
+      "size": [
+        1,
+        0.6,
+        0.8
+      ],
+      "color": "#f5cd2f",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1002",
+      "name": "Cabine da escavadeira",
+      "type": "brick",
+      "pos": [
+        -6.8,
+        2.3,
+        2
+      ],
+      "size": [
+        0.5,
+        0.45,
+        0.6
+      ],
+      "color": "#3b3f3e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1003",
+      "name": "Esteira",
+      "type": "technic",
+      "pos": [
+        -6.6,
+        1.45,
+        1.6
+      ],
+      "size": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1004",
+      "name": "Esteira",
+      "type": "technic",
+      "pos": [
+        -6.6,
+        1.45,
+        2.4
+      ],
+      "size": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "color": "#1d1d1d",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1005",
+      "name": "Braço da escavadeira",
+      "type": "technic",
+      "pos": [
+        -5.7,
+        2.15,
+        2
+      ],
+      "size": [
+        1,
+        0.18,
+        0.18
+      ],
+      "color": "#f5cd2f",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        30
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1006",
+      "name": "Caçamba",
+      "type": "wedge",
+      "pos": [
+        -5.15,
+        1.7,
+        2
+      ],
+      "size": [
+        0.4,
+        0.35,
+        0.5
+      ],
+      "color": "#505958",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1007",
+      "name": "Andaime",
+      "type": "technic",
+      "pos": [
+        -5.6,
+        2.2,
+        3.3
+      ],
+      "size": [
+        1.8,
+        0.15,
+        0.15
+      ],
+      "color": "#8e9592",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        90
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1008",
+      "name": "Andaime",
+      "type": "technic",
+      "pos": [
+        -4.9,
+        2.2,
+        3.3
+      ],
+      "size": [
+        1.8,
+        0.15,
+        0.15
+      ],
+      "color": "#8e9592",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        90
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1009",
+      "name": "Tábua do andaime",
+      "type": "tile",
+      "pos": [
+        -5.25,
+        2.4,
+        3.3
+      ],
+      "size": [
+        0.9,
+        0.08,
+        0.5
+      ],
+      "color": "#a8794b",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1010",
+      "name": "Tijolo solto",
+      "type": "brick",
+      "pos": [
+        -6.8,
+        1.42,
+        3.2
+      ],
+      "size": [
+        0.4,
+        0.24,
+        0.2
+      ],
+      "color": "#d63c2f",
+      "stage": 0,
+      "rot": [
+        0,
+        20,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1011",
+      "name": "Tijolo solto",
+      "type": "brick",
+      "pos": [
+        -6.4,
+        1.42,
+        3.4
+      ],
+      "size": [
+        0.4,
+        0.24,
+        0.2
+      ],
+      "color": "#2e5fa8",
+      "stage": 0,
+      "rot": [
+        0,
+        -35,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1012",
+      "name": "Tijolo solto",
+      "type": "brick",
+      "pos": [
+        -7.1,
+        1.42,
+        1.2
+      ],
+      "size": [
+        0.4,
+        0.24,
+        0.2
+      ],
+      "color": "#f9ae01",
+      "stage": 0,
+      "rot": [
+        0,
+        50,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1013",
+      "name": "Tijolo solto",
+      "type": "brick",
+      "pos": [
+        -5.4,
+        1.42,
+        1.3
+      ],
+      "size": [
+        0.4,
+        0.24,
+        0.2
+      ],
+      "color": "#efece2",
+      "stage": 0,
+      "rot": [
+        0,
+        10,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1014",
+      "name": "Base · selva",
+      "type": "brick",
+      "pos": [
+        -7.4,
+        0.2,
+        -1.6
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1015",
+      "name": "Terreno · selva",
+      "type": "brick",
+      "pos": [
+        -7.4,
+        0.75,
+        -1.6
+      ],
+      "size": [
+        2.9,
+        0.7,
+        2.9
+      ],
+      "color": "#6b4a2b",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1016",
+      "name": "Superfície · selva",
+      "type": "brick",
+      "pos": [
+        -7.4,
+        1.2,
+        -1.6
+      ],
+      "size": [
+        2.9,
+        0.2,
+        2.9
+      ],
+      "color": "#4f9a45",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1017",
+      "name": "Tronco gigante",
+      "type": "cylinder",
+      "pos": [
+        -7.7,
+        2.6,
+        -2
+      ],
+      "size": [
+        0.5,
+        0.5,
+        2.6
+      ],
+      "color": "#7a4a2a",
+      "stage": 1,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1018",
+      "name": "Copa",
+      "type": "sphere",
+      "pos": [
+        -7.7,
+        4.2,
+        -2
+      ],
+      "size": [
+        2.2,
+        1.3,
+        2
+      ],
+      "color": "#3f8f3a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1019",
+      "name": "Copa",
+      "type": "sphere",
+      "pos": [
+        -7.1,
+        4.6,
+        -1.6
+      ],
+      "size": [
+        1.4,
+        1,
+        1.4
+      ],
+      "color": "#4f9a45",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1020",
+      "name": "Copa",
+      "type": "sphere",
+      "pos": [
+        -8.2,
+        4.5,
+        -2.3
+      ],
+      "size": [
+        1.2,
+        0.9,
+        1.2
+      ],
+      "color": "#2f7a32",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1021",
+      "name": "Casa na árvore",
+      "type": "tile",
+      "pos": [
+        -7.6,
+        3.2,
+        -1.3
+      ],
+      "size": [
+        1.4,
+        0.12,
+        0.9
+      ],
+      "color": "#a8794b",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1022",
+      "name": "Escada de madeira",
+      "type": "stairs",
+      "pos": [
+        -6.65,
+        1.7,
+        -1
+      ],
+      "size": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "color": "#a8794b",
+      "stage": 1,
+      "rot": [
+        0,
+        -90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1023",
+      "name": "Cipó",
+      "type": "cable",
+      "pos": [
+        -7,
+        3.2,
+        -1.15
+      ],
+      "size": [
+        0.4,
+        1.6,
+        0.3
+      ],
+      "color": "#3f8f3a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        80
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1024",
+      "name": "Cipó",
+      "type": "cable",
+      "pos": [
+        -8.3,
+        3.2,
+        -1.15
+      ],
+      "size": [
+        0.4,
+        1.6,
+        0.3
+      ],
+      "color": "#3f8f3a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        80
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1025",
+      "name": "Pantera",
+      "type": "brick",
+      "pos": [
+        -6.6,
+        1.55,
+        -2.4
+      ],
+      "size": [
+        0.7,
+        0.3,
+        0.25
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1026",
+      "name": "Cabeça da pantera",
+      "type": "sphere",
+      "pos": [
+        -6.2,
+        1.65,
+        -2.4
+      ],
+      "size": [
+        0.24,
+        0.22,
+        0.22
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1027",
+      "name": "Arbusto",
+      "type": "sphere",
+      "pos": [
+        -8.4,
+        1.55,
+        -0.6
+      ],
+      "size": [
+        0.7,
+        0.5,
+        0.6
+      ],
+      "color": "#2f7a32",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1028",
+      "name": "Base · deserto",
+      "type": "brick",
+      "pos": [
+        -3.6,
+        0.2,
+        -2.8
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1029",
+      "name": "Terreno · deserto",
+      "type": "brick",
+      "pos": [
+        -3.6,
+        0.75,
+        -2.8
+      ],
+      "size": [
+        2.9,
+        0.7,
+        2.9
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1030",
+      "name": "Superfície · deserto",
+      "type": "brick",
+      "pos": [
+        -3.6,
+        1.2,
+        -2.8
+      ],
+      "size": [
+        2.9,
+        0.2,
+        2.9
+      ],
+      "color": "#e3cf9a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1031",
+      "name": "Templo",
+      "type": "brick",
+      "pos": [
+        -3.8,
+        1.55,
+        -3.2
+      ],
+      "size": [
+        2.2,
+        0.5,
+        1.8
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1032",
+      "name": "Templo",
+      "type": "brick",
+      "pos": [
+        -3.8,
+        2.05,
+        -3.4
+      ],
+      "size": [
+        1.6,
+        0.5,
+        1.3
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1033",
+      "name": "Templo",
+      "type": "brick",
+      "pos": [
+        -3.8,
+        2.55,
+        -3.5
+      ],
+      "size": [
+        1,
+        0.5,
+        0.9
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1034",
+      "name": "Escadaria",
+      "type": "stairs",
+      "pos": [
+        -3.8,
+        1.75,
+        -1.95
+      ],
+      "size": [
+        0.9,
+        0.9,
+        0.8
+      ],
+      "color": "#e3cf9a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1035",
+      "name": "Coluna",
+      "type": "cylinder",
+      "pos": [
+        -4.7,
+        1.85,
+        -1.9
+      ],
+      "size": [
+        0.25,
+        0.25,
+        1.1
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1036",
+      "name": "Coluna",
+      "type": "cylinder",
+      "pos": [
+        -2.9,
+        1.85,
+        -1.9
+      ],
+      "size": [
+        0.25,
+        0.25,
+        1.1
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1037",
+      "name": "Estátua de gato",
+      "type": "brick",
+      "pos": [
+        -4.15,
+        3,
+        -3.5
+      ],
+      "size": [
+        0.25,
+        0.4,
+        0.3
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1038",
+      "name": "Orelha",
+      "type": "cone",
+      "pos": [
+        -4.220000000000001,
+        3.27,
+        -3.5
+      ],
+      "size": [
+        0.08,
+        0.13,
+        0.08
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1039",
+      "name": "Orelha",
+      "type": "cone",
+      "pos": [
+        -4.08,
+        3.27,
+        -3.5
+      ],
+      "size": [
+        0.08,
+        0.13,
+        0.08
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1040",
+      "name": "Estátua de gato",
+      "type": "brick",
+      "pos": [
+        -3.45,
+        3,
+        -3.5
+      ],
+      "size": [
+        0.25,
+        0.4,
+        0.3
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1041",
+      "name": "Orelha",
+      "type": "cone",
+      "pos": [
+        -3.52,
+        3.27,
+        -3.5
+      ],
+      "size": [
+        0.08,
+        0.13,
+        0.08
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1042",
+      "name": "Orelha",
+      "type": "cone",
+      "pos": [
+        -3.3800000000000003,
+        3.27,
+        -3.5
+      ],
+      "size": [
+        0.08,
+        0.13,
+        0.08
+      ],
+      "color": "#c9a86a",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1043",
+      "name": "Bloco quebrado",
+      "type": "brick",
+      "pos": [
+        -2.4,
+        1.45,
+        -3.7
+      ],
+      "size": [
+        0.45,
+        0.3,
+        0.35
+      ],
+      "color": "#d9c08a",
+      "stage": 2,
+      "rot": [
+        0,
+        25,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1044",
+      "name": "Base · portal",
+      "type": "brick",
+      "pos": [
+        0,
+        0.2,
+        -0.4
+      ],
+      "size": [
+        3.6,
+        0.4,
+        3.6
+      ],
+      "color": "#3a2418",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1045",
+      "name": "Terreno · portal",
+      "type": "brick",
+      "pos": [
+        0,
+        0.75,
+        -0.4
+      ],
+      "size": [
+        3.5,
+        0.7,
+        3.5
+      ],
+      "color": "#7d8280",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1046",
+      "name": "Superfície · portal",
+      "type": "brick",
+      "pos": [
+        0,
+        1.2,
+        -0.4
+      ],
+      "size": [
+        3.5,
+        0.2,
+        3.5
+      ],
+      "color": "#5fa84a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1047",
+      "name": "Portal",
+      "type": "portal",
+      "pos": [
+        0,
+        2.65,
+        -0.8
+      ],
+      "size": [
+        2.2,
+        2.2,
+        0.35
+      ],
+      "color": "#3aa0ff",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1048",
+      "name": "Pedra do portal",
+      "type": "rock",
+      "pos": [
+        -1.15,
+        1.6,
+        -0.8
+      ],
+      "size": [
+        0.6,
+        0.6,
+        0.5
+      ],
+      "color": "#8e9592",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1049",
+      "name": "Pedra do portal",
+      "type": "rock",
+      "pos": [
+        1.15,
+        1.6,
+        -0.8
+      ],
+      "size": [
+        0.6,
+        0.6,
+        0.5
+      ],
+      "color": "#8e9592",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1050",
+      "name": "Trilho da montanha-russa",
+      "type": "cable",
+      "pos": [
+        -0.2,
+        1.95,
+        0.75
+      ],
+      "size": [
+        3.2,
+        1.1,
+        0.9
+      ],
+      "color": "#8e9592",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1051",
+      "name": "Trilho da montanha-russa",
+      "type": "cable",
+      "pos": [
+        -0.2,
+        1.95,
+        0.95
+      ],
+      "size": [
+        3.2,
+        1.1,
+        0.9
+      ],
+      "color": "#8e9592",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1052",
+      "name": "Carrinho",
+      "type": "brick",
+      "pos": [
+        -1.65,
+        1.62,
+        0.7
+      ],
+      "size": [
+        0.5,
+        0.35,
+        0.42
+      ],
+      "color": "#d63c2f",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1053",
+      "name": "Robô ajudante",
+      "type": "brick",
+      "pos": [
+        1.05,
+        1.62,
+        0.65
+      ],
+      "size": [
+        0.45,
+        0.5,
+        0.4
+      ],
+      "color": "#f2f2ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1054",
+      "name": "Olho do robô",
+      "type": "eye",
+      "pos": [
+        1.05,
+        1.68,
+        0.87
+      ],
+      "size": [
+        0.3,
+        0.3,
+        0.1
+      ],
+      "color": "#3aa0ff",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1055",
+      "name": "Flor",
+      "type": "plant",
+      "pos": [
+        1.4,
+        1.6,
+        -1.8
+      ],
+      "size": [
+        0.4,
+        0.6,
+        0.4
+      ],
+      "color": "#f08bb4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1056",
+      "name": "Base · pirata",
+      "type": "brick",
+      "pos": [
+        3.8,
+        0.2,
+        -2.8
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1057",
+      "name": "Fundo do mar",
+      "type": "brick",
+      "pos": [
+        3.8,
+        0.7,
+        -2.8
+      ],
+      "size": [
+        2.9,
+        0.6,
+        2.9
+      ],
+      "color": "#2b5f8a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1058",
+      "name": "Mar",
+      "type": "water",
+      "pos": [
+        3.8,
+        1.15,
+        -2.8
+      ],
+      "size": [
+        2.9,
+        0.3,
+        2.9
+      ],
+      "color": "#3fa7d6",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1059",
+      "name": "Ilha de areia",
+      "type": "rock",
+      "pos": [
+        3.3,
+        1.4,
+        -3.3
+      ],
+      "size": [
+        1.5,
+        0.2,
+        1.3
+      ],
+      "color": "#e3cf9a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1060",
+      "name": "Palmeira",
+      "type": "palm",
+      "pos": [
+        3,
+        2.5,
+        -3.5
+      ],
+      "size": [
+        1.4,
+        2.2,
+        1.4
+      ],
+      "color": "#3f8f3a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1061",
+      "name": "Palmeira",
+      "type": "palm",
+      "pos": [
+        3.7,
+        2.2,
+        -3.6
+      ],
+      "size": [
+        1.1,
+        1.6,
+        1.1
+      ],
+      "color": "#4f9a45",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1062",
+      "name": "Barco pirata",
+      "type": "boat",
+      "pos": [
+        4.4,
+        1.75,
+        -2.2
+      ],
+      "size": [
+        1.6,
+        1.6,
+        0.8
+      ],
+      "color": "#8b5a2b",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "bob"
+    },
+    {
+      "id": "p1063",
+      "name": "Peixe",
+      "type": "sphere",
+      "pos": [
+        3.1,
+        1.18,
+        -2
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.1
+      ],
+      "color": "#f39c12",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "bob"
+    },
+    {
+      "id": "p1064",
+      "name": "Peixe",
+      "type": "sphere",
+      "pos": [
+        4.6,
+        1.18,
+        -3.6
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.1
+      ],
+      "color": "#f39c12",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "bob"
+    },
+    {
+      "id": "p1065",
+      "name": "Base · castelo",
+      "type": "brick",
+      "pos": [
+        7.4,
+        0.2,
+        -1.6
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1066",
+      "name": "Terreno · castelo",
+      "type": "brick",
+      "pos": [
+        7.4,
+        0.75,
+        -1.6
+      ],
+      "size": [
+        2.9,
+        0.7,
+        2.9
+      ],
+      "color": "#7d8280",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1067",
+      "name": "Superfície · castelo",
+      "type": "brick",
+      "pos": [
+        7.4,
+        1.2,
+        -1.6
+      ],
+      "size": [
+        2.9,
+        0.2,
+        2.9
+      ],
+      "color": "#6aa84f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1068",
+      "name": "Torre de pedra",
+      "type": "brick",
+      "pos": [
+        7.2,
+        2.6,
+        -2
+      ],
+      "size": [
+        1.6,
+        2.6,
+        1.6
+      ],
+      "color": "#a7aaa6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1069",
+      "name": "Piso da torre",
+      "type": "brick",
+      "pos": [
+        7.2,
+        3.96,
+        -2
+      ],
+      "size": [
+        1.7,
+        0.12,
+        1.7
+      ],
+      "color": "#8e9592",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1070",
+      "name": "Ameia",
+      "type": "brick",
+      "pos": [
+        6.6000000000000005,
+        4.17,
+        -2.6
+      ],
+      "size": [
+        0.35,
+        0.3,
+        0.35
+      ],
+      "color": "#a7aaa6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1071",
+      "name": "Ameia",
+      "type": "brick",
+      "pos": [
+        6.6000000000000005,
+        4.17,
+        -1.4
+      ],
+      "size": [
+        0.35,
+        0.3,
+        0.35
+      ],
+      "color": "#a7aaa6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1072",
+      "name": "Ameia",
+      "type": "brick",
+      "pos": [
+        7.8,
+        4.17,
+        -2.6
+      ],
+      "size": [
+        0.35,
+        0.3,
+        0.35
+      ],
+      "color": "#a7aaa6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1073",
+      "name": "Ameia",
+      "type": "brick",
+      "pos": [
+        7.8,
+        4.17,
+        -1.4
+      ],
+      "size": [
+        0.35,
+        0.3,
+        0.35
+      ],
+      "color": "#a7aaa6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1074",
+      "name": "Janela da torre",
+      "type": "brick",
+      "pos": [
+        7.2,
+        3.2,
+        -1.18
+      ],
+      "size": [
+        0.3,
+        0.5,
+        0.05
+      ],
+      "color": "#2b2b2b",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1075",
+      "name": "Porta do castelo",
+      "type": "door",
+      "pos": [
+        7.2,
+        1.9,
+        -1.17
+      ],
+      "size": [
+        0.6,
+        1.1,
+        0.12
+      ],
+      "color": "#8b5a2b",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1076",
+      "name": "Escada de pedra",
+      "type": "stairs",
+      "pos": [
+        8.4,
+        1.75,
+        -1.6
+      ],
+      "size": [
+        0.7,
+        0.9,
+        1
+      ],
+      "color": "#8e9592",
+      "stage": 5,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1077",
+      "name": "Mastro",
+      "type": "brick",
+      "pos": [
+        7.2,
+        4.8,
+        -2
+      ],
+      "size": [
+        0.05,
+        1.2,
+        0.05
+      ],
+      "color": "#505958",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1078",
+      "name": "Bandeira",
+      "type": "brick",
+      "pos": [
+        7.45,
+        5.2,
+        -2
+      ],
+      "size": [
+        0.45,
+        0.3,
+        0.03
+      ],
+      "color": "#d63c2f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "motion": "bob"
+    },
+    {
+      "id": "p1079",
+      "name": "Base · cidade",
+      "type": "brick",
+      "pos": [
+        6.2,
+        0.2,
+        2.4
+      ],
+      "size": [
+        3,
+        0.4,
+        3
+      ],
+      "color": "#3a2418",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1080",
+      "name": "Terreno · cidade",
+      "type": "brick",
+      "pos": [
+        6.2,
+        0.75,
+        2.4
+      ],
+      "size": [
+        2.9,
+        0.7,
+        2.9
+      ],
+      "color": "#7d8280",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1081",
+      "name": "Superfície · cidade",
+      "type": "brick",
+      "pos": [
+        6.2,
+        1.2,
+        2.4
+      ],
+      "size": [
+        2.9,
+        0.2,
+        2.9
+      ],
+      "color": "#5d6361",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p1082",
+      "name": "Trilhos",
+      "type": "rails",
+      "pos": [
+        6.2,
+        1.36,
+        3.2
+      ],
+      "size": [
+        2.9,
+        0.12,
+        1
+      ],
+      "color": "#8e9592",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1083",
+      "name": "Plataforma",
+      "type": "brick",
+      "pos": [
+        6.2,
+        1.5,
+        2.2
+      ],
+      "size": [
+        2.9,
+        0.4,
+        0.9
+      ],
+      "color": "#c9cbc2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1084",
+      "name": "Faixa de segurança",
+      "type": "tile",
+      "pos": [
+        6.2,
+        1.72,
+        2.63
+      ],
+      "size": [
+        2.9,
+        0.04,
+        0.08
+      ],
+      "color": "#f9ae01",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1085",
+      "name": "Semáforo",
+      "type": "traffic",
+      "pos": [
+        7.35,
+        2.5,
+        1.95
+      ],
+      "size": [
+        0.35,
+        1.6,
+        0.3
+      ],
+      "color": "#2b2b2b",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1086",
+      "name": "Carro",
+      "type": "brick",
+      "pos": [
+        5.3,
+        1.58,
+        1.4
+      ],
+      "size": [
+        1.2,
+        0.35,
+        0.6
+      ],
+      "color": "#3a4a6b",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1087",
+      "name": "Vidro do carro",
+      "type": "brick",
+      "pos": [
+        5.25,
+        1.88,
+        1.4
+      ],
+      "size": [
+        0.65,
+        0.3,
+        0.55
+      ],
+      "color": "#9fd3e6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1088",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        4.9,
+        1.45,
+        1.12
+      ],
+      "size": [
+        0.35,
+        0.35,
+        0.12
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1089",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        4.9,
+        1.45,
+        1.68
+      ],
+      "size": [
+        0.35,
+        0.35,
+        0.12
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1090",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        5.7,
+        1.45,
+        1.12
+      ],
+      "size": [
+        0.35,
+        0.35,
+        0.12
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1091",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        5.7,
+        1.45,
+        1.68
+      ],
+      "size": [
+        0.35,
+        0.35,
+        0.12
+      ],
+      "color": "#c9cfc6",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p1092",
+      "name": "Construtora",
+      "type": "figure",
+      "pos": [
+        -5.7,
+        2.25,
+        2.9
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 7,
+      "rot": [
+        0,
+        -20,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#8d5524",
+        "legs": "#3a5a8c",
+        "hair": "hardhat",
+        "hairColor": "#eeb83e",
+        "face": "smile",
+        "print": "stripe",
+        "accessory": "tool",
+        "accColor": "#c9cfc6"
+      }
+    },
+    {
+      "id": "p1093",
+      "name": "Exploradora",
+      "type": "figure",
+      "pos": [
+        -7.6,
+        4.21,
+        -1.3
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#3f7d5a",
+      "stage": 7,
+      "rot": [
+        0,
+        20,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#c68642",
+        "legs": "#8a6a45",
+        "hair": "long",
+        "hairColor": "#7a4a2a",
+        "face": "happy",
+        "print": "badge",
+        "accessory": "backpack",
+        "accColor": "#e7802e"
+      }
+    },
+    {
+      "id": "p1094",
+      "name": "Arqueóloga",
+      "type": "figure",
+      "pos": [
+        -3.1,
+        2.25,
+        -1.8
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#c9b27c",
+      "stage": 7,
+      "rot": [
+        0,
+        -15,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#c68642",
+        "legs": "#8a6a45",
+        "hair": "ponytail",
+        "hairColor": "#5b3a29",
+        "face": "surprised",
+        "print": "zipper",
+        "accessory": "backpack",
+        "accColor": "#6b4a2b"
+      }
+    },
+    {
+      "id": "p1095",
+      "name": "Herói",
+      "type": "figure",
+      "pos": [
+        -0.9,
+        2.25,
+        0.6
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#2e5fa8",
+      "stage": 7,
+      "rot": [
+        0,
+        10,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#2e5fa8",
+        "hair": "short",
+        "hairColor": "#2b2b2b",
+        "face": "sunglasses",
+        "print": "star",
+        "accessory": "shield",
+        "accColor": "#d63c2f"
+      }
+    },
+    {
+      "id": "p1096",
+      "name": "Pirata",
+      "type": "figure",
+      "pos": [
+        4.25,
+        2.38,
+        -2.2
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#d63c2f",
+      "stage": 7,
+      "rot": [
+        0,
+        30,
+        0
+      ],
+      "studs": false,
+      "motion": "bob",
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#3a3a3a",
+        "hair": "pirate",
+        "hairColor": "#1d1d1d",
+        "face": "serious",
+        "print": "stripe",
+        "accessory": "none",
+        "accColor": "#f2efe4"
+      }
+    },
+    {
+      "id": "p1097",
+      "name": "Rainha",
+      "type": "figure",
+      "pos": [
+        7.9,
+        2.25,
+        -0.95
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#6b3fa0",
+      "stage": 7,
+      "rot": [
+        0,
+        -20,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#5c3a1e",
+        "legs": "#3b2a5c",
+        "hair": "crown",
+        "hairColor": "#eeb83e",
+        "face": "smile",
+        "print": "star",
+        "accessory": "cape",
+        "accColor": "#c0392b"
+      }
+    },
+    {
+      "id": "p1098",
+      "name": "Policial",
+      "type": "figure",
+      "pos": [
+        6.6,
+        2.65,
+        2.2
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#22345e",
+      "stage": 7,
+      "rot": [
+        0,
+        -10,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#e0ac69",
+        "legs": "#22345e",
+        "hair": "cap",
+        "hairColor": "#22345e",
+        "face": "smile",
+        "print": "badge",
+        "accessory": "none",
+        "accColor": "#f9ae01"
+      }
+    }
+  ]
+}

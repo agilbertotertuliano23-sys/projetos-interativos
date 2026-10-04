@@ -5,7 +5,7 @@
   "kind": "rocket",
   "pieces": [
     {
-      "id": "p849",
+      "id": "p1569",
       "name": "Plataforma",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "p850",
+      "id": "p1570",
       "name": "Motor",
       "type": "cylinder",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p851",
+      "id": "p1571",
       "name": "Corpo do foguete",
       "type": "cylinder",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p852",
+      "id": "p1572",
       "name": "Corpo do foguete",
       "type": "cylinder",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p853",
+      "id": "p1573",
       "name": "Corpo do foguete",
       "type": "cylinder",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "p854",
+      "id": "p1574",
       "name": "Corpo do foguete",
       "type": "cylinder",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "p855",
+      "id": "p1575",
       "name": "Cone superior",
       "type": "cone",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "p856",
+      "id": "p1576",
       "name": "Aleta",
       "type": "wedge",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "p857",
+      "id": "p1577",
       "name": "Aleta",
       "type": "wedge",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "p858",
+      "id": "p1578",
       "name": "Janela",
       "type": "eye",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p859",
+      "id": "p1579",
       "name": "Antena",
       "type": "brick",
       "pos": [
