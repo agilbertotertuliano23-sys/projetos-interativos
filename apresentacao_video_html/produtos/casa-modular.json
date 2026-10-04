@@ -5,7 +5,7 @@
   "kind": "house",
   "pieces": [
     {
-      "id": "p269",
+      "id": "p772",
       "name": "Terreno",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "p270",
+      "id": "p773",
       "name": "Piso",
       "type": "brick",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p271",
+      "id": "p774",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p272",
+      "id": "p775",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p273",
+      "id": "p776",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "p274",
+      "id": "p777",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "p275",
+      "id": "p778",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "p276",
+      "id": "p779",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "p277",
+      "id": "p780",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "p278",
+      "id": "p781",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p279",
+      "id": "p782",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "p280",
+      "id": "p783",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "p281",
+      "id": "p784",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "p282",
+      "id": "p785",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "p283",
+      "id": "p786",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "p284",
+      "id": "p787",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "p285",
+      "id": "p788",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "p286",
+      "id": "p789",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "p287",
+      "id": "p790",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "p288",
+      "id": "p791",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -465,7 +465,7 @@
       "studs": false
     },
     {
-      "id": "p289",
+      "id": "p792",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "p290",
+      "id": "p793",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "p291",
+      "id": "p794",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "p292",
+      "id": "p795",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -557,7 +557,7 @@
       "studs": false
     },
     {
-      "id": "p293",
+      "id": "p796",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -580,7 +580,7 @@
       "studs": false
     },
     {
-      "id": "p294",
+      "id": "p797",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -603,7 +603,7 @@
       "studs": false
     },
     {
-      "id": "p295",
+      "id": "p798",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -626,7 +626,7 @@
       "studs": false
     },
     {
-      "id": "p296",
+      "id": "p799",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -649,7 +649,7 @@
       "studs": false
     },
     {
-      "id": "p297",
+      "id": "p800",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -672,7 +672,7 @@
       "studs": false
     },
     {
-      "id": "p298",
+      "id": "p801",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -695,7 +695,7 @@
       "studs": false
     },
     {
-      "id": "p299",
+      "id": "p802",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -718,7 +718,7 @@
       "studs": false
     },
     {
-      "id": "p300",
+      "id": "p803",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -741,7 +741,7 @@
       "studs": false
     },
     {
-      "id": "p301",
+      "id": "p804",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -764,7 +764,7 @@
       "studs": false
     },
     {
-      "id": "p302",
+      "id": "p805",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -787,7 +787,7 @@
       "studs": false
     },
     {
-      "id": "p303",
+      "id": "p806",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -810,7 +810,7 @@
       "studs": false
     },
     {
-      "id": "p304",
+      "id": "p807",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -833,7 +833,7 @@
       "studs": false
     },
     {
-      "id": "p305",
+      "id": "p808",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -856,7 +856,7 @@
       "studs": false
     },
     {
-      "id": "p306",
+      "id": "p809",
       "name": "Parede frontal",
       "type": "brick",
       "pos": [
@@ -879,7 +879,7 @@
       "studs": false
     },
     {
-      "id": "p307",
+      "id": "p810",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -902,7 +902,7 @@
       "studs": false
     },
     {
-      "id": "p308",
+      "id": "p811",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -925,7 +925,7 @@
       "studs": false
     },
     {
-      "id": "p309",
+      "id": "p812",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -948,7 +948,7 @@
       "studs": false
     },
     {
-      "id": "p310",
+      "id": "p813",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -971,7 +971,7 @@
       "studs": false
     },
     {
-      "id": "p311",
+      "id": "p814",
       "name": "Porta",
       "type": "brick",
       "pos": [
@@ -994,7 +994,7 @@
       "studs": false
     },
     {
-      "id": "p312",
+      "id": "p815",
       "name": "Maçaneta",
       "type": "sphere",
       "pos": [
@@ -1017,7 +1017,7 @@
       "studs": false
     },
     {
-      "id": "p313",
+      "id": "p816",
       "name": "Janela",
       "type": "brick",
       "pos": [
@@ -1040,7 +1040,7 @@
       "studs": false
     },
     {
-      "id": "p314",
+      "id": "p817",
       "name": "Moldura",
       "type": "brick",
       "pos": [
@@ -1063,7 +1063,7 @@
       "studs": false
     },
     {
-      "id": "p315",
+      "id": "p818",
       "name": "Moldura",
       "type": "brick",
       "pos": [
@@ -1086,7 +1086,7 @@
       "studs": false
     },
     {
-      "id": "p316",
+      "id": "p819",
       "name": "Janela",
       "type": "brick",
       "pos": [
@@ -1109,7 +1109,7 @@
       "studs": false
     },
     {
-      "id": "p317",
+      "id": "p820",
       "name": "Moldura",
       "type": "brick",
       "pos": [
@@ -1132,7 +1132,7 @@
       "studs": false
     },
     {
-      "id": "p318",
+      "id": "p821",
       "name": "Moldura",
       "type": "brick",
       "pos": [
@@ -1155,7 +1155,7 @@
       "studs": false
     },
     {
-      "id": "p319",
+      "id": "p822",
       "name": "Viga frontal",
       "type": "brick",
       "pos": [
@@ -1178,7 +1178,7 @@
       "studs": false
     },
     {
-      "id": "p320",
+      "id": "p823",
       "name": "Água do telhado",
       "type": "wedge",
       "pos": [
@@ -1201,7 +1201,7 @@
       "studs": false
     },
     {
-      "id": "p321",
+      "id": "p824",
       "name": "Água do telhado",
       "type": "wedge",
       "pos": [
@@ -1224,7 +1224,7 @@
       "studs": false
     },
     {
-      "id": "p322",
+      "id": "p825",
       "name": "Chaminé",
       "type": "brick",
       "pos": [
@@ -1247,7 +1247,7 @@
       "studs": true
     },
     {
-      "id": "p323",
+      "id": "p826",
       "name": "Tronco",
       "type": "brick",
       "pos": [
@@ -1270,7 +1270,7 @@
       "studs": false
     },
     {
-      "id": "p324",
+      "id": "p827",
       "name": "Copa",
       "type": "cone",
       "pos": [
@@ -1293,7 +1293,7 @@
       "studs": false
     },
     {
-      "id": "p325",
+      "id": "p828",
       "name": "Tronco",
       "type": "brick",
       "pos": [
@@ -1316,7 +1316,7 @@
       "studs": false
     },
     {
-      "id": "p326",
+      "id": "p829",
       "name": "Copa",
       "type": "cone",
       "pos": [

@@ -5,7 +5,7 @@
   "kind": "city",
   "pieces": [
     {
-      "id": "p357",
+      "id": "p860",
       "name": "Base verde",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "p358",
+      "id": "p861",
       "name": "Calçada",
       "type": "tile",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p359",
+      "id": "p862",
       "name": "Calçada",
       "type": "tile",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p360",
+      "id": "p863",
       "name": "Calçada",
       "type": "tile",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p361",
+      "id": "p864",
       "name": "Calçada",
       "type": "tile",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "p362",
+      "id": "p865",
       "name": "Calçada",
       "type": "tile",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "p363",
+      "id": "p866",
       "name": "Trilha",
       "type": "tile",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "p364",
+      "id": "p867",
       "name": "Trilha",
       "type": "tile",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "p365",
+      "id": "p868",
       "name": "Parede de fundo",
       "type": "brick",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "p366",
+      "id": "p869",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p367",
+      "id": "p870",
       "name": "Parede lateral",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "p368",
+      "id": "p871",
       "name": "Fachada esquerda",
       "type": "brick",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "p369",
+      "id": "p872",
       "name": "Fachada central",
       "type": "brick",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "p370",
+      "id": "p873",
       "name": "Fachada direita",
       "type": "brick",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "p371",
+      "id": "p874",
       "name": "Verga da porta",
       "type": "brick",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "p372",
+      "id": "p875",
       "name": "Peitoril",
       "type": "brick",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "p373",
+      "id": "p876",
       "name": "Verga da janela",
       "type": "brick",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "p374",
+      "id": "p877",
       "name": "Porta da loja",
       "type": "door",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "p375",
+      "id": "p878",
       "name": "Vitrine",
       "type": "window",
       "pos": [
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "p376",
+      "id": "p879",
       "name": "Telhado",
       "type": "brick",
       "pos": [
@@ -465,7 +465,7 @@
       "studs": true
     },
     {
-      "id": "p377",
+      "id": "p880",
       "name": "Letreiro",
       "type": "brick",
       "pos": [
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "p378",
+      "id": "p881",
       "name": "Luminária do telhado",
       "type": "round",
       "pos": [
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "p379",
+      "id": "p882",
       "name": "Luminária do telhado",
       "type": "round",
       "pos": [
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "p380",
+      "id": "p883",
       "name": "Árvore grande",
       "type": "tree",
       "pos": [
@@ -557,7 +557,7 @@
       "studs": false
     },
     {
-      "id": "p381",
+      "id": "p884",
       "name": "Árvore pequena",
       "type": "tree",
       "pos": [
@@ -580,7 +580,7 @@
       "studs": false
     },
     {
-      "id": "p382",
+      "id": "p885",
       "name": "Flor",
       "type": "plant",
       "pos": [
@@ -603,7 +603,7 @@
       "studs": false
     },
     {
-      "id": "p383",
+      "id": "p886",
       "name": "Flor",
       "type": "plant",
       "pos": [
@@ -626,7 +626,7 @@
       "studs": false
     },
     {
-      "id": "p384",
+      "id": "p887",
       "name": "Flor",
       "type": "plant",
       "pos": [
@@ -649,7 +649,7 @@
       "studs": false
     },
     {
-      "id": "p385",
+      "id": "p888",
       "name": "Cerca",
       "type": "fence",
       "pos": [
@@ -672,7 +672,7 @@
       "studs": false
     },
     {
-      "id": "p386",
+      "id": "p889",
       "name": "Cerca",
       "type": "fence",
       "pos": [
@@ -695,7 +695,7 @@
       "studs": false
     },
     {
-      "id": "p387",
+      "id": "p890",
       "name": "Cerca",
       "type": "fence",
       "pos": [
@@ -718,7 +718,7 @@
       "studs": false
     },
     {
-      "id": "p388",
+      "id": "p891",
       "name": "Poste de luz",
       "type": "lamp",
       "pos": [
@@ -741,7 +741,7 @@
       "studs": false
     },
     {
-      "id": "p389",
+      "id": "p892",
       "name": "Poste de luz",
       "type": "lamp",
       "pos": [
@@ -764,7 +764,7 @@
       "studs": false
     },
     {
-      "id": "p390",
+      "id": "p893",
       "name": "Assento do banco",
       "type": "brick",
       "pos": [
@@ -787,7 +787,7 @@
       "studs": false
     },
     {
-      "id": "p391",
+      "id": "p894",
       "name": "Encosto do banco",
       "type": "brick",
       "pos": [
@@ -810,7 +810,7 @@
       "studs": false
     },
     {
-      "id": "p392",
+      "id": "p895",
       "name": "Pé do banco",
       "type": "brick",
       "pos": [
@@ -833,7 +833,7 @@
       "studs": false
     },
     {
-      "id": "p393",
+      "id": "p896",
       "name": "Pé do banco",
       "type": "brick",
       "pos": [
@@ -856,7 +856,7 @@
       "studs": false
     },
     {
-      "id": "p394",
+      "id": "p897",
       "name": "Exploradora",
       "type": "figure",
       "pos": [
@@ -889,7 +889,7 @@
       }
     },
     {
-      "id": "p395",
+      "id": "p898",
       "name": "Chef",
       "type": "figure",
       "pos": [
@@ -922,7 +922,7 @@
       }
     },
     {
-      "id": "p396",
+      "id": "p899",
       "name": "Criança com balão",
       "type": "figure",
       "pos": [
@@ -955,7 +955,7 @@
       }
     },
     {
-      "id": "p397",
+      "id": "p900",
       "name": "Construtora",
       "type": "figure",
       "pos": [

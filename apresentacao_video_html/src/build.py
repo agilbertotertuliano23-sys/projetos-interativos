@@ -1,5 +1,6 @@
 """Build a single offline HTML from the editable sources. Python standard library only."""
 from pathlib import Path
+import base64
 import urllib.request
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -19,5 +20,7 @@ for name, url in assets.items():
 html = (SRC / 'template.html').read_text(encoding='utf-8')
 for marker, name in [('STYLE', 'style.css'), ('THREE', 'vendor/three.min.js'), ('APP', 'app.js')]:
     html = html.replace(f'/* EMBED_{marker} */', (SRC / name).read_text(encoding='utf-8'))
+for marker, name, mime in [('EMBED_LOGO_DATA', 'assets/mono-logo.webp', 'image/webp'), ('EMBED_ICON_DATA', 'assets/mono-icon.png', 'image/png')]:
+    html = html.replace(marker, f'data:{mime};base64,' + base64.b64encode((SRC / name).read_bytes()).decode('ascii'))
 (ROOT / 'index.html').write_text(html, encoding='utf-8')
 print(f'Built {ROOT / "index.html"} ({len(html)} characters)')

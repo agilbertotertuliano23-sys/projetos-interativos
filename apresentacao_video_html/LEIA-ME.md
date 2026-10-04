@@ -2,12 +2,33 @@
 
 Abra **index.html** no Chrome ou Edge. O arquivo é completo e funciona offline: não precisa de servidor, instalação ou conta.
 
-A apresentação inicial recria, com geometria 3D editável, o robô e a montagem do vídeo `Gravação de Tela 2026-09-29 013028.mp4`. É uma reconstrução visual, não uma extração exata da malha original do vídeo.
+## Identidade e tela inicial
+
+O cabeçalho usa o logo MONO feito de blocos amarelos e pretos (`src/assets/mono-logo.webp`); a letra "o" do logo vira o ícone da aba (`src/assets/mono-icon.png`). As cores do site seguem o logo: amarelo `#f9ae01`, preto `#161616` e fundo claro.
+
+A tela inicial tem três colunas:
+
+- **À esquerda, os recursos da maquete:** montagem passo a passo, vista explodida, corte por andar, dia e noite, cena viva, giro 360°, vistas (frente, fundos, lado e topo), personagens que acenam, manual com lista de peças e o atalho para personalizar.
+- **No centro, a maquete em 3D.** Ela começa pela **Casa moderna**.
+- **À direita, o seletor de maquetes** com miniaturas 3D (Casa moderna, Sobrado urbano, Praça LEGO, Turma de personagens, Robô explorador, Casa modular, Veículo explorador e Foguete orbital) e as etapas de montagem.
+
+Em telas menores, o seletor e as etapas descem para baixo da maquete. No celular, tudo fica em uma coluna.
+
+O **Robô explorador** recria, com geometria 3D editável, o robô e a montagem do vídeo `Gravação de Tela 2026-09-29 013028.mp4`. É uma reconstrução visual, não uma extração exata da malha original do vídeo.
+
+## As casas
+
+As duas casas foram inspiradas nas fotos de referência de uma casa moderna de blocos de encaixe:
+
+- **Casa moderna** (70 peças): térreo envidraçado com pilares cinza, cozinha azul, mesa de jantar, sofá; andar de cima com fachada branca, janela larga, varanda de vidro, cama, escrivaninha e estante; torre ripada de madeira com três andares, poltrona e lustre de vidro; piscina com patinho, espreguiçadeiras, fogueira, palmeiras, praia e dois moradores. Os fundos são abertos, como uma casa de bonecas: use **Vistas → Fundos** para ver o interior.
+- **Sobrado urbano** (76 peças): fundação com viga de furos, entrada recuada com pilares pretos, toldo, degraus de madeira, canteiro com estacas, friso azul, varanda florida com guarda-corpo de vidro, brise de tubos de madeira, terraço com palmeira e luminária, e três moradores.
 
 ## Um material web específico para cada produto
 
 Abra **produtos/index.html** para acessar a coleção. Cada apresentação é um arquivo HTML independente, com o seu próprio modelo, sequência de encaixe, câmera que acompanha a montagem, instruções, oito vistas ilustradas e inventário de peças:
 
+- `produtos/casa-moderna.html`: casa moderna com torre ripada, interior mobiliado e piscina; 70 peças.
+- `produtos/sobrado-urbano.html`: sobrado de três andares com varanda e terraço; 76 peças.
 - `produtos/robo-explorador.html`: robô inspirado no vídeo; 134 peças.
 - `produtos/casa-modular.html`: terreno, paredes, fachada, esquadrias, telhado, chaminé e árvores; 58 peças.
 - `produtos/veiculo-explorador.html`: chassi, rodas, carroceria, cabine, teto, capô, faróis e para-choques; 19 peças.
@@ -21,11 +42,12 @@ Para gerar o material de **uma criação sua**, abra **Construir → Material de
 
 ## Construir suas próprias coisas
 
-1. Clique em **Construir → Bancada vazia**. Você também pode começar pelos exemplos **Robô**, **Casa**, **Veículo**, **Foguete**, **Praça LEGO** ou **Turma de personagens**.
-2. A biblioteca tem três abas:
+1. Clique em **Construir → Bancada vazia**. Você também pode começar pelos exemplos **Robô**, **Casa moderna**, **Sobrado urbano**, **Casa**, **Veículo**, **Foguete**, **Praça LEGO** ou **Turma de personagens**.
+2. A biblioteca tem quatro abas:
    - **Formas**: bloco, placa, cubo, viga, arco, rampa, cilindro, esfera, cone, roda, painel e olho.
-   - **Estilo LEGO**: placa lisa, bloco redondo com pino, viga Technic com furos, escada, janela com vidro, porta com moldura, cerca, engrenagem, anel, flor, árvore e poste de luz.
-   - **Personagens**: oito minifiguras prontas (Exploradora, Astronauta, Construtora, Chef, Rainha, Herói, Mago e Criança com balão) e um botão para sortear um personagem.
+   - **LEGO**: placa lisa, bloco redondo com pino, viga Technic com furos, escada, janela com vidro, porta com moldura, cerca, engrenagem, anel, flor, árvore e poste de luz.
+   - **Casa**: palmeira, painel de vidro, guarda-corpo, ripado de madeira, água, espreguiçadeira, sofá, cama, mesa, cadeira, estante com livros, cozinha, luminária pendente e fogueira. Cada uma começa com uma cor natural, que pode ser trocada no painel.
+   - **Personagens**: dez minifiguras prontas (Exploradora, Astronauta, Construtora, Chef, Rainha, Herói, Mago, Criança com balão, Moradora e Morador) e um botão para sortear um personagem.
 3. Clique em uma peça na cena. Edite largura, altura, profundidade, posição, cor e rotação em qualquer ângulo. As mesmas formas podem virar móveis, cenários, máquinas, animais, personagens ou estruturas abstratas.
 4. Arraste a peça no plano X/Z. Ajuste a altura em **Y**. A opção de grade alinha as posições a intervalos de 0,25 unidade.
 5. Selecione um personagem para customizar: a cor do painel veste o tronco; também é possível trocar pele, pernas, cor do cabelo ou chapéu e cor dos detalhes. Escolha entre 10 cabelos e chapéus, 6 expressões, 6 estampas e 6 acessórios (mochila, capa, ferramenta, escudo, balão). **Sortear visual** gera uma combinação nova. **Acenar**, **Pular** e **Dançar** animam o personagem.
@@ -53,7 +75,11 @@ Há até **400 peças** por projeto. Cada dimensão vai de 0,01 a 10 unidades e 
 | Copiar / colar peça | Ctrl/Cmd + C / Ctrl/Cmd + V |
 | Personagem acenar | Clicar de novo em um personagem já selecionado |
 | Personagem pular | Clicar no personagem no modo Apresentação |
-| Cena viva | Botão ☺, no alto da cena: liga e desliga as animações de personagens, capas, árvores, flores e engrenagens |
+| Cena viva | Botão ☺, no alto da cena, ou o recurso Cena viva: liga e desliga as animações de personagens, capas, árvores, palmeiras, flores, água, fogueira, luminárias e engrenagens |
+| Corte por andar | Controle deslizante nos recursos: esconde as peças que começam acima da altura escolhida |
+| Dia e noite | Recurso Dia e noite: fundo escuro, janelas acesas, postes, luminárias e fogo brilhando |
+| Giro 360° | Recurso Giro 360°; girar a cena com o mouse ou escolher uma vista desliga o giro |
+| Vistas | Frente, Fundos, Lado e Topo, com transição suave da câmera |
 | Exportar imagem PNG | Botão de imagem, no alto da cena |
 | Reproduzir / pausar | Play ou Espaço no modo Apresentação |
 
@@ -63,6 +89,7 @@ A **Cena viva** começa ligada, exceto quando o navegador pede menos movimento. 
 
 - `index.html`: aplicativo completo, pronto para abrir e compartilhar.
 - `src/template.html`, `src/style.css`, `src/app.js`: fontes editáveis.
+- `src/assets/`: logo e ícone, embutidos no HTML pelo `build.py`.
 - `src/vendor/`: Three.js 0.160.1 e sua licença MIT.
 - `src/build.py`: recompõe o HTML com Python; usa os arquivos locais de `vendor` quando já existem.
 - `verificacao/`: capturas e relatório da verificação automatizada em Chromium.

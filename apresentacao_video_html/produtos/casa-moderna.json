@@ -1,0 +1,1638 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Casa moderna",
+  "kind": "modern",
+  "pieces": [
+    {
+      "id": "p492",
+      "name": "Gramado",
+      "type": "brick",
+      "pos": [
+        0,
+        0.1,
+        -0.6
+      ],
+      "size": [
+        10,
+        0.2,
+        7.2
+      ],
+      "color": "#6aa84f",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p493",
+      "name": "Praia",
+      "type": "brick",
+      "pos": [
+        0,
+        0.1,
+        3.7
+      ],
+      "size": [
+        10,
+        0.2,
+        1.4
+      ],
+      "color": "#e3cf9a",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p494",
+      "name": "Mar",
+      "type": "water",
+      "pos": [
+        0,
+        0.26,
+        4.05
+      ],
+      "size": [
+        10,
+        0.12,
+        0.7
+      ],
+      "color": "#3fa7d6",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p495",
+      "name": "Deck de madeira",
+      "type": "tile",
+      "pos": [
+        1.9,
+        0.26,
+        2.1
+      ],
+      "size": [
+        4.6,
+        0.12,
+        1.8
+      ],
+      "color": "#a8794b",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p496",
+      "name": "Piso térreo",
+      "type": "tile",
+      "pos": [
+        0,
+        0.26,
+        -0.5
+      ],
+      "size": [
+        9.2,
+        0.12,
+        3.4
+      ],
+      "color": "#d8c49a",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p497",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        -4.45,
+        1.72,
+        1.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p498",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        -4.45,
+        1.72,
+        -2.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p499",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        -1.5,
+        1.72,
+        1.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p500",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        -1.5,
+        1.72,
+        -2.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p501",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        1.45,
+        1.72,
+        1.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p502",
+      "name": "Pilar",
+      "type": "brick",
+      "pos": [
+        1.45,
+        1.72,
+        -2.05
+      ],
+      "size": [
+        0.3,
+        2.8,
+        0.3
+      ],
+      "color": "#8e9592",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p503",
+      "name": "Porta de vidro",
+      "type": "window",
+      "pos": [
+        -2.97,
+        1.72,
+        1.05
+      ],
+      "size": [
+        2.64,
+        2.8,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p504",
+      "name": "Porta de vidro",
+      "type": "window",
+      "pos": [
+        -0.02,
+        1.72,
+        1.05
+      ],
+      "size": [
+        2.64,
+        2.8,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p505",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -4.5,
+        1.72,
+        -0.5
+      ],
+      "size": [
+        0.2,
+        2.8,
+        3.1
+      ],
+      "color": "#f4f3ee",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p506",
+      "name": "Ripado da torre",
+      "type": "slats",
+      "pos": [
+        2,
+        1.72,
+        1.05
+      ],
+      "size": [
+        0.8,
+        2.8,
+        0.2
+      ],
+      "color": "#a8673c",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p507",
+      "name": "Janela da torre",
+      "type": "window",
+      "pos": [
+        3.45,
+        1.72,
+        1.05
+      ],
+      "size": [
+        2.1,
+        2.8,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p508",
+      "name": "Cozinha",
+      "type": "kitchen",
+      "pos": [
+        3.1,
+        0.82,
+        -1.75
+      ],
+      "size": [
+        2.6,
+        1,
+        0.6
+      ],
+      "color": "#4bb3c8",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p509",
+      "name": "Mesa redonda",
+      "type": "table",
+      "pos": [
+        3,
+        0.72,
+        -0.6
+      ],
+      "size": [
+        1.1,
+        0.8,
+        0.8
+      ],
+      "color": "#d63c2f",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p510",
+      "name": "Banqueta",
+      "type": "chair",
+      "pos": [
+        2.2,
+        0.8,
+        -0.6
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#f08bb4",
+      "stage": 2,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p511",
+      "name": "Banqueta",
+      "type": "chair",
+      "pos": [
+        3.8,
+        0.8,
+        -0.6
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#f08bb4",
+      "stage": 2,
+      "rot": [
+        0,
+        -90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p512",
+      "name": "Mesa de jantar",
+      "type": "table",
+      "pos": [
+        -3,
+        0.72,
+        -0.9
+      ],
+      "size": [
+        1.4,
+        0.8,
+        0.9
+      ],
+      "color": "#a27c47",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p513",
+      "name": "Cadeira",
+      "type": "chair",
+      "pos": [
+        -3,
+        0.8,
+        -1.65
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#1d1d1d",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p514",
+      "name": "Cadeira",
+      "type": "chair",
+      "pos": [
+        -3,
+        0.8,
+        -0.15
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#1d1d1d",
+      "stage": 2,
+      "rot": [
+        0,
+        180,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p515",
+      "name": "Sofá",
+      "type": "sofa",
+      "pos": [
+        0.3,
+        0.7,
+        -1.6
+      ],
+      "size": [
+        2.2,
+        0.75,
+        0.85
+      ],
+      "color": "#e8a33d",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p516",
+      "name": "Mesa de centro",
+      "type": "table",
+      "pos": [
+        0.3,
+        0.52,
+        -0.55
+      ],
+      "size": [
+        1.2,
+        0.4,
+        0.6
+      ],
+      "color": "#9fd3e6",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p517",
+      "name": "Vaso de flores",
+      "type": "plant",
+      "pos": [
+        -0.95,
+        0.72,
+        -1.8
+      ],
+      "size": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "color": "#d63c2f",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p518",
+      "name": "Laje",
+      "type": "brick",
+      "pos": [
+        0,
+        3.2,
+        -0.5
+      ],
+      "size": [
+        9.4,
+        0.16,
+        3.6
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p519",
+      "name": "Piso superior",
+      "type": "tile",
+      "pos": [
+        0,
+        3.34,
+        -0.5
+      ],
+      "size": [
+        9.2,
+        0.12,
+        3.4
+      ],
+      "color": "#d8c49a",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p520",
+      "name": "Fachada superior",
+      "type": "brick",
+      "pos": [
+        -4.35,
+        4.7,
+        1.1
+      ],
+      "size": [
+        0.5,
+        2.6,
+        0.25
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p521",
+      "name": "Fachada superior",
+      "type": "brick",
+      "pos": [
+        -1.45,
+        4.7,
+        1.1
+      ],
+      "size": [
+        0.5,
+        2.6,
+        0.25
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p522",
+      "name": "Fachada superior",
+      "type": "brick",
+      "pos": [
+        -2.9,
+        3.65,
+        1.1
+      ],
+      "size": [
+        2.3999999999999995,
+        0.5,
+        0.25
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p523",
+      "name": "Fachada superior",
+      "type": "brick",
+      "pos": [
+        -2.9,
+        5.75,
+        1.1
+      ],
+      "size": [
+        2.3999999999999995,
+        0.5,
+        0.25
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p524",
+      "name": "Janela larga",
+      "type": "window",
+      "pos": [
+        -2.9,
+        4.7,
+        1.1
+      ],
+      "size": [
+        2.4,
+        1.6,
+        0.2
+      ],
+      "color": "#1d1d1d",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p525",
+      "name": "Parede lateral superior",
+      "type": "brick",
+      "pos": [
+        -4.5,
+        4.7,
+        -0.5
+      ],
+      "size": [
+        0.2,
+        2.6,
+        3.1
+      ],
+      "color": "#f4f3ee",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p526",
+      "name": "Porta da varanda",
+      "type": "glasspanel",
+      "pos": [
+        0.2,
+        4.7,
+        0.2
+      ],
+      "size": [
+        2.6,
+        2.6,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p527",
+      "name": "Guarda-corpo",
+      "type": "railing",
+      "pos": [
+        0.2,
+        3.85,
+        1.2
+      ],
+      "size": [
+        2.7,
+        0.9,
+        0.08
+      ],
+      "color": "#1d1d1d",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p528",
+      "name": "Vaso da varanda",
+      "type": "plant",
+      "pos": [
+        1.25,
+        3.8,
+        0.75
+      ],
+      "size": [
+        0.45,
+        0.75,
+        0.45
+      ],
+      "color": "#f08bb4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p529",
+      "name": "Cama",
+      "type": "bed",
+      "pos": [
+        -3.2,
+        3.8,
+        -1
+      ],
+      "size": [
+        1.6,
+        0.8,
+        2.1
+      ],
+      "color": "#d63c2f",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p530",
+      "name": "Escrivaninha",
+      "type": "table",
+      "pos": [
+        0.6,
+        3.8,
+        -1.65
+      ],
+      "size": [
+        1.2,
+        0.8,
+        0.6
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p531",
+      "name": "Cadeira do escritório",
+      "type": "chair",
+      "pos": [
+        0.6,
+        3.88,
+        -1.05
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#2e5fa8",
+      "stage": 4,
+      "rot": [
+        0,
+        180,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p532",
+      "name": "Estante",
+      "type": "shelf",
+      "pos": [
+        -1.5,
+        4.3,
+        -1.95
+      ],
+      "size": [
+        1.2,
+        1.8,
+        0.4
+      ],
+      "color": "#2e3a4f",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p533",
+      "name": "Ripado da torre",
+      "type": "slats",
+      "pos": [
+        2,
+        4.7,
+        1.05
+      ],
+      "size": [
+        0.8,
+        2.6,
+        0.2
+      ],
+      "color": "#a8673c",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p534",
+      "name": "Janela da torre",
+      "type": "window",
+      "pos": [
+        3.45,
+        4.7,
+        1.05
+      ],
+      "size": [
+        2.1,
+        2.6,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p535",
+      "name": "Ripado lateral",
+      "type": "slats",
+      "pos": [
+        4.5,
+        4.47,
+        -0.5
+      ],
+      "size": [
+        3.4,
+        8.3,
+        0.2
+      ],
+      "color": "#a8673c",
+      "stage": 5,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p536",
+      "name": "Poltrona",
+      "type": "sofa",
+      "pos": [
+        3.6,
+        3.78,
+        -1.4
+      ],
+      "size": [
+        1,
+        0.75,
+        0.8
+      ],
+      "color": "#eeb83e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p537",
+      "name": "Estante colorida",
+      "type": "shelf",
+      "pos": [
+        2.4,
+        4.3,
+        -1.95
+      ],
+      "size": [
+        1,
+        1.8,
+        0.4
+      ],
+      "color": "#2e5fa8",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p538",
+      "name": "Arvoreta",
+      "type": "tree",
+      "pos": [
+        4,
+        3.9,
+        -0.4
+      ],
+      "size": [
+        0.6,
+        1,
+        0.6
+      ],
+      "color": "#3f7d3a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p539",
+      "name": "Laje da torre",
+      "type": "brick",
+      "pos": [
+        3.1,
+        6,
+        -0.5
+      ],
+      "size": [
+        3.2,
+        0.16,
+        3.6
+      ],
+      "color": "#f4f3ee",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p540",
+      "name": "Piso da torre",
+      "type": "tile",
+      "pos": [
+        3.1,
+        6.14,
+        -0.5
+      ],
+      "size": [
+        3,
+        0.12,
+        3.4
+      ],
+      "color": "#d8c49a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p541",
+      "name": "Ripado da torre",
+      "type": "slats",
+      "pos": [
+        2,
+        7.4,
+        1.05
+      ],
+      "size": [
+        0.8,
+        2.4,
+        0.2
+      ],
+      "color": "#a8673c",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p542",
+      "name": "Janela da torre",
+      "type": "window",
+      "pos": [
+        3.45,
+        7.4,
+        1.05
+      ],
+      "size": [
+        2.1,
+        2.4,
+        0.12
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p543",
+      "name": "Parede da torre",
+      "type": "brick",
+      "pos": [
+        1.7,
+        7.4,
+        -0.5
+      ],
+      "size": [
+        0.2,
+        2.4,
+        3.4
+      ],
+      "color": "#f4f3ee",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p544",
+      "name": "Cobertura",
+      "type": "brick",
+      "pos": [
+        -1.5,
+        6,
+        -0.5
+      ],
+      "size": [
+        6.4,
+        0.16,
+        3.6
+      ],
+      "color": "#f4f3ee",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p545",
+      "name": "Cobertura da torre",
+      "type": "brick",
+      "pos": [
+        3.1,
+        8.7,
+        -0.5
+      ],
+      "size": [
+        3.3,
+        0.16,
+        3.7
+      ],
+      "color": "#f4f3ee",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p546",
+      "name": "Lustre de vidro",
+      "type": "pendant",
+      "pos": [
+        3.4,
+        7.85,
+        -0.4
+      ],
+      "size": [
+        0.9,
+        1.5,
+        0.9
+      ],
+      "color": "#1d1d1d",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p547",
+      "name": "Palmeira do terraço",
+      "type": "palm",
+      "pos": [
+        0.5,
+        6.78,
+        -1.2
+      ],
+      "size": [
+        1.2,
+        1.4,
+        1.2
+      ],
+      "color": "#3f8f3a",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p548",
+      "name": "Piscina",
+      "type": "water",
+      "pos": [
+        -2.7,
+        0.27,
+        2.1
+      ],
+      "size": [
+        3,
+        0.14,
+        1.4
+      ],
+      "color": "#4cc0e0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p549",
+      "name": "Borda da piscina",
+      "type": "tile",
+      "pos": [
+        -2.7,
+        0.26,
+        1.3
+      ],
+      "size": [
+        3.4,
+        0.12,
+        0.2
+      ],
+      "color": "#f4f3ee",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p550",
+      "name": "Borda da piscina",
+      "type": "tile",
+      "pos": [
+        -2.7,
+        0.26,
+        2.9
+      ],
+      "size": [
+        3.4,
+        0.12,
+        0.2
+      ],
+      "color": "#f4f3ee",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p551",
+      "name": "Borda da piscina",
+      "type": "tile",
+      "pos": [
+        -4.3,
+        0.26,
+        2.1
+      ],
+      "size": [
+        0.2,
+        0.12,
+        1.4
+      ],
+      "color": "#f4f3ee",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p552",
+      "name": "Borda da piscina",
+      "type": "tile",
+      "pos": [
+        -1.1,
+        0.26,
+        2.1
+      ],
+      "size": [
+        0.2,
+        0.12,
+        1.4
+      ],
+      "color": "#f4f3ee",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p553",
+      "name": "Patinho",
+      "type": "sphere",
+      "pos": [
+        -2,
+        0.42,
+        2
+      ],
+      "size": [
+        0.3,
+        0.25,
+        0.35
+      ],
+      "color": "#f9ae01",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p554",
+      "name": "Cabeça do patinho",
+      "type": "sphere",
+      "pos": [
+        -2,
+        0.58,
+        1.88
+      ],
+      "size": [
+        0.18,
+        0.18,
+        0.18
+      ],
+      "color": "#f9ae01",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p555",
+      "name": "Espreguiçadeira",
+      "type": "lounger",
+      "pos": [
+        0.3,
+        0.55,
+        2.1
+      ],
+      "size": [
+        0.8,
+        0.45,
+        1.7
+      ],
+      "color": "#79c7b0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p556",
+      "name": "Espreguiçadeira",
+      "type": "lounger",
+      "pos": [
+        1.3,
+        0.55,
+        2.1
+      ],
+      "size": [
+        0.8,
+        0.45,
+        1.7
+      ],
+      "color": "#79c7b0",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p557",
+      "name": "Fogueira",
+      "type": "campfire",
+      "pos": [
+        3.4,
+        0.6,
+        2.2
+      ],
+      "size": [
+        0.9,
+        0.55,
+        0.9
+      ],
+      "color": "#8b6a45",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p558",
+      "name": "Palmeira",
+      "type": "palm",
+      "pos": [
+        -4.6,
+        2.4,
+        1.5
+      ],
+      "size": [
+        2.2,
+        4.4,
+        2.2
+      ],
+      "color": "#3f8f3a",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p559",
+      "name": "Palmeira",
+      "type": "palm",
+      "pos": [
+        -3.6,
+        2,
+        -3.3
+      ],
+      "size": [
+        1.8,
+        3.6,
+        1.8
+      ],
+      "color": "#4f9a45",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p560",
+      "name": "Moradora",
+      "type": "figure",
+      "pos": [
+        2.4,
+        1.27,
+        1.8
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#9bd06a",
+      "stage": 7,
+      "rot": [
+        0,
+        -20,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#efe6d2",
+        "hair": "long",
+        "hairColor": "#8a5a2b",
+        "face": "happy",
+        "print": "zipper",
+        "accessory": "none",
+        "accColor": "#efece2"
+      }
+    },
+    {
+      "id": "p561",
+      "name": "Morador",
+      "type": "figure",
+      "pos": [
+        4,
+        1.27,
+        1.6
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#f2efe4",
+      "stage": 7,
+      "rot": [
+        0,
+        -40,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#5b8fd0",
+        "hair": "short",
+        "hairColor": "#4a2f1d",
+        "face": "smile",
+        "print": "stripe",
+        "accessory": "none",
+        "accColor": "#d63c2f"
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@
   "kind": "car",
   "pieces": [
     {
-      "id": "p327",
+      "id": "p830",
       "name": "Chassi",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": false
     },
     {
-      "id": "p328",
+      "id": "p831",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": false
     },
     {
-      "id": "p329",
+      "id": "p832",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p330",
+      "id": "p833",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "p331",
+      "id": "p834",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "p332",
+      "id": "p835",
       "name": "Carroceria",
       "type": "brick",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "p333",
+      "id": "p836",
       "name": "Carroceria",
       "type": "brick",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "p334",
+      "id": "p837",
       "name": "Carroceria",
       "type": "brick",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": true
     },
     {
-      "id": "p335",
+      "id": "p838",
       "name": "Cabine",
       "type": "brick",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "p336",
+      "id": "p839",
       "name": "Teto",
       "type": "brick",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "p337",
+      "id": "p840",
       "name": "Pilar da cabine",
       "type": "brick",
       "pos": [
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "p338",
+      "id": "p841",
       "name": "Pilar da cabine",
       "type": "brick",
       "pos": [
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "p339",
+      "id": "p842",
       "name": "Pilar da cabine",
       "type": "brick",
       "pos": [
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "p340",
+      "id": "p843",
       "name": "Pilar da cabine",
       "type": "brick",
       "pos": [
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "p341",
+      "id": "p844",
       "name": "Capô",
       "type": "brick",
       "pos": [
@@ -350,7 +350,7 @@
       "studs": true
     },
     {
-      "id": "p342",
+      "id": "p845",
       "name": "Farol",
       "type": "cylinder",
       "pos": [
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "p343",
+      "id": "p846",
       "name": "Farol",
       "type": "cylinder",
       "pos": [
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "p344",
+      "id": "p847",
       "name": "Para-choque",
       "type": "brick",
       "pos": [
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "p345",
+      "id": "p848",
       "name": "Para-choque traseiro",
       "type": "brick",
       "pos": [

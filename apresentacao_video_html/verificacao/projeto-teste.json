@@ -5,7 +5,7 @@
   "kind": "custom",
   "pieces": [
     {
-      "id": "custom-muu5dkk4-135",
+      "id": "custom-muu6hfaz-638",
       "name": "Bloco 2 × 4",
       "type": "brick",
       "pos": [
@@ -18,7 +18,7 @@
         0.5,
         2
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 0,
       "rot": [
         0,
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu5dklh-137",
+      "id": "custom-muu6hfll-640",
       "name": "Placa 2 × 4",
       "type": "plate",
       "pos": [
@@ -41,7 +41,7 @@
         0.2,
         2
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 0,
       "rot": [
         0,
@@ -51,7 +51,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu5dkqt-139",
+      "id": "custom-muu6hfr6-642",
       "name": "Bloco 1 × 1",
       "type": "brick",
       "pos": [
@@ -64,7 +64,7 @@
         0.5,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 0,
       "rot": [
         0,
@@ -74,7 +74,7 @@
       "studs": true
     },
     {
-      "id": "custom-muu5dkug-141",
+      "id": "custom-muu6hfuv-644",
       "name": "Viga",
       "type": "brick",
       "pos": [
@@ -87,7 +87,7 @@
         1.75,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 0,
       "rot": [
         0,
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dky4-143",
+      "id": "custom-muu6hfyd-646",
       "name": "Arco",
       "type": "arch",
       "pos": [
@@ -110,7 +110,7 @@
         1,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 0,
       "rot": [
         0,
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dl1l-145",
+      "id": "custom-muu6hg1v-648",
       "name": "Rampa",
       "type": "wedge",
       "pos": [
@@ -133,7 +133,7 @@
         1,
         2
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 1,
       "rot": [
         0,
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dl55-147",
+      "id": "custom-muu6hg5j-650",
       "name": "Cilindro",
       "type": "cylinder",
       "pos": [
@@ -156,7 +156,7 @@
         1,
         1
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 1,
       "rot": [
         90,
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dl92-149",
+      "id": "custom-muu6hg8s-652",
       "name": "Esfera",
       "type": "sphere",
       "pos": [
@@ -179,7 +179,7 @@
         1,
         1
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 1,
       "rot": [
         0,
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dlc5-151",
+      "id": "custom-muu6hgbz-654",
       "name": "Cone",
       "type": "cone",
       "pos": [
@@ -202,7 +202,7 @@
         1.5,
         1
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 1,
       "rot": [
         0,
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dlgf-153",
+      "id": "custom-muu6hgf9-656",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -225,7 +225,7 @@
         1,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 1,
       "rot": [
         0,
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dljq-155",
+      "id": "custom-muu6hgjd-658",
       "name": "Painel",
       "type": "brick",
       "pos": [
@@ -248,7 +248,7 @@
         2,
         0.2
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 2,
       "rot": [
         0,
@@ -258,7 +258,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dlmr-157",
+      "id": "custom-muu6hgmq-660",
       "name": "Olho",
       "type": "eye",
       "pos": [
@@ -271,7 +271,7 @@
         1,
         0.4
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 2,
       "rot": [
         0,
@@ -281,7 +281,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dlu8-159",
+      "id": "custom-muu6hgtp-662",
       "name": "Placa lisa 2 × 2",
       "type": "tile",
       "pos": [
@@ -294,7 +294,7 @@
         0.12,
         1
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 2,
       "rot": [
         0,
@@ -304,7 +304,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dlwn-161",
+      "id": "custom-muu6hgvf-664",
       "name": "Bloco redondo 1 × 1",
       "type": "round",
       "pos": [
@@ -317,7 +317,7 @@
         0.5,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 2,
       "rot": [
         0,
@@ -327,7 +327,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dm0o-163",
+      "id": "custom-muu6hgyy-666",
       "name": "Viga Technic",
       "type": "technic",
       "pos": [
@@ -340,7 +340,7 @@
         0.4,
         0.4
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 2,
       "rot": [
         0,
@@ -350,7 +350,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dm4u-165",
+      "id": "custom-muu6hh1x-668",
       "name": "Escada",
       "type": "stairs",
       "pos": [
@@ -363,7 +363,7 @@
         1,
         1.2
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 3,
       "rot": [
         0,
@@ -373,7 +373,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dm8l-167",
+      "id": "custom-muu6hh64-670",
       "name": "Janela",
       "type": "window",
       "pos": [
@@ -386,7 +386,7 @@
         1.2,
         0.25
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 3,
       "rot": [
         0,
@@ -396,7 +396,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dmcb-169",
+      "id": "custom-muu6hh9e-672",
       "name": "Porta",
       "type": "door",
       "pos": [
@@ -409,7 +409,7 @@
         1.9,
         0.25
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 3,
       "rot": [
         0,
@@ -419,7 +419,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dmfh-171",
+      "id": "custom-muu6hhck-674",
       "name": "Cerca",
       "type": "fence",
       "pos": [
@@ -432,7 +432,7 @@
         0.7,
         0.15
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 3,
       "rot": [
         0,
@@ -442,7 +442,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dmis-173",
+      "id": "custom-muu6hhfv-676",
       "name": "Engrenagem",
       "type": "gear",
       "pos": [
@@ -455,7 +455,7 @@
         1,
         0.25
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 3,
       "rot": [
         0,
@@ -465,7 +465,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dmpl-175",
+      "id": "custom-muu6hhjk-678",
       "name": "Anel",
       "type": "ring",
       "pos": [
@@ -478,7 +478,7 @@
         1,
         0.24
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 4,
       "rot": [
         0,
@@ -488,7 +488,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dmve-177",
+      "id": "custom-muu6hhmx-680",
       "name": "Flor",
       "type": "plant",
       "pos": [
@@ -501,7 +501,7 @@
         0.8,
         0.5
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 4,
       "rot": [
         0,
@@ -511,7 +511,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dn28-179",
+      "id": "custom-muu6hhvk-682",
       "name": "Árvore",
       "type": "tree",
       "pos": [
@@ -524,7 +524,7 @@
         2.4,
         1.4
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 4,
       "rot": [
         0,
@@ -534,7 +534,7 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dn8r-181",
+      "id": "custom-muu6hhzy-684",
       "name": "Poste de luz",
       "type": "lamp",
       "pos": [
@@ -547,7 +547,7 @@
         2.4,
         0.45
       ],
-      "color": "#e7802e",
+      "color": "#f9ae01",
       "stage": 4,
       "rot": [
         0,
@@ -557,12 +557,334 @@
       "studs": false
     },
     {
-      "id": "custom-muu5dnkt-183",
+      "id": "custom-muu6hidc-686",
+      "name": "Palmeira",
+      "type": "palm",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        4,
+        2
+      ],
+      "color": "#3f8f3a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hik4-688",
+      "name": "Painel de vidro",
+      "type": "glasspanel",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        2.4,
+        0.1
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hir4-690",
+      "name": "Guarda-corpo",
+      "type": "railing",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        0.9,
+        0.08
+      ],
+      "color": "#1d1d1d",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hixp-692",
+      "name": "Ripado de madeira",
+      "type": "slats",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        2.4,
+        0.2
+      ],
+      "color": "#a8673c",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hj45-694",
+      "name": "Água",
+      "type": "water",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        0.15,
+        2
+      ],
+      "color": "#3fa7d6",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hjc4-696",
+      "name": "Espreguiçadeira",
+      "type": "lounger",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.8,
+        0.45,
+        1.7
+      ],
+      "color": "#79c7b0",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hjii-698",
+      "name": "Sofá",
+      "type": "sofa",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        0.75,
+        0.85
+      ],
+      "color": "#e8a33d",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hjqm-700",
+      "name": "Cama",
+      "type": "bed",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.6,
+        0.8,
+        2.1
+      ],
+      "color": "#d63c2f",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hjwm-702",
+      "name": "Mesa",
+      "type": "table",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.4,
+        0.8,
+        0.9
+      ],
+      "color": "#a27c47",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hk3i-704",
+      "name": "Cadeira",
+      "type": "chair",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.5,
+        0.95,
+        0.5
+      ],
+      "color": "#1d1d1d",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hkdk-706",
+      "name": "Estante",
+      "type": "shelf",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        1.2,
+        1.8,
+        0.4
+      ],
+      "color": "#2e3a4f",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hkho-708",
+      "name": "Cozinha",
+      "type": "kitchen",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        2,
+        1,
+        0.6
+      ],
+      "color": "#4bb3c8",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hkor-710",
+      "name": "Luminária pendente",
+      "type": "pendant",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.8,
+        1.4,
+        0.8
+      ],
+      "color": "#1d1d1d",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hkvs-712",
+      "name": "Fogueira",
+      "type": "campfire",
+      "pos": [
+        0,
+        30,
+        2.8
+      ],
+      "size": [
+        0.9,
+        0.55,
+        0.9
+      ],
+      "color": "#8b6a45",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu6hlas-714",
       "name": "Exploradora",
       "type": "figure",
       "pos": [
         0,
-        29.220000000000006,
+        30,
         2.8
       ],
       "size": [
@@ -571,7 +893,7 @@
         0.5
       ],
       "color": "#3f7d5a",
-      "stage": 4,
+      "stage": 7,
       "rot": [
         0,
         0,
@@ -590,7 +912,7 @@
       }
     },
     {
-      "id": "custom-muu5dnsx-185",
+      "id": "custom-muu6hljh-716",
       "name": "Personagem",
       "type": "figure",
       "pos": [
@@ -603,8 +925,8 @@
         1.9,
         0.5
       ],
-      "color": "#294c45",
-      "stage": 5,
+      "color": "#3f7d5a",
+      "stage": 7,
       "rot": [
         0,
         0,
@@ -613,17 +935,17 @@
       "studs": false,
       "fig": {
         "skin": "#8d5524",
-        "legs": "#f08bb4",
+        "legs": "#6b3fa0",
         "hair": "crown",
-        "hairColor": "#eeb83e",
+        "hairColor": "#3d3a7a",
         "face": "wink",
         "print": "tie",
         "accessory": "cape",
-        "accColor": "#3f7d5a"
+        "accColor": "#294c45"
       }
     },
     {
-      "id": "custom-muu5dq7s-187",
+      "id": "custom-muu6hnxg-718",
       "name": "Personagem · cópia",
       "type": "figure",
       "pos": [
@@ -636,8 +958,8 @@
         1.9,
         0.5
       ],
-      "color": "#294c45",
-      "stage": 5,
+      "color": "#3f7d5a",
+      "stage": 7,
       "rot": [
         0,
         0,
@@ -646,13 +968,13 @@
       "studs": false,
       "fig": {
         "skin": "#8d5524",
-        "legs": "#f08bb4",
+        "legs": "#6b3fa0",
         "hair": "crown",
-        "hairColor": "#eeb83e",
+        "hairColor": "#3d3a7a",
         "face": "wink",
         "print": "tie",
         "accessory": "cape",
-        "accColor": "#3f7d5a"
+        "accColor": "#294c45"
       }
     }
   ]

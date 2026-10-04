@@ -1,6 +1,42 @@
 {
   "products": [
     {
+      "title": "Casa moderna",
+      "pieces": 70,
+      "stages": [
+        "Gramado, praia e deck",
+        "Piso, pilares e vidros",
+        "Cozinha, jantar e sala",
+        "Laje, fachada e varanda",
+        "Interior superior",
+        "Torre de três andares",
+        "Lajes e lustre",
+        "Piscina, palmeiras e moradores"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Sobrado urbano",
+      "pieces": 76,
+      "stages": [
+        "Calçada e fundação",
+        "Entrada, vitrine e sala",
+        "Escada, toldo e jardim",
+        "Janelas e friso azul",
+        "Varanda e guarda-corpo",
+        "Brise de madeira",
+        "Cobertura e plantas",
+        "Personagens"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
       "title": "Robô explorador",
       "pieces": 134,
       "stages": [

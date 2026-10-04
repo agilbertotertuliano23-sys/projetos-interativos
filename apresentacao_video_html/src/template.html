@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f5f4ef">
-  <meta name="description" content="Um pequeno robô, peça por peça. Apresentação 3D e ateliê de construção com blocos editáveis.">
+  <meta name="theme-color" content="#fbf9f3">
+  <link rel="icon" href="EMBED_ICON_DATA">
+  <meta name="description" content="Maquetes 3D de blocos de encaixe: casas, cidades, robôs e personagens customizáveis. Explore recursos, monte peça por peça e crie a sua.">
   <title>MONO — Ateliê de blocos</title>
   <style>/* EMBED_STYLE */</style>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="MONO, ateliê de blocos"><span class="brand-mark">m<span>•</span></span><span>mono<span class="brand-caption">ATELIÊ DE BLOCOS</span></span></a>
+    <a class="brand" href="#" aria-label="MONO, ateliê de blocos"><img class="brand-logo" src="EMBED_LOGO_DATA" alt="MONO" width="150" height="46"><span class="brand-caption">ATELIÊ DE<br>BLOCOS</span></a>
     <nav class="mode-switch" aria-label="Modo de trabalho">
       <button id="presentMode" class="active" aria-pressed="true">Apresentação</button>
       <button id="editMode" aria-pressed="false">Construir <span class="tiny">↗</span></button>
@@ -19,29 +20,39 @@
   </header>
 
   <main class="workspace" id="workspace">
-    <aside class="sidebar presentation-panel" id="presentationPanel">
-      <div class="eyebrow"><span class="line"></span> ESTUDO DE MONTAGEM · 001</div>
-      <h1>Grandes ideias.<br> Pequenas <em>peças.</em></h1>
-      <p class="intro">Do primeiro encaixe ao último detalhe.<br>Explore a montagem e dê forma à sua própria versão.</p>
-      <div class="project-meta"><span id="projectMeta">MONO / ROBÔ EXPLORADOR</span><span>01 — 08</span></div>
-      <ol class="steps" id="steps" aria-label="Etapas de montagem"></ol>
-      <button id="openManual" class="manual-link"><span class="manual-icon">▤</span><span>Manual de montagem<small>O caminho, peça por peça</small></span><span>↗</span></button>
-      <div class="sidebar-foot"><span>DESENHADO PARA EXPERIMENTAR</span><span>✳</span></div>
+    <aside class="sidebar presentation-panel" id="presentationPanel" aria-label="Recursos da maquete">
+      <div class="eyebrow"><span class="line"></span> RECURSOS DA MAQUETE</div>
+      <h1>Explore cada <em>detalhe.</em></h1>
+      <p class="intro">Ligue os recursos para ver a maquete por dentro, à noite, girando ou peça por peça.</p>
+      <div class="feature-list">
+        <div class="feature"><span class="feature-icon">▶</span><span class="feature-text"><strong>Montagem passo a passo</strong><small>Cada encaixe com câmera automática.</small></span><button id="featurePlay" class="feature-action">Montar</button></div>
+        <div class="feature"><span class="feature-icon">✳</span><span class="feature-text"><strong>Vista explodida</strong><small>Separa as etapas no espaço.</small></span><button id="explode" class="switch" aria-pressed="false" aria-label="Vista explodida"></button></div>
+        <div class="feature feature-wide"><span class="feature-icon">≡</span><span class="feature-text"><strong>Corte por andar</strong><small id="cutLabel">Tudo visível</small></span><label class="sr-only" for="cutLevel">Altura do corte</label><input id="cutLevel" class="cut-range" type="range" min="0" max="10" step="0.1" value="10"></div>
+        <div class="feature"><span class="feature-icon">☾</span><span class="feature-text"><strong>Dia e noite</strong><small>Janelas, postes e luminárias acesos.</small></span><button id="nightToggle" class="switch" aria-pressed="false" aria-label="Modo noite"></button></div>
+        <div class="feature"><span class="feature-icon">☺</span><span class="feature-text"><strong>Cena viva</strong><small>Personagens, plantas e fogo animados.</small></span><button id="liveFeature" class="switch" aria-pressed="true" aria-label="Cena viva"></button></div>
+        <div class="feature"><span class="feature-icon">↻</span><span class="feature-text"><strong>Giro 360°</strong><small>A câmera circula a maquete.</small></span><button id="spinToggle" class="switch" aria-pressed="false" aria-label="Giro 360 graus"></button></div>
+        <div class="feature feature-wide"><span class="feature-icon">◩</span><span class="feature-text"><strong>Vistas</strong><small>Frente, fundos com o interior, lado e topo.</small></span><div class="view-buttons"><button data-view="front">Frente</button><button data-view="back">Fundos</button><button data-view="side">Lado</button><button data-view="top">Topo</button></div></div>
+        <div class="feature"><span class="feature-icon">☻</span><span class="feature-text"><strong>Personagens</strong><small id="figureFeature">Clique em um personagem para ele pular.</small></span><button id="waveAll" class="feature-action">Acenar</button></div>
+        <button id="openManual" class="feature feature-link"><span class="feature-icon">▤</span><span class="feature-text"><strong>Manual e lista de peças</strong><small>Etapas ilustradas e manual web.</small></span><span class="feature-arrow">↗</span></button>
+        <button id="customizeFeature" class="feature feature-link"><span class="feature-icon">✎</span><span class="feature-text"><strong>Personalizar a maquete</strong><small>Mova, troque cores e adicione peças.</small></span><span class="feature-arrow">↗</span></button>
+      </div>
     </aside>
 
     <aside class="sidebar editor-panel" id="editorPanel" hidden>
       <div class="eyebrow"><span class="line"></span> SUA BANCADA DE CRIAÇÃO</div>
       <h2>Encaixe uma<br> <em>nova ideia.</em></h2>
-      <p class="intro">Casas, veículos, cidades, personagens ou o que você imaginar. Combine formas, peças de encaixe e minifiguras customizáveis.</p>
-      <label class="project-title-label">NOME DA CONSTRUÇÃO<input id="projectTitle" value="Robô explorador" maxlength="60" aria-label="Nome da construção"></label>
+      <p class="intro">Casas, cidades, veículos, personagens ou o que você imaginar. Combine formas, peças de encaixe, móveis e minifiguras customizáveis.</p>
+      <label class="project-title-label">NOME DA CONSTRUÇÃO<input id="projectTitle" value="Casa moderna" maxlength="60" aria-label="Nome da construção"></label>
       <div class="section-label">BIBLIOTECA DE PEÇAS <span id="libraryCount">12 FORMAS</span></div>
       <div class="library-tabs" role="tablist" aria-label="Categorias da biblioteca">
         <button role="tab" class="active" aria-selected="true" data-library="partsLibrary">Formas</button>
-        <button role="tab" aria-selected="false" data-library="legoLibrary">Estilo LEGO</button>
+        <button role="tab" aria-selected="false" data-library="legoLibrary">LEGO</button>
+        <button role="tab" aria-selected="false" data-library="homeLibrary">Casa</button>
         <button role="tab" aria-selected="false" data-library="figureLibrary">Personagens</button>
       </div>
       <div class="parts-library" id="partsLibrary" role="tabpanel"></div>
       <div class="parts-library lego-library" id="legoLibrary" role="tabpanel" hidden></div>
+      <div class="parts-library lego-library" id="homeLibrary" role="tabpanel" hidden></div>
       <div class="figure-library" id="figureLibrary" role="tabpanel" hidden></div>
       <div class="section-label">COR DA PRÓXIMA PEÇA</div>
       <div class="swatches" id="newColors"></div>
@@ -50,6 +61,7 @@
       <div class="edit-history"><button id="undo" class="button outline" disabled>↶ Desfazer</button><button id="redo" class="button outline" disabled>↷ Refazer</button></div>
       <div class="section-label">COMEÇAR COM</div>
       <div class="preset-actions"><button id="emptyPreset" class="button dark">Bancada vazia +</button><button id="robotPreset" class="button outline">Robô</button></div>
+      <div class="preset-actions"><button id="modernPreset" class="button outline">Casa moderna</button><button id="townhousePreset" class="button outline">Sobrado urbano</button></div>
       <div class="preset-actions"><button id="housePreset" class="button outline">Casa</button><button id="carPreset" class="button outline">Veículo</button><button id="rocketPreset" class="button outline">Foguete</button></div>
       <div class="preset-actions"><button id="cityPreset" class="button outline">Praça LEGO</button><button id="crewPreset" class="button outline">Turma de personagens</button></div>
       <button id="importProject" class="manual-link"><span class="manual-icon">↑</span><span>Abrir um projeto<small>Continue sua construção em JSON</small></span><span>↗</span></button>
@@ -57,9 +69,9 @@
       <div class="sidebar-foot"><span id="saveStatus">Salvo neste navegador</span><span>●</span></div>
     </aside>
 
-    <section class="stage" id="stage" aria-label="Visualização interativa do robô">
-      <div id="viewport" class="viewport" role="img" aria-label="Modelo 3D de um robô de blocos. Arraste para girar; use a roda do mouse para aproximar."></div>
-      <div class="stage-heading"><div class="stage-kicker"><span class="live-dot"></span><span id="stageMode">MONTAGEM INTERATIVA</span></div><div class="stage-name">MONO<span>01</span></div></div>
+    <section class="stage" id="stage" aria-label="Visualização interativa da maquete">
+      <div id="viewport" class="viewport" role="img" aria-label="Maquete 3D de blocos de encaixe. Arraste para girar; use a roda do mouse para aproximar."></div>
+      <div class="stage-heading"><div class="stage-kicker"><span class="live-dot"></span><span id="stageMode">MAQUETE INTERATIVA</span></div><div class="stage-name"><span id="stageTitle">Casa moderna</span><span class="stage-number" id="stageNumber">01</span></div></div>
       <div class="view-tools" aria-label="Controles da câmera">
         <button id="resetView" class="icon-button" title="Centralizar câmera" aria-label="Centralizar câmera">⌖</button>
         <button id="liveToggle" class="icon-button" title="Cena viva: personagens e peças animados" aria-label="Animar personagens e peças" aria-pressed="true">☺</button>
@@ -70,7 +82,7 @@
       <div class="stage-side-label">UMA IDEIA, MUITAS POSSIBILIDADES.</div>
       <button id="prevStage" class="stage-arrow prev" aria-label="Etapa anterior">‹</button>
       <button id="nextStage" class="stage-arrow next" aria-label="Próxima etapa">›</button>
-      <div class="stage-info"><span class="model-tag" id="modelTag">ROBÔ EXPLORADOR</span><span id="pieceCount">— PEÇAS</span><span>MODELO 3D EDITÁVEL</span></div>
+      <div class="stage-info"><span class="model-tag" id="modelTag">CASA MODERNA</span><span id="pieceCount">— PEÇAS</span><span>MODELO 3D EDITÁVEL</span></div>
       <div class="camera-hint" id="cameraHint"><span>↔</span> Arraste: girar <i>·</i> Shift + arrastar: mover vista <i>·</i> Rolar: zoom</div>
 
       <section class="inspector" id="inspector" aria-label="Propriedades da peça" hidden>
@@ -99,13 +111,21 @@
       </section>
 
       <div class="playback" id="playback">
-        <div class="playback-main"><button id="play" class="play-button" aria-label="Reproduzir montagem">▶</button><button id="restart" class="restart-button" title="Recomeçar montagem" aria-label="Recomeçar montagem">↺</button><div class="playback-title"><strong id="currentStepTitle">Pronto para explorar</strong><span id="currentStepSub">O robô completo. Aperte play para montar.</span></div><label class="speed-label"><span class="sr-only">Velocidade</span><select id="speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><span class="timecode" id="timecode">00:19 / 00:19</span></div>
+        <div class="playback-main"><button id="play" class="play-button" aria-label="Reproduzir montagem">▶</button><button id="restart" class="restart-button" title="Recomeçar montagem" aria-label="Recomeçar montagem">↺</button><div class="playback-title"><strong id="currentStepTitle">Pronto para explorar</strong><span id="currentStepSub">A maquete completa. Aperte play para montar.</span></div><label class="speed-label"><span class="sr-only">Velocidade</span><select id="speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><span class="timecode" id="timecode">00:19 / 00:19</span></div>
         <label class="sr-only" for="timeline">Progresso da montagem</label><input id="timeline" class="timeline" type="range" min="0" max="19.4" step="0.01" value="19.4">
-        <div class="playback-bottom"><div id="dots" class="dots" aria-label="Ir para etapa"></div><button id="followCamera" aria-pressed="true">Câmera auto <span>●</span></button><button id="explode" aria-pressed="false">Vista explodida <span>↗</span></button><button id="sound" aria-label="Ativar som de encaixe" aria-pressed="false">Som <span>○</span></button></div>
+        <div class="playback-bottom"><div id="dots" class="dots" aria-label="Ir para etapa"></div><button id="followCamera" aria-pressed="true">Câmera auto <span>●</span></button><button id="sound" aria-label="Ativar som de encaixe" aria-pressed="false">Som <span>○</span></button></div>
       </div>
       <div class="editor-bottom" id="editorBottom" hidden><span><i class="live-dot"></i> SUA CONSTRUÇÃO, SUAS REGRAS.</span><button id="previewBuild" class="button dark">Reproduzir minha montagem <span>↗</span></button></div>
       <div id="webglError" class="webgl-error" hidden><h2>Vamos precisar do 3D.</h2><p>Abra este arquivo no Chrome ou Edge com a aceleração gráfica ativada.</p></div>
     </section>
+
+    <aside class="sidebar models-panel" id="modelsPanel" aria-label="Maquetes e etapas">
+      <div class="eyebrow"><span class="line"></span> ESCOLHA A MAQUETE</div>
+      <div class="model-grid" id="modelGrid"></div>
+      <div class="project-meta"><span id="projectMeta">MONO / CASA MODERNA</span><span>01 — 08</span></div>
+      <ol class="steps" id="steps" aria-label="Etapas de montagem"></ol>
+      <div class="sidebar-foot"><span>DESENHADO PARA EXPERIMENTAR</span><span>✳</span></div>
+    </aside>
   </main>
 
   <footer class="footer"><span>MONO® <i>·</i> EXPLORAR. ENCAIXAR. INVENTAR.</span><span>Reconstrução criativa baseada na referência em vídeo <i>↗</i></span><button id="help">Como usar <span>?</span></button></footer>
@@ -119,7 +139,7 @@
     <div id="inventoryPanel" hidden><div class="inventory-heading"><span>PEÇA / DIMENSÕES</span><span>QUANTIDADE</span></div><div id="inventoryList"></div></div>
     <div class="dialog-foot"><span id="manualNote">Clique em uma etapa para ver a montagem em 3D.</span><button data-close="manualDialog" class="button outline">Voltar à bancada ↗</button></div>
   </dialog>
-  <dialog id="helpDialog"><div class="dialog-top"><span class="eyebrow">SEU PEQUENO GUIA</span><button data-close="helpDialog" class="icon-button" aria-label="Fechar ajuda">×</button></div><h2>Feito para mexer.</h2><div class="help-grid"><div><h3>Explore</h3><p>Arraste o fundo para girar. Shift + arrastar move a câmera. Use a roda do mouse, ou dois dedos na tela, para aproximar. O botão de centralizar enquadra a construção inteira.</p></div><div><h3>Crie qualquer composição</h3><p>Em Construir, comece na Bancada vazia ou abra um exemplo. Combine 12 formas e 12 peças estilo LEGO (placa lisa, bloco redondo, viga Technic, escada, janela, porta, cerca, engrenagem, anel, flor, árvore e poste), altere dimensões e gire em qualquer ângulo.</p></div><div><h3>Personagens customizáveis</h3><p>Na aba Personagens, escolha um modelo ou sorteie um. Selecione o personagem para trocar pele, roupa, cabelo ou chapéu, expressão, estampa e acessório. Os botões Acenar, Pular e Dançar animam o personagem; na apresentação, clique nele para vê-lo pular.</p></div><div><h3>Use o teclado</h3><p>Setas movem em X/Z. Page Up/Down ajustam Y. R gira 90°. Delete exclui. Ctrl/Cmd + D duplica. Ctrl/Cmd + C / V copia e cola. Ctrl/Cmd + Z desfaz. Shift + Z refaz. Espaço pausa a apresentação.</p></div><div><h3>Cena viva</h3><p>O botão ☺, no alto da cena, liga e desliga as animações: personagens respiram e olham ao redor, capas balançam, árvores e flores se movem com o vento e engrenagens giram.</p></div><div><h3>Guarde e apresente</h3><p>Salvar projeto baixa um JSON editável. Abra esse arquivo no editor para continuar. A câmera salva um PNG. Escolha a etapa de cada peça e use Reproduzir minha montagem para animar sua criação.</p></div></div><p class="help-note">Até 400 peças por construção. O encaixe alinha posições à grade e o empilhamento apoia a peça arrastada no topo das peças abaixo dela; as peças continuam livres para se sobrepor. Não há simulação física de conexões. Projetos ficam no seu navegador e podem ser exportados para arquivo.</p></dialog>
+  <dialog id="helpDialog"><div class="dialog-top"><span class="eyebrow">SEU PEQUENO GUIA</span><button data-close="helpDialog" class="icon-button" aria-label="Fechar ajuda">×</button></div><h2>Feito para mexer.</h2><div class="help-grid"><div><h3>Recursos da maquete</h3><p>Na Apresentação, o painel da esquerda liga a vista explodida, o corte por andar, o modo noite, a cena viva, o giro 360° e as vistas de frente, fundos, lado e topo. À direita, escolha outra maquete e pule para qualquer etapa.</p></div><div><h3>Explore</h3><p>Arraste o fundo para girar. Shift + arrastar move a câmera. Use a roda do mouse, ou dois dedos na tela, para aproximar. O botão de centralizar enquadra a construção inteira.</p></div><div><h3>Crie qualquer composição</h3><p>Em Construir, comece na Bancada vazia ou abra um exemplo. Combine 12 formas, 12 peças estilo LEGO e 14 peças de casa e jardim (palmeira, painel de vidro, guarda-corpo, ripado, água, espreguiçadeira, sofá, cama, mesa, cadeira, estante, cozinha, luminária pendente e fogueira), altere dimensões e gire em qualquer ângulo.</p></div><div><h3>Personagens customizáveis</h3><p>Na aba Personagens, escolha um modelo ou sorteie um. Selecione o personagem para trocar pele, roupa, cabelo ou chapéu, expressão, estampa e acessório. Os botões Acenar, Pular e Dançar animam o personagem; na apresentação, clique nele para vê-lo pular.</p></div><div><h3>Use o teclado</h3><p>Setas movem em X/Z. Page Up/Down ajustam Y. R gira 90°. Delete exclui. Ctrl/Cmd + D duplica. Ctrl/Cmd + C / V copia e cola. Ctrl/Cmd + Z desfaz. Shift + Z refaz. Espaço pausa a apresentação.</p></div><div><h3>Cena viva</h3><p>O botão ☺, no alto da cena, liga e desliga as animações: personagens respiram e olham ao redor, capas balançam, árvores e flores se movem com o vento e engrenagens giram.</p></div><div><h3>Guarde e apresente</h3><p>Salvar projeto baixa um JSON editável. Abra esse arquivo no editor para continuar. A câmera salva um PNG. Escolha a etapa de cada peça e use Reproduzir minha montagem para animar sua criação.</p></div></div><p class="help-note">Até 400 peças por construção. O encaixe alinha posições à grade e o empilhamento apoia a peça arrastada no topo das peças abaixo dela; as peças continuam livres para se sobrepor. Não há simulação física de conexões. Projetos ficam no seu navegador e podem ser exportados para arquivo.</p></dialog>
   <dialog id="confirmDialog"><h2 id="confirmTitle">Trocar a construção?</h2><p>Você poderá desfazer esta ação. Para guardar uma cópia separada, use Salvar projeto.</p><div class="dialog-foot"><button data-close="confirmDialog" class="button outline">Cancelar</button><button id="confirmAction" class="button dark">Continuar</button></div></dialog>
   <script id="projectData" type="application/json">null</script>
   <script>/* EMBED_THREE */</script>

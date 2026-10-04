@@ -5,7 +5,7 @@
   "kind": "crew",
   "pieces": [
     {
-      "id": "p398",
+      "id": "p901",
       "name": "Palco",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "p399",
+      "id": "p902",
       "name": "Arquibancada",
       "type": "brick",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": true
     },
     {
-      "id": "p400",
+      "id": "p903",
       "name": "Degraus",
       "type": "stairs",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": false
     },
     {
-      "id": "p401",
+      "id": "p904",
       "name": "Exploradora",
       "type": "figure",
       "pos": [
@@ -107,7 +107,7 @@
       }
     },
     {
-      "id": "p402",
+      "id": "p905",
       "name": "Astronauta",
       "type": "figure",
       "pos": [
@@ -140,7 +140,7 @@
       }
     },
     {
-      "id": "p403",
+      "id": "p906",
       "name": "Construtora",
       "type": "figure",
       "pos": [
@@ -173,7 +173,7 @@
       }
     },
     {
-      "id": "p404",
+      "id": "p907",
       "name": "Chef",
       "type": "figure",
       "pos": [
@@ -206,7 +206,7 @@
       }
     },
     {
-      "id": "p405",
+      "id": "p908",
       "name": "Rainha",
       "type": "figure",
       "pos": [
@@ -239,7 +239,7 @@
       }
     },
     {
-      "id": "p406",
+      "id": "p909",
       "name": "Herói",
       "type": "figure",
       "pos": [
@@ -272,7 +272,7 @@
       }
     },
     {
-      "id": "p407",
+      "id": "p910",
       "name": "Mago",
       "type": "figure",
       "pos": [
@@ -305,7 +305,7 @@
       }
     },
     {
-      "id": "p408",
+      "id": "p911",
       "name": "Holofote",
       "type": "lamp",
       "pos": [
@@ -328,7 +328,7 @@
       "studs": false
     },
     {
-      "id": "p409",
+      "id": "p912",
       "name": "Holofote",
       "type": "lamp",
       "pos": [

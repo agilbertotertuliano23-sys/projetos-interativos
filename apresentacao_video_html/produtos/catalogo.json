@@ -1,5 +1,41 @@
 [
   {
+    "preset": "modernPreset",
+    "slug": "casa-moderna",
+    "title": "Casa moderna",
+    "kind": "modern",
+    "description": "Térreo envidraçado, torre ripada de três andares, interior mobiliado, piscina, palmeiras, fogueira e moradores.",
+    "pieces": 70,
+    "stages": [
+      "Gramado, praia e deck",
+      "Piso, pilares e vidros",
+      "Cozinha, jantar e sala",
+      "Laje, fachada e varanda",
+      "Interior superior",
+      "Torre de três andares",
+      "Lajes e lustre",
+      "Piscina, palmeiras e moradores"
+    ]
+  },
+  {
+    "preset": "townhousePreset",
+    "slug": "sobrado-urbano",
+    "title": "Sobrado urbano",
+    "kind": "townhouse",
+    "description": "Três andares com entrada recuada, toldo, varanda florida, brise de madeira e terraço na cobertura.",
+    "pieces": 76,
+    "stages": [
+      "Calçada e fundação",
+      "Entrada, vitrine e sala",
+      "Escada, toldo e jardim",
+      "Janelas e friso azul",
+      "Varanda e guarda-corpo",
+      "Brise de madeira",
+      "Cobertura e plantas",
+      "Personagens"
+    ]
+  },
+  {
     "preset": "robotPreset",
     "slug": "robo-explorador",
     "title": "Robô explorador",
