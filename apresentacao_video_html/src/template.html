@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="Um pequeno robô, peça por peça. Apresentação 3D e ateliê de construção com blocos editáveis.">
+  <title>MONO — Ateliê de blocos</title>
+  <style>/* EMBED_STYLE */</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="MONO, ateliê de blocos"><span class="brand-mark">m<span>•</span></span><span>mono<span class="brand-caption">ATELIÊ DE BLOCOS</span></span></a>
+    <nav class="mode-switch" aria-label="Modo de trabalho">
+      <button id="presentMode" class="active" aria-pressed="true">Apresentação</button>
+      <button id="editMode" aria-pressed="false">Construir <span class="tiny">↗</span></button>
+    </nav>
+    <div class="header-actions"><span class="local-badge"><i></i> Tudo no seu navegador</span><button id="saveProject" class="button outline">Salvar projeto <span>↓</span></button></div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <aside class="sidebar presentation-panel" id="presentationPanel">
+      <div class="eyebrow"><span class="line"></span> ESTUDO DE MONTAGEM · 001</div>
+      <h1>Grandes ideias.<br> Pequenas <em>peças.</em></h1>
+      <p class="intro">Do primeiro encaixe ao último detalhe.<br>Explore a montagem e dê forma à sua própria versão.</p>
+      <div class="project-meta"><span id="projectMeta">MONO / ROBÔ EXPLORADOR</span><span>01 — 08</span></div>
+      <ol class="steps" id="steps" aria-label="Etapas de montagem"></ol>
+      <button id="openManual" class="manual-link"><span class="manual-icon">▤</span><span>Manual de montagem<small>O caminho, peça por peça</small></span><span>↗</span></button>
+      <div class="sidebar-foot"><span>DESENHADO PARA EXPERIMENTAR</span><span>✳</span></div>
+    </aside>
+
+    <aside class="sidebar editor-panel" id="editorPanel" hidden>
+      <div class="eyebrow"><span class="line"></span> SUA BANCADA DE CRIAÇÃO</div>
+      <h2>Encaixe uma<br> <em>nova ideia.</em></h2>
+      <p class="intro">Casas, veículos, personagens ou o que você imaginar. Combine formas e transforme cada peça.</p>
+      <label class="project-title-label">NOME DA CONSTRUÇÃO<input id="projectTitle" value="Robô explorador" maxlength="60" aria-label="Nome da construção"></label>
+      <div class="section-label">BIBLIOTECA DE PEÇAS <span>12</span></div>
+      <div class="parts-library" id="partsLibrary"></div>
+      <div class="section-label">COR DA PRÓXIMA PEÇA</div>
+      <div class="swatches" id="newColors"></div>
+      <label class="check-row"><input type="checkbox" id="snap" checked> Encaixar na grade <span>0,25 u</span></label>
+      <div class="edit-history"><button id="undo" class="button outline" disabled>↶ Desfazer</button><button id="redo" class="button outline" disabled>↷ Refazer</button></div>
+      <div class="section-label">COMEÇAR COM</div>
+      <div class="preset-actions"><button id="emptyPreset" class="button dark">Bancada vazia +</button><button id="robotPreset" class="button outline">Robô</button></div>
+      <div class="preset-actions"><button id="housePreset" class="button outline">Casa</button><button id="carPreset" class="button outline">Veículo</button><button id="rocketPreset" class="button outline">Foguete</button></div>
+      <button id="importProject" class="manual-link"><span class="manual-icon">↑</span><span>Abrir um projeto<small>Continue sua construção em JSON</small></span><span>↗</span></button>
+      <button id="editorManual" class="manual-link"><span class="manual-icon">▤</span><span>Material de montagem<small>Etapas, peças e manual web deste produto</small></span><span>↗</span></button>
+      <div class="sidebar-foot"><span id="saveStatus">Salvo neste navegador</span><span>●</span></div>
+    </aside>
+
+    <section class="stage" id="stage" aria-label="Visualização interativa do robô">
+      <div id="viewport" class="viewport" role="img" aria-label="Modelo 3D de um robô de blocos. Arraste para girar; use a roda do mouse para aproximar."></div>
+      <div class="stage-heading"><div class="stage-kicker"><span class="live-dot"></span><span id="stageMode">MONTAGEM INTERATIVA</span></div><div class="stage-name">MONO<span>01</span></div></div>
+      <div class="view-tools" aria-label="Controles da câmera">
+        <button id="resetView" class="icon-button" title="Centralizar câmera" aria-label="Centralizar câmera">⌖</button>
+        <button id="gridToggle" class="icon-button" title="Mostrar grade" aria-label="Mostrar grade" aria-pressed="false">▦</button>
+        <button id="capture" class="icon-button" title="Salvar imagem PNG" aria-label="Salvar imagem PNG">▣</button>
+        <button id="fullscreen" class="icon-button" title="Tela cheia" aria-label="Tela cheia">⛶</button>
+      </div>
+      <div class="stage-side-label">UMA IDEIA, MUITAS POSSIBILIDADES.</div>
+      <button id="prevStage" class="stage-arrow prev" aria-label="Etapa anterior">‹</button>
+      <button id="nextStage" class="stage-arrow next" aria-label="Próxima etapa">›</button>
+      <div class="stage-info"><span class="model-tag" id="modelTag">ROBÔ EXPLORADOR</span><span id="pieceCount">— PEÇAS</span><span>MODELO 3D EDITÁVEL</span></div>
+      <div class="camera-hint" id="cameraHint"><span>↔</span> Arraste: girar <i>·</i> Shift + arrastar: mover vista <i>·</i> Rolar: zoom</div>
+
+      <section class="inspector" id="inspector" aria-label="Propriedades da peça" hidden>
+        <div class="inspector-top"><span>PEÇA SELECIONADA</span><button id="deselect" aria-label="Fechar seleção">×</button></div>
+        <input id="pieceName" class="piece-name" aria-label="Nome da peça" maxlength="60">
+        <div class="property-label">POSIÇÃO <small>unidades</small></div>
+        <div class="xyz-fields"><label>X<input id="posX" type="number" step="0.25" min="-30" max="30"></label><label>Y<input id="posY" type="number" step="0.25" min="0" max="30"></label><label>Z<input id="posZ" type="number" step="0.25" min="-30" max="30"></label></div>
+        <div class="property-label">DIMENSÕES <small>larg. / alt. / prof.</small></div>
+        <div class="xyz-fields"><label>L<input id="sizeX" type="number" step="0.01" min="0.01" max="10"></label><label>A<input id="sizeY" type="number" step="0.01" min="0.01" max="10"></label><label>P<input id="sizeZ" type="number" step="0.01" min="0.01" max="10"></label></div>
+        <div class="property-label">COR <input id="pieceColor" type="color" aria-label="Cor da peça"></div>
+        <div class="swatches" id="pieceColors"></div>
+        <div class="property-label">ROTAÇÃO <small>graus</small></div>
+        <div class="xyz-fields"><label>X<input id="rotX" type="number" step="15" min="-360" max="360"></label><label>Y<input id="rotY" type="number" step="15" min="-360" max="360"></label><label>Z<input id="rotZ" type="number" step="15" min="-360" max="360"></label></div>
+        <div class="rotation-actions"><button data-axis="0" title="Girar 90 graus em X">X +90°</button><button data-axis="1" title="Girar 90 graus em Y">Y +90°</button><button data-axis="2" title="Girar 90 graus em Z">Z +90°</button></div>
+        <label class="check-row"><input id="pieceStuds" type="checkbox"> Mostrar pinos de encaixe</label>
+        <label class="stage-select-label">Etapa de montagem<select id="pieceStage"></select></label>
+        <div class="inspector-actions"><button id="duplicate" class="button outline">Duplicar</button><button id="deletePiece" class="button danger">Excluir</button></div>
+        <p class="inspector-tip">Arraste a peça no chão X/Z. Ajuste a altura em Y. Use as setas do teclado para mover.</p>
+      </section>
+
+      <div class="playback" id="playback">
+        <div class="playback-main"><button id="play" class="play-button" aria-label="Reproduzir montagem">▶</button><button id="restart" class="restart-button" title="Recomeçar montagem" aria-label="Recomeçar montagem">↺</button><div class="playback-title"><strong id="currentStepTitle">Pronto para explorar</strong><span id="currentStepSub">O robô completo. Aperte play para montar.</span></div><label class="speed-label"><span class="sr-only">Velocidade</span><select id="speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><span class="timecode" id="timecode">00:19 / 00:19</span></div>
+        <label class="sr-only" for="timeline">Progresso da montagem</label><input id="timeline" class="timeline" type="range" min="0" max="19.4" step="0.01" value="19.4">
+        <div class="playback-bottom"><div id="dots" class="dots" aria-label="Ir para etapa"></div><button id="followCamera" aria-pressed="true">Câmera auto <span>●</span></button><button id="explode" aria-pressed="false">Vista explodida <span>↗</span></button><button id="sound" aria-label="Ativar som de encaixe" aria-pressed="false">Som <span>○</span></button></div>
+      </div>
+      <div class="editor-bottom" id="editorBottom" hidden><span><i class="live-dot"></i> SUA CONSTRUÇÃO, SUAS REGRAS.</span><button id="previewBuild" class="button dark">Reproduzir minha montagem <span>↗</span></button></div>
+      <div id="webglError" class="webgl-error" hidden><h2>Vamos precisar do 3D.</h2><p>Abra este arquivo no Chrome ou Edge com a aceleração gráfica ativada.</p></div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>MONO® <i>·</i> EXPLORAR. ENCAIXAR. INVENTAR.</span><span>Reconstrução criativa baseada na referência em vídeo <i>↗</i></span><button id="help">Como usar <span>?</span></button></footer>
+  <input type="file" id="fileInput" accept=".json,application/json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="manualDialog">
+    <div class="dialog-top"><span class="eyebrow">MONO / MATERIAL DE MONTAGEM</span><button data-close="manualDialog" class="icon-button" aria-label="Fechar manual">×</button></div>
+    <h2 id="manualTitle">Robô explorador</h2><p class="dialog-intro" id="manualSummary">O caminho, peça por peça.</p>
+    <div class="manual-toolbar"><div class="manual-tabs"><button id="showSteps" class="active">Etapas ilustradas</button><button id="showInventory">Lista de peças</button></div><button id="exportManual" class="button dark">Baixar manual web <span>↓</span></button></div>
+    <div id="manualGrid" class="manual-grid"></div>
+    <div id="inventoryPanel" hidden><div class="inventory-heading"><span>PEÇA / DIMENSÕES</span><span>QUANTIDADE</span></div><div id="inventoryList"></div></div>
+    <div class="dialog-foot"><span id="manualNote">Clique em uma etapa para ver a montagem em 3D.</span><button data-close="manualDialog" class="button outline">Voltar à bancada ↗</button></div>
+  </dialog>
+  <dialog id="helpDialog"><div class="dialog-top"><span class="eyebrow">SEU PEQUENO GUIA</span><button data-close="helpDialog" class="icon-button" aria-label="Fechar ajuda">×</button></div><h2>Feito para mexer.</h2><div class="help-grid"><div><h3>Explore</h3><p>Arraste o fundo para girar. Shift + arrastar move a câmera. Use a roda do mouse, ou dois dedos na tela, para aproximar. O botão de centralizar enquadra a construção inteira.</p></div><div><h3>Crie qualquer composição</h3><p>Em Construir, comece na Bancada vazia ou abra um exemplo. Combine 12 formas, altere dimensões e gire em qualquer ângulo. Arraste as peças no plano X/Z e ajuste a altura em Y.</p></div><div><h3>Use o teclado</h3><p>Setas movem em X/Z. Page Up/Down ajustam Y. Delete exclui. Ctrl/Cmd + D duplica. Ctrl/Cmd + Z desfaz. Shift + Z refaz. Espaço pausa a apresentação.</p></div><div><h3>Guarde e apresente</h3><p>Salvar projeto baixa um JSON editável. Abra esse arquivo no editor para continuar. A câmera salva um PNG. Escolha a etapa de cada peça e use Reproduzir minha montagem para animar sua criação.</p></div></div><p class="help-note">Até 400 peças por construção. O encaixe alinha posições à grade; as peças são livres para se sobrepor. Não há simulação física de conexões. Projetos ficam no seu navegador e podem ser exportados para arquivo.</p></dialog>
+  <dialog id="confirmDialog"><h2 id="confirmTitle">Trocar a construção?</h2><p>Você poderá desfazer esta ação. Para guardar uma cópia separada, use Salvar projeto.</p><div class="dialog-foot"><button data-close="confirmDialog" class="button outline">Cancelar</button><button id="confirmAction" class="button dark">Continuar</button></div></dialog>
+  <script id="projectData" type="application/json">null</script>
+  <script>/* EMBED_THREE */</script>
+  <script>/* EMBED_APP */</script>
+</body>
+</html>

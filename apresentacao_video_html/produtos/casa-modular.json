@@ -1,0 +1,1342 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Casa modular",
+  "kind": "house",
+  "pieces": [
+    {
+      "id": "p269",
+      "name": "Terreno",
+      "type": "brick",
+      "pos": [
+        0,
+        0.12,
+        0
+      ],
+      "size": [
+        5.6,
+        0.24,
+        4.9
+      ],
+      "color": "#607b55",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p270",
+      "name": "Piso",
+      "type": "brick",
+      "pos": [
+        0,
+        0.34,
+        0
+      ],
+      "size": [
+        4,
+        0.2,
+        3.6
+      ],
+      "color": "#bf9866",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p271",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -1.83,
+        0.7,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p272",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        0.7,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p273",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        1.83,
+        0.7,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p274",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        1.25,
+        0.7,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p275",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -1.35,
+        0.7,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p276",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -0.45,
+        0.7,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p277",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        0.45,
+        0.7,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p278",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        1.35,
+        0.7,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p279",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -1.83,
+        1.13,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p280",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        1.13,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p281",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        1.83,
+        1.13,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p282",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        1.25,
+        1.13,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p283",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -1.35,
+        1.13,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p284",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -0.45,
+        1.13,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p285",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        0.45,
+        1.13,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p286",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        1.35,
+        1.13,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p287",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -1.83,
+        1.56,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p288",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        1.56,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p289",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        1.83,
+        1.56,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p290",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        1.25,
+        1.56,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p291",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -1.35,
+        1.56,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p292",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -0.45,
+        1.56,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p293",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        0.45,
+        1.56,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p294",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        1.35,
+        1.56,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p295",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -1.83,
+        1.99,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p296",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        1.99,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p297",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        1.83,
+        1.99,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p298",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        1.25,
+        1.99,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p299",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -1.35,
+        1.99,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p300",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -0.45,
+        1.99,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p301",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        0.45,
+        1.99,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p302",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        1.35,
+        1.99,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p303",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -1.83,
+        2.42,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p304",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        -1.25,
+        2.42,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p305",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        1.83,
+        2.42,
+        0
+      ],
+      "size": [
+        0.34,
+        0.41,
+        3.55
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p306",
+      "name": "Parede frontal",
+      "type": "brick",
+      "pos": [
+        1.25,
+        2.42,
+        1.62
+      ],
+      "size": [
+        1.13,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p307",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -1.35,
+        2.42,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p308",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -0.45,
+        2.42,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p309",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        0.45,
+        2.42,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p310",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        1.35,
+        2.42,
+        -1.62
+      ],
+      "size": [
+        0.88,
+        0.41,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p311",
+      "name": "Porta",
+      "type": "brick",
+      "pos": [
+        0,
+        1.34,
+        1.8
+      ],
+      "size": [
+        0.95,
+        1.78,
+        0.16
+      ],
+      "color": "#607b72",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p312",
+      "name": "Maçaneta",
+      "type": "sphere",
+      "pos": [
+        0.3,
+        1.29,
+        1.92
+      ],
+      "size": [
+        0.12,
+        0.12,
+        0.12
+      ],
+      "color": "#eeb83e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p313",
+      "name": "Janela",
+      "type": "brick",
+      "pos": [
+        -1.22,
+        1.65,
+        1.82
+      ],
+      "size": [
+        0.7,
+        0.85,
+        0.1
+      ],
+      "color": "#77afc5",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p314",
+      "name": "Moldura",
+      "type": "brick",
+      "pos": [
+        -1.22,
+        1.65,
+        1.9
+      ],
+      "size": [
+        0.045,
+        0.87,
+        0.07
+      ],
+      "color": "#f2efe4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p315",
+      "name": "Moldura",
+      "type": "brick",
+      "pos": [
+        -1.22,
+        1.65,
+        1.9
+      ],
+      "size": [
+        0.72,
+        0.04,
+        0.07
+      ],
+      "color": "#f2efe4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p316",
+      "name": "Janela",
+      "type": "brick",
+      "pos": [
+        1.22,
+        1.65,
+        1.82
+      ],
+      "size": [
+        0.7,
+        0.85,
+        0.1
+      ],
+      "color": "#77afc5",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p317",
+      "name": "Moldura",
+      "type": "brick",
+      "pos": [
+        1.22,
+        1.65,
+        1.9
+      ],
+      "size": [
+        0.045,
+        0.87,
+        0.07
+      ],
+      "color": "#f2efe4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p318",
+      "name": "Moldura",
+      "type": "brick",
+      "pos": [
+        1.22,
+        1.65,
+        1.9
+      ],
+      "size": [
+        0.72,
+        0.04,
+        0.07
+      ],
+      "color": "#f2efe4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p319",
+      "name": "Viga frontal",
+      "type": "brick",
+      "pos": [
+        0,
+        2.76,
+        1.62
+      ],
+      "size": [
+        4,
+        0.35,
+        0.32
+      ],
+      "color": "#ece2cc",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p320",
+      "name": "Água do telhado",
+      "type": "wedge",
+      "pos": [
+        -1.12,
+        3.65,
+        0
+      ],
+      "size": [
+        2.25,
+        1.6,
+        4.12
+      ],
+      "color": "#ce723f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p321",
+      "name": "Água do telhado",
+      "type": "wedge",
+      "pos": [
+        1.12,
+        3.65,
+        0
+      ],
+      "size": [
+        2.25,
+        1.6,
+        4.12
+      ],
+      "color": "#ce723f",
+      "stage": 5,
+      "rot": [
+        0,
+        180,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p322",
+      "name": "Chaminé",
+      "type": "brick",
+      "pos": [
+        1.06,
+        4.25,
+        -0.7
+      ],
+      "size": [
+        0.5,
+        1.35,
+        0.55
+      ],
+      "color": "#8b6855",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p323",
+      "name": "Tronco",
+      "type": "brick",
+      "pos": [
+        -2.22,
+        0.94,
+        -1.7
+      ],
+      "size": [
+        0.22,
+        1.6,
+        0.22
+      ],
+      "color": "#a27c47",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p324",
+      "name": "Copa",
+      "type": "cone",
+      "pos": [
+        -2.22,
+        2,
+        -1.7
+      ],
+      "size": [
+        1.05,
+        1.6,
+        1.05
+      ],
+      "color": "#345545",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p325",
+      "name": "Tronco",
+      "type": "brick",
+      "pos": [
+        2.22,
+        0.94,
+        -1.7
+      ],
+      "size": [
+        0.22,
+        1.6,
+        0.22
+      ],
+      "color": "#a27c47",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p326",
+      "name": "Copa",
+      "type": "cone",
+      "pos": [
+        2.22,
+        2,
+        -1.7
+      ],
+      "size": [
+        1.05,
+        1.6,
+        1.05
+      ],
+      "color": "#345545",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Minha criação livre",
+  "kind": "custom",
+  "pieces": [
+    {
+      "id": "custom-muq3cpoj-135",
+      "name": "Bloco 2 × 4",
+      "type": "brick",
+      "pos": [
+        0,
+        0.25,
+        2.8
+      ],
+      "size": [
+        1,
+        0.5,
+        2
+      ],
+      "color": "#e7802e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "custom-muq3cq1k-137",
+      "name": "Placa 2 × 4",
+      "type": "plate",
+      "pos": [
+        0,
+        0.7,
+        2.8
+      ],
+      "size": [
+        1,
+        0.2,
+        2
+      ],
+      "color": "#e7802e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "custom-muq3cq9o-139",
+      "name": "Bloco 1 × 1",
+      "type": "brick",
+      "pos": [
+        0,
+        1.15,
+        2.8
+      ],
+      "size": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "custom-muq3cqhi-141",
+      "name": "Viga",
+      "type": "brick",
+      "pos": [
+        0,
+        2.375,
+        2.8
+      ],
+      "size": [
+        0.5,
+        1.75,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3cqpr-143",
+      "name": "Arco",
+      "type": "arch",
+      "pos": [
+        0,
+        3.85,
+        2.8
+      ],
+      "size": [
+        2,
+        1,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3cqyb-145",
+      "name": "Rampa",
+      "type": "wedge",
+      "pos": [
+        0,
+        4.949999999999999,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        2
+      ],
+      "color": "#e7802e",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3cr6u-147",
+      "name": "Cilindro",
+      "type": "cylinder",
+      "pos": [
+        0,
+        6.049999999999999,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "color": "#e7802e",
+      "stage": 1,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3crf2-149",
+      "name": "Esfera",
+      "type": "sphere",
+      "pos": [
+        0,
+        7.149999999999999,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "color": "#e7802e",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3croe-151",
+      "name": "Cone",
+      "type": "cone",
+      "pos": [
+        0,
+        8.499999999999998,
+        2.8
+      ],
+      "size": [
+        1,
+        1.5,
+        1
+      ],
+      "color": "#e7802e",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3crxt-153",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        0,
+        9.849999999999998,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3cs76-155",
+      "name": "Painel",
+      "type": "brick",
+      "pos": [
+        0,
+        11.449999999999998,
+        2.8
+      ],
+      "size": [
+        2,
+        2,
+        0.2
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3csh6-157",
+      "name": "Olho",
+      "type": "eye",
+      "pos": [
+        2.25,
+        2,
+        2.8
+      ],
+      "size": [
+        2.5,
+        1,
+        0.4
+      ],
+      "color": "#294c45",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        35
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muq3cthd-159",
+      "name": "Olho · cópia",
+      "type": "eye",
+      "pos": [
+        3,
+        2.25,
+        2.8
+      ],
+      "size": [
+        2.5,
+        1,
+        0.4
+      ],
+      "color": "#294c45",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        35
+      ],
+      "studs": false
+    }
+  ]
+}

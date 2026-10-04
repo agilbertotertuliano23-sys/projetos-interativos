@@ -1,0 +1,3090 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Robô explorador",
+  "kind": "robot",
+  "pieces": [
+    {
+      "id": "p135",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.8250000000000002,
+        0.15,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#e9b03e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p136",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -0.915,
+        0.15,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#e9b03e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p137",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.8250000000000002,
+        0.33999999999999997,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p138",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -0.915,
+        0.33999999999999997,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p139",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.8250000000000002,
+        0.53,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p140",
+      "name": "Base do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -0.915,
+        0.53,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p141",
+      "name": "Ponta do pé esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        0.62,
+        1.18
+      ],
+      "size": [
+        1.8,
+        0.18,
+        0.74
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p142",
+      "name": "Calcanhar esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        0.68,
+        -0.27
+      ],
+      "size": [
+        1.15,
+        0.26,
+        0.76
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p143",
+      "name": "Perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.37,
+        0.03
+      ],
+      "size": [
+        0.8,
+        1.42,
+        0.7
+      ],
+      "color": "#555d5b",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": true
+    },
+    {
+      "id": "p144",
+      "name": "Friso da perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.06,
+        0.43
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p145",
+      "name": "Friso da perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.23,
+        0.375
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p146",
+      "name": "Friso da perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.4000000000000001,
+        0.32
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p147",
+      "name": "Friso da perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.57,
+        0.265
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p148",
+      "name": "Friso da perna esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        1.7400000000000002,
+        0.21
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p149",
+      "name": "Pino do tornozelo esquerdo",
+      "type": "cylinder",
+      "pos": [
+        -1.9000000000000001,
+        0.78,
+        0.13
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.45
+      ],
+      "color": "#353f3e",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p150",
+      "name": "Pino do tornozelo esquerdo",
+      "type": "cylinder",
+      "pos": [
+        -0.8400000000000001,
+        0.78,
+        0.13
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.45
+      ],
+      "color": "#353f3e",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p151",
+      "name": "Articulação esquerdo",
+      "type": "brick",
+      "pos": [
+        -1.37,
+        2.3,
+        -0.1
+      ],
+      "size": [
+        1.18,
+        1.3,
+        1.16
+      ],
+      "color": "#353f3e",
+      "stage": 2,
+      "rot": [
+        -8,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p152",
+      "name": "Armadura esquerdo 1",
+      "type": "brick",
+      "pos": [
+        -1.77,
+        2.44,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p153",
+      "name": "Armadura esquerdo 2",
+      "type": "brick",
+      "pos": [
+        -1.77,
+        2.64,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p154",
+      "name": "Armadura esquerdo 3",
+      "type": "brick",
+      "pos": [
+        -1.77,
+        2.84,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p155",
+      "name": "Armadura esquerdo 4",
+      "type": "brick",
+      "pos": [
+        -1.77,
+        3.04,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p156",
+      "name": "Armadura esquerdo 5",
+      "type": "brick",
+      "pos": [
+        -1.77,
+        3.24,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        -23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p157",
+      "name": "Junta superior esquerdo",
+      "type": "brick",
+      "pos": [
+        -0.93,
+        3.1,
+        0
+      ],
+      "size": [
+        0.85,
+        0.7,
+        1.25
+      ],
+      "color": "#555d5b",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p158",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        0.915,
+        0.15,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#e9b03e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p159",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        1.8250000000000002,
+        0.15,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#e9b03e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p160",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        0.915,
+        0.33999999999999997,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p161",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        1.8250000000000002,
+        0.33999999999999997,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p162",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        0.915,
+        0.53,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p163",
+      "name": "Base do pé direito",
+      "type": "brick",
+      "pos": [
+        1.8250000000000002,
+        0.53,
+        0.45
+      ],
+      "size": [
+        0.9,
+        0.18,
+        2.25
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p164",
+      "name": "Ponta do pé direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        0.62,
+        1.18
+      ],
+      "size": [
+        1.8,
+        0.18,
+        0.74
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p165",
+      "name": "Calcanhar direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        0.68,
+        -0.27
+      ],
+      "size": [
+        1.15,
+        0.26,
+        0.76
+      ],
+      "color": "#dc792e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p166",
+      "name": "Perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.37,
+        0.03
+      ],
+      "size": [
+        0.8,
+        1.42,
+        0.7
+      ],
+      "color": "#555d5b",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": true
+    },
+    {
+      "id": "p167",
+      "name": "Friso da perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.06,
+        0.43
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p168",
+      "name": "Friso da perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.23,
+        0.375
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p169",
+      "name": "Friso da perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.4000000000000001,
+        0.32
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p170",
+      "name": "Friso da perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.57,
+        0.265
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p171",
+      "name": "Friso da perna direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        1.7400000000000002,
+        0.21
+      ],
+      "size": [
+        0.86,
+        0.1,
+        0.13
+      ],
+      "color": "#707875",
+      "stage": 1,
+      "rot": [
+        -17,
+        0,
+        -8
+      ],
+      "studs": false
+    },
+    {
+      "id": "p172",
+      "name": "Pino do tornozelo direito",
+      "type": "cylinder",
+      "pos": [
+        0.8400000000000001,
+        0.78,
+        0.13
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.45
+      ],
+      "color": "#353f3e",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p173",
+      "name": "Pino do tornozelo direito",
+      "type": "cylinder",
+      "pos": [
+        1.9000000000000001,
+        0.78,
+        0.13
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.45
+      ],
+      "color": "#353f3e",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p174",
+      "name": "Articulação direito",
+      "type": "brick",
+      "pos": [
+        1.37,
+        2.3,
+        -0.1
+      ],
+      "size": [
+        1.18,
+        1.3,
+        1.16
+      ],
+      "color": "#353f3e",
+      "stage": 2,
+      "rot": [
+        -8,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p175",
+      "name": "Armadura direito 1",
+      "type": "brick",
+      "pos": [
+        1.77,
+        2.44,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p176",
+      "name": "Armadura direito 2",
+      "type": "brick",
+      "pos": [
+        1.77,
+        2.64,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p177",
+      "name": "Armadura direito 3",
+      "type": "brick",
+      "pos": [
+        1.77,
+        2.84,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p178",
+      "name": "Armadura direito 4",
+      "type": "brick",
+      "pos": [
+        1.77,
+        3.04,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p179",
+      "name": "Armadura direito 5",
+      "type": "brick",
+      "pos": [
+        1.77,
+        3.24,
+        -0.02
+      ],
+      "size": [
+        1.08,
+        0.19,
+        1.35
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        23
+      ],
+      "studs": false
+    },
+    {
+      "id": "p180",
+      "name": "Junta superior direito",
+      "type": "brick",
+      "pos": [
+        0.93,
+        3.1,
+        0
+      ],
+      "size": [
+        0.85,
+        0.7,
+        1.25
+      ],
+      "color": "#555d5b",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p181",
+      "name": "Quadril central",
+      "type": "brick",
+      "pos": [
+        0,
+        3.08,
+        0
+      ],
+      "size": [
+        1.25,
+        0.7,
+        1.28
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p182",
+      "name": "Estrutura inferior",
+      "type": "brick",
+      "pos": [
+        -0.72,
+        3.36,
+        0.5
+      ],
+      "size": [
+        0.64,
+        0.8,
+        1.02
+      ],
+      "color": "#555d5b",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p183",
+      "name": "Acabamento inferior",
+      "type": "brick",
+      "pos": [
+        -0.72,
+        3.42,
+        1.06
+      ],
+      "size": [
+        0.6,
+        0.42,
+        0.15
+      ],
+      "color": "#a6aea7",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p184",
+      "name": "Estrutura inferior",
+      "type": "brick",
+      "pos": [
+        0.72,
+        3.36,
+        0.5
+      ],
+      "size": [
+        0.64,
+        0.8,
+        1.02
+      ],
+      "color": "#555d5b",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p185",
+      "name": "Acabamento inferior",
+      "type": "brick",
+      "pos": [
+        0.72,
+        3.42,
+        1.06
+      ],
+      "size": [
+        0.6,
+        0.42,
+        0.15
+      ],
+      "color": "#a6aea7",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p186",
+      "name": "Cinta estrutural",
+      "type": "brick",
+      "pos": [
+        0,
+        3.91,
+        0
+      ],
+      "size": [
+        2.46,
+        0.095,
+        1.82
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p187",
+      "name": "Cinta estrutural",
+      "type": "brick",
+      "pos": [
+        0,
+        4.04,
+        0
+      ],
+      "size": [
+        2.46,
+        0.095,
+        1.82
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p188",
+      "name": "Cinta estrutural",
+      "type": "brick",
+      "pos": [
+        0,
+        4.17,
+        0
+      ],
+      "size": [
+        2.46,
+        0.095,
+        1.82
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p189",
+      "name": "Núcleo do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        4.55,
+        -0.1
+      ],
+      "size": [
+        2.25,
+        1.1,
+        1.42
+      ],
+      "color": "#555d5b",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p190",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        -1.18,
+        4.17,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p191",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        4.17,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p192",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        1.18,
+        4.17,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p193",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        0.88,
+        4.17,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p194",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        -0.75,
+        4.17,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p195",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        4.17,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p196",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0.75,
+        4.17,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p197",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        -1.18,
+        4.4,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p198",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        4.4,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p199",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        1.18,
+        4.4,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p200",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        0.88,
+        4.4,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p201",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        -0.75,
+        4.4,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p202",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        4.4,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p203",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0.75,
+        4.4,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p204",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        -1.18,
+        4.63,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p205",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        4.63,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p206",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        1.18,
+        4.63,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p207",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        0.88,
+        4.63,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p208",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        -0.75,
+        4.63,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p209",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        4.63,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p210",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0.75,
+        4.63,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p211",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        -1.18,
+        4.86,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p212",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        4.86,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p213",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        1.18,
+        4.86,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p214",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        0.88,
+        4.86,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p215",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        -0.75,
+        4.86,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p216",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        4.86,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p217",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0.75,
+        4.86,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p218",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        -1.18,
+        5.09,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p219",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        5.09,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p220",
+      "name": "Painel lateral do torso",
+      "type": "brick",
+      "pos": [
+        1.18,
+        5.09,
+        -0.02
+      ],
+      "size": [
+        0.34,
+        0.215,
+        1.78
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p221",
+      "name": "Painel frontal do torso",
+      "type": "brick",
+      "pos": [
+        0.88,
+        5.09,
+        0.91
+      ],
+      "size": [
+        0.63,
+        0.215,
+        0.26
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p222",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        -0.75,
+        5.09,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p223",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0,
+        5.09,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p224",
+      "name": "Painel traseiro do torso",
+      "type": "brick",
+      "pos": [
+        0.75,
+        5.09,
+        -0.92
+      ],
+      "size": [
+        0.73,
+        0.215,
+        0.25
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p225",
+      "name": "Cobertura do torso",
+      "type": "brick",
+      "pos": [
+        -0.9299999999999999,
+        5.23,
+        -0.03
+      ],
+      "size": [
+        0.6,
+        0.18,
+        1.95
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p226",
+      "name": "Cobertura do torso",
+      "type": "brick",
+      "pos": [
+        -0.31,
+        5.23,
+        -0.03
+      ],
+      "size": [
+        0.6,
+        0.18,
+        1.95
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p227",
+      "name": "Cobertura do torso",
+      "type": "brick",
+      "pos": [
+        0.31,
+        5.23,
+        -0.03
+      ],
+      "size": [
+        0.6,
+        0.18,
+        1.95
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p228",
+      "name": "Cobertura do torso",
+      "type": "brick",
+      "pos": [
+        0.9299999999999999,
+        5.23,
+        -0.03
+      ],
+      "size": [
+        0.6,
+        0.18,
+        1.95
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p229",
+      "name": "Conector do torso",
+      "type": "cylinder",
+      "pos": [
+        -0.93,
+        4.44,
+        1.08
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.24
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p230",
+      "name": "Conector do torso",
+      "type": "cylinder",
+      "pos": [
+        0.93,
+        4.44,
+        1.08
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.24
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p231",
+      "name": "Conector do torso",
+      "type": "cylinder",
+      "pos": [
+        -0.93,
+        4.92,
+        1.08
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.24
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p232",
+      "name": "Conector do torso",
+      "type": "cylinder",
+      "pos": [
+        0.93,
+        4.92,
+        1.08
+      ],
+      "size": [
+        0.16,
+        0.16,
+        0.24
+      ],
+      "color": "#353f3e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p233",
+      "name": "Pescoço articulado",
+      "type": "brick",
+      "pos": [
+        0,
+        5.6,
+        0.32
+      ],
+      "size": [
+        0.92,
+        1.75,
+        0.72
+      ],
+      "color": "#555d5b",
+      "stage": 4,
+      "rot": [
+        -13,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p234",
+      "name": "Coluna de suporte",
+      "type": "brick",
+      "pos": [
+        0,
+        5.23,
+        0.7
+      ],
+      "size": [
+        0.76,
+        0.23,
+        0.28
+      ],
+      "color": "#727a74",
+      "stage": 4,
+      "rot": [
+        -13,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p235",
+      "name": "Eixo do pescoço",
+      "type": "cylinder",
+      "pos": [
+        -0.61,
+        6,
+        0.16
+      ],
+      "size": [
+        0.2,
+        0.2,
+        0.48
+      ],
+      "color": "#353f3e",
+      "stage": 4,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p236",
+      "name": "Eixo do pescoço",
+      "type": "cylinder",
+      "pos": [
+        0.61,
+        6,
+        0.16
+      ],
+      "size": [
+        0.2,
+        0.2,
+        0.48
+      ],
+      "color": "#353f3e",
+      "stage": 4,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p237",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -1.44,
+        6.49,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p238",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -0.48,
+        6.49,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p239",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        0.48,
+        6.49,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p240",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        1.44,
+        6.49,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p241",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -1.44,
+        6.67,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p242",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -0.48,
+        6.67,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p243",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        0.48,
+        6.67,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p244",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        1.44,
+        6.67,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p245",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -1.44,
+        6.8500000000000005,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p246",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        -0.48,
+        6.8500000000000005,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p247",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        0.48,
+        6.8500000000000005,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p248",
+      "name": "Base da cabeça",
+      "type": "brick",
+      "pos": [
+        1.44,
+        6.8500000000000005,
+        0.06
+      ],
+      "size": [
+        0.94,
+        0.165,
+        2.94
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p249",
+      "name": "Interior do visor",
+      "type": "brick",
+      "pos": [
+        0,
+        7.17,
+        -0.85
+      ],
+      "size": [
+        3.26,
+        0.94,
+        0.47
+      ],
+      "color": "#646c65",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p250",
+      "name": "Borda da cabeça",
+      "type": "brick",
+      "pos": [
+        -1.81,
+        6.95,
+        0.04
+      ],
+      "size": [
+        0.27,
+        0.185,
+        2.91
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p251",
+      "name": "Borda da cabeça",
+      "type": "brick",
+      "pos": [
+        -1.81,
+        7.15,
+        0.04
+      ],
+      "size": [
+        0.27,
+        0.185,
+        2.91
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p252",
+      "name": "Borda da cabeça",
+      "type": "brick",
+      "pos": [
+        1.81,
+        6.95,
+        0.04
+      ],
+      "size": [
+        0.27,
+        0.185,
+        2.91
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p253",
+      "name": "Borda da cabeça",
+      "type": "brick",
+      "pos": [
+        1.81,
+        7.15,
+        0.04
+      ],
+      "size": [
+        0.27,
+        0.185,
+        2.91
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p254",
+      "name": "Arco da carenagem 1",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        -1.23
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p255",
+      "name": "Arco da carenagem 2",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        -0.855
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p256",
+      "name": "Arco da carenagem 3",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        -0.48
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p257",
+      "name": "Arco da carenagem 4",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        -0.10499999999999998
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p258",
+      "name": "Arco da carenagem 5",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        0.27
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p259",
+      "name": "Arco da carenagem 6",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        0.645
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p260",
+      "name": "Arco da carenagem 7",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        1.02
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p261",
+      "name": "Arco da carenagem 8",
+      "type": "arch",
+      "pos": [
+        0,
+        7.59,
+        1.395
+      ],
+      "size": [
+        3.89,
+        1.59,
+        0.36
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p262",
+      "name": "Fechamento traseiro",
+      "type": "brick",
+      "pos": [
+        -1.2000000000000002,
+        7.29,
+        -1.45
+      ],
+      "size": [
+        0.79,
+        0.7,
+        0.16
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p263",
+      "name": "Fechamento traseiro",
+      "type": "brick",
+      "pos": [
+        -0.4,
+        7.29,
+        -1.45
+      ],
+      "size": [
+        0.79,
+        0.7,
+        0.16
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p264",
+      "name": "Fechamento traseiro",
+      "type": "brick",
+      "pos": [
+        0.4,
+        7.29,
+        -1.45
+      ],
+      "size": [
+        0.79,
+        0.7,
+        0.16
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p265",
+      "name": "Fechamento traseiro",
+      "type": "brick",
+      "pos": [
+        1.2000000000000002,
+        7.29,
+        -1.45
+      ],
+      "size": [
+        0.79,
+        0.7,
+        0.16
+      ],
+      "color": "#efece2",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p266",
+      "name": "Olho do explorador",
+      "type": "eye",
+      "pos": [
+        0,
+        7.24,
+        1.31
+      ],
+      "size": [
+        1.08,
+        1.08,
+        0.49
+      ],
+      "color": "#edb237",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p267",
+      "name": "Pino da base da cabeça",
+      "type": "cylinder",
+      "pos": [
+        -1.45,
+        6.92,
+        0.85
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.22
+      ],
+      "color": "#dc792e",
+      "stage": 7,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p268",
+      "name": "Pino da base da cabeça",
+      "type": "cylinder",
+      "pos": [
+        1.45,
+        6.92,
+        0.85
+      ],
+      "size": [
+        0.22,
+        0.12,
+        0.22
+      ],
+      "color": "#dc792e",
+      "stage": 7,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}

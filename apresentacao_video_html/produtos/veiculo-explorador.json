@@ -1,0 +1,445 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Veículo explorador",
+  "kind": "car",
+  "pieces": [
+    {
+      "id": "p327",
+      "name": "Chassi",
+      "type": "brick",
+      "pos": [
+        0,
+        0.63,
+        0
+      ],
+      "size": [
+        2,
+        0.26,
+        4.5
+      ],
+      "color": "#424f4b",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p328",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        -1.08,
+        0.65,
+        -1.35
+      ],
+      "size": [
+        1.12,
+        1.12,
+        0.45
+      ],
+      "color": "#c9b472",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p329",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        -1.08,
+        0.65,
+        1.35
+      ],
+      "size": [
+        1.12,
+        1.12,
+        0.45
+      ],
+      "color": "#c9b472",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p330",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        1.08,
+        0.65,
+        -1.35
+      ],
+      "size": [
+        1.12,
+        1.12,
+        0.45
+      ],
+      "color": "#c9b472",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p331",
+      "name": "Roda",
+      "type": "wheel",
+      "pos": [
+        1.08,
+        0.65,
+        1.35
+      ],
+      "size": [
+        1.12,
+        1.12,
+        0.45
+      ],
+      "color": "#c9b472",
+      "stage": 1,
+      "rot": [
+        0,
+        90,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p332",
+      "name": "Carroceria",
+      "type": "brick",
+      "pos": [
+        0,
+        0.91,
+        0
+      ],
+      "size": [
+        2,
+        0.18,
+        4.3
+      ],
+      "color": "#dc792e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p333",
+      "name": "Carroceria",
+      "type": "brick",
+      "pos": [
+        0,
+        1.11,
+        0
+      ],
+      "size": [
+        2,
+        0.18,
+        4.3
+      ],
+      "color": "#dc792e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p334",
+      "name": "Carroceria",
+      "type": "brick",
+      "pos": [
+        0,
+        1.31,
+        0
+      ],
+      "size": [
+        2,
+        0.18,
+        4.3
+      ],
+      "color": "#dc792e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p335",
+      "name": "Cabine",
+      "type": "brick",
+      "pos": [
+        0,
+        1.8,
+        -0.2
+      ],
+      "size": [
+        1.72,
+        0.9,
+        1.82
+      ],
+      "color": "#44727b",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p336",
+      "name": "Teto",
+      "type": "brick",
+      "pos": [
+        0,
+        2.32,
+        -0.2
+      ],
+      "size": [
+        1.92,
+        0.17,
+        2.08
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p337",
+      "name": "Pilar da cabine",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        1.84,
+        -1.07
+      ],
+      "size": [
+        0.12,
+        0.94,
+        0.13
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p338",
+      "name": "Pilar da cabine",
+      "type": "brick",
+      "pos": [
+        -0.88,
+        1.84,
+        0.65
+      ],
+      "size": [
+        0.12,
+        0.94,
+        0.13
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p339",
+      "name": "Pilar da cabine",
+      "type": "brick",
+      "pos": [
+        0.88,
+        1.84,
+        -1.07
+      ],
+      "size": [
+        0.12,
+        0.94,
+        0.13
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p340",
+      "name": "Pilar da cabine",
+      "type": "brick",
+      "pos": [
+        0.88,
+        1.84,
+        0.65
+      ],
+      "size": [
+        0.12,
+        0.94,
+        0.13
+      ],
+      "color": "#efece2",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p341",
+      "name": "Capô",
+      "type": "brick",
+      "pos": [
+        0,
+        1.44,
+        1.48
+      ],
+      "size": [
+        1.94,
+        0.18,
+        1.17
+      ],
+      "color": "#dc792e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p342",
+      "name": "Farol",
+      "type": "cylinder",
+      "pos": [
+        -0.65,
+        1.12,
+        2.23
+      ],
+      "size": [
+        0.42,
+        0.34,
+        0.16
+      ],
+      "color": "#f3eac9",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p343",
+      "name": "Farol",
+      "type": "cylinder",
+      "pos": [
+        0.65,
+        1.12,
+        2.23
+      ],
+      "size": [
+        0.42,
+        0.34,
+        0.16
+      ],
+      "color": "#f3eac9",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p344",
+      "name": "Para-choque",
+      "type": "brick",
+      "pos": [
+        0,
+        0.8,
+        2.35
+      ],
+      "size": [
+        2.08,
+        0.22,
+        0.22
+      ],
+      "color": "#a7b0a9",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p345",
+      "name": "Para-choque traseiro",
+      "type": "brick",
+      "pos": [
+        0,
+        0.8,
+        -2.35
+      ],
+      "size": [
+        2.08,
+        0.22,
+        0.22
+      ],
+      "color": "#a7b0a9",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}
