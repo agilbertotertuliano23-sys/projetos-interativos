@@ -1,0 +1,113 @@
+{
+  "products": [
+    {
+      "title": "Robô explorador",
+      "pieces": 134,
+      "stages": [
+        "Pés e plataformas",
+        "Tornozelos e pernas",
+        "Articulações laterais",
+        "Corpo e estrutura",
+        "Pescoço e suporte",
+        "Base da cabeça",
+        "Carenagem curva",
+        "Olho e acabamento"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Casa modular",
+      "pieces": 58,
+      "stages": [
+        "Terreno e piso",
+        "Laterais e fundo",
+        "Fachada",
+        "Porta e janelas",
+        "Viga de apoio",
+        "Telhado",
+        "Chaminé",
+        "Árvores"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Veículo explorador",
+      "pieces": 19,
+      "stages": [
+        "Chassi",
+        "Rodas",
+        "Carroceria",
+        "Cabine",
+        "Teto e pilares",
+        "Capô",
+        "Faróis",
+        "Para-choques"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Foguete orbital",
+      "pieces": 11,
+      "stages": [
+        "Plataforma",
+        "Motor",
+        "Corpo inferior",
+        "Corpo superior",
+        "Aletas",
+        "Cone superior",
+        "Visor",
+        "Antena"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Praça LEGO",
+      "pieces": 41,
+      "stages": [
+        "Base verde",
+        "Calçada e trilha",
+        "Paredes",
+        "Porta e janela",
+        "Telhado e letreiro",
+        "Árvores, flores e cerca",
+        "Postes e banco",
+        "Personagens"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    },
+    {
+      "title": "Turma de personagens",
+      "pieces": 12,
+      "stages": [
+        "Plataforma",
+        "Arquibancada e degraus",
+        "Exploradora",
+        "Astronauta",
+        "Construtora",
+        "Chef",
+        "Rainha",
+        "Herói, mago e holofotes"
+      ],
+      "offline": true,
+      "inventory": true,
+      "standalone": true,
+      "automaticManual": true
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,354 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Turma de personagens",
+  "kind": "crew",
+  "pieces": [
+    {
+      "id": "p398",
+      "name": "Palco",
+      "type": "brick",
+      "pos": [
+        0,
+        0.15,
+        0
+      ],
+      "size": [
+        8,
+        0.3,
+        4
+      ],
+      "color": "#505958",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p399",
+      "name": "Arquibancada",
+      "type": "brick",
+      "pos": [
+        0,
+        0.55,
+        -1
+      ],
+      "size": [
+        7,
+        0.5,
+        1.6
+      ],
+      "color": "#294c45",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p400",
+      "name": "Degraus",
+      "type": "stairs",
+      "pos": [
+        3.2,
+        0.55,
+        0.2
+      ],
+      "size": [
+        0.8,
+        0.5,
+        0.8
+      ],
+      "color": "#a7b0a9",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p401",
+      "name": "Exploradora",
+      "type": "figure",
+      "pos": [
+        -2.4,
+        1.25,
+        1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#3f7d5a",
+      "stage": 2,
+      "rot": [
+        0,
+        10,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#c68642",
+        "legs": "#8a6a45",
+        "hair": "long",
+        "hairColor": "#7a4a2a",
+        "face": "happy",
+        "print": "badge",
+        "accessory": "backpack",
+        "accColor": "#e7802e"
+      }
+    },
+    {
+      "id": "p402",
+      "name": "Astronauta",
+      "type": "figure",
+      "pos": [
+        -0.8,
+        1.25,
+        1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#efece2",
+        "hair": "space",
+        "hairColor": "#efece2",
+        "face": "surprised",
+        "print": "zipper",
+        "accessory": "none",
+        "accColor": "#e7802e"
+      }
+    },
+    {
+      "id": "p403",
+      "name": "Construtora",
+      "type": "figure",
+      "pos": [
+        0.8,
+        1.25,
+        1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#8d5524",
+        "legs": "#3a5a8c",
+        "hair": "hardhat",
+        "hairColor": "#eeb83e",
+        "face": "smile",
+        "print": "stripe",
+        "accessory": "tool",
+        "accColor": "#c9cfc6"
+      }
+    },
+    {
+      "id": "p404",
+      "name": "Chef",
+      "type": "figure",
+      "pos": [
+        2.4,
+        1.25,
+        1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#f2efe4",
+      "stage": 5,
+      "rot": [
+        0,
+        -10,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f1c27d",
+        "legs": "#505958",
+        "hair": "chef",
+        "hairColor": "#ffffff",
+        "face": "wink",
+        "print": "tie",
+        "accessory": "none",
+        "accColor": "#c0392b"
+      }
+    },
+    {
+      "id": "p405",
+      "name": "Rainha",
+      "type": "figure",
+      "pos": [
+        0,
+        1.75,
+        -1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#6b3fa0",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#5c3a1e",
+        "legs": "#3b2a5c",
+        "hair": "crown",
+        "hairColor": "#eeb83e",
+        "face": "smile",
+        "print": "star",
+        "accessory": "cape",
+        "accColor": "#c0392b"
+      }
+    },
+    {
+      "id": "p406",
+      "name": "Herói",
+      "type": "figure",
+      "pos": [
+        -1.6,
+        1.75,
+        -1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#2e5fa8",
+      "stage": 7,
+      "rot": [
+        0,
+        15,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#2e5fa8",
+        "hair": "short",
+        "hairColor": "#2b2b2b",
+        "face": "sunglasses",
+        "print": "star",
+        "accessory": "shield",
+        "accColor": "#d63c2f"
+      }
+    },
+    {
+      "id": "p407",
+      "name": "Mago",
+      "type": "figure",
+      "pos": [
+        1.6,
+        1.75,
+        -1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#294c45",
+      "stage": 7,
+      "rot": [
+        0,
+        -15,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#e0ac69",
+        "legs": "#294c45",
+        "hair": "wizard",
+        "hairColor": "#3d3a7a",
+        "face": "serious",
+        "print": "star",
+        "accessory": "cape",
+        "accColor": "#eeb83e"
+      }
+    },
+    {
+      "id": "p408",
+      "name": "Holofote",
+      "type": "lamp",
+      "pos": [
+        -3.6,
+        1.5,
+        1.5
+      ],
+      "size": [
+        0.4,
+        2.4,
+        0.4
+      ],
+      "color": "#eeb83e",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p409",
+      "name": "Holofote",
+      "type": "lamp",
+      "pos": [
+        3.6,
+        1.5,
+        1.5
+      ],
+      "size": [
+        0.4,
+        2.4,
+        0.4
+      ],
+      "color": "#eeb83e",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}

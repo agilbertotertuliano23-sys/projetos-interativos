@@ -5,7 +5,7 @@
   "kind": "custom",
   "pieces": [
     {
-      "id": "custom-muq3cpoj-135",
+      "id": "custom-muu5dkk4-135",
       "name": "Bloco 2 × 4",
       "type": "brick",
       "pos": [
@@ -28,7 +28,7 @@
       "studs": true
     },
     {
-      "id": "custom-muq3cq1k-137",
+      "id": "custom-muu5dklh-137",
       "name": "Placa 2 × 4",
       "type": "plate",
       "pos": [
@@ -51,7 +51,7 @@
       "studs": true
     },
     {
-      "id": "custom-muq3cq9o-139",
+      "id": "custom-muu5dkqt-139",
       "name": "Bloco 1 × 1",
       "type": "brick",
       "pos": [
@@ -74,7 +74,7 @@
       "studs": true
     },
     {
-      "id": "custom-muq3cqhi-141",
+      "id": "custom-muu5dkug-141",
       "name": "Viga",
       "type": "brick",
       "pos": [
@@ -97,7 +97,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3cqpr-143",
+      "id": "custom-muu5dky4-143",
       "name": "Arco",
       "type": "arch",
       "pos": [
@@ -120,7 +120,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3cqyb-145",
+      "id": "custom-muu5dl1l-145",
       "name": "Rampa",
       "type": "wedge",
       "pos": [
@@ -143,7 +143,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3cr6u-147",
+      "id": "custom-muu5dl55-147",
       "name": "Cilindro",
       "type": "cylinder",
       "pos": [
@@ -166,7 +166,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3crf2-149",
+      "id": "custom-muu5dl92-149",
       "name": "Esfera",
       "type": "sphere",
       "pos": [
@@ -189,7 +189,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3croe-151",
+      "id": "custom-muu5dlc5-151",
       "name": "Cone",
       "type": "cone",
       "pos": [
@@ -212,7 +212,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3crxt-153",
+      "id": "custom-muu5dlgf-153",
       "name": "Roda",
       "type": "wheel",
       "pos": [
@@ -235,7 +235,7 @@
       "studs": false
     },
     {
-      "id": "custom-muq3cs76-155",
+      "id": "custom-muu5dljq-155",
       "name": "Painel",
       "type": "brick",
       "pos": [
@@ -258,9 +258,341 @@
       "studs": false
     },
     {
-      "id": "custom-muq3csh6-157",
+      "id": "custom-muu5dlmr-157",
       "name": "Olho",
       "type": "eye",
+      "pos": [
+        0,
+        13.049999999999997,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        0.4
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dlu8-159",
+      "name": "Placa lisa 2 × 2",
+      "type": "tile",
+      "pos": [
+        0,
+        13.709999999999997,
+        2.8
+      ],
+      "size": [
+        1,
+        0.12,
+        1
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dlwn-161",
+      "name": "Bloco redondo 1 × 1",
+      "type": "round",
+      "pos": [
+        0,
+        14.119999999999997,
+        2.8
+      ],
+      "size": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dm0o-163",
+      "name": "Viga Technic",
+      "type": "technic",
+      "pos": [
+        0,
+        14.669999999999996,
+        2.8
+      ],
+      "size": [
+        3,
+        0.4,
+        0.4
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dm4u-165",
+      "name": "Escada",
+      "type": "stairs",
+      "pos": [
+        0,
+        15.469999999999995,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        1.2
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dm8l-167",
+      "name": "Janela",
+      "type": "window",
+      "pos": [
+        0,
+        16.669999999999998,
+        2.8
+      ],
+      "size": [
+        1.2,
+        1.2,
+        0.25
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dmcb-169",
+      "name": "Porta",
+      "type": "door",
+      "pos": [
+        0,
+        18.32,
+        2.8
+      ],
+      "size": [
+        1,
+        1.9,
+        0.25
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dmfh-171",
+      "name": "Cerca",
+      "type": "fence",
+      "pos": [
+        0,
+        19.720000000000002,
+        2.8
+      ],
+      "size": [
+        2,
+        0.7,
+        0.15
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dmis-173",
+      "name": "Engrenagem",
+      "type": "gear",
+      "pos": [
+        0,
+        20.670000000000005,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        0.25
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dmpl-175",
+      "name": "Anel",
+      "type": "ring",
+      "pos": [
+        0,
+        21.770000000000007,
+        2.8
+      ],
+      "size": [
+        1,
+        1,
+        0.24
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dmve-177",
+      "name": "Flor",
+      "type": "plant",
+      "pos": [
+        0,
+        22.770000000000007,
+        2.8
+      ],
+      "size": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dn28-179",
+      "name": "Árvore",
+      "type": "tree",
+      "pos": [
+        0,
+        24.470000000000006,
+        2.8
+      ],
+      "size": [
+        1.4,
+        2.4,
+        1.4
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dn8r-181",
+      "name": "Poste de luz",
+      "type": "lamp",
+      "pos": [
+        0,
+        26.970000000000006,
+        2.8
+      ],
+      "size": [
+        0.45,
+        2.4,
+        0.45
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "custom-muu5dnkt-183",
+      "name": "Exploradora",
+      "type": "figure",
+      "pos": [
+        0,
+        29.220000000000006,
+        2.8
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#3f7d5a",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#c68642",
+        "legs": "#8a6a45",
+        "hair": "long",
+        "hairColor": "#7a4a2a",
+        "face": "happy",
+        "print": "badge",
+        "accessory": "backpack",
+        "accColor": "#e7802e"
+      }
+    },
+    {
+      "id": "custom-muu5dnsx-185",
+      "name": "Personagem",
+      "type": "figure",
       "pos": [
         2.25,
         2,
@@ -268,22 +600,32 @@
       ],
       "size": [
         2.5,
-        1,
-        0.4
+        1.9,
+        0.5
       ],
       "color": "#294c45",
-      "stage": 2,
+      "stage": 5,
       "rot": [
         0,
         0,
         35
       ],
-      "studs": false
+      "studs": false,
+      "fig": {
+        "skin": "#8d5524",
+        "legs": "#f08bb4",
+        "hair": "crown",
+        "hairColor": "#eeb83e",
+        "face": "wink",
+        "print": "tie",
+        "accessory": "cape",
+        "accColor": "#3f7d5a"
+      }
     },
     {
-      "id": "custom-muq3cthd-159",
-      "name": "Olho · cópia",
-      "type": "eye",
+      "id": "custom-muu5dq7s-187",
+      "name": "Personagem · cópia",
+      "type": "figure",
       "pos": [
         3,
         2.25,
@@ -291,17 +633,27 @@
       ],
       "size": [
         2.5,
-        1,
-        0.4
+        1.9,
+        0.5
       ],
       "color": "#294c45",
-      "stage": 2,
+      "stage": 5,
       "rot": [
         0,
         0,
         35
       ],
-      "studs": false
+      "studs": false,
+      "fig": {
+        "skin": "#8d5524",
+        "legs": "#f08bb4",
+        "hair": "crown",
+        "hairColor": "#eeb83e",
+        "face": "wink",
+        "print": "tie",
+        "accessory": "cape",
+        "accColor": "#3f7d5a"
+      }
     }
   ]
 }

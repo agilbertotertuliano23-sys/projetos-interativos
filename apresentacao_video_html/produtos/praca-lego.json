@@ -1,0 +1,991 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Praça LEGO",
+  "kind": "city",
+  "pieces": [
+    {
+      "id": "p357",
+      "name": "Base verde",
+      "type": "brick",
+      "pos": [
+        0,
+        0.1,
+        0
+      ],
+      "size": [
+        10,
+        0.2,
+        10
+      ],
+      "color": "#5f8f4e",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p358",
+      "name": "Calçada",
+      "type": "tile",
+      "pos": [
+        -3.96,
+        0.24,
+        3.4
+      ],
+      "size": [
+        1.94,
+        0.08,
+        1.7
+      ],
+      "color": "#c9cbc2",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p359",
+      "name": "Calçada",
+      "type": "tile",
+      "pos": [
+        -1.98,
+        0.24,
+        3.4
+      ],
+      "size": [
+        1.94,
+        0.08,
+        1.7
+      ],
+      "color": "#c9cbc2",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p360",
+      "name": "Calçada",
+      "type": "tile",
+      "pos": [
+        0,
+        0.24,
+        3.4
+      ],
+      "size": [
+        1.94,
+        0.08,
+        1.7
+      ],
+      "color": "#c9cbc2",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p361",
+      "name": "Calçada",
+      "type": "tile",
+      "pos": [
+        1.98,
+        0.24,
+        3.4
+      ],
+      "size": [
+        1.94,
+        0.08,
+        1.7
+      ],
+      "color": "#c9cbc2",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p362",
+      "name": "Calçada",
+      "type": "tile",
+      "pos": [
+        3.96,
+        0.24,
+        3.4
+      ],
+      "size": [
+        1.94,
+        0.08,
+        1.7
+      ],
+      "color": "#c9cbc2",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p363",
+      "name": "Trilha",
+      "type": "tile",
+      "pos": [
+        -3.1,
+        0.24,
+        0.55
+      ],
+      "size": [
+        1.1,
+        0.08,
+        1.1
+      ],
+      "color": "#b4a68c",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p364",
+      "name": "Trilha",
+      "type": "tile",
+      "pos": [
+        -3.1,
+        0.24,
+        1.7
+      ],
+      "size": [
+        1.1,
+        0.08,
+        1.1
+      ],
+      "color": "#b4a68c",
+      "stage": 1,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p365",
+      "name": "Parede de fundo",
+      "type": "brick",
+      "pos": [
+        -2.5,
+        1.7,
+        -3.9
+      ],
+      "size": [
+        5,
+        3,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p366",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -4.85,
+        1.7,
+        -2.25
+      ],
+      "size": [
+        0.3,
+        3,
+        3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p367",
+      "name": "Parede lateral",
+      "type": "brick",
+      "pos": [
+        -0.15,
+        1.7,
+        -2.25
+      ],
+      "size": [
+        0.3,
+        3,
+        3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p368",
+      "name": "Fachada esquerda",
+      "type": "brick",
+      "pos": [
+        -4.3,
+        1.7,
+        -0.6
+      ],
+      "size": [
+        1.4,
+        3,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p369",
+      "name": "Fachada central",
+      "type": "brick",
+      "pos": [
+        -2.4,
+        1.7,
+        -0.6
+      ],
+      "size": [
+        0.4,
+        3,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p370",
+      "name": "Fachada direita",
+      "type": "brick",
+      "pos": [
+        -0.3,
+        1.7,
+        -0.6
+      ],
+      "size": [
+        0.6,
+        3,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p371",
+      "name": "Verga da porta",
+      "type": "brick",
+      "pos": [
+        -3.1,
+        2.7,
+        -0.6
+      ],
+      "size": [
+        1,
+        1,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p372",
+      "name": "Peitoril",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        0.6,
+        -0.6
+      ],
+      "size": [
+        1.6,
+        0.8,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p373",
+      "name": "Verga da janela",
+      "type": "brick",
+      "pos": [
+        -1.4,
+        2.8,
+        -0.6
+      ],
+      "size": [
+        1.6,
+        0.8,
+        0.3
+      ],
+      "color": "#efe6d2",
+      "stage": 2,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p374",
+      "name": "Porta da loja",
+      "type": "door",
+      "pos": [
+        -3.1,
+        1.2,
+        -0.6
+      ],
+      "size": [
+        1,
+        2,
+        0.3
+      ],
+      "color": "#2e5fa8",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p375",
+      "name": "Vitrine",
+      "type": "window",
+      "pos": [
+        -1.4,
+        1.7,
+        -0.6
+      ],
+      "size": [
+        1.6,
+        1.4,
+        0.3
+      ],
+      "color": "#f2efe4",
+      "stage": 3,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p376",
+      "name": "Telhado",
+      "type": "brick",
+      "pos": [
+        -2.5,
+        3.3,
+        -2.25
+      ],
+      "size": [
+        5.4,
+        0.2,
+        3.9
+      ],
+      "color": "#505958",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p377",
+      "name": "Letreiro",
+      "type": "brick",
+      "pos": [
+        -2.5,
+        3.85,
+        -0.5
+      ],
+      "size": [
+        3.2,
+        0.7,
+        0.15
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p378",
+      "name": "Luminária do telhado",
+      "type": "round",
+      "pos": [
+        -4.55,
+        3.65,
+        -0.9
+      ],
+      "size": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": "#eeb83e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p379",
+      "name": "Luminária do telhado",
+      "type": "round",
+      "pos": [
+        -0.45,
+        3.65,
+        -0.9
+      ],
+      "size": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": "#eeb83e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p380",
+      "name": "Árvore grande",
+      "type": "tree",
+      "pos": [
+        3.6,
+        1.4,
+        -2.8
+      ],
+      "size": [
+        1.6,
+        2.4,
+        1.6
+      ],
+      "color": "#345545",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p381",
+      "name": "Árvore pequena",
+      "type": "tree",
+      "pos": [
+        4.2,
+        1.2,
+        -0.6
+      ],
+      "size": [
+        1.2,
+        2,
+        1.2
+      ],
+      "color": "#4f7a3a",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p382",
+      "name": "Flor",
+      "type": "plant",
+      "pos": [
+        -4.6,
+        0.6,
+        0.2
+      ],
+      "size": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "color": "#d63c2f",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p383",
+      "name": "Flor",
+      "type": "plant",
+      "pos": [
+        -0.4,
+        0.6,
+        0.2
+      ],
+      "size": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "color": "#eeb83e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p384",
+      "name": "Flor",
+      "type": "plant",
+      "pos": [
+        1.1,
+        0.6,
+        0.2
+      ],
+      "size": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "color": "#f08bb4",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p385",
+      "name": "Cerca",
+      "type": "fence",
+      "pos": [
+        1.4,
+        0.55,
+        -4.6
+      ],
+      "size": [
+        1.6,
+        0.7,
+        0.15
+      ],
+      "color": "#efece2",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p386",
+      "name": "Cerca",
+      "type": "fence",
+      "pos": [
+        3,
+        0.55,
+        -4.6
+      ],
+      "size": [
+        1.6,
+        0.7,
+        0.15
+      ],
+      "color": "#efece2",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p387",
+      "name": "Cerca",
+      "type": "fence",
+      "pos": [
+        4.4,
+        0.55,
+        -4.6
+      ],
+      "size": [
+        1.2,
+        0.7,
+        0.15
+      ],
+      "color": "#efece2",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p388",
+      "name": "Poste de luz",
+      "type": "lamp",
+      "pos": [
+        1.4,
+        1.4,
+        2.2
+      ],
+      "size": [
+        0.45,
+        2.4,
+        0.45
+      ],
+      "color": "#505958",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p389",
+      "name": "Poste de luz",
+      "type": "lamp",
+      "pos": [
+        -4.6,
+        1.4,
+        2.2
+      ],
+      "size": [
+        0.45,
+        2.4,
+        0.45
+      ],
+      "color": "#505958",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p390",
+      "name": "Assento do banco",
+      "type": "brick",
+      "pos": [
+        3.6,
+        0.75,
+        2
+      ],
+      "size": [
+        1.8,
+        0.15,
+        0.6
+      ],
+      "color": "#a27c47",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p391",
+      "name": "Encosto do banco",
+      "type": "brick",
+      "pos": [
+        3.6,
+        1.05,
+        1.75
+      ],
+      "size": [
+        1.8,
+        0.45,
+        0.12
+      ],
+      "color": "#a27c47",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p392",
+      "name": "Pé do banco",
+      "type": "brick",
+      "pos": [
+        2.95,
+        0.47,
+        2
+      ],
+      "size": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "color": "#505958",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p393",
+      "name": "Pé do banco",
+      "type": "brick",
+      "pos": [
+        4.25,
+        0.47,
+        2
+      ],
+      "size": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "color": "#505958",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p394",
+      "name": "Exploradora",
+      "type": "figure",
+      "pos": [
+        0.4,
+        1.23,
+        3.4
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#3f7d5a",
+      "stage": 7,
+      "rot": [
+        0,
+        20,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#c68642",
+        "legs": "#8a6a45",
+        "hair": "long",
+        "hairColor": "#7a4a2a",
+        "face": "happy",
+        "print": "badge",
+        "accessory": "backpack",
+        "accColor": "#e7802e"
+      }
+    },
+    {
+      "id": "p395",
+      "name": "Chef",
+      "type": "figure",
+      "pos": [
+        -3.1,
+        1.23,
+        1.1
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#f2efe4",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f1c27d",
+        "legs": "#505958",
+        "hair": "chef",
+        "hairColor": "#ffffff",
+        "face": "wink",
+        "print": "tie",
+        "accessory": "none",
+        "accColor": "#c0392b"
+      }
+    },
+    {
+      "id": "p396",
+      "name": "Criança com balão",
+      "type": "figure",
+      "pos": [
+        2.2,
+        1.23,
+        3.6
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#eeb83e",
+      "stage": 7,
+      "rot": [
+        0,
+        -30,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#f2c94c",
+        "legs": "#7ba6a1",
+        "hair": "ponytail",
+        "hairColor": "#2b1d14",
+        "face": "happy",
+        "print": "none",
+        "accessory": "balloon",
+        "accColor": "#d63c2f"
+      }
+    },
+    {
+      "id": "p397",
+      "name": "Construtora",
+      "type": "figure",
+      "pos": [
+        -1.3,
+        1.15,
+        0.9
+      ],
+      "size": [
+        0.9,
+        1.9,
+        0.5
+      ],
+      "color": "#e7802e",
+      "stage": 7,
+      "rot": [
+        0,
+        -10,
+        0
+      ],
+      "studs": false,
+      "fig": {
+        "skin": "#8d5524",
+        "legs": "#3a5a8c",
+        "hair": "hardhat",
+        "hairColor": "#eeb83e",
+        "face": "smile",
+        "print": "stripe",
+        "accessory": "tool",
+        "accColor": "#c9cfc6"
+      }
+    }
+  ]
+}

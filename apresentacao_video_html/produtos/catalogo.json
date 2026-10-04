@@ -1,0 +1,110 @@
+[
+  {
+    "preset": "robotPreset",
+    "slug": "robo-explorador",
+    "title": "Robô explorador",
+    "kind": "robot",
+    "description": "Pés laranja, articulações, torso e carenagem curva. A reconstrução inspirada no vídeo de referência.",
+    "pieces": 134,
+    "stages": [
+      "Pés e plataformas",
+      "Tornozelos e pernas",
+      "Articulações laterais",
+      "Corpo e estrutura",
+      "Pescoço e suporte",
+      "Base da cabeça",
+      "Carenagem curva",
+      "Olho e acabamento"
+    ]
+  },
+  {
+    "preset": "housePreset",
+    "slug": "casa-modular",
+    "title": "Casa modular",
+    "kind": "house",
+    "description": "Do terreno ao telhado. Acompanhe as paredes, as esquadrias e cada detalhe da casa.",
+    "pieces": 58,
+    "stages": [
+      "Terreno e piso",
+      "Laterais e fundo",
+      "Fachada",
+      "Porta e janelas",
+      "Viga de apoio",
+      "Telhado",
+      "Chaminé",
+      "Árvores"
+    ]
+  },
+  {
+    "preset": "carPreset",
+    "slug": "veiculo-explorador",
+    "title": "Veículo explorador",
+    "kind": "car",
+    "description": "Chassi, rodas, carroceria e cabine. Cada conjunto tem seu momento de encaixe.",
+    "pieces": 19,
+    "stages": [
+      "Chassi",
+      "Rodas",
+      "Carroceria",
+      "Cabine",
+      "Teto e pilares",
+      "Capô",
+      "Faróis",
+      "Para-choques"
+    ]
+  },
+  {
+    "preset": "rocketPreset",
+    "slug": "foguete-orbital",
+    "title": "Foguete orbital",
+    "kind": "rocket",
+    "description": "Uma construção vertical, da plataforma de lançamento até a antena no topo.",
+    "pieces": 11,
+    "stages": [
+      "Plataforma",
+      "Motor",
+      "Corpo inferior",
+      "Corpo superior",
+      "Aletas",
+      "Cone superior",
+      "Visor",
+      "Antena"
+    ]
+  },
+  {
+    "preset": "cityPreset",
+    "slug": "praca-lego",
+    "title": "Praça LEGO",
+    "kind": "city",
+    "description": "Loja com porta e vitrine, calçada, árvores, flores, postes, banco e quatro personagens animados.",
+    "pieces": 41,
+    "stages": [
+      "Base verde",
+      "Calçada e trilha",
+      "Paredes",
+      "Porta e janela",
+      "Telhado e letreiro",
+      "Árvores, flores e cerca",
+      "Postes e banco",
+      "Personagens"
+    ]
+  },
+  {
+    "preset": "crewPreset",
+    "slug": "turma-personagens",
+    "title": "Turma de personagens",
+    "kind": "crew",
+    "description": "Sete minifiguras customizáveis em um palco de dois níveis: chapéus, expressões, estampas e acessórios.",
+    "pieces": 12,
+    "stages": [
+      "Plataforma",
+      "Arquibancada e degraus",
+      "Exploradora",
+      "Astronauta",
+      "Construtora",
+      "Chef",
+      "Rainha",
+      "Herói, mago e holofotes"
+    ]
+  }
+]

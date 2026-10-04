@@ -1,0 +1,261 @@
+{
+  "format": "mono-blocks",
+  "version": 1,
+  "title": "Foguete orbital",
+  "kind": "rocket",
+  "pieces": [
+    {
+      "id": "p346",
+      "name": "Plataforma",
+      "type": "brick",
+      "pos": [
+        0,
+        0.12,
+        0
+      ],
+      "size": [
+        4,
+        0.24,
+        4
+      ],
+      "color": "#505958",
+      "stage": 0,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": true
+    },
+    {
+      "id": "p347",
+      "name": "Motor",
+      "type": "cylinder",
+      "pos": [
+        0,
+        0.8,
+        0
+      ],
+      "size": [
+        1.15,
+        1.1,
+        1.15
+      ],
+      "color": "#424f4b",
+      "stage": 1,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p348",
+      "name": "Corpo do foguete",
+      "type": "cylinder",
+      "pos": [
+        0,
+        1.56,
+        0
+      ],
+      "size": [
+        1.65,
+        1.65,
+        0.65
+      ],
+      "color": "#e7802e",
+      "stage": 2,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p349",
+      "name": "Corpo do foguete",
+      "type": "cylinder",
+      "pos": [
+        0,
+        2.23,
+        0
+      ],
+      "size": [
+        1.65,
+        1.65,
+        0.65
+      ],
+      "color": "#efece2",
+      "stage": 2,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p350",
+      "name": "Corpo do foguete",
+      "type": "cylinder",
+      "pos": [
+        0,
+        2.9000000000000004,
+        0
+      ],
+      "size": [
+        1.65,
+        1.65,
+        0.65
+      ],
+      "color": "#e7802e",
+      "stage": 3,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p351",
+      "name": "Corpo do foguete",
+      "type": "cylinder",
+      "pos": [
+        0,
+        3.5700000000000003,
+        0
+      ],
+      "size": [
+        1.65,
+        1.65,
+        0.65
+      ],
+      "color": "#efece2",
+      "stage": 3,
+      "rot": [
+        90,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p352",
+      "name": "Cone superior",
+      "type": "cone",
+      "pos": [
+        0,
+        4.58,
+        0
+      ],
+      "size": [
+        1.66,
+        1.4,
+        1.66
+      ],
+      "color": "#e7802e",
+      "stage": 5,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p353",
+      "name": "Aleta",
+      "type": "wedge",
+      "pos": [
+        -1.01,
+        1.09,
+        0
+      ],
+      "size": [
+        0.9,
+        1.6,
+        0.28
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p354",
+      "name": "Aleta",
+      "type": "wedge",
+      "pos": [
+        1.01,
+        1.09,
+        0
+      ],
+      "size": [
+        0.9,
+        1.6,
+        0.28
+      ],
+      "color": "#e7802e",
+      "stage": 4,
+      "rot": [
+        0,
+        180,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p355",
+      "name": "Janela",
+      "type": "eye",
+      "pos": [
+        0,
+        3.23,
+        0.87
+      ],
+      "size": [
+        0.75,
+        0.75,
+        0.17
+      ],
+      "color": "#eeb83e",
+      "stage": 6,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    },
+    {
+      "id": "p356",
+      "name": "Antena",
+      "type": "brick",
+      "pos": [
+        0,
+        5.47,
+        0
+      ],
+      "size": [
+        0.08,
+        0.55,
+        0.08
+      ],
+      "color": "#505958",
+      "stage": 7,
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "studs": false
+    }
+  ]
+}

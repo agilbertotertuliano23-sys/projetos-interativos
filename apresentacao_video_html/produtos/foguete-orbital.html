@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
-<head>
+<html lang="pt-BR"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f5f4ef">
@@ -55,7 +54,7 @@ dialog{border:1px solid #dddccf;border-radius:12px;padding:30px;width:min(860px,
       <div class="sidebar-foot"><span>DESENHADO PARA EXPERIMENTAR</span><span>✳</span></div>
     </aside>
 
-    <aside class="sidebar editor-panel" id="editorPanel" hidden>
+    <aside class="sidebar editor-panel" id="editorPanel" hidden="">
       <div class="eyebrow"><span class="line"></span> SUA BANCADA DE CRIAÇÃO</div>
       <h2>Encaixe uma<br> <em>nova ideia.</em></h2>
       <p class="intro">Casas, veículos, cidades, personagens ou o que você imaginar. Combine formas, peças de encaixe e minifiguras customizáveis.</p>
@@ -67,13 +66,13 @@ dialog{border:1px solid #dddccf;border-radius:12px;padding:30px;width:min(860px,
         <button role="tab" aria-selected="false" data-library="figureLibrary">Personagens</button>
       </div>
       <div class="parts-library" id="partsLibrary" role="tabpanel"></div>
-      <div class="parts-library lego-library" id="legoLibrary" role="tabpanel" hidden></div>
-      <div class="figure-library" id="figureLibrary" role="tabpanel" hidden></div>
+      <div class="parts-library lego-library" id="legoLibrary" role="tabpanel" hidden=""></div>
+      <div class="figure-library" id="figureLibrary" role="tabpanel" hidden=""></div>
       <div class="section-label">COR DA PRÓXIMA PEÇA</div>
       <div class="swatches" id="newColors"></div>
-      <label class="check-row"><input type="checkbox" id="snap" checked> Encaixar na grade <span>0,25 u</span></label>
-      <label class="check-row"><input type="checkbox" id="stack" checked> Empilhar ao arrastar <span>sobre as peças</span></label>
-      <div class="edit-history"><button id="undo" class="button outline" disabled>↶ Desfazer</button><button id="redo" class="button outline" disabled>↷ Refazer</button></div>
+      <label class="check-row"><input type="checkbox" id="snap" checked=""> Encaixar na grade <span>0,25 u</span></label>
+      <label class="check-row"><input type="checkbox" id="stack" checked=""> Empilhar ao arrastar <span>sobre as peças</span></label>
+      <div class="edit-history"><button id="undo" class="button outline" disabled="">↶ Desfazer</button><button id="redo" class="button outline" disabled="">↷ Refazer</button></div>
       <div class="section-label">COMEÇAR COM</div>
       <div class="preset-actions"><button id="emptyPreset" class="button dark">Bancada vazia +</button><button id="robotPreset" class="button outline">Robô</button></div>
       <div class="preset-actions"><button id="housePreset" class="button outline">Casa</button><button id="carPreset" class="button outline">Veículo</button><button id="rocketPreset" class="button outline">Foguete</button></div>
@@ -99,7 +98,7 @@ dialog{border:1px solid #dddccf;border-radius:12px;padding:30px;width:min(860px,
       <div class="stage-info"><span class="model-tag" id="modelTag">ROBÔ EXPLORADOR</span><span id="pieceCount">— PEÇAS</span><span>MODELO 3D EDITÁVEL</span></div>
       <div class="camera-hint" id="cameraHint"><span>↔</span> Arraste: girar <i>·</i> Shift + arrastar: mover vista <i>·</i> Rolar: zoom</div>
 
-      <section class="inspector" id="inspector" aria-label="Propriedades da peça" hidden>
+      <section class="inspector" id="inspector" aria-label="Propriedades da peça" hidden="">
         <div class="inspector-top"><span>PEÇA SELECIONADA</span><button id="deselect" aria-label="Fechar seleção">×</button></div>
         <input id="pieceName" class="piece-name" aria-label="Nome da peça" maxlength="60">
         <div class="property-label">POSIÇÃO <small>unidades</small></div>
@@ -108,7 +107,7 @@ dialog{border:1px solid #dddccf;border-radius:12px;padding:30px;width:min(860px,
         <div class="xyz-fields"><label>L<input id="sizeX" type="number" step="0.01" min="0.01" max="10"></label><label>A<input id="sizeY" type="number" step="0.01" min="0.01" max="10"></label><label>P<input id="sizeZ" type="number" step="0.01" min="0.01" max="10"></label></div>
         <div class="property-label">COR <input id="pieceColor" type="color" aria-label="Cor da peça"></div>
         <div class="swatches" id="pieceColors"></div>
-        <div id="figureEditor" class="figure-editor" hidden>
+        <div id="figureEditor" class="figure-editor" hidden="">
           <div class="property-label">PERSONAGEM <small>a cor acima veste o tronco</small></div>
           <div class="figure-colors"><label>Pele<input id="figSkin" type="color"></label><label>Pernas<input id="figLegs" type="color"></label><label>Cabelo<input id="figHairColor" type="color"></label><label>Detalhe<input id="figAccColor" type="color"></label></div>
           <div class="figure-selects"><label class="stage-select-label">Cabelo / chapéu<select id="figHair"></select></label><label class="stage-select-label">Expressão<select id="figFace"></select></label><label class="stage-select-label">Estampa<select id="figPrint"></select></label><label class="stage-select-label">Acessório<select id="figAccessory"></select></label></div>
@@ -125,29 +124,29 @@ dialog{border:1px solid #dddccf;border-radius:12px;padding:30px;width:min(860px,
       </section>
 
       <div class="playback" id="playback">
-        <div class="playback-main"><button id="play" class="play-button" aria-label="Reproduzir montagem">▶</button><button id="restart" class="restart-button" title="Recomeçar montagem" aria-label="Recomeçar montagem">↺</button><div class="playback-title"><strong id="currentStepTitle">Pronto para explorar</strong><span id="currentStepSub">O robô completo. Aperte play para montar.</span></div><label class="speed-label"><span class="sr-only">Velocidade</span><select id="speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><span class="timecode" id="timecode">00:19 / 00:19</span></div>
+        <div class="playback-main"><button id="play" class="play-button" aria-label="Reproduzir montagem">▶</button><button id="restart" class="restart-button" title="Recomeçar montagem" aria-label="Recomeçar montagem">↺</button><div class="playback-title"><strong id="currentStepTitle">Pronto para explorar</strong><span id="currentStepSub">O robô completo. Aperte play para montar.</span></div><label class="speed-label"><span class="sr-only">Velocidade</span><select id="speed"><option value="0.5">0,5×</option><option value="1" selected="">1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><span class="timecode" id="timecode">00:19 / 00:19</span></div>
         <label class="sr-only" for="timeline">Progresso da montagem</label><input id="timeline" class="timeline" type="range" min="0" max="19.4" step="0.01" value="19.4">
         <div class="playback-bottom"><div id="dots" class="dots" aria-label="Ir para etapa"></div><button id="followCamera" aria-pressed="true">Câmera auto <span>●</span></button><button id="explode" aria-pressed="false">Vista explodida <span>↗</span></button><button id="sound" aria-label="Ativar som de encaixe" aria-pressed="false">Som <span>○</span></button></div>
       </div>
-      <div class="editor-bottom" id="editorBottom" hidden><span><i class="live-dot"></i> SUA CONSTRUÇÃO, SUAS REGRAS.</span><button id="previewBuild" class="button dark">Reproduzir minha montagem <span>↗</span></button></div>
-      <div id="webglError" class="webgl-error" hidden><h2>Vamos precisar do 3D.</h2><p>Abra este arquivo no Chrome ou Edge com a aceleração gráfica ativada.</p></div>
+      <div class="editor-bottom" id="editorBottom" hidden=""><span><i class="live-dot"></i> SUA CONSTRUÇÃO, SUAS REGRAS.</span><button id="previewBuild" class="button dark">Reproduzir minha montagem <span>↗</span></button></div>
+      <div id="webglError" class="webgl-error" hidden=""><h2>Vamos precisar do 3D.</h2><p>Abra este arquivo no Chrome ou Edge com a aceleração gráfica ativada.</p></div>
     </section>
   </main>
 
   <footer class="footer"><span>MONO® <i>·</i> EXPLORAR. ENCAIXAR. INVENTAR.</span><span>Reconstrução criativa baseada na referência em vídeo <i>↗</i></span><button id="help">Como usar <span>?</span></button></footer>
-  <input type="file" id="fileInput" accept=".json,application/json" hidden>
+  <input type="file" id="fileInput" accept=".json,application/json" hidden="">
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <dialog id="manualDialog">
     <div class="dialog-top"><span class="eyebrow">MONO / MATERIAL DE MONTAGEM</span><button data-close="manualDialog" class="icon-button" aria-label="Fechar manual">×</button></div>
     <h2 id="manualTitle">Robô explorador</h2><p class="dialog-intro" id="manualSummary">O caminho, peça por peça.</p>
     <div class="manual-toolbar"><div class="manual-tabs"><button id="showSteps" class="active">Etapas ilustradas</button><button id="showInventory">Lista de peças</button></div><button id="exportManual" class="button dark">Baixar manual web <span>↓</span></button></div>
     <div id="manualGrid" class="manual-grid"></div>
-    <div id="inventoryPanel" hidden><div class="inventory-heading"><span>PEÇA / DIMENSÕES</span><span>QUANTIDADE</span></div><div id="inventoryList"></div></div>
+    <div id="inventoryPanel" hidden=""><div class="inventory-heading"><span>PEÇA / DIMENSÕES</span><span>QUANTIDADE</span></div><div id="inventoryList"></div></div>
     <div class="dialog-foot"><span id="manualNote">Clique em uma etapa para ver a montagem em 3D.</span><button data-close="manualDialog" class="button outline">Voltar à bancada ↗</button></div>
   </dialog>
   <dialog id="helpDialog"><div class="dialog-top"><span class="eyebrow">SEU PEQUENO GUIA</span><button data-close="helpDialog" class="icon-button" aria-label="Fechar ajuda">×</button></div><h2>Feito para mexer.</h2><div class="help-grid"><div><h3>Explore</h3><p>Arraste o fundo para girar. Shift + arrastar move a câmera. Use a roda do mouse, ou dois dedos na tela, para aproximar. O botão de centralizar enquadra a construção inteira.</p></div><div><h3>Crie qualquer composição</h3><p>Em Construir, comece na Bancada vazia ou abra um exemplo. Combine 12 formas e 12 peças estilo LEGO (placa lisa, bloco redondo, viga Technic, escada, janela, porta, cerca, engrenagem, anel, flor, árvore e poste), altere dimensões e gire em qualquer ângulo.</p></div><div><h3>Personagens customizáveis</h3><p>Na aba Personagens, escolha um modelo ou sorteie um. Selecione o personagem para trocar pele, roupa, cabelo ou chapéu, expressão, estampa e acessório. Os botões Acenar, Pular e Dançar animam o personagem; na apresentação, clique nele para vê-lo pular.</p></div><div><h3>Use o teclado</h3><p>Setas movem em X/Z. Page Up/Down ajustam Y. R gira 90°. Delete exclui. Ctrl/Cmd + D duplica. Ctrl/Cmd + C / V copia e cola. Ctrl/Cmd + Z desfaz. Shift + Z refaz. Espaço pausa a apresentação.</p></div><div><h3>Cena viva</h3><p>O botão ☺, no alto da cena, liga e desliga as animações: personagens respiram e olham ao redor, capas balançam, árvores e flores se movem com o vento e engrenagens giram.</p></div><div><h3>Guarde e apresente</h3><p>Salvar projeto baixa um JSON editável. Abra esse arquivo no editor para continuar. A câmera salva um PNG. Escolha a etapa de cada peça e use Reproduzir minha montagem para animar sua criação.</p></div></div><p class="help-note">Até 400 peças por construção. O encaixe alinha posições à grade e o empilhamento apoia a peça arrastada no topo das peças abaixo dela; as peças continuam livres para se sobrepor. Não há simulação física de conexões. Projetos ficam no seu navegador e podem ser exportados para arquivo.</p></dialog>
   <dialog id="confirmDialog"><h2 id="confirmTitle">Trocar a construção?</h2><p>Você poderá desfazer esta ação. Para guardar uma cópia separada, use Salvar projeto.</p><div class="dialog-foot"><button data-close="confirmDialog" class="button outline">Cancelar</button><button id="confirmAction" class="button dark">Continuar</button></div></dialog>
-  <script id="projectData" type="application/json">null</script>
+  <script id="projectData" type="application/json">{"format":"mono-blocks","version":1,"title":"Foguete orbital","kind":"rocket","pieces":[{"id":"p346","name":"Plataforma","type":"brick","pos":[0,0.12,0],"size":[4,0.24,4],"color":"#505958","stage":0,"rot":[0,0,0],"studs":true},{"id":"p347","name":"Motor","type":"cylinder","pos":[0,0.8,0],"size":[1.15,1.1,1.15],"color":"#424f4b","stage":1,"rot":[90,0,0],"studs":false},{"id":"p348","name":"Corpo do foguete","type":"cylinder","pos":[0,1.56,0],"size":[1.65,1.65,0.65],"color":"#e7802e","stage":2,"rot":[90,0,0],"studs":false},{"id":"p349","name":"Corpo do foguete","type":"cylinder","pos":[0,2.23,0],"size":[1.65,1.65,0.65],"color":"#efece2","stage":2,"rot":[90,0,0],"studs":false},{"id":"p350","name":"Corpo do foguete","type":"cylinder","pos":[0,2.9000000000000004,0],"size":[1.65,1.65,0.65],"color":"#e7802e","stage":3,"rot":[90,0,0],"studs":false},{"id":"p351","name":"Corpo do foguete","type":"cylinder","pos":[0,3.5700000000000003,0],"size":[1.65,1.65,0.65],"color":"#efece2","stage":3,"rot":[90,0,0],"studs":false},{"id":"p352","name":"Cone superior","type":"cone","pos":[0,4.58,0],"size":[1.66,1.4,1.66],"color":"#e7802e","stage":5,"rot":[0,0,0],"studs":false},{"id":"p353","name":"Aleta","type":"wedge","pos":[-1.01,1.09,0],"size":[0.9,1.6,0.28],"color":"#e7802e","stage":4,"rot":[0,0,0],"studs":false},{"id":"p354","name":"Aleta","type":"wedge","pos":[1.01,1.09,0],"size":[0.9,1.6,0.28],"color":"#e7802e","stage":4,"rot":[0,180,0],"studs":false},{"id":"p355","name":"Janela","type":"eye","pos":[0,3.23,0.87],"size":[0.75,0.75,0.17],"color":"#eeb83e","stage":6,"rot":[0,0,0],"studs":false},{"id":"p356","name":"Antena","type":"brick","pos":[0,5.47,0],"size":[0.08,0.55,0.08],"color":"#505958","stage":7,"rot":[0,0,0],"studs":false}],"exportId":"foguete-orbital-muu5f178","startMode":"presentation","autoplay":true,"autoManual":true}</script>
   <script>console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
  * @license
@@ -844,6 +843,4 @@ if(embeddedProject?.startMode==='manual')setTimeout(openManual,150);
 if(embeddedProject){document.title=projectTitle+' — Montagem interativa | MONO';document.body.classList.add('product-page');}
 if(embeddedProject?.autoplay&&!matchMedia('(prefers-reduced-motion: reduce)').matches){time=0;setPlaying(true);}
 })();
-</script>
-</body>
-</html>
+</script></body></html>
