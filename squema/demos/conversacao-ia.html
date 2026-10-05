@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conversação IA — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/globo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .conversa { display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto; padding: 4px; }
+    .fala { border: 2px solid var(--tinta); border-radius: 14px 14px 14px 4px; padding: 6px 10px; font-size: 14px; background: #EAF6FF; max-width: 92%; }
+    .fala.eu { align-self: flex-end; background: var(--azul); color: #fff; border-radius: 14px 14px 4px 14px; }
+    .fala .trad { display: block; font-size: 12px; color: var(--texto-suave); margin-top: 2px; }
+    .entrada { display: flex; gap: 6px; margin-top: 8px; }
+    .sugestoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .sugestoes button { border: 2px solid var(--tinta); background: #fff; border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 800; color: var(--azul-escuro); }
+    .rotulo-3d.balao { white-space: normal; max-width: 260px; font-size: 14px; line-height: 1.3; padding: 8px 12px; border-radius: 14px 14px 14px 4px; transform: translate(40%, -20px); }
+    .vocab { display: flex; flex-wrap: wrap; gap: 6px; }
+    .vocab span { border: 2px solid var(--linha); border-radius: 999px; padding: 2px 9px; font-size: 13px; font-weight: 800; color: var(--texto-suave); }
+    .vocab span.usada { border-color: var(--verde); background: #DDF7E1; color: var(--verde-escuro); }
+    .nivel { font: 800 28px/1 var(--fonte-titulo); color: var(--azul); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const NIVEIS = ['A1', 'A2', 'B1'];
+  const NUM = 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen'.split(' ');
+  // cada passo: falas por nível, tradução, intenções [id, palavras-chave/regex, resposta(match)], sugestões, vocabulário
+  const SITUACOES = {
+    restaurante: { nome: 'Restaurante', icone: '🍽️', passos: [
+      { bot: ['Hello! Table for how many people?', 'Hi! Welcome to Sunny Café. How many people are in your party?', 'Good evening and welcome to Sunny Café! How many will be joining you tonight?'], pt: 'Mesa para quantas pessoas?', int: [[/\b(one|two|three|four|five|six|\d+|just me|alone|myself|only me)\b/i, (m) => `Perfect, a table for ${/just me|alone|myself|only me/i.test(m[0]) ? 'one' : m[0]}. Here is the menu.`]], sug: ['Two, please.', 'Just me, please.', 'A table for four.'], vocab: ['table', 'menu', 'please'] },
+      { bot: ['What do you want to drink?', 'What would you like to drink?', 'Can I get you something to drink while you look at the menu?'], pt: 'O que você quer beber?', int: [[/\b(water|juice|orange juice|soda|coke|coffee|tea|milk|lemonade|milkshake)\b/i, (m) => `One ${m[0].toLowerCase()}, coming right up!`]], sug: ['Water, please.', "I'd like an orange juice.", 'A lemonade, please.'], vocab: ['drink', 'water', 'juice'] },
+      { bot: ['And to eat? Pizza, pasta or salad?', 'And to eat? We have pizza, pasta, salad and burgers.', "Have you decided what you'd like to eat? Today's specials are the mushroom pasta and the chicken burger."], pt: 'E para comer?', int: [[/\b(pizza|pasta|salad|burgers?|sandwich|soup|chicken|fish|rice|fries)\b/i, (m) => `Good choice! The ${m[0].toLowerCase()} is delicious here.`]], sug: ['Pizza, please.', "I'll have the pasta.", "I'd like a salad."], vocab: ['eat', 'pizza', 'salad'] },
+      { bot: ['Dessert? Yes or no?', 'Would you like a dessert?', 'Can I tempt you with a dessert? Our chocolate cake is famous.'], pt: 'Quer sobremesa?', int: [[/\b(yes|sure|ok|okay|cake|ice cream|please|why not)\b/i, () => 'Great! One chocolate cake for you.'], [/\b(no|not|full|i'?m good|nothing)\b/i, () => 'No problem!']], sug: ['Yes, please!', 'No, thank you.', "I'm full, thanks."], vocab: ['dessert', 'cake', 'thank you'] },
+      { bot: ['The bill is twelve dollars. Card or cash?', "Here's your bill: twelve dollars. How would you like to pay?", "Here's the check. It comes to twelve dollars — will you be paying by card or in cash?"], pt: 'A conta: cartão ou dinheiro?', int: [[/\b(card|credit|debit|cash|money)\b/i, (m) => `${/cash|money/i.test(m[0]) ? 'Cash' : 'Card'} is fine. Thank you, have a nice day!`]], sug: ['By card, please.', 'Cash.', 'Can I pay by card?'], vocab: ['bill', 'card', 'cash'] },
+    ] },
+    aeroporto: { nome: 'Aeroporto', icone: '✈️', passos: [
+      { bot: ['Hello! Your passport, please.', 'Good morning! Can I see your passport, please?', 'Good morning! May I see your passport and booking reference, please?'], pt: 'Seu passaporte, por favor.', int: [[/\b(here|yes|sure|of course|passport|ok|okay)\b/i, () => 'Thank you!']], sug: ['Here you are.', 'Sure, here it is.', 'Of course.'], vocab: ['passport', 'here you are'] },
+      { bot: ['Where are you going?', 'Where are you flying to today?', "What's your final destination today?"], pt: 'Para onde você vai?', int: [[/\b(?:to\s+)?(london|new york|paris|tokyo|lisbon|miami|toronto|rome|madrid|orlando|buenos aires|sydney|berlin)\b/i, (m) => `${m[1].replace(/\b\w/g, (c) => c.toUpperCase())}, great!`], [/\bto ([A-Z][a-z]+)/, (m) => `${m[1]}, great!`]], sug: ['To London.', "I'm going to New York.", "I'm flying to Lisbon."], vocab: ['flight', 'destination'] },
+      { bot: ['Bags? Yes or no?', 'Do you have any bags to check?', 'Will you be checking any luggage, or just carrying on?'], pt: 'Vai despachar malas?', int: [[/\b(yes|one|two|suitcase|bags?|luggage)\b/i, () => 'OK, please put your suitcase here.'], [/\b(no|just|only|carry-on|backpack|hand)\b/i, () => 'Just a carry-on, perfect.']], sug: ['Yes, one suitcase.', 'No, just a backpack.', 'Only hand luggage.'], vocab: ['bag', 'suitcase', 'luggage'] },
+      { bot: ['Window or aisle?', 'Would you prefer a window or an aisle seat?', 'Do you have a seating preference — window or aisle?'], pt: 'Janela ou corredor?', int: [[/\b(window|aisle|middle|corridor)\b/i, (m) => `A ${/corridor/i.test(m[0]) ? 'aisle' : m[0].toLowerCase()} seat it is.`]], sug: ['Window, please.', 'An aisle seat, please.', "I'd prefer the window."], vocab: ['seat', 'window', 'aisle'] },
+      { bot: ['Gate B12. Boarding at ten thirty. OK?', 'Your gate is B12 and boarding starts at ten thirty. Any questions?', "You're all set: gate B12, boarding at ten thirty. Is there anything else I can help you with?"], pt: 'Portão B12, embarque às 10h30.', int: [[/\b(no|thanks|thank you|ok|okay|nothing|that'?s all|great)\b/i, () => 'Have a great flight!'], [/\b(where|how|what time|gate)\b/i, () => 'The gate is straight ahead and to the left. Have a great flight!']], sug: ['No, thank you!', 'Where is gate B12?', "That's all, thanks."], vocab: ['gate', 'boarding'] },
+    ] },
+    escola: { nome: 'Escola', icone: '🏫', passos: [
+      { bot: ["Hi! I'm Robbie. What's your name?", "Hi! I'm Robbie, the new student. What's your name?", "Hey there! I'm Robbie — I just transferred here. What should I call you?"], pt: 'Qual é o seu nome?', int: [[/\b(?:my name is|i'?m|i am|call me)\s+([A-Za-zÀ-ú]+)/i, (m) => `Nice to meet you, ${m[1][0].toUpperCase() + m[1].slice(1)}!`], [/^\s*([A-Z][a-zà-ú]+)\.?\s*$/, (m) => `Nice to meet you, ${m[1]}!`]], sug: ['My name is Ana.', "I'm Pedro.", 'Call me Lu.'], vocab: ['name', 'nice to meet you'] },
+      { bot: ['How old are you?', 'How old are you?', 'If you don’t mind me asking, how old are you?'], pt: 'Quantos anos você tem?', int: [[new RegExp(`\\b(\\d{1,2}|${NUM.join('|')})\\b`, 'i'), (m) => `Cool! You're ${m[1]}. I'm two... in robot years!`]], sug: ["I'm twelve years old.", "I'm 13.", 'Fourteen.'], vocab: ['years old'] },
+      { bot: ['Favorite subject?', "What's your favorite subject?", 'Which subject do you enjoy the most, and why?'], pt: 'Matéria favorita?', int: [[/\b(math|maths|science|history|english|art|arts|music|geography|pe|physical education|portuguese|biology|chemistry|physics)\b/i, (m) => `${m[0][0].toUpperCase() + m[0].slice(1)}? Awesome, me too!`]], sug: ['Math.', 'My favorite subject is science.', 'I love art because I like drawing.'], vocab: ['subject', 'favorite'] },
+      { bot: ['After school, what do you do?', 'What do you like to do after school?', 'What do you usually get up to after school?'], pt: 'O que você faz depois da aula?', int: [[/\b(play|soccer|football|basketball|read|games|video games|watch|tv|draw|music|sleep|friends|swim|dance|study|ride)\b/i, (m) => `${m[0][0].toUpperCase() + m[0].slice(1)} sounds fun!`]], sug: ['I play soccer.', 'I like to read.', 'I usually play video games with my friends.'], vocab: ['after school', 'play'] },
+      { bot: ['Help me find the library?', 'Can you help me find the library?', "Would you mind showing me where the library is? I keep getting lost!"], pt: 'Me ajuda a achar a biblioteca?', int: [[/\b(yes|sure|of course|follow|come|go|left|right|straight|ok|okay|no problem)\b/i, () => "Thanks! You're a great friend."], [/\b(no|sorry|can'?t)\b/i, () => "That's OK, I'll ask the teacher. Thanks anyway!"]], sug: ['Sure! Follow me.', "Of course, it's on the left.", 'Go straight and turn right.'], vocab: ['library', 'left', 'right'] },
+    ] },
+  };
+  const CORRECOES = [
+    [/\bi have (\d+|\w+teen|twelve|eleven|ten) years\b/i, (m) => `Em inglês a idade usa <b>to be</b>: “I <b>am</b> ${m[1]} years old.”`],
+    [/\ba water\b/i, () => '“Water” é incontável: diga “<b>some water</b>” ou “<b>a glass of water</b>”.'],
+    [/\bpeoples\b/i, () => '“People” já é plural: “two <b>people</b>”.'],
+    [/\b(he|she|it) (go|like|want|have|play)\b/i, (m) => `Com ${m[1]}, o verbo leva -s: “${m[1]} <b>${m[2] === 'have' ? 'has' : m[2] === 'go' ? 'goes' : m[2] + 's'}</b>”.`],
+    [/\bi am agree\b/i, () => '“Agree” já é verbo: “<b>I agree</b>”.'],
+    [/\bmore cheap\b/i, () => 'Adjetivos curtos: “<b>cheaper</b>”.'],
+    [/\bi want\b/i, () => 'Dica de educação: em vez de “I want”, prefira “<b>I’d like</b>…” — soa mais gentil.'],
+    [/(^|\s)i(\s|')/, () => 'Lembrete: o pronome “<b>I</b>” é sempre maiúsculo.'],
+  ];
+
+  SQ.demo('conversacao-ia', {
+    fundo: 'ceu',
+    dica: 'Responda em inglês — por texto ou pelo microfone 🎤',
+    sala: ['Em duplas: um conversa com o Robbie, o outro anota as correções do guia; depois invertem.', 'Peça que a turma complete as três situações e compare o relatório de palavras.', 'Encene a mesma situação ao vivo, sem o computador, usando as frases aprendidas.'],
+    comoIA: 'Nesta versão, o Robbie segue roteiros por situação, reconhece intenções por palavras-chave, corrige erros comuns e ajusta o nível sozinho (A1 → B1) conforme as respostas. A voz usa a síntese e o reconhecimento de fala do navegador. Com uma IA conectada, o diálogo fica totalmente aberto, mantendo o mesmo controle de nível e o relatório.',
+    guia: {
+      ola: 'Converse com o <b>Robbie</b> em inglês! Escolha uma situação e responda. Eu fico aqui ajudando em português: corrijo com carinho e ajusto o nível conforme você vai.',
+      perguntas: [
+        { p: 'Como funciona o nível?', chaves: ['nivel', 'a1', 'a2', 'b1'], r: '<b>A1</b>: frases curtas, fala lenta e sugestões sempre visíveis. <b>A2</b>: frases do dia a dia. <b>B1</b>: perguntas mais longas e naturais. Se você responde bem várias vezes seguidas, o nível sobe; se trava duas vezes, eu desço um degrau.' },
+        { p: 'O microfone não funciona', chaves: ['microfone', 'voz', 'falar', 'mic'], r: 'O reconhecimento de voz depende do navegador (funciona bem no Chrome e no Edge) e precisa da sua permissão. Se não der, responda digitando — vale do mesmo jeito!' },
+        { p: 'Como peço algo com educação?', chaves: ['educacao', 'educado', 'pedir', 'polite'], r: 'Use “<b>I’d like</b> a juice, please”, “<b>Could I have</b>…?”, “<b>Can I get</b>…?”. E não esqueça o “please” e o “thank you”!' },
+        { p: 'Não entendi o Robbie', chaves: ['entendi', 'traduz', 'traducao'], r: (c) => (c.pt ? `Ele perguntou: <b>${c.pt}</b> Clique em 🔊 para ouvir de novo, mais devagar.` : 'Comece uma situação primeiro.') },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 2.6, 6.2], alvo: [0, 1.5, 0], distancia: [3.5, 12], polarMax: 1.4, sombraRaio: 5 });
+      const base = S3D.chao(3.6, 0xEAF2FF); c.scene.add(base);
+      const cenario = new T.Group(); c.scene.add(cenario);
+      let robo = null, mixer = null, acoes = {}, atual = null;
+      const balao = S3D.rotulo('', { classe: 'balao' }); balao.position.set(0.5, 2.6, 0); c.scene.add(balao); balao.visible = false;
+      (async () => {
+        const r = await S3D.instancia('robo', { tamanho: 1.9, porAltura: true }); robo = r.obj; mixer = r.mixer; acoes = r.acoes; robo.position.set(-0.4, 0, 0); robo.rotation.y = 0.15; c.scene.add(robo);
+        for (const a of Object.values(acoes)) a.clampWhenFinished = true;
+        tocar('Idle');
+        if (sit) tocar('Wave', true);
+      })();
+      function tocar(nome, unica) {
+        if (!mixer || !acoes[nome]) return;
+        const a = acoes[nome]; a.reset(); a.setLoop(unica ? T.LoopOnce : T.LoopRepeat, unica ? 1 : Infinity); a.fadeIn(0.25).play();
+        if (atual && atual !== a) atual.fadeOut(0.25);
+        atual = a;
+        if (unica) { const vida = a.getClip().duration; setTimeout(() => { if (atual === a) tocar('Idle'); }, vida * 1000 - 200); }
+      }
+      const m = (cor, o) => S3D.mat(cor, o);
+      const caixa = (w, h, d, cor) => { const b = new T.Mesh(new T.BoxGeometry(w, h, d), m(cor)); b.castShadow = b.receiveShadow = true; return b; };
+      const placa = (txt, w, h, cor = '#0B1438', fundo = '#FFC21A') => new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ map: S3D.texturaCanvas(512, Math.round((512 * h) / w), (g, W, H) => { g.fillStyle = fundo; g.fillRect(0, 0, W, H); g.fillStyle = cor; g.font = `800 ${Math.round(H * 0.42)}px Nunito, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, W / 2, H / 2); }) }));
+      function montarCenario(id) {
+        S3D.limpar(cenario);
+        if (id === 'restaurante') {
+          const mesa = new T.Group(); const tampo = new T.Mesh(new T.CylinderGeometry(0.75, 0.75, 0.08, 36), m(0xF4F7FF)); tampo.position.y = 0.8; const pe = new T.Mesh(new T.CylinderGeometry(0.06, 0.06, 0.8, 12), m(0x5D6B94)); pe.position.y = 0.4; mesa.add(tampo, pe);
+          const toalha = new T.Mesh(new T.CylinderGeometry(0.77, 0.77, 0.02, 36), m(0xEE3B45)); toalha.position.y = 0.85; mesa.add(toalha);
+          for (const [x, cor] of [[-0.25, 0xFFC21A], [0.25, 0x2BB4F5]]) { const copo = new T.Mesh(new T.CylinderGeometry(0.06, 0.05, 0.18, 16), m(cor, { opacidade: 0.8 })); copo.position.set(x, 0.95, 0.2); mesa.add(copo); }
+          const prato = new T.Mesh(new T.CylinderGeometry(0.2, 0.16, 0.03, 24), m(0xFFFFFF)); prato.position.set(0, 0.88, 0.35); mesa.add(prato);
+          mesa.position.set(1.0, 0, 0.6); S3D.contorno(mesa, 0.02); cenario.add(mesa);
+          const quadro = placa('MENU', 1.2, 0.6); quadro.position.set(1.4, 2.2, -1.4); cenario.add(quadro);
+          const moldura = caixa(1.3, 0.7, 0.05, 0x6B4428); moldura.position.set(1.4, 2.2, -1.43); cenario.add(moldura);
+        } else if (id === 'aeroporto') {
+          const balcao = caixa(2.2, 1.0, 0.6, 0x2BB4F5); balcao.position.set(0.3, 0.5, -0.9); cenario.add(balcao);
+          const topo = caixa(2.3, 0.06, 0.7, 0xF4F7FF); topo.position.set(0.3, 1.03, -0.9); cenario.add(topo);
+          const painel = placa('DEPARTURES · B12 · 10:30', 2.4, 0.45, '#FFC21A', '#0B1438'); painel.position.set(0.3, 2.5, -1.3); cenario.add(painel);
+          for (const [x, z, cor, h] of [[1.6, 0.6, 0xFF9416, 0.7], [2.05, 0.4, 0x8B3DFF, 0.55]]) { const mala = caixa(0.42, h, 0.25, cor); mala.position.set(x, h / 2 + 0.05, z); const alca = caixa(0.04, 0.3, 0.04, 0x3A3F55); alca.position.set(x, h + 0.2, z); cenario.add(mala, alca); }
+          S3D.contorno(cenario, 0.02);
+        } else {
+          const lousa = placa('Hello, class! 👋', 2.2, 1.0, '#FFFFFF', '#1E6B3A'); lousa.position.set(0.4, 1.8, -1.4); cenario.add(lousa);
+          const mold = caixa(2.35, 1.15, 0.05, 0xC98B4E); mold.position.set(0.4, 1.8, -1.43); cenario.add(mold);
+          const carteira = new T.Group(); const t = caixa(0.9, 0.06, 0.55, 0xC98B4E); t.position.y = 0.72; carteira.add(t); for (const [x, z] of [[-0.4, -0.22], [0.4, -0.22], [-0.4, 0.22], [0.4, 0.22]]) { const p = caixa(0.05, 0.72, 0.05, 0x5D6B94); p.position.set(x, 0.36, z); carteira.add(p); }
+          const livro = caixa(0.3, 0.06, 0.22, 0xEE3B45); livro.position.set(-0.15, 0.78, 0); const livro2 = caixa(0.28, 0.05, 0.2, 0x1F5BE0); livro2.position.set(-0.13, 0.835, 0); carteira.add(livro, livro2);
+          carteira.position.set(1.3, 0, 0.5); carteira.rotation.y = -0.4; S3D.contorno(carteira, 0.02); cenario.add(carteira);
+        }
+      }
+
+      // ---------- diálogo ----------
+      let sit = null, passo = 0, nivel = 0, falhas = 0, seqBoa = 0, usadas = new Set(), introduzidas = [], turnos = 0, acertos = 0, ajudas = 0;
+      const vozOk = 'speechSynthesis' in window;
+      function falarBot(txt, pt) {
+        balao.element.textContent = txt; balao.visible = true;
+        addFala(txt, false, pt);
+        if (vozOk && somLigado) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'en-US'; u.rate = [0.78, 0.9, 1.0][nivel]; speechSynthesis.speak(u); }
+      }
+      function perguntar() {
+        const p = SITUACOES[sit].passos[passo];
+        falarBot(p.bot[nivel], p.pt);
+        for (const v of p.vocab) if (!introduzidas.includes(v)) introduzidas.push(v);
+        mostrarSugestoes(nivel === 0 || falhas > 0); pintarRelatorio();
+      }
+      function iniciar(id) {
+        sit = id; passo = 0; falhas = 0; conv.innerHTML = ''; montarCenario(id); tocar('Wave', true);
+        guia.diz(`${SITUACOES[id].icone} Situação: <b>${SITUACOES[id].nome}</b>. Nível atual: <b>${NIVEIS[nivel]}</b>. Responda em inglês!`, { chave: 'sit' });
+        setTimeout(perguntar, 400);
+      }
+      function responder(txt) {
+        txt = txt.trim(); if (!txt || !sit) return;
+        if (passo >= SITUACOES[sit].passos.length) { iniciar(sit); return; }
+        addFala(txt, true); turnos++;
+        const p = SITUACOES[sit].passos[passo];
+        for (const v of introduzidas) if (txt.toLowerCase().includes(v)) usadas.add(v);
+        const corr = CORRECOES.find(([re]) => re.test(txt));
+        let match = null, resposta = null;
+        for (const [re, f] of p.int) { const mm = txt.match(re); if (mm) { match = mm; resposta = f(mm); break; } }
+        if (match) {
+          acertos++; falhas = 0; passo++;
+          const palavras = txt.split(/\s+/).length;
+          seqBoa = palavras >= (nivel === 0 ? 3 : 5) ? seqBoa + 1 : seqBoa;
+          tocar(passo >= SITUACOES[sit].passos.length ? 'ThumbsUp' : 'Yes', true);
+          falarBot(resposta);
+          let dica = corr ? `💬 Entendi! Uma dica: ${corr[1](txt.match(corr[0]))}` : palavras <= 2 && nivel > 0 ? '👍 Entendido! Tente responder com uma frase completa da próxima vez.' : '👏 Ótima resposta!';
+          if (seqBoa >= 3 && nivel < 2) { nivel++; seqBoa = 0; dica += ` 🚀 Você está indo muito bem: subi para o nível <b>${NIVEIS[nivel]}</b>.`; selNivel.valor = NIVEIS[nivel]; }
+          guia.diz(dica, { tipo: corr ? 'dica' : 'sucesso', chave: 'fb' });
+          if (passo < SITUACOES[sit].passos.length) setTimeout(perguntar, 1500);
+          else setTimeout(() => { falarBot(nivel === 2 ? "That was a great conversation! Want to try another situation?" : 'Great job! Try another situation!'); guia.diz(`🎉 Situação concluída! Você usou ${[...usadas].length} das ${introduzidas.length} palavras novas. Veja o relatório no painel e experimente outra situação.`, { tipo: 'sucesso', chave: 'fb' }); mostrarSugestoes(false); }, 1600);
+        } else {
+          falhas++; seqBoa = 0; tocar('No', true);
+          if (falhas >= 2 && nivel > 0) { nivel--; selNivel.valor = NIVEIS[nivel]; guia.diz(`Vamos com calma: desci para o nível <b>${NIVEIS[nivel]}</b>, com frases mais curtas. Use as sugestões!`, { tipo: 'alerta', chave: 'fb' }); falhas = 1; ajudas++; perguntar(); return; }
+          falarBot(nivel === 0 ? `Sorry? ${p.bot[0]}` : `Sorry, I didn't get that. ${p.bot[nivel]}`);
+          guia.diz(`O Robbie não entendeu. Ele perguntou: <b>${p.pt}</b> ${corr ? 'Dica: ' + corr[1](txt.match(corr[0])) : 'Experimente uma das sugestões abaixo da conversa.'}`, { tipo: 'alerta', chave: 'fb' });
+          mostrarSugestoes(true); ajudas++;
+        }
+        pintarRelatorio();
+      }
+
+      // ---------- painel ----------
+      let somLigado = true;
+      const gS = ui.grupo('Situação');
+      ui.segmentado({ opcoes: Object.entries(SITUACOES).map(([k, s]) => ({ valor: k, rotulo: `${s.icone} ${s.nome}` })), valor: null, pai: gS, aoMudar: iniciar });
+      const selNivel = ui.segmentado({ rotulo: 'Nível (ajusta sozinho)', opcoes: NIVEIS, valor: 'A1', pai: gS, aoMudar: (v) => { nivel = NIVEIS.indexOf(v); seqBoa = 0; guia.diz(`Nível <b>${v}</b> escolhido.`, { chave: 'niv' }); if (sit && passo < SITUACOES[sit].passos.length) perguntar(); } });
+      ui.alternar({ rotulo: 'Voz do Robbie', valor: true, pai: gS, aoMudar: (v) => { somLigado = v; if (!v && vozOk) speechSynthesis.cancel(); } });
+      const gC = ui.grupo('Conversa');
+      const conv = SQ.el('div', { class: 'conversa', 'aria-live': 'polite' }); gC.append(conv);
+      const inp = SQ.el('input', { type: 'text', placeholder: 'Type in English…', 'aria-label': 'Sua resposta em inglês', maxlength: 160, lang: 'en' });
+      const btEnv = ui.botao({ rotulo: 'Send', classe: 'azul pequeno' });
+      const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const btMic = ui.botao({ rotulo: '🎤', classe: 'branco pequeno', titulo: Rec ? 'Falar (reconhecimento de voz)' : 'Reconhecimento de voz indisponível neste navegador' });
+      if (!Rec) btMic.disabled = true;
+      gC.append(SQ.el('div', { class: 'entrada' }, inp, btMic, btEnv));
+      const sugEl = SQ.el('div', { class: 'sugestoes' }); gC.append(sugEl);
+      ui.linha(gC, ui.botao({ rotulo: '🔊 Ouvir de novo', classe: 'branco pequeno', aoClicar: () => { if (sit && vozOk) { const u = new SpeechSynthesisUtterance(balao.element.textContent); u.lang = 'en-US'; u.rate = 0.75; speechSynthesis.cancel(); speechSynthesis.speak(u); } } }), ui.botao({ rotulo: 'Ver tradução', classe: 'branco pequeno', aoClicar: () => { conv.querySelectorAll('.trad').forEach((t) => (t.hidden = false)); } }));
+      btEnv.addEventListener('click', () => { responder(inp.value); inp.value = ''; inp.focus(); });
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); btEnv.click(); } });
+      if (Rec) btMic.addEventListener('click', () => {
+        const r = new Rec(); r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
+        btMic.innerHTML = '⏺️'; r.onresult = (e) => { const t = e.results[0][0].transcript; inp.value = t; btEnv.click(); };
+        r.onerror = () => guia.diz('Não consegui ouvir. Verifique a permissão do microfone ou digite a resposta.', { tipo: 'alerta', chave: 'mic' });
+        r.onend = () => { btMic.innerHTML = '🎤'; }; r.start();
+      });
+      function addFala(txt, eu, pt) {
+        const f = SQ.el('div', { class: 'fala' + (eu ? ' eu' : '') }, txt);
+        if (!eu && pt) f.append(SQ.el('span', { class: 'trad', hidden: nivel > 0 }, `(${pt})`));
+        conv.append(f); conv.scrollTop = conv.scrollHeight;
+      }
+      function mostrarSugestoes(mostrar) {
+        sugEl.innerHTML = '';
+        if (!sit || passo >= SITUACOES[sit].passos.length || (!mostrar && nivel > 0)) return;
+        for (const s of SITUACOES[sit].passos[passo].sug.slice(0, nivel === 2 ? 1 : 3)) sugEl.append(SQ.el('button', { type: 'button', onclick: () => { inp.value = s; inp.focus(); } }, s));
+      }
+      const gR = ui.grupo('Relatório');
+      const relNivel = SQ.el('div', { class: 'flex entre' }); gR.append(relNivel);
+      const lei = ui.leituras([{ id: 't', rotulo: 'Respostas' }, { id: 'a', rotulo: 'Entendidas', destaque: true }, { id: 'h', rotulo: 'Ajudas' }, { id: 'v', rotulo: 'Palavras usadas' }], gR);
+      const voc = SQ.el('div', { class: 'vocab' }); gR.append(SQ.el('h3', { style: { marginTop: '10px' } }, 'Palavras novas'), voc);
+      function pintarRelatorio() {
+        relNivel.innerHTML = `<span class="texto-suave miudo">Nível atual</span><span class="nivel">${NIVEIS[nivel]}</span>`;
+        lei.set('t', String(turnos)); lei.set('a', String(acertos)); lei.set('h', String(ajudas)); lei.set('v', `${usadas.size}/${introduzidas.length}`);
+        voc.innerHTML = introduzidas.map((v) => `<span class="${usadas.has(v) ? 'usada' : ''}">${v}</span>`).join('') || '<span>—</span>';
+      }
+      c.aoQuadro((dt) => { mixer && mixer.update(dt); if (robo) balao.position.set(robo.position.x + 0.3, 2.35, robo.position.z); });
+      guia.contexto = () => ({ situacao: sit && SITUACOES[sit].nome, nivel: NIVEIS[nivel], pergunta: sit && SITUACOES[sit].passos[passo]?.bot[nivel], pt: sit && SITUACOES[sit].passos[passo]?.pt, acertos, ajudas, palavrasNovas: introduzidas, usadas: [...usadas] });
+      pintarRelatorio();
+      montarCenario('restaurante');
+      guia.diz('Comece escolhendo uma situação: 🍽️ Restaurante, ✈️ Aeroporto ou 🏫 Escola.', { tipo: 'dica', chave: 'sit' });
+    },
+  });
+  </script>
+</body>
+</html>

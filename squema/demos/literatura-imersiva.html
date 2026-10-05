@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Literatura Imersiva — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/livro-aberto.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 4px; font-size: 18px; }
+    .ficha .cap { font: 800 12px var(--fonte-mono); color: var(--azul); }
+    .trecho { margin: 8px 0 0; padding: 8px 12px; border-left: 5px solid var(--amarelo); background: #FFFBEA; border-radius: 0 10px 10px 0; font-style: italic; font-size: 14px; }
+    .contexto dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0; font-size: 14px; }
+    .contexto dt { font-weight: 900; color: var(--texto-suave); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+    .contexto dd { margin: 0; }
+    .legenda-rel { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; font-weight: 800; margin-top: 8px; }
+    .legenda-rel span::before { content: ""; display: inline-block; width: 18px; height: 4px; border-radius: 2px; background: var(--c); margin-right: 5px; vertical-align: middle; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const TIPOS = { amor: { nome: 'amor', cor: '#FF6B8A' }, casamento: { nome: 'casamento', cor: '#EE3B45' }, familia: { nome: 'família', cor: '#36C04A' }, amizade: { nome: 'amizade', cor: '#2BB4F5' }, dependencia: { nome: 'dependência', cor: '#E8A400' }, conflito: { nome: 'conflito / ciúme', cor: '#0B1438' } };
+  const OBRAS = {
+    dom: {
+      titulo: 'Dom Casmurro', autor: 'Machado de Assis', ano: 1899, movimento: 'Realismo', cenario: 'cidade',
+      foco: '1ª pessoa: Bento Santiago, já velho, conta a própria história. É um narrador-personagem — e interessado na versão que conta.',
+      contexto: 'Rio de Janeiro do Segundo Reinado. A elite vive de rendas e aparências; agregados como José Dias dependem dos favores das famílias ricas.',
+      personagens: {
+        bento: ['Bentinho / Dom Casmurro', 'Narrador. Filho único de D. Glória, destinado ao seminário por uma promessa da mãe. Torna-se advogado, casa com Capitu e é tomado pelo ciúme.', 0.5, 0.45, 0, '#1F5BE0'],
+        capitu: ['Capitu', 'Vizinha e amor de infância de Bentinho. Inteligente, decidida, de “olhos de ressaca”. Tudo o que sabemos dela passa pelo olhar do narrador.', 0.73, 0.28, 0, '#FF6B8A'],
+        gloria: ['D. Glória', 'Mãe de Bentinho, viúva e devota. Prometeu fazer do filho um padre.', 0.27, 0.22, 0, '#36C04A'],
+        jose: ['José Dias', 'Agregado da família, amante dos superlativos. Vive dos favores da casa e influencia as decisões — é ele quem faz “a denúncia” do namoro.', 0.18, 0.52, 0, '#E8A400'],
+        cosme: ['Tio Cosme', 'Irmão de D. Glória, advogado viúvo e acomodado.', 0.08, 0.3, 0, '#36C04A'],
+        justina: ['Prima Justina', 'Prima viúva de D. Glória, que mora na casa e comenta tudo.', 0.12, 0.12, 0, '#36C04A'],
+        padua: ['Pádua', 'Pai de Capitu, funcionário público de condição modesta.', 0.62, 0.1, 0, '#36C04A'],
+        escobar: ['Escobar', 'Amigo de Bentinho no seminário, depois comerciante bem-sucedido. Casa-se com Sancha.', 0.8, 0.62, 2, '#19B8A6'],
+        sancha: ['Sancha', 'Amiga de escola de Capitu e esposa de Escobar.', 0.93, 0.42, 3, '#8B3DFF'],
+        ezequiel: ['Ezequiel', 'Filho de Bento e Capitu. Para o narrador, fica cada vez mais parecido com Escobar.', 0.58, 0.78, 4, '#FF9416'],
+      },
+      relacoes: [
+        ['bento', 'capitu', [[0, 'amor', 'Amor de infância: os dois crescem vizinhos e se apaixonam.'], [3, 'casamento', 'Casam-se depois que Bentinho deixa o seminário.'], [7, 'conflito', 'O ciúme de Bento destrói o casamento: ele se convence de uma traição que o livro nunca prova.']]],
+        ['bento', 'gloria', [[0, 'familia', 'Mãe e filho. A promessa de D. Glória (fazer dele padre) é o primeiro obstáculo ao namoro.']]],
+        ['gloria', 'jose', [[0, 'dependencia', 'José Dias é agregado: mora na casa e depende dos favores de D. Glória.']]],
+        ['jose', 'bento', [[0, 'dependencia', 'José Dias denuncia o namoro e depois ajuda Bentinho a sair do seminário — sempre cuidando do próprio lugar na casa.']]],
+        ['cosme', 'gloria', [[0, 'familia', 'Irmãos.']]], ['justina', 'gloria', [[0, 'familia', 'Primas que vivem sob o mesmo teto.']]],
+        ['padua', 'capitu', [[0, 'familia', 'Pai e filha.']]],
+        ['bento', 'escobar', [[2, 'amizade', 'Amizade nascida no seminário — Escobar vira o “maior amigo” de Bento.'], [7, 'conflito', 'Depois da morte do amigo, a amizade vira suspeita.']]],
+        ['escobar', 'sancha', [[3, 'casamento', 'Casados; os dois casais convivem muito.']]],
+        ['capitu', 'sancha', [[3, 'amizade', 'Amigas desde a escola.']]],
+        ['capitu', 'escobar', [[6, 'conflito', 'Suspeita de traição — segundo Bento. O leitor só tem a palavra do narrador.']]],
+        ['bento', 'ezequiel', [[4, 'familia', 'Pai e filho.'], [7, 'conflito', 'Bento rejeita o filho, que acha parecido com Escobar.']]],
+        ['capitu', 'ezequiel', [[4, 'familia', 'Mãe e filho.']]],
+      ],
+      pontos: [
+        ['A denúncia', 'cap. III', 'José Dias avisa D. Glória que Bentinho e Capitu andam muito juntos; ela decide cumprir a promessa e mandar o filho ao seminário.', 'Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. (cap. I)', 0.25],
+        ['Olhos de ressaca', 'cap. XXXII', 'Bentinho descreve o olhar de Capitu, que o “arrasta para dentro”.', 'Traziam não sei que fluido misterioso e enérgico, uma força que arrastava para dentro, como a vaga que se retira da praia, nos dias de ressaca.', 0.35],
+        ['Seminário e Escobar', 'caps. LIII em diante', 'No seminário, Bentinho conhece Escobar. Com a ajuda de José Dias, consegue sair sem ser padre.', '', 0.4],
+        ['O casamento', 'caps. CI em diante', 'Bento, agora advogado, casa-se com Capitu. Escobar casa-se com Sancha; os casais são inseparáveis.', '', 0.35],
+        ['Nasce Ezequiel', '—', 'Depois de muita espera, nasce Ezequiel, o filho do casal.', '', 0.4],
+        ['A catástrofe', 'cap. CXXI', 'Escobar morre afogado no mar.', '', 0.7],
+        ['O velório', 'cap. CXXIII', 'No velório, Bento vê Capitu olhar o morto com os mesmos “olhos de ressaca” — e a dúvida se instala.', '', 0.85],
+        ['O ciúme', 'caps. CXXXI em diante', 'Bento acha o filho parecido com Escobar, pensa em gestos extremos e se separa: Capitu e Ezequiel vão para a Europa.', '', 1],
+        ['E bem, e o resto?', 'cap. CXLVIII', 'Velho e solitário, Bento — o “Dom Casmurro” — conclui a narrativa convencido da traição.', 'O meu fim evidente era atar as duas pontas da vida, e restaurar na velhice a adolescência. (cap. II)', 0.5],
+      ],
+      perguntas: [
+        { p: 'Capitu traiu Bentinho?', chaves: ['traiu', 'traicao', 'capitu'], r: 'O romance <b>não responde</b> — e isso é proposital. Tudo é contado por Bento, um narrador em 1ª pessoa, ciumento e interessado em convencer o leitor. As “provas” (a semelhança de Ezequiel, os olhos no velório) são impressões dele.' },
+        { p: 'Por que o título Dom Casmurro?', chaves: ['titulo', 'casmurro'], r: 'É o apelido que um rapaz do bairro dá ao narrador, por seus hábitos “reclusos e calados” (cap. I). Casmurro é quem é teimoso, fechado em si.' },
+        { p: 'O que é o Realismo?', chaves: ['realismo', 'movimento', 'escola'], r: 'Movimento do fim do século XIX que critica a sociedade burguesa e investiga a psicologia dos personagens, em vez do amor idealizado do Romantismo. Em Machado, com ironia e um narrador pouco confiável.' },
+      ],
+    },
+    iracema: {
+      titulo: 'Iracema', autor: 'José de Alencar', ano: 1865, movimento: 'Romantismo (indianismo)', cenario: 'praia',
+      foco: '3ª pessoa: um narrador que conta a lenda, com linguagem poética cheia de palavras de origem tupi.',
+      contexto: 'Ceará no início da colonização (séc. XVII). Alencar cria um mito de origem: o encontro entre o português e a indígena dá origem ao povo cearense — uma visão idealizada da colonização.',
+      personagens: {
+        iracema: ['Iracema', '“A virgem dos lábios de mel”, filha do pajé Araquém, guardiã do segredo da jurema. Seu nome é anagrama de América.', 0.48, 0.33, 0, '#FF6B8A'],
+        martim: ['Martim', 'Guerreiro português aliado dos potiguaras. Perde-se na mata dos tabajaras e é ferido por Iracema.', 0.72, 0.5, 0, '#1F5BE0'],
+        araquem: ['Araquém', 'Pajé dos tabajaras e pai de Iracema. Acolhe Martim como hóspede.', 0.25, 0.18, 1, '#36C04A'],
+        caubi: ['Caubi', 'Irmão de Iracema, guerreiro tabajara.', 0.2, 0.5, 1, '#36C04A'],
+        irapua: ['Irapuã', 'Chefe tabajara que deseja Iracema e odeia o estrangeiro.', 0.36, 0.72, 1, '#0B1438'],
+        poti: ['Poti', 'Guerreiro potiguara, amigo-irmão de Martim. Mais tarde recebe o nome cristão de Antônio Felipe Camarão.', 0.9, 0.33, 1, '#19B8A6'],
+        moacir: ['Moacir', 'Filho de Iracema e Martim — “filho do sofrimento”. Simboliza o primeiro cearense.', 0.62, 0.8, 6, '#FF9416'],
+      },
+      relacoes: [
+        ['iracema', 'martim', [[0, 'conflito', 'O encontro: Iracema fere Martim com uma flecha — e depois quebra com ele a flecha da paz.'], [2, 'amor', 'Amor proibido: Iracema guarda o segredo da jurema e não pode se unir a ninguém.'], [6, 'casamento', 'Pais de Moacir. Mas Martim sente saudade de sua terra e parte para as guerras.']]],
+        ['iracema', 'araquem', [[1, 'familia', 'Filha do pajé.']]], ['iracema', 'caubi', [[1, 'familia', 'Irmãos.']]],
+        ['martim', 'araquem', [[1, 'dependencia', 'Martim é hóspede sagrado do pajé.']]],
+        ['martim', 'poti', [[1, 'amizade', 'Irmãos de armas: a amizade de Poti salva Martim várias vezes.']]],
+        ['irapua', 'martim', [[1, 'conflito', 'Irapuã quer matar o estrangeiro que conquistou Iracema.']]],
+        ['irapua', 'iracema', [[1, 'conflito', 'Irapuã deseja Iracema, que o rejeita.']]],
+        ['iracema', 'moacir', [[6, 'familia', 'Mãe e filho.']]], ['martim', 'moacir', [[6, 'familia', 'Pai e filho.']]],
+      ],
+      pontos: [
+        ['O encontro na mata', 'cap. II', 'Iracema vê o estrangeiro na floresta e o fere com uma flecha; arrependida, quebra a flecha da paz.', 'Iracema, a virgem dos lábios de mel, que tinha os cabelos mais negros que a asa da graúna e mais longos que seu talhe de palmeira.', 0.3],
+        ['O hóspede de Araquém', 'caps. III–V', 'Martim é recebido na cabana do pajé. Irapuã e os guerreiros tabajaras desconfiam do branco.', '', 0.4],
+        ['O segredo da jurema', 'caps. VI–XII', 'Iracema, consagrada a Tupã, apaixona-se por Martim. O amor é proibido.', '', 0.55],
+        ['A fuga', 'caps. XIII–XVI', 'Com a ajuda de Poti, Martim foge; Iracema abandona seu povo e vai com eles.', '', 0.7],
+        ['A guerra', 'caps. XVII–XIX', 'Tabajaras e potiguaras lutam. Iracema vê seu próprio povo derrotado.', '', 0.9],
+        ['Saudade e solidão', 'caps. XX–XXIX', 'Martim parte para lutar ao lado dos potiguaras; Iracema fica só, à espera.', '', 0.7],
+        ['Nasce Moacir', 'cap. XXX', 'Sozinha, Iracema dá à luz Moacir, “o filho do sofrimento”.', '', 0.8],
+        ['A morte de Iracema', 'cap. XXXII', 'Enfraquecida pela tristeza, Iracema morre logo após a volta de Martim.', '', 1],
+        ['O primeiro cearense', 'cap. XXXIII', 'Martim parte com o filho. A lenda fecha o mito de origem do Ceará.', 'Tudo passa sobre a terra.', 0.5],
+      ],
+      perguntas: [
+        { p: 'Por que Iracema é anagrama de América?', chaves: ['anagrama', 'america'], r: 'Trocando as letras de IRACEMA forma-se AMERICA. Alencar faz da personagem um símbolo da terra americana que se une ao colonizador europeu (Martim) — e “morre” nesse encontro.' },
+        { p: 'O que é indianismo?', chaves: ['indianismo', 'romantismo', 'movimento'], r: 'Vertente do Romantismo brasileiro que fez do indígena um herói nacional idealizado, como o cavaleiro medieval europeu. É importante ler criticamente: a obra apaga a violência real da colonização.' },
+        { p: 'Por que o romance começa pelo fim?', chaves: ['comeca', 'inicio', 'jangada', 'fim'], r: 'O cap. I mostra Martim partindo numa jangada com o filho e um cão: a narrativa então volta no tempo para contar como se chegou ali. Releia o início depois de terminar!' },
+      ],
+    },
+  };
+  const iniciais = (n) => n.replace(/^(D\.|Tio|Prima)\s/, '').split(/[\s/]+/).filter((w) => /^\p{Lu}/u.test(w)).slice(0, 2).map((w) => w[0]).join('');
+
+  SQ.demo('literatura-imersiva', {
+    fundo: 'papel',
+    dica: 'Avance pelo enredo · clique nos personagens e nas ligações',
+    sala: ['Antes da leitura, mostre só o primeiro ponto do enredo e peça hipóteses sobre o que vai acontecer.', 'Em Dom Casmurro, organize um júri: acusação e defesa de Capitu usando só trechos do livro.', 'Compare o foco narrativo das duas obras: o que muda quando o narrador é personagem?'],
+    comoIA: 'O guia sabe qual obra e qual ponto do enredo o aluno está vendo, e quais personagens e relações foram clicados. Ele responde como guia de leitura — contexto, foco narrativo, interpretações possíveis — sem dar “spoilers” além do ponto escolhido. Uma IA conectada pode dialogar sobre trechos que o aluno trouxer.',
+    guia: {
+      ola: 'Escolha a obra e avance pelos <b>pontos do enredo</b>: o mapa de personagens muda conforme a história. Clique numa pessoa ou numa ligação para entender a relação.',
+      perguntas: [
+        { p: 'O que é foco narrativo?', chaves: ['foco', 'narrador', 'narrativo'], r: 'É <b>quem conta</b> a história e de que posição. Narrador-personagem (1ª pessoa) só sabe o que viveu e pode ser parcial; narrador observador ou onisciente (3ª pessoa) vê de fora — às vezes, tudo.' },
+        { p: 'O que é ponto de virada?', chaves: ['virada', 'climax', 'enredo'], r: 'Um acontecimento que muda o rumo da história. Na curva de tensão (embaixo), o ponto mais alto é o <b>clímax</b>; depois vem o <b>desfecho</b>.' },
+        { p: 'Essas obras são de domínio público?', chaves: ['dominio', 'publico', 'ler', 'baixar'], r: 'Sim! Os autores morreram há mais de 70 anos, então as obras são livres. Você encontra as duas, por exemplo, no portal Domínio Público do MEC.' },
+        { p: 'Fale da obra', chaves: ['obra', 'livro', 'fale'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let obra = 'dom', ponto = 0, sel = null, mouse = null, nosPos = {}, arestas = [], t0 = performance.now(), pulsar = new Set();
+      const O = () => OBRAS[obra];
+      const relNoPonto = (r) => { let atual = null; for (const est of r[2]) if (est[0] <= ponto) atual = est; return atual; };
+
+      function fundo(ctx, w, h) {
+        if (O().cenario === 'praia') {
+          const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#E6F7FF'); g.addColorStop(1, '#FFF6E0'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(43,180,245,.18)'; ctx.beginPath(); ctx.moveTo(0, h * 0.78); for (let x = 0; x <= w; x += 20) ctx.lineTo(x, h * 0.78 + Math.sin(x * 0.03 + (performance.now() - t0) / 900) * 5); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+          for (const [x, s] of [[0.06, 1], [0.95, 0.85], [0.84, 0.7]]) { const X = x * w, Y = h * 0.82; ctx.strokeStyle = 'rgba(30,138,48,.35)'; ctx.lineWidth = 6 * s; ctx.beginPath(); ctx.moveTo(X, Y); ctx.quadraticCurveTo(X + 10 * s, Y - 80 * s, X + 4 * s, Y - 140 * s); ctx.stroke(); for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2; ctx.beginPath(); ctx.moveTo(X + 4 * s, Y - 140 * s); ctx.quadraticCurveTo(X + Math.cos(a) * 40 * s, Y - 160 * s, X + Math.cos(a) * 60 * s, Y - 130 * s + Math.abs(Math.sin(a)) * 20); ctx.stroke(); } }
+        } else {
+          ctx.fillStyle = '#FBF7EE'; ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(201,139,78,.13)';
+          for (let k = 0; k < 9; k++) { const x = (k / 9) * w, bw = w / 9 - 8, bh = 60 + ((k * 37) % 50); ctx.fillRect(x + 4, h * 0.72 - bh, bw, bh); ctx.beginPath(); ctx.moveTo(x, h * 0.72 - bh); ctx.lineTo(x + bw / 2 + 4, h * 0.72 - bh - 24); ctx.lineTo(x + bw + 8, h * 0.72 - bh); ctx.fill(); }
+        }
+      }
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const hG = h * 0.7; fundo(ctx, w, hG);
+        const P = O().personagens, pos = (id) => [30 + P[id][2] * (w - 60), 40 + P[id][3] * (hG - 80)];
+        nosPos = {}; arestas = [];
+        // arestas
+        for (const r of O().relacoes) {
+          const est = relNoPonto(r); if (!est || P[r[0]][4] > ponto || P[r[1]][4] > ponto) continue;
+          const [x1, y1] = pos(r[0]), [x2, y2] = pos(r[1]), tp = TIPOS[est[1]], foco = sel && (sel.tipo === 'p' ? r[0] === sel.id || r[1] === sel.id : sel.r === r);
+          const mx = (x1 + x2) / 2 + (y2 - y1) * 0.12, my = (y1 + y2) / 2 - (x2 - x1) * 0.12;
+          ctx.globalAlpha = sel && !foco ? 0.25 : 1;
+          ctx.strokeStyle = tp.cor; ctx.lineWidth = foco ? 6 : 4; if (est[1] === 'conflito') ctx.setLineDash([9, 7]);
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(mx, my, x2, y2); ctx.stroke(); ctx.setLineDash([]);
+          const lx = 0.25 * x1 + 0.5 * mx + 0.25 * x2, ly = 0.25 * y1 + 0.5 * my + 0.25 * y2;
+          if (foco || (mouse && Math.hypot(mouse.x - lx, mouse.y - ly) < 16)) d.etiqueta(ctx, tp.nome, lx, ly, { tam: 11, cor: '#fff' }); else { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(lx, ly, 7, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = tp.cor; ctx.lineWidth = 3; ctx.stroke(); }
+          ctx.globalAlpha = 1;
+          arestas.push({ r, est, x: lx, y: ly });
+        }
+        // nós
+        const pulso = (Math.sin((performance.now() - t0) / 220) + 1) / 2;
+        for (const [id, p] of Object.entries(P)) {
+          if (p[4] > ponto) continue;
+          const [x, y] = pos(id), R = id === Object.keys(P)[0] ? 30 : 25, ativo = sel && sel.tipo === 'p' && sel.id === id;
+          if (pulsar.has(id)) { ctx.strokeStyle = C.amarelo; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(x, y, R + 6 + pulso * 6, 0, Math.PI * 2); ctx.stroke(); }
+          ctx.globalAlpha = sel && sel.tipo === 'p' && !ativo && !O().relacoes.some((r) => (r[0] === sel.id && r[1] === id) || (r[1] === sel.id && r[0] === id)) ? 0.35 : 1;
+          d.bola(ctx, x, y, R, p[5], { esp: ativo ? 4.5 : 3 });
+          d.texto(ctx, iniciais(p[0]), x, y + 1, { tam: R * 0.62, alinhar: 'center', base: 'middle', cor: '#fff', fonte: 'titulo', contorno: C.tinta, esp: 3 });
+          d.etiqueta(ctx, p[0], x, y + R + 14, { tam: 11, cor: ativo ? C.amarelo : '#fff' });
+          ctx.globalAlpha = 1;
+          nosPos[id] = [x, y, R];
+        }
+        // curva do enredo
+        const y0 = hG + 8, hA = h - y0 - 10, ax = 30, aw = w - 60;
+        d.bloco(ctx, 10, y0, w - 20, hA, { cor: '#fff', r: 12, alt: 0, esp: 2 });
+        d.texto(ctx, `Enredo · ${O().titulo}`, 22, y0 + 18, { tam: 12, fonte: 'titulo' });
+        const pts = O().pontos, X = (i) => ax + 20 + (i / (pts.length - 1)) * (aw - 40), Y = (t) => y0 + hA - 22 - t * (hA - 52);
+        ctx.strokeStyle = '#E3EAFA'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, Y(0)); ctx.lineTo(ax + aw, Y(0)); ctx.stroke();
+        const clim = pts.reduce((m, p, i) => (p[4] > pts[m][4] ? i : m), 0);
+        for (const [i0, i1, rot] of [[0, 1, 'exposição'], [1, clim, 'conflito'], [clim, pts.length - 1, 'desfecho']]) if (i1 > i0) d.texto(ctx, rot, (X(i0) + X(i1)) / 2, y0 + hA - 6, { tam: 10, alinhar: 'center', cor: C.suave });
+        d.texto(ctx, 'clímax', X(clim), Y(pts[clim][4]) + 24, { tam: 10, alinhar: 'center', cor: C.vermelho });
+        ctx.strokeStyle = C.vermelho; ctx.lineWidth = 3; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(X(i), Y(p[4])) : ctx.moveTo(X(i), Y(p[4])))); ctx.stroke();
+        pts.forEach((p, i) => { d.bola(ctx, X(i), Y(p[4]), i === ponto ? 10 : 7, i <= ponto ? (i === ponto ? C.amarelo : C.vermelho) : '#E6EEFF', { esp: 2 }); d.texto(ctx, String(i + 1), X(i), Y(p[4]) + 1, { tam: 10, alinhar: 'center', base: 'middle', cor: C.tinta }); });
+        d.etiqueta(ctx, pts[ponto][0], Math.min(w - 90, Math.max(90, X(ponto))), Y(pts[ponto][4]) - 20, { tam: 11, cor: C.amarelo });
+        pontosPos = pts.map((p, i) => [X(i), Y(p[4])]);
+      }
+      let pontosPos = [];
+
+      // ---------- painel ----------
+      const gO = ui.grupo('Obra');
+      ui.select({ opcoes: Object.entries(OBRAS).map(([k, o]) => ({ valor: k, rotulo: `${o.titulo} — ${o.autor} (${o.ano})` })), valor: obra, pai: gO, aoMudar: (v) => { obra = v; ponto = 0; sel = null; sP.input.max = O().pontos.length - 1; sP.valor = 0; trocarObra(); } });
+      const ctxEl = SQ.el('div', { class: 'contexto' }); gO.append(ctxEl);
+      const gE = ui.grupo('Ponto do enredo');
+      const sP = ui.slider({ rotulo: 'Avançar na leitura', min: 0, max: 8, passo: 1, valor: 0, pai: gE, formatar: (v) => `${v + 1} de ${O().pontos.length}`, aoMudar: (v) => irPonto(v) });
+      ui.linha(gE, ui.botao({ rotulo: '◀ Anterior', classe: 'branco pequeno', aoClicar: () => irPonto(Math.max(0, ponto - 1)) }), ui.botao({ rotulo: 'Próximo ▶', classe: 'pequeno', aoClicar: () => irPonto(Math.min(O().pontos.length - 1, ponto + 1)) }));
+      const fichaP = SQ.el('div', { class: 'ficha' }); gE.append(fichaP);
+      const gF = ui.grupo('Personagem ou relação');
+      const ficha = SQ.el('div', { class: 'ficha' }, SQ.el('p', { class: 'texto-suave mb0' }, 'Clique num personagem ou numa ligação.')); gF.append(ficha);
+      gF.append(SQ.el('div', { class: 'legenda-rel', html: Object.values(TIPOS).map((t) => `<span style="--c:${t.cor}">${t.nome}</span>`).join('') }));
+
+      function trocarObra() {
+        const o = O();
+        ctxEl.innerHTML = `<dl><dt>Autor</dt><dd>${o.autor} (${o.ano})</dd><dt>Movimento</dt><dd>${o.movimento}</dd><dt>Foco</dt><dd>${o.foco}</dd><dt>Contexto</dt><dd>${o.contexto}</dd></dl>`;
+        ficha.innerHTML = '<p class="texto-suave mb0">Clique num personagem ou numa ligação.</p>';
+        irPonto(0, true);
+      }
+      function irPonto(i, inicio) {
+        const ant = ponto; ponto = i; sP.valor = i;
+        const P = O().personagens; pulsar = new Set(Object.keys(P).filter((id) => P[id][4] === i && (i > 0 || inicio)));
+        const novas = O().relacoes.filter((r) => r[2].some((e) => e[0] === i) && i > 0);
+        const p = O().pontos[i];
+        fichaP.innerHTML = `<span class="cap">${i + 1}. ${p[1]}</span><h3>${p[0]}</h3><p class="mb0">${p[2]}</p>${p[3] ? `<p class="trecho">“${p[3]}”</p>` : ''}`;
+        let t = `<b>${i + 1}. ${p[0]}</b> (${p[1]}): ${p[2]}`;
+        const ent = [...pulsar].map((id) => P[id][0]); if (ent.length && !inicio) t += ` Entra${ent.length > 1 ? 'm' : ''} em cena: <b>${ent.join(', ')}</b>.`;
+        if (novas.length) t += ` Relações que mudam: ${novas.map((r) => `${P[r[0]][0]} e ${P[r[1]][0]} → <b>${TIPOS[r[2].find((e) => e[0] === i)[1]].nome}</b>`).join('; ')}.`;
+        if (inicio) t = `<b>${O().titulo}</b>, de ${O().autor} (${O().ano}) — ${O().movimento}. ${t}`;
+        guia.diz(t, { chave: 'enredo' });
+        if (i !== ant) SQ.som(500 + i * 40, 0.06);
+        setTimeout(() => { pulsar.clear(); }, 2600);
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const no = Object.entries(nosPos).find(([, [x, y, R]]) => Math.hypot(p.x - x, p.y - y) < R + 4);
+          if (no) { const [id] = no, P = O().personagens[id]; sel = { tipo: 'p', id }; ficha.innerHTML = `<h3>${P[0]}</h3><p class="mb0">${P[1]}</p>`; guia.diz(`<b>${P[0]}</b>: ${P[1]}`, { chave: 'sel' }); SQ.som(640, 0.05); return false; }
+          const ar = arestas.find((a) => Math.hypot(p.x - a.x, p.y - a.y) < 14);
+          if (ar) { const P = O().personagens; sel = { tipo: 'r', r: ar.r }; ficha.innerHTML = `<span class="cap" style="color:${TIPOS[ar.est[1]].cor}">${TIPOS[ar.est[1]].nome}</span><h3>${P[ar.r[0]][0]} ↔ ${P[ar.r[1]][0]}</h3><p class="mb0">${ar.est[2]}</p>`; guia.diz(`<b>${P[ar.r[0]][0]} e ${P[ar.r[1]][0]}</b> (${TIPOS[ar.est[1]].nome}): ${ar.est[2]}`, { chave: 'sel' }); return false; }
+          const pi = pontosPos.findIndex(([x, y]) => Math.hypot(p.x - x, p.y - y) < 14);
+          if (pi >= 0) { irPonto(pi); return false; }
+          sel = null; return false;
+        },
+        hover(p) { mouse = p; const sobre = Object.values(nosPos).some(([x, y, R]) => Math.hypot(p.x - x, p.y - y) < R + 4) || arestas.some((a) => Math.hypot(p.x - a.x, p.y - a.y) < 14) || pontosPos.some(([x, y]) => Math.hypot(p.x - x, p.y - y) < 14); tela.canvas.style.cursor = sobre ? 'pointer' : ''; },
+      });
+      SQ.loop(() => tela.redesenhar()).iniciar();
+      const perguntasObra = () => O().perguntas;
+      const responderAntigo = guia.perguntar.bind(guia);
+      guia.perguntar = async (texto) => {
+        const q = SQ.semAcento(texto), achou = perguntasObra().find((p) => p.chaves.some((k) => q.includes(SQ.semAcento(k))));
+        if (achou) { guia.diz(SQ.esc(texto), { tipo: 'aluno' }); guia.diz(achou.r); return; }
+        return responderAntigo(texto);
+      };
+      guia.contexto = () => ({ obra: O().titulo, autor: O().autor, ponto: O().pontos[ponto][0], selecionado: sel && (sel.tipo === 'p' ? O().personagens[sel.id][0] : `${sel.r[0]} ↔ ${sel.r[1]}`), resumo: `<b>${O().titulo}</b> (${O().autor}, ${O().ano}) é do ${O().movimento}. ${O().contexto} Foco narrativo: ${O().foco}` });
+      // perguntas específicas de cada obra como sugestões
+      const chips = guia.el.querySelector('.guia-perguntas');
+      function chipsObra() { chips.querySelectorAll('.da-obra').forEach((b) => b.remove()); for (const p of perguntasObra()) { const b = SQ.el('button', { type: 'button', class: 'da-obra', onclick: () => guia.perguntar(p.p) }, p.p); chips.prepend(b); } }
+      const trocarOriginal = trocarObra; trocarObra = () => { trocarOriginal(); chipsObra(); };
+      trocarObra();
+    },
+  });
+  </script>
+</body>
+</html>

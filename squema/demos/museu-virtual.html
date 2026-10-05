@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Museu Virtual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/galeria.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 2px; font-size: 18px; }
+    .ficha .autor { font-weight: 900; color: var(--azul); font-size: 13px; }
+    .ficha .nota { font-size: 12px; color: var(--texto-suave); margin-top: 6px; }
+    .etapas { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+    .etapas button { border: 2px solid var(--tinta); border-radius: 10px; padding: 3px 9px; font-size: 12px; font-weight: 900; background: #fff; }
+    .etapas button[aria-pressed="true"] { background: var(--amarelo); }
+    .comparador { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .comparador canvas { width: 100%; height: auto; border: 3px solid #8C5A33; border-radius: 6px; box-shadow: 0 3px 0 rgba(11,20,56,.3); background: #fff; }
+    .tab-comp { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    .tab-comp td { border-bottom: 1px solid var(--linha); padding: 4px; vertical-align: top; }
+    .tab-comp td:first-child { font-weight: 900; color: var(--texto-suave); text-transform: uppercase; font-size: 10px; letter-spacing: .04em; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const SALAS = [
+    { nome: 'Ukiyo-e e Impressionismo', cor: 0x2BB4F5, x: -12 },
+    { nome: 'Pós e Neoimpressionismo', cor: 0xFFC21A, x: -4 },
+    { nome: 'Art Nouveau e Vanguarda', cor: 0xFF6B8A, x: 4 },
+    { nome: 'Abstracionismo', cor: 0x8B3DFF, x: 12 },
+  ];
+  // sala, título, artista, ano, técnica, onde está, proporção (l/a), atributos para o comparador, leitura guiada
+  const OBRAS = [
+    { id: 'onda', sala: 0, titulo: 'A grande onda de Kanagawa', artista: 'Katsushika Hokusai', ano: 1831, tec: 'Xilogravura colorida (ukiyo-e)', onde: 'Várias cópias: Met (Nova York), British Museum (Londres) e outros', prop: 1.48, mov: 'Ukiyo-e (Japão)', paleta: 'fria: azul da Prússia e bege', figura: 'figurativa', pincel: 'contornos nítidos e áreas chapadas',
+      ler: { observar: 'Siga a curva da onda com o olhar: onde ela termina? O que aparece pequeno lá no fundo?', descrever: 'Uma onda gigante, com “garras” de espuma, ameaça três barcos de pescadores. Ao fundo, bem pequeno, o Monte Fuji.', interpretar: 'O Fuji, símbolo de permanência, parece minúsculo diante da força da natureza. O que a obra diz sobre o ser humano diante do mar?', contexto: 'Faz parte da série “Trinta e seis vistas do Monte Fuji”. As gravuras japonesas chegaram à Europa no século XIX e influenciaram Monet, Van Gogh e os impressionistas.' } },
+    { id: 'impressao', sala: 0, titulo: 'Impressão, nascer do sol', artista: 'Claude Monet', ano: 1872, tec: 'Óleo sobre tela', onde: 'Museu Marmottan Monet, Paris', prop: 1.3, mov: 'Impressionismo', paleta: 'fria com um ponto quente (o sol laranja)', figura: 'figurativa', pincel: 'pinceladas soltas e visíveis',
+      ler: { observar: 'Aproxime-se: dá para contar as pinceladas do reflexo do sol? E de longe, o que você vê?', descrever: 'O porto de Le Havre ao amanhecer, envolto em névoa. Barcos são manchas escuras; o sol laranja se reflete na água.', interpretar: 'Monet pinta a luz de um instante, não os detalhes. Que sensação a névoa provoca?', contexto: 'Esta tela deu nome ao movimento: um crítico, debochando, chamou os pintores de “impressionistas”. Eles pintavam ao ar livre, com tinta em tubo, captando luz e cor.' } },
+    { id: 'jatte', sala: 1, titulo: 'Uma tarde de domingo na Ilha de Grande Jatte', artista: 'Georges Seurat', ano: 1886, tec: 'Óleo sobre tela (pontilhismo)', onde: 'Art Institute of Chicago', prop: 1.49, mov: 'Neoimpressionismo (pontilhismo)', paleta: 'verdes e azuis com pontos complementares', figura: 'figurativa', pincel: 'pontos de cor pura, lado a lado',
+      ler: { observar: 'Chegue bem perto: as cores estão misturadas na tela ou no seu olho?', descrever: 'Parisienses passeiam e descansam num parque à beira do rio Sena, num domingo ensolarado.', interpretar: 'As figuras parecem paradas, quase estátuas. Que clima isso cria: alegria ou rigidez?', contexto: 'Seurat estudou teorias científicas da cor e aplicou pontos de cores puras que se misturam opticamente — o pontilhismo. A tela levou cerca de dois anos.' } },
+    { id: 'noite', sala: 1, titulo: 'A noite estrelada', artista: 'Vincent van Gogh', ano: 1889, tec: 'Óleo sobre tela', onde: 'MoMA, Nova York', prop: 1.26, mov: 'Pós-impressionismo', paleta: 'contraste de azuis profundos e amarelos', figura: 'figurativa', pincel: 'pinceladas grossas, em espiral',
+      ler: { observar: 'Que formas se repetem no céu? Para onde o cipreste aponta?', descrever: 'Um céu noturno em redemoinhos, com estrelas e lua brilhantes, sobre uma pequena vila. Um cipreste escuro sobe como chama à esquerda.', interpretar: 'O céu parece vivo, em movimento; a vila, calma. O que o pintor pode estar sentindo?', contexto: 'Van Gogh pintou a vista da janela do sanatório de Saint-Rémy, de memória, durante o dia. Para os pós-impressionistas, a cor expressa emoção, não só a luz.' } },
+    { id: 'beijo', sala: 2, titulo: 'O beijo', artista: 'Gustav Klimt', ano: 1908, tec: 'Óleo e folha de ouro sobre tela', onde: 'Galeria Belvedere, Viena', prop: 1, mov: 'Art Nouveau (Secessão de Viena)', paleta: 'quente: dourados e ocres', figura: 'figurativa e ornamental', pincel: 'superfícies decorativas, folha de ouro',
+      ler: { observar: 'Compare as formas na roupa de cada figura: retângulos ou círculos?', descrever: 'Um casal abraçado, envolto num manto dourado cheio de padrões, sobre um prado florido à beira de um precipício.', interpretar: 'O ouro faz a cena parecer sagrada, como um ícone. O fundo vazio e o precipício mudam o sentido do abraço?', contexto: 'Do “período dourado” de Klimt, inspirado em mosaicos bizantinos. A Secessão de Viena rompeu com a arte acadêmica e uniu arte e design.' } },
+    { id: 'quadrado', sala: 2, titulo: 'Quadrado preto', artista: 'Kazimir Malevich', ano: 1915, tec: 'Óleo sobre linho', onde: 'Galeria Tretyakov, Moscou', prop: 1, mov: 'Suprematismo', paleta: 'preto sobre branco', figura: 'abstrata geométrica', pincel: 'superfície lisa (hoje craquelada)',
+      ler: { observar: 'O quadrado está mesmo no centro? As bordas são perfeitamente retas?', descrever: 'Um quadrado preto sobre fundo branco. Só isso — e a tinta rachada pelo tempo.', interpretar: '“Isso eu também faria”? Pense: por que alguém pintaria “o nada”? O que sobra quando a arte não representa coisa alguma?', contexto: 'Malevich expôs a tela no alto de um canto da sala, lugar dos ícones religiosos nas casas russas. Ele queria a “supremacia do sentimento puro” na arte.' } },
+    { id: 'composicao8', sala: 3, titulo: 'Composição VIII', artista: 'Wassily Kandinsky', ano: 1923, tec: 'Óleo sobre tela', onde: 'Museu Guggenheim, Nova York', prop: 1.4, mov: 'Abstracionismo geométrico', paleta: 'variada sobre fundo claro', figura: 'abstrata geométrica', pincel: 'linhas precisas e cores chapadas',
+      ler: { observar: 'Qual forma chama mais atenção? Há algum ritmo, como numa música?', descrever: 'Círculos, triângulos, linhas retas e curvas flutuam sobre um fundo claro, num equilíbrio cuidadoso.', interpretar: 'Kandinsky “ouvia” as cores. Se este quadro fosse música, seria calma ou agitada?', contexto: 'Kandinsky foi um dos pioneiros da arte abstrata e professor da Bauhaus, escola alemã de arte e design. Para ele, o círculo era a forma mais “cósmica”.' } },
+    { id: 'mondrian', sala: 3, titulo: 'Composição com vermelho, azul e amarelo', artista: 'Piet Mondrian', ano: 1930, tec: 'Óleo sobre tela', onde: 'Kunsthaus Zürich, Zurique', prop: 1, mov: 'Neoplasticismo (De Stijl)', paleta: 'cores primárias, preto e branco', figura: 'abstrata geométrica', pincel: 'superfície lisa e linhas retas',
+      ler: { observar: 'Quantos retângulos há? Por que o vermelho é tão maior que o amarelo?', descrever: 'Linhas pretas retas dividem a tela em retângulos brancos e de cores primárias.', interpretar: 'Mondrian buscava equilíbrio e harmonia universais. Você acha a composição estável? O que aconteceria se o vermelho fosse pequeno?', contexto: 'O neoplasticismo usa só horizontais, verticais e cores primárias. Esse estilo influenciou arquitetura, moda e design gráfico até hoje.' } },
+  ];
+
+  // ---------- releituras digitais (desenho procedural) ----------
+  function rng(s) { return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
+  const PINTAR = {
+    mondrian(g, W, H) { g.fillStyle = '#F4F1E8'; g.fillRect(0, 0, W, H); const L = W * 0.028; g.fillStyle = '#D82B21'; g.fillRect(W * 0.3, 0, W * 0.7, H * 0.68); g.fillStyle = '#1E4FA3'; g.fillRect(0, H * 0.78, W * 0.3, H * 0.22); g.fillStyle = '#F2C80F'; g.fillRect(W * 0.92, H * 0.88, W * 0.08, H * 0.12); g.fillStyle = '#111'; for (const x of [0.3, 0.92]) g.fillRect(W * x - L / 2, x === 0.92 ? H * 0.68 : 0, L, x === 0.92 ? H * 0.32 : H); for (const [y, x0, x1] of [[0.68, 0, 1], [0.34, 0, 0.3], [0.78, 0, 0.3], [0.88, 0.92, 1]]) g.fillRect(W * x0, H * y - L / 2, W * (x1 - x0), L); },
+    quadrado(g, W, H) { g.fillStyle = '#EDE6D6'; g.fillRect(0, 0, W, H); g.fillStyle = '#111'; g.save(); g.translate(W / 2, H / 2); g.rotate(0.012); g.fillRect(-W * 0.36, -H * 0.37, W * 0.73, H * 0.74); g.restore(); const r = rng(7); g.strokeStyle = 'rgba(200,190,170,.5)'; g.lineWidth = 1.2; for (let k = 0; k < 140; k++) { let x = W * (0.16 + r() * 0.7), y = H * (0.15 + r() * 0.7); g.beginPath(); g.moveTo(x, y); for (let s = 0; s < 6; s++) { x += (r() - 0.5) * 40; y += (r() - 0.5) * 40; g.lineTo(x, y); } g.stroke(); } },
+    composicao8(g, W, H) {
+      const fd = g.createLinearGradient(0, 0, W, H); fd.addColorStop(0, '#EFE6CF'); fd.addColorStop(1, '#D8E3EC'); g.fillStyle = fd; g.fillRect(0, 0, W, H);
+      const circ = (x, y, r, cor, borda) => { g.beginPath(); g.arc(x * W, y * H, r * W, 0, Math.PI * 2); g.fillStyle = cor; g.fill(); if (borda) { g.lineWidth = borda; g.strokeStyle = '#111'; g.stroke(); } };
+      g.globalAlpha = 0.9; circ(0.17, 0.27, 0.12, '#3A2A7A', 14); circ(0.17, 0.27, 0.075, '#C83A6A'); circ(0.17, 0.27, 0.04, '#111');
+      circ(0.62, 0.22, 0.035, '#E8A400', 4); circ(0.78, 0.62, 0.05, '#2BB4F5', 4); circ(0.48, 0.66, 0.02, '#D82B21', 3); circ(0.86, 0.3, 0.025, '#111');
+      g.globalAlpha = 1; g.lineWidth = 5; g.strokeStyle = '#111';
+      for (const [x1, y1, x2, y2] of [[0.3, 0.9, 0.95, 0.15], [0.35, 0.1, 0.62, 0.95], [0.05, 0.62, 0.7, 0.55], [0.55, 0.3, 0.98, 0.42], [0.1, 0.85, 0.45, 0.4]]) { g.beginPath(); g.moveTo(x1 * W, y1 * H); g.lineTo(x2 * W, y2 * H); g.stroke(); }
+      g.fillStyle = '#F2C80F'; g.beginPath(); g.moveTo(0.4 * W, 0.92 * H); g.lineTo(0.55 * W, 0.58 * H); g.lineTo(0.62 * W, 0.92 * H); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = '#1E4FA3'; g.beginPath(); g.moveTo(0.7 * W, 0.12 * H); g.lineTo(0.82 * W, 0.2 * H); g.lineTo(0.68 * W, 0.3 * H); g.closePath(); g.fill(); g.stroke();
+      for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) { g.fillStyle = (i + k) % 2 ? '#111' : '#fff'; g.fillRect(W * (0.82 + i * 0.022), H * (0.78 + k * 0.03), W * 0.022, H * 0.03); }
+      g.lineWidth = 3; g.beginPath(); g.arc(W * 0.42, H * 0.3, W * 0.09, 0.2, 2.6); g.stroke(); g.beginPath(); g.arc(W * 0.66, H * 0.8, W * 0.06, 3.4, 5.9); g.stroke();
+    },
+    noite(g, W, H) {
+      g.fillStyle = '#123A7A'; g.fillRect(0, 0, W, H); const r = rng(11);
+      const centros = [[0.42, 0.3, 1], [0.62, 0.36, -1], [0.25, 0.18, 1]];
+      for (let k = 0; k < 2600; k++) {
+        let x = r() * W, y = r() * H * 0.72; const cores = ['#2E6BC6', '#7EB8E8', '#1B4F9C', '#A8D8F0', '#3E7FD0', '#F4F1C6']; g.strokeStyle = cores[Math.floor(r() * cores.length)]; g.lineWidth = 3 + r() * 4; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, y);
+        for (let s = 0; s < 4; s++) { let vx = 1, vy = 0.15 * Math.sin(x * 0.01); for (const [cx, cy, sg] of centros) { const dx = x - cx * W, dy = y - cy * H, d2 = dx * dx + dy * dy + 2000; vx += (-dy * sg * 9000) / d2; vy += (dx * sg * 9000) / d2; } const L = Math.hypot(vx, vy); x += (vx / L) * 9; y += (vy / L) * 9; g.lineTo(x, y); }
+        g.stroke();
+      }
+      const estrela = (x, y, rr) => { const gr = g.createRadialGradient(x, y, 2, x, y, rr * 2.4); gr.addColorStop(0, 'rgba(255,240,150,1)'); gr.addColorStop(0.4, 'rgba(255,220,90,.85)'); gr.addColorStop(1, 'rgba(255,220,90,0)'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, rr * 2.4, 0, Math.PI * 2); g.fill(); };
+      for (const [x, y, rr] of [[0.1, 0.12, 22], [0.32, 0.08, 18], [0.52, 0.16, 20], [0.7, 0.1, 16], [0.2, 0.42, 16], [0.82, 0.44, 18], [0.6, 0.5, 14]]) estrela(x * W, y * H, rr);
+      g.fillStyle = '#F7D23A'; g.beginPath(); g.arc(0.88 * W, 0.15 * H, 46, 0, Math.PI * 2); g.fill(); g.fillStyle = '#E8A400'; g.beginPath(); g.arc(0.9 * W, 0.13 * H, 34, 0, Math.PI * 2); g.fill(); estrela(0.88 * W, 0.15 * H, 40);
+      g.fillStyle = '#1E3A5F'; g.beginPath(); g.moveTo(0, 0.78 * H); for (let x = 0; x <= W; x += 20) g.lineTo(x, 0.7 * H + Math.sin(x * 0.006) * 30); g.lineTo(W, H); g.lineTo(0, H); g.fill();
+      for (let k = 0; k < 26; k++) { const x = 0.3 * W + r() * 0.62 * W, y = 0.8 * H + r() * 0.13 * H, bw = 24 + r() * 26; g.fillStyle = '#2C3E50'; g.fillRect(x, y, bw, 22); g.fillStyle = '#F7D23A'; g.fillRect(x + 6, y + 7, 6, 7); g.fillStyle = '#4A2E1A'; g.beginPath(); g.moveTo(x - 3, y); g.lineTo(x + bw / 2, y - 14); g.lineTo(x + bw + 3, y); g.fill(); }
+      g.fillStyle = '#2C3E50'; g.beginPath(); g.moveTo(0.62 * W, 0.84 * H); g.lineTo(0.635 * W, 0.66 * H); g.lineTo(0.65 * W, 0.84 * H); g.fill();
+      g.fillStyle = '#10241A'; g.beginPath(); g.moveTo(0.08 * W, H); g.bezierCurveTo(0.02 * W, 0.6 * H, 0.16 * W, 0.4 * H, 0.14 * W, 0.08 * H); g.bezierCurveTo(0.22 * W, 0.4 * H, 0.3 * W, 0.7 * H, 0.26 * W, H); g.fill();
+      g.strokeStyle = '#2E4A2A'; g.lineWidth = 4; for (let k = 0; k < 40; k++) { const y = 0.15 * H + r() * 0.8 * H, x = 0.12 * W + r() * 0.1 * W; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 10, y - 20, x + 3, y - 40); g.stroke(); }
+    },
+    impressao(g, W, H) {
+      const fd = g.createLinearGradient(0, 0, 0, H); fd.addColorStop(0, '#9FB4BE'); fd.addColorStop(0.5, '#7E9AA8'); fd.addColorStop(1, '#5E7E8E'); g.fillStyle = fd; g.fillRect(0, 0, W, H); const r = rng(5);
+      for (let k = 0; k < 900; k++) { const y = r() * H, x = r() * W; g.strokeStyle = ['#8FA9B3', '#6E8E9C', '#B9C6C2', '#A7B9BF', '#E3B79A'][Math.floor(r() * (y < H * 0.45 ? 5 : 4))]; g.lineWidth = 5 + r() * 6; g.globalAlpha = 0.55; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 30 + r() * 50, y + (r() - 0.5) * 6); g.stroke(); }
+      g.globalAlpha = 0.5; g.fillStyle = '#5E6E78'; for (const x of [0.1, 0.16, 0.2, 0.74, 0.8]) g.fillRect(x * W, 0.22 * H, 4, 0.22 * H); g.globalAlpha = 1;
+      g.fillStyle = '#F2602B'; g.beginPath(); g.arc(0.52 * W, 0.32 * H, 26, 0, Math.PI * 2); g.fill();
+      for (let k = 0; k < 9; k++) { g.strokeStyle = k % 2 ? '#F2602B' : '#F59B5A'; g.lineWidth = 7; g.beginPath(); const y = 0.5 * H + k * 0.042 * H, x = 0.5 * W + (r() - 0.5) * 20; g.moveTo(x - 26 + k, y); g.lineTo(x + 30 - k, y + 3); g.stroke(); }
+      g.fillStyle = '#2E3F4A'; for (const [x, y, s] of [[0.36, 0.68, 1.1], [0.44, 0.78, 0.8], [0.6, 0.62, 0.7]]) { g.beginPath(); g.ellipse(x * W, y * H, 50 * s, 12 * s, 0, 0, Math.PI * 2); g.fill(); g.fillRect(x * W - 3, y * H - 40 * s, 5, 30 * s); }
+    },
+    jatte(g, W, H) {
+      g.fillStyle = '#EAF0D8'; g.fillRect(0, 0, W, H); const r = rng(3);
+      const regioes = (x, y) => { if (y < 0.18) return ['#E8EEF4', '#CFE0F0', '#F4EFD8']; if (x > 0.68 && y < 0.48) return ['#4A8EC8', '#7FB8E0', '#2E6BA8', '#F2E2B0']; if (y > 0.45 && x < 0.55) return ['#3E8E3A', '#2E6E2E', '#E8A400', '#6EAA3A']; return ['#7FBF4A', '#A7D04A', '#F2D24A', '#5E9E3A', '#E89A5A']; };
+      for (let k = 0; k < 26000; k++) { const x = r(), y = r(), cs = regioes(x, y); g.fillStyle = cs[Math.floor(r() * cs.length)]; g.beginPath(); g.arc(x * W, y * H, 2.6, 0, Math.PI * 2); g.fill(); }
+      const figura = (x, y, s, cor) => { for (let k = 0; k < 900 * s; k++) { const a = r() * Math.PI * 2, rr = Math.sqrt(r()); const px = x + Math.cos(a) * rr * 0.022 * s, py = y + Math.sin(a) * rr * 0.11 * s + (r() < 0.12 ? -0.13 * s : 0); g.fillStyle = r() < 0.8 ? cor : '#E8C9A0'; g.beginPath(); g.arc(px * W, py * H, 2.4, 0, Math.PI * 2); g.fill(); } };
+      figura(0.82, 0.68, 1.6, '#1E2A3A'); figura(0.72, 0.62, 1.3, '#3A2A4A'); figura(0.3, 0.6, 1.0, '#C83A3A'); figura(0.45, 0.55, 0.8, '#1E2A3A'); figura(0.58, 0.5, 0.6, '#F4F1E8');
+      g.fillStyle = 'rgba(30,40,30,.85)'; for (const x of [0.12, 0.36, 0.6]) g.fillRect(x * W, 0, 10, 0.45 * H);
+      for (let k = 0; k < 3000; k++) { const x = r(), y = r() * 0.25; g.fillStyle = ['#2E5E2A', '#3E7E3A', '#1E4E2A'][Math.floor(r() * 3)]; g.beginPath(); g.arc(x * W, y * H, 2.6, 0, Math.PI * 2); g.fill(); }
+    },
+    onda(g, W, H) {
+      g.fillStyle = '#E9DDBF'; g.fillRect(0, 0, W, H);
+      g.fillStyle = '#D9CBA5'; g.beginPath(); g.ellipse(W * 0.6, H * 0.35, W * 0.5, H * 0.3, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#4B5E7A'; g.beginPath(); g.moveTo(W * 0.56, H * 0.78); g.lineTo(W * 0.64, H * 0.62); g.lineTo(W * 0.72, H * 0.78); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.moveTo(W * 0.62, H * 0.66); g.lineTo(W * 0.64, H * 0.62); g.lineTo(W * 0.66, H * 0.66); g.fill();
+      const azul = '#1D3F73';
+      g.fillStyle = azul; g.beginPath(); g.moveTo(0, H); g.lineTo(0, H * 0.62); g.bezierCurveTo(W * 0.05, H * 0.2, W * 0.32, H * 0.02, W * 0.46, H * 0.16); g.bezierCurveTo(W * 0.52, H * 0.24, W * 0.46, H * 0.34, W * 0.4, H * 0.3); g.bezierCurveTo(W * 0.36, H * 0.5, W * 0.4, H * 0.8, W * 0.56, H * 0.86); g.lineTo(W * 0.56, H); g.fill();
+      g.fillStyle = '#4A78B0'; g.beginPath(); g.moveTo(W * 0.06, H * 0.6); g.bezierCurveTo(W * 0.1, H * 0.3, W * 0.3, H * 0.12, W * 0.42, H * 0.2); g.bezierCurveTo(W * 0.26, H * 0.2, W * 0.16, H * 0.4, W * 0.12, H * 0.66); g.fill();
+      g.fillStyle = '#FFFFFF'; for (let k = 0; k < 16; k++) { const t = k / 15, x = W * (0.18 + t * 0.3), y = H * (0.2 - Math.sin(t * Math.PI) * 0.08 + t * 0.02); g.beginPath(); g.arc(x, y, 12, 0, Math.PI * 2); g.fill(); g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 14, y + 18, x + 4, y + 30); g.lineTo(x - 6, y + 4); g.fill(); }
+      g.fillStyle = azul; for (const [x, y] of [[0.68, 0.84], [0.8, 0.9]]) { g.beginPath(); g.moveTo(W * (x - 0.12), H); g.quadraticCurveTo(W * x, H * (y - 0.16), W * (x + 0.12), H); g.fill(); }
+      g.fillStyle = '#E9DDBF'; for (const [x, y, a] of [[0.32, 0.78, -0.4], [0.62, 0.9, 0.2], [0.15, 0.92, 0.3]]) { g.save(); g.translate(W * x, H * y); g.rotate(a); g.fillRect(-60, -6, 120, 12); g.fillStyle = '#1E2A3A'; for (let k = -4; k <= 4; k++) g.fillRect(k * 12 - 2, -12, 5, 6); g.restore(); g.fillStyle = '#E9DDBF'; }
+      g.fillStyle = '#8C1C13'; g.fillRect(W * 0.03, H * 0.04, W * 0.07, H * 0.16); g.fillStyle = '#E9DDBF'; g.font = `${Math.round(H * 0.05)}px serif`; g.fillText('北', W * 0.045, H * 0.1); g.fillText('斎', W * 0.045, H * 0.17);
+    },
+    beijo(g, W, H) {
+      const r = rng(9); g.fillStyle = '#6E5A2A'; g.fillRect(0, 0, W, H);
+      for (let k = 0; k < 7000; k++) { g.fillStyle = ['#8C7434', '#A68A3E', '#7A6430', '#C9A84E'][Math.floor(r() * 4)]; g.fillRect(r() * W, r() * H, 3, 3); }
+      g.fillStyle = '#3E8E3A'; g.beginPath(); g.moveTo(0, H * 0.8); g.quadraticCurveTo(W * 0.5, H * 0.72, W * 0.85, H * 0.8); g.lineTo(W * 0.8, H); g.lineTo(0, H); g.fill();
+      for (let k = 0; k < 220; k++) { const x = r() * W * 0.82, y = H * (0.8 + r() * 0.2); g.fillStyle = ['#FFC21A', '#FF6B8A', '#F4F7FF', '#8B3DFF', '#EE3B45'][Math.floor(r() * 5)]; g.beginPath(); g.arc(x, y, 4 + r() * 4, 0, Math.PI * 2); g.fill(); }
+      const ouro = g.createLinearGradient(W * 0.3, 0, W * 0.7, H); ouro.addColorStop(0, '#F7D774'); ouro.addColorStop(1, '#C9932E');
+      g.fillStyle = ouro; g.beginPath(); g.moveTo(W * 0.42, H * 0.1); g.bezierCurveTo(W * 0.7, H * 0.08, W * 0.72, H * 0.5, W * 0.62, H * 0.86); g.lineTo(W * 0.36, H * 0.88); g.bezierCurveTo(W * 0.3, H * 0.5, W * 0.3, H * 0.2, W * 0.42, H * 0.1); g.fill(); g.strokeStyle = '#7A5A1A'; g.lineWidth = 3; g.stroke();
+      for (let k = 0; k < 40; k++) { const x = W * (0.42 + r() * 0.2), y = H * (0.2 + r() * 0.55); g.fillStyle = r() < 0.5 ? '#111' : '#E6E0D6'; g.fillRect(x, y, 10 + r() * 14, 26 + r() * 30); }
+      for (let k = 0; k < 30; k++) { const x = W * (0.36 + r() * 0.1), y = H * (0.45 + r() * 0.4); g.fillStyle = ['#FF6B8A', '#2BB4F5', '#36C04A', '#F4F7FF'][Math.floor(r() * 4)]; g.beginPath(); g.arc(x, y, 6 + r() * 8, 0, Math.PI * 2); g.fill(); g.strokeStyle = '#7A5A1A'; g.lineWidth = 2; g.stroke(); }
+      g.fillStyle = '#E8C9A0'; g.beginPath(); g.ellipse(W * 0.44, H * 0.3, W * 0.035, H * 0.05, -0.6, 0, Math.PI * 2); g.fill(); g.beginPath(); g.ellipse(W * 0.5, H * 0.19, W * 0.04, H * 0.055, 0.3, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#3A2A1A'; g.beginPath(); g.ellipse(W * 0.52, H * 0.15, W * 0.05, H * 0.035, 0.3, 0, Math.PI * 2); g.fill();
+    },
+  };
+  function telaObra(o, larg = 1024) { const c = document.createElement('canvas'); c.width = larg; c.height = Math.round(larg / o.prop); PINTAR[o.id](c.getContext('2d'), c.width, c.height); return c; }
+
+  SQ.demo('museu-virtual', {
+    fundo: 'ceu',
+    dica: 'Clique numa obra para se aproximar · arraste para olhar em volta',
+    sala: ['Cada grupo “adota” uma sala, faz a leitura guiada das obras e apresenta para a turma como monitor do museu.', 'Use o comparador: Monet × Seurat, Van Gogh × Hokusai, Malevich × Mondrian. O que muda na pincelada e na cor?', 'Peça que os alunos façam a própria releitura de uma obra com materiais simples.'],
+    comoIA: 'O guia sabe qual obra está sendo vista e em que etapa da leitura (observar, descrever, interpretar, contextualizar). Ele faz perguntas de apreciação em vez de dar respostas prontas e compara obras escolhidas pelo aluno. As imagens são releituras digitais desenhadas no navegador; com uma IA conectada, o guia pode analisar também fotos das obras originais ou desenhos dos alunos.',
+    guia: {
+      ola: 'Bem-vindo ao <b>Museu Virtual</b>! São 4 salas, da gravura japonesa ao abstracionismo. Clique numa obra para se aproximar e siga a <b>leitura guiada</b>. As imagens são <b>releituras digitais</b> das obras originais (todas em domínio público).',
+      perguntas: [
+        { p: 'Como faço a leitura de uma obra?', chaves: ['leitura', 'como', 'ler'], r: 'Siga quatro etapas: <b>observar</b> (olhe sem pressa), <b>descrever</b> (o que está lá: cores, formas, figuras), <b>interpretar</b> (que sentidos e sensações a obra provoca) e <b>contextualizar</b> (quem, quando, por quê).' },
+        { p: 'Figurativo × abstrato?', chaves: ['figurativ', 'abstrat'], r: 'Arte <b>figurativa</b> representa coisas reconhecíveis (pessoas, paisagens). Arte <b>abstrata</b> não representa objetos: trabalha com cor, forma, linha e ritmo por si mesmos, como Kandinsky e Mondrian.' },
+        { p: 'Por que essas obras são de domínio público?', chaves: ['dominio', 'publico', 'direitos'], r: 'Os artistas morreram há mais de 70 anos, então os direitos patrimoniais expiraram. Mesmo assim, a autoria continua: sempre cite artista, título e ano!' },
+        { p: 'Me faça uma pergunta sobre a obra', chaves: ['pergunta', 'apreciacao', 'faca'], r: (c) => c.perguntaApreciacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 10.5, 21], alvo: [0, 1.4, -2], distancia: [1.5, 32], polarMax: 1.45, sombraRaio: 18, sol: 1.6, hemi: 1.2 });
+      const m = (cor, o) => S3D.mat(cor, o);
+      const piso = new T.Mesh(new T.BoxGeometry(34, 0.3, 9), m(0xC98B4E, { rugosidade: 0.6, verniz: 0.5 })); piso.position.set(0, -0.15, 1.3); piso.receiveShadow = true; c.scene.add(piso); S3D.contorno(piso, 0.04);
+      for (let k = -16; k <= 16; k += 1.2) { const l = new T.Mesh(new T.BoxGeometry(0.02, 0.01, 9), m(0xA86A3A)); l.position.set(k, 0.005, 1.3); c.scene.add(l); }
+      const parede = new T.Mesh(new T.BoxGeometry(34, 4.2, 0.3), m(0xF4F7FF, { verniz: 0.1, rugosidade: 0.9 })); parede.position.set(0, 2.1, -3.15); parede.receiveShadow = true; c.scene.add(parede);
+      const obrasMesh = [];
+      SALAS.forEach((s, i) => {
+        const faixa = new T.Mesh(new T.BoxGeometry(7.6, 0.35, 0.05), m(s.cor)); faixa.position.set(s.x, 3.75, -2.98); c.scene.add(faixa);
+        const placa = new T.Mesh(new T.PlaneGeometry(4.6, 0.32), new T.MeshBasicMaterial({ map: S3D.texturaCanvas(1024, 72, (g, W, H) => { g.fillStyle = '#fff'; g.fillRect(0, 0, W, H); g.fillStyle = '#0B1438'; g.font = '800 40px Nunito, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(`Sala ${i + 1} · ${s.nome}`, W / 2, H / 2 + 2); }) })); placa.position.set(s.x, 3.75, -2.95); c.scene.add(placa);
+        if (i > 0) { const div = new T.Mesh(new T.BoxGeometry(0.25, 4.2, 3.2), m(0xE6EEFF)); div.position.set(s.x - 4, 2.1, -1.6); div.castShadow = true; c.scene.add(div); S3D.contorno(div, 0.03); }
+        const banco = new T.Mesh(new T.BoxGeometry(2, 0.45, 0.6), m(0x1B2559)); banco.position.set(s.x, 0.22, 2.2); banco.castShadow = true; c.scene.add(banco); S3D.contorno(banco, 0.03);
+      });
+      for (const o of OBRAS) {
+        const s = SALAS[o.sala], idx = OBRAS.filter((q) => q.sala === o.sala).indexOf(o), x = s.x + (idx ? 1.85 : -1.85);
+        const h = o.prop >= 1.3 ? 1.55 : 1.85, w = h * o.prop;
+        const tex = new T.CanvasTexture(telaObra(o)); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 8;
+        const g = new T.Group(); g.position.set(x, 1.85, -2.98);
+        const quadro = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshStandardMaterial({ map: tex, roughness: 0.75 })); quadro.position.z = 0.04; g.add(quadro);
+        const mold = new T.Mesh(new T.BoxGeometry(w + 0.22, h + 0.22, 0.07), m(o.sala === 2 ? 0xC9A84E : 0x6B4428, { metal: o.sala === 2 ? 0.5 : 0 })); g.add(mold);
+        const etiqueta = new T.Mesh(new T.PlaneGeometry(0.62, 0.22), new T.MeshBasicMaterial({ map: S3D.texturaCanvas(310, 110, (gg, W, H) => { gg.fillStyle = '#fff'; gg.fillRect(0, 0, W, H); gg.fillStyle = '#0B1438'; gg.font = '800 20px Nunito, sans-serif'; gg.fillText(o.titulo.length > 24 ? o.titulo.slice(0, 23) + '…' : o.titulo, 10, 36); gg.font = '700 17px Nunito, sans-serif'; gg.fillStyle = '#55628F'; gg.fillText(`${o.artista}, ${o.ano}`, 10, 68); }) }));
+        etiqueta.position.set(w / 2 + 0.5, -h / 2 + 0.1, 0.05); g.add(etiqueta);
+        g.userData = { obra: o, w, h }; c.scene.add(g); obrasMesh.push(g);
+        const spot = new T.SpotLight(0xFFF3DD, 18, 6, 0.6, 0.6); spot.position.set(x, 3.9, -1.2); spot.target = quadro; c.scene.add(spot);
+      }
+
+      let atual = null, etapa = 'observar', ip = 0;
+      function irObra(o) {
+        const g = obrasMesh.find((q) => q.userData.obra === o); atual = o; etapa = 'observar';
+        c.voarPara([g.position.x, 1.85, -2.98 + Math.max(2.4, g.userData.w * 1.25)], [g.position.x, 1.85, -2.98], 1.2);
+        pintarFicha(); SQ.som(560, 0.08);
+        guia.diz(`🖼️ <b>${o.titulo}</b> — ${o.artista}, ${o.ano}. Vamos começar a leitura: <b>observe</b>. ${o.ler.observar}`, { chave: 'obra' });
+      }
+      function irSala(i) { atual = null; c.voarPara([SALAS[i].x, 3.2, 6.5], [SALAS[i].x, 1.8, -2.5], 1.2); guia.diz(`Sala ${i + 1}: <b>${SALAS[i].nome}</b>. Clique numa das obras para se aproximar.`, { chave: 'obra' }); pintarFicha(); }
+      c.escolher(obrasMesh, (g) => g && irObra(g.userData.obra));
+
+      // ---------- painel ----------
+      const gN = ui.grupo('Salas');
+      ui.linha(gN, ...SALAS.map((s, i) => ui.botao({ rotulo: `${i + 1}. ${s.nome.split(' ')[0]}`, classe: 'branco pequeno', titulo: s.nome, aoClicar: () => irSala(i) })), ui.botao({ rotulo: '🏛️ Visão geral', classe: 'pequeno', aoClicar: () => { atual = null; c.voarPara([0, 10.5, 21], [0, 1.4, -2], 1.2); pintarFicha(); } }));
+      ui.linha(gN, ui.botao({ rotulo: '◀ Obra anterior', classe: 'branco pequeno', aoClicar: () => irObra(OBRAS[(OBRAS.indexOf(atual) - 1 + OBRAS.length) % OBRAS.length]) }), ui.botao({ rotulo: 'Próxima obra ▶', classe: 'branco pequeno', aoClicar: () => irObra(OBRAS[(OBRAS.indexOf(atual) + 1) % OBRAS.length]) }));
+      const gF = ui.grupo('Ficha e leitura guiada');
+      const ficha = SQ.el('div', { class: 'ficha' }); gF.append(ficha);
+      const ETAPAS = [['observar', '👀 Observar'], ['descrever', '✍️ Descrever'], ['interpretar', '💭 Interpretar'], ['contexto', '🕰️ Contexto']];
+      function pintarFicha() {
+        if (!atual) { ficha.innerHTML = '<p class="texto-suave mb0">Clique numa obra para abrir a ficha.</p>'; return; }
+        const o = atual;
+        ficha.innerHTML = `<span class="autor">${o.artista} · ${o.ano}</span><h3>${o.titulo}</h3><p class="mb0">${o.tec}. <span class="texto-suave">${o.onde}.</span></p>`;
+        const et = SQ.el('div', { class: 'etapas' });
+        for (const [k, rot] of ETAPAS) et.append(SQ.el('button', { type: 'button', 'aria-pressed': String(k === etapa), onclick: () => { etapa = k; pintarFicha(); guia.diz(`<b>${rot.split(' ')[1]}:</b> ${o.ler[k]}`, { chave: 'obra' }); } }, rot));
+        ficha.append(et, SQ.el('p', { class: 'mb0' }, o.ler[etapa]), SQ.el('p', { class: 'nota' }, '🎨 Imagem: releitura digital desenhada no navegador, inspirada na obra original (domínio público).'));
+      }
+      const gC = ui.grupo('Comparador lado a lado');
+      const ops = OBRAS.map((o) => ({ valor: o.id, rotulo: `${o.titulo} (${o.ano})` }));
+      const sA = ui.select({ rotulo: 'Obra A', opcoes: ops, valor: 'impressao', pai: gC, aoMudar: comparar });
+      const sB = ui.select({ rotulo: 'Obra B', opcoes: ops, valor: 'jatte', pai: gC, aoMudar: comparar });
+      const comp = SQ.el('div', { class: 'comparador' }), tab = SQ.el('table', { class: 'tab-comp' }); gC.append(comp, tab);
+      function comparar(narrar = true) {
+        const a = OBRAS.find((o) => o.id === sA.valor), b = OBRAS.find((o) => o.id === sB.valor);
+        comp.innerHTML = ''; comp.append(telaObra(a, 360), telaObra(b, 360));
+        const lin = [['Ano', a.ano, b.ano], ['Movimento', a.mov, b.mov], ['Técnica', a.tec, b.tec], ['Paleta', a.paleta, b.paleta], ['Pincelada', a.pincel, b.pincel], ['Tipo', a.figura, b.figura]];
+        tab.innerHTML = lin.map(([k, x, y]) => `<tr><td>${k}</td><td>${x}</td><td>${y}</td></tr>`).join('');
+        if (!narrar || a === b) return;
+        const dif = Math.abs(a.ano - b.ano);
+        let t = `<b>${a.titulo}</b> e <b>${b.titulo}</b>: ${dif ? `${dif} anos separam as duas obras` : 'mesmo ano'}. `;
+        if (a.figura.startsWith('abstrata') !== b.figura.startsWith('abstrata')) t += 'Uma é figurativa e a outra abstrata — repare como a segunda abandona a representação de objetos. ';
+        else if (a.figura.startsWith('abstrata')) t += 'As duas são abstratas, mas observe a diferença entre formas livres e uma grade rígida. ';
+        t += `Na pincelada: “${a.pincel}” × “${b.pincel}”. Pergunta para você: qual das duas transmite mais <b>movimento</b>? Por quê?`;
+        guia.diz(t, { chave: 'comp' });
+      }
+      const perguntas = ['Se você pudesse entrar na obra, onde ficaria? O que ouviria?', 'Que título você daria a esta obra? Por quê?', 'Que cor domina? Ela é quente ou fria? Que sensação provoca?', 'Se esta obra fosse pintada hoje, o que mudaria?', 'O que o artista escolheu deixar de fora da cena?'];
+      guia.contexto = () => ({ obra: atual && `${atual.titulo} (${atual.artista}, ${atual.ano})`, etapa, comparando: [sA.valor, sB.valor], perguntaApreciacao: atual ? `Sobre <b>${atual.titulo}</b>: ${perguntas[ip++ % perguntas.length]}` : 'Escolha uma obra primeiro — clique num quadro.' });
+      pintarFicha(); comparar(false);
+    },
+  });
+  </script>
+</body>
+</html>

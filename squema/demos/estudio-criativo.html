@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estúdio Criativo — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/galeria.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .paleta { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .paleta button { aspect-ratio: 1; border: 3px solid var(--tinta); border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 3px; font: 800 9px var(--fonte-mono); color: var(--tinta); box-shadow: 0 3px 0 rgba(11,20,56,.3); }
+    .paleta button span { background: rgba(255,255,255,.85); border-radius: 4px; padding: 0 3px; }
+    .papeis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; font-size: 10px; font-weight: 900; text-align: center; color: var(--texto-suave); text-transform: uppercase; margin-top: 3px; }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const HARMONIAS = {
+    complementar: { nome: 'Complementar', des: [0, 180], txt: 'Cores opostas na roda: o contraste é máximo. Use uma como dominante e a outra só para destacar.' },
+    analoga: { nome: 'Análoga', des: [-30, 0, 30], txt: 'Cores vizinhas na roda: harmonia suave, ótima para cenas calmas e naturais.' },
+    triade: { nome: 'Tríade', des: [0, 120, 240], txt: 'Três cores equidistantes: vibrante e equilibrada. Deixe uma dominar e as outras como apoio.' },
+    dividida: { nome: 'Complementar dividida', des: [0, 150, 210], txt: 'A cor base mais as duas vizinhas da sua complementar: contraste forte, porém menos agressivo.' },
+    quadrado: { nome: 'Quadrado', des: [0, 90, 180, 270], txt: 'Quatro cores a 90°: muito rica. Funciona melhor com uma cor principal e as outras em pequenas áreas.' },
+    mono: { nome: 'Monocromática', des: [0], txt: 'Um só matiz, variando claro e escuro: unidade e elegância. O contraste vem da luminosidade.' },
+  };
+  const PAPEIS = ['céu', 'montanha', 'chão', 'casa', 'destaque'];
+  const DESAFIOS = [
+    { txt: 'Pinte uma <b>paisagem calma</b>: harmonia <b>análoga</b> em tons <b>frios</b> (azuis e verdes).', ok: (E) => E.harm === 'analoga' && E.h >= 150 && E.h <= 260 },
+    { txt: 'Faça o <b>sol se destacar</b> ao máximo: harmonia <b>complementar</b>.', ok: (E) => E.harm === 'complementar' },
+    { txt: 'Coloque a <b>casa num ponto de força</b> (interseção das linhas dos terços).', ok: (E, x) => x.forca },
+    { txt: 'Faça um <b>entardecer quente</b>: base entre laranja e vermelho (0°–45°), harmonia análoga.', ok: (E) => E.harm === 'analoga' && (E.h <= 45 || E.h >= 345) },
+    { txt: 'Coloque a <b>linha do horizonte</b> num dos terços (não no meio!).', ok: (E, x) => x.horizonteTerco },
+  ];
+  const norm = (h) => ((h % 360) + 360) % 360;
+  const hsl = (h, s, l) => `hsl(${Math.round(norm(h))},${Math.round(s)}%,${Math.round(l)}%)`;
+  function hex(h, s, l) { s /= 100; l /= 100; const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l), f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); return '#' + [f(0), f(8), f(4)].map((x) => Math.round(x * 255).toString(16).padStart(2, '0')).join('').toUpperCase(); }
+  const nomeMatiz = (h) => ['vermelho', 'laranja', 'amarelo', 'amarelo-esverdeado', 'verde', 'verde-água', 'ciano', 'azul', 'azul-violeta', 'violeta', 'magenta', 'rosa'][Math.round(norm(h) / 30) % 12];
+  const quente = (h) => norm(h) < 75 || norm(h) > 300;
+
+  SQ.demo('estudio-criativo', {
+    fundo: 'papel',
+    dica: 'Gire a roda · arraste a casa, o sol e o ponto de fuga',
+    sala: ['Peça que cada aluno crie duas versões da mesma cena (quente e fria) e a turma diga qual “clima” cada uma transmite.', 'Discuta a regra dos terços com fotos tiradas pelos próprios alunos.', 'Desafie a turma a reproduzir a paleta de uma obra famosa usando a roda de cores.'],
+    comoIA: 'O guia recebe a harmonia, o matiz base, a saturação, a luminosidade, a posição dos elementos e do ponto de fuga. Ele explica as escolhas de cor, verifica a composição (pontos de força, horizonte nos terços, perspectiva) e propõe desafios. Uma IA conectada pode comentar também desenhos enviados pelos alunos.',
+    guia: {
+      ola: 'Este é seu estúdio! Gire a <b>roda de cores</b> e escolha uma <b>harmonia</b>: a paleta é aplicada à cena na hora. Depois arraste a casa e o ponto de fuga para treinar <b>composição</b>.',
+      perguntas: [
+        { p: 'O que são cores complementares?', chaves: ['complementar', 'opostas'], r: 'São cores <b>opostas</b> na roda (azul × laranja, vermelho × verde, amarelo × violeta). Lado a lado, uma intensifica a outra — por isso são ótimas para dar destaque.' },
+        { p: 'O que é a regra dos terços?', chaves: ['tercos', 'terco', 'regra'], r: 'Divida a imagem em 3 × 3 partes. Colocar o elemento principal nas <b>interseções</b> (pontos de força) ou o horizonte numa das linhas deixa a composição mais dinâmica que o centro.' },
+        { p: 'O que é ponto de fuga?', chaves: ['fuga', 'perspectiva', 'horizonte'], r: 'Na perspectiva, linhas paralelas (como as bordas de uma estrada) parecem se encontrar num ponto da <b>linha do horizonte</b>: o ponto de fuga. Ele fica na altura dos olhos de quem observa.' },
+        { p: 'Cores quentes e frias?', chaves: ['quente', 'quentes', 'fria', 'frias'], r: '<b>Quentes</b> (vermelho, laranja, amarelo) parecem avançar e transmitem energia. <b>Frias</b> (azul, verde, violeta) parecem recuar e transmitem calma. Por isso montanhas distantes ficam azuladas.' },
+        { p: 'Avalie minha composição', chaves: ['avalie', 'composicao', 'minha'], r: (c) => c.avaliacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { harm: 'triade', h: 200, s: 70, l: 55, terco: true, persp: true, casa: [0.66, 0.68], sol: [0.3, 0.2], vp: [0.5, 0.45] };
+      let roda = null, cena = null, arrasto = null, desafio = null;
+
+      function paleta() {
+        const hs = HARMONIAS[E.harm].des.map((dh) => norm(E.h + dh)), { s, l } = E;
+        if (E.harm === 'mono') return [[hs[0], s * 0.6, Math.min(92, l + 30)], [hs[0], s * 0.8, l - 12], [hs[0], s * 0.5, l - 25], [hs[0], s, l], [hs[0], Math.min(100, s + 20), Math.min(85, l + 15)]];
+        const h2 = hs[1] ?? hs[0], h3 = hs[2] ?? h2, hd = hs[hs.length > 2 ? hs.length - 1 : 1];
+        return [[hs[0], s * 0.55, Math.min(90, l + 28)], [h3, s * 0.7, Math.max(20, l - 15)], [hs.length > 2 ? h2 : hs[0], s * 0.65, Math.max(18, l - 22)], [hs[0], s, l], [hd, Math.min(100, s + 15), Math.min(70, l + 5)]];
+      }
+      function analise() {
+        const { w, h } = cena; const cx = E.casa[0], cy = E.casa[1];
+        const pts = [[1 / 3, 1 / 3], [2 / 3, 1 / 3], [1 / 3, 2 / 3], [2 / 3, 2 / 3]], dist = pts.map(([x, y]) => Math.hypot((x - cx) * w, (y - cy) * h)), i = dist.indexOf(Math.min(...dist));
+        const forca = dist[i] < 34, horizonteTerco = Math.abs(E.vp[1] - 1 / 3) < 0.04 || Math.abs(E.vp[1] - 2 / 3) < 0.04, centro = Math.abs(cx - 0.5) < 0.06 && Math.abs(cy - 0.5) < 0.08;
+        return { forca, horizonteTerco, centro, ponto: pts[i], meioHorizonte: Math.abs(E.vp[1] - 0.5) < 0.04 };
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const ladoR = Math.min(h - 40, w * 0.36), rx = 20 + ladoR / 2, ry = h / 2;
+        roda = { x: rx, y: ry, R: ladoR / 2, r: ladoR / 2 - 34 };
+        // roda de cores
+        for (let a = 0; a < 360; a += 2) { ctx.beginPath(); ctx.moveTo(rx, ry); ctx.arc(rx, ry, roda.R, ((a - 90 - 1.2) * Math.PI) / 180, ((a - 90 + 1.2) * Math.PI) / 180); ctx.closePath(); ctx.fillStyle = hsl(a, E.s, E.l); ctx.fill(); }
+        ctx.beginPath(); ctx.arc(rx, ry, roda.r, 0, Math.PI * 2); ctx.fillStyle = '#FBFCFF'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = C.tinta; ctx.beginPath(); ctx.arc(rx, ry, roda.R, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.arc(rx, ry, roda.r, 0, Math.PI * 2); ctx.stroke();
+        const hs = HARMONIAS[E.harm].des.map((dh) => norm(E.h + dh)), pm = (hh, rr) => [rx + Math.cos(((hh - 90) * Math.PI) / 180) * rr, ry + Math.sin(((hh - 90) * Math.PI) / 180) * rr];
+        if (hs.length > 1) { ctx.beginPath(); hs.forEach((hh, i) => { const [x, y] = pm(hh, roda.r - 6); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.closePath(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.setLineDash([6, 5]); ctx.stroke(); ctx.setLineDash([]); }
+        hs.forEach((hh, i) => { const [x, y] = pm(hh, (roda.R + roda.r) / 2); d.bola(ctx, x, y, i ? 12 : 16, hex(hh, E.s, E.l), { esp: i ? 3 : 4.5 }); });
+        const pal = paleta();
+        pal.forEach(([hh, s, l], i) => { const a = (i / pal.length) * Math.PI * 2 - Math.PI / 2, x = rx + Math.cos(a) * roda.r * 0.5, y = ry + Math.sin(a) * roda.r * 0.5; d.bola(ctx, x, y, roda.r * 0.2, hex(hh, s, l), { esp: 2.5, brilho: false }); });
+        d.texto(ctx, HARMONIAS[E.harm].nome, rx, ry + 5, { tam: 13, alinhar: 'center', cor: C.tinta, contorno: '#fff', esp: 4 });
+        // cena
+        const x0 = ladoR + 44, cw = w - x0 - 16, ch = h - 32, y0 = 16; cena = { x: x0, y: y0, w: cw, h: ch };
+        const X = (u) => x0 + u * cw, Y = (v) => y0 + v * ch, cor = (i, dl = 0) => hex(pal[i][0], pal[i][1], Math.max(5, Math.min(95, pal[i][2] + dl)));
+        ctx.save(); d.rr(ctx, x0, y0, cw, ch, 14); ctx.clip();
+        const hz = E.vp[1];
+        const gc = ctx.createLinearGradient(0, y0, 0, Y(hz)); gc.addColorStop(0, cor(0, -10)); gc.addColorStop(1, cor(0, 12)); ctx.fillStyle = gc; ctx.fillRect(x0, y0, cw, Y(hz) - y0);
+        // sol
+        const [sx, sy] = E.sol; const gs = ctx.createRadialGradient(X(sx), Y(sy), 4, X(sx), Y(sy), cw * 0.12); gs.addColorStop(0, cor(4, 20)); gs.addColorStop(0.5, cor(4)); gs.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gs; ctx.beginPath(); ctx.arc(X(sx), Y(sy), cw * 0.12, 0, Math.PI * 2); ctx.fill();
+        d.bola(ctx, X(sx), Y(sy), cw * 0.05, cor(4), { esp: 2.5 });
+        // montanhas (mais distantes = mais claras: perspectiva atmosférica)
+        for (const [amp, fase, dl] of [[0.16, 1.3, 18], [0.11, 0.2, 0]]) { ctx.fillStyle = cor(1, dl); ctx.beginPath(); ctx.moveTo(x0, Y(hz)); for (let u = 0; u <= 1.001; u += 0.02) ctx.lineTo(X(u), Y(hz - amp * (0.55 + 0.45 * Math.sin(u * 7 + fase)) * (0.6 + 0.4 * Math.sin(u * 3 + fase * 2)))); ctx.lineTo(X(1), Y(hz)); ctx.fill(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; ctx.stroke(); }
+        // chão
+        const gch = ctx.createLinearGradient(0, Y(hz), 0, y0 + ch); gch.addColorStop(0, cor(2, 10)); gch.addColorStop(1, cor(2, -8)); ctx.fillStyle = gch; ctx.fillRect(x0, Y(hz), cw, y0 + ch - Y(hz));
+        // estrada até o ponto de fuga
+        const [vx] = E.vp; ctx.fillStyle = hex(pal[2][0], 12, 78); ctx.beginPath(); ctx.moveTo(X(vx), Y(hz)); ctx.lineTo(X(0.18), y0 + ch); ctx.lineTo(X(0.52), y0 + ch); ctx.closePath(); ctx.fill(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.setLineDash([14, 12]); ctx.beginPath(); ctx.moveTo(X(vx), Y(hz)); ctx.lineTo(X(0.35), y0 + ch); ctx.stroke(); ctx.setLineDash([]);
+        // postes em perspectiva
+        for (let k = 1; k <= 7; k++) { const t = 1 - 0.68 ** k, bx = X(vx) + (X(0.12) - X(vx)) * t, by = Y(hz) + (y0 + ch - Y(hz)) * t, alt = 70 * t; ctx.strokeStyle = C.tinta; ctx.lineWidth = Math.max(1.5, 5 * t); ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx, by - alt); ctx.stroke(); }
+        // árvore
+        const ax = X(0.84), ay = Y(Math.max(hz + 0.08, 0.82)), esc = 0.5 + ((ay - Y(hz)) / (ch * (1 - hz))) * 0.8;
+        ctx.fillStyle = hex(pal[2][0], 30, 25); ctx.fillRect(ax - 6 * esc, ay - 60 * esc, 12 * esc, 60 * esc);
+        d.bola(ctx, ax, ay - 80 * esc, 40 * esc, cor(1, 8), { esp: 2.5, brilho: false });
+        // casa (elemento principal)
+        const [hx, hy] = E.casa, ex = 0.35 + Math.max(0, (Y(hy) - Y(hz)) / (ch * (1 - hz))) * 1.0, bw = 90 * ex, bh = 64 * ex, bxp = X(hx) - bw / 2, byp = Y(hy) - bh;
+        d.bloco(ctx, bxp, byp, bw, bh, { cor: cor(3), r: 4, alt: 0 });
+        ctx.fillStyle = cor(4, -8); ctx.beginPath(); ctx.moveTo(bxp - 10 * ex, byp + 2); ctx.lineTo(X(hx), byp - 46 * ex); ctx.lineTo(bxp + bw + 10 * ex, byp + 2); ctx.closePath(); ctx.fill(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.fillStyle = hex(pal[3][0], 40, 22); ctx.fillRect(X(hx) - 10 * ex, Y(hy) - 32 * ex, 20 * ex, 32 * ex); ctx.fillStyle = hex(pal[0][0], 60, 85); ctx.fillRect(bxp + 10 * ex, byp + 14 * ex, 18 * ex, 16 * ex); ctx.fillRect(bxp + bw - 28 * ex, byp + 14 * ex, 18 * ex, 16 * ex);
+        // sobreposições didáticas
+        if (E.persp) { ctx.strokeStyle = 'rgba(238,59,69,.75)'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 5]); for (const u of [-0.2, 0.18, 0.52, 1.1]) { ctx.beginPath(); ctx.moveTo(X(vx), Y(hz)); ctx.lineTo(X(u), y0 + ch); ctx.stroke(); } ctx.beginPath(); ctx.moveTo(x0, Y(hz)); ctx.lineTo(x0 + cw, Y(hz)); ctx.stroke(); ctx.setLineDash([]); }
+        const an = analise();
+        if (E.terco) { ctx.strokeStyle = 'rgba(11,20,56,.55)'; ctx.lineWidth = 1.6; ctx.setLineDash([8, 6]); for (const k of [1 / 3, 2 / 3]) { ctx.beginPath(); ctx.moveTo(X(k), y0); ctx.lineTo(X(k), y0 + ch); ctx.moveTo(x0, Y(k)); ctx.lineTo(x0 + cw, Y(k)); ctx.stroke(); } ctx.setLineDash([]); for (const [u, v] of [[1 / 3, 1 / 3], [2 / 3, 1 / 3], [1 / 3, 2 / 3], [2 / 3, 2 / 3]]) { const at = an.forca && an.ponto[0] === u && an.ponto[1] === v; ctx.beginPath(); ctx.arc(X(u), Y(v), at ? 10 : 6, 0, Math.PI * 2); ctx.fillStyle = at ? C.amarelo : 'rgba(255,255,255,.85)'; ctx.fill(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; ctx.stroke(); } }
+        // alças
+        d.bola(ctx, X(vx), Y(hz), 8, C.vermelho, { esp: 2.5 }); d.etiqueta(ctx, 'ponto de fuga', X(vx), Y(hz) - 18, { tam: 10, cor: '#FFE1E3' });
+        ctx.restore();
+        ctx.lineWidth = 3; ctx.strokeStyle = C.tinta; d.rr(ctx, x0, y0, cw, ch, 14); ctx.stroke();
+      }
+
+      // ---------- painel ----------
+      const gR = ui.grupo('Roda de cores');
+      ui.segmentado({ opcoes: Object.entries(HARMONIAS).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: E.harm, pai: gR, aoMudar: (v) => { E.harm = v; atualizar(); guia.diz(`<b>${HARMONIAS[v].nome}</b>: ${HARMONIAS[v].txt}`, { chave: 'cor' }); } });
+      const sH = ui.slider({ rotulo: 'Matiz base', min: 0, max: 359, passo: 1, valor: E.h, pai: gR, formatar: (v) => `${v}° · ${nomeMatiz(v)}`, aoMudar: (v) => { E.h = v; atualizar(); narrarMatiz(); } });
+      ui.slider({ rotulo: 'Saturação', min: 15, max: 100, valor: E.s, unidade: '%', pai: gR, aoMudar: (v) => { E.s = v; atualizar(); } });
+      ui.slider({ rotulo: 'Luminosidade', min: 30, max: 75, valor: E.l, unidade: '%', pai: gR, aoMudar: (v) => { E.l = v; atualizar(); } });
+      const pal = SQ.el('div', { class: 'paleta' }); gR.append(pal, SQ.el('div', { class: 'papeis', html: PAPEIS.map((p) => `<span>${p}</span>`).join('') }));
+      ui.linha(gR, ui.botao({ rotulo: '🎲 Paleta surpresa', classe: 'branco pequeno', aoClicar: () => { const ks = Object.keys(HARMONIAS); E.harm = ks[Math.floor(Math.random() * ks.length)]; E.h = Math.floor(Math.random() * 360); sH.valor = E.h; gR.querySelectorAll('.segmentado .botao').forEach((b, i) => b.setAttribute('aria-pressed', String(ks[i] === E.harm))); atualizar(); guia.diz(`Sorteei: <b>${HARMONIAS[E.harm].nome}</b> a partir do ${nomeMatiz(E.h)}. ${HARMONIAS[E.harm].txt}`, { chave: 'cor' }); } }));
+      const gC = ui.grupo('Composição');
+      ui.alternar({ rotulo: 'Grade dos terços', valor: true, pai: gC, aoMudar: (v) => { E.terco = v; tela.redesenhar(); } });
+      ui.alternar({ rotulo: 'Linhas de perspectiva', valor: true, pai: gC, aoMudar: (v) => { E.persp = v; tela.redesenhar(); } });
+      ui.botao({ rotulo: '🧭 Avaliar composição', classe: 'azul pequeno', pai: ui.linha(gC), aoClicar: () => guia.diz(avaliacao(), { tipo: 'dica', chave: 'comp' }) });
+      const gD = ui.grupo('Desafio');
+      const caixa = SQ.el('div', { class: 'desafio' }, 'Clique em “Novo desafio”.'); gD.append(caixa);
+      ui.botao({ rotulo: '🎯 Novo desafio', classe: 'pequeno', pai: ui.linha(gD), aoClicar: () => { let dd; do { dd = DESAFIOS[Math.floor(Math.random() * DESAFIOS.length)]; } while (dd === desafio && DESAFIOS.length > 1); desafio = dd; caixa.className = 'desafio'; caixa.innerHTML = '🎯 ' + dd.txt; conferir(); } });
+
+      function avaliacao() {
+        const an = analise(), t = [];
+        t.push(an.forca ? '✅ A casa está num <b>ponto de força</b> dos terços: composição dinâmica.' : an.centro ? 'A casa está bem no <b>centro</b>: fica estável, mas estática. Experimente levá-la a uma interseção dos terços.' : 'A casa está fora dos pontos de força. Arraste-a até uma interseção amarela.');
+        t.push(an.meioHorizonte ? 'O horizonte está no <b>meio</b>: divide a imagem em duas metades iguais. Suba ou desça até um terço para dar mais peso ao céu ou ao chão.' : an.horizonteTerco ? '✅ Horizonte num terço: bom equilíbrio entre céu e chão.' : 'O horizonte está livre — teste colocá-lo numa das linhas horizontais dos terços.');
+        t.push(quente(E.h) ? `A cor base (${nomeMatiz(E.h)}) é <b>quente</b>: a cena transmite energia, calor, entardecer.` : `A cor base (${nomeMatiz(E.h)}) é <b>fria</b>: a cena transmite calma e distância.`);
+        return t.join(' ');
+      }
+      let tM = 0;
+      function narrarMatiz() { clearTimeout(tM); tM = setTimeout(() => { const hs = HARMONIAS[E.harm].des.map((dh) => nomeMatiz(E.h + dh)); guia.diz(`Base <b>${nomeMatiz(E.h)}</b> (${quente(E.h) ? 'quente' : 'fria'}). Com a harmonia ${HARMONIAS[E.harm].nome.toLowerCase()}, as cores são: ${[...new Set(hs)].join(', ')}.`, { chave: 'cor' }); }, 300); }
+      function conferir() {
+        if (!desafio || caixa.classList.contains('ok') || !cena) return;
+        if (desafio.ok(E, analise())) { caixa.className = 'desafio ok'; caixa.innerHTML = '✅ ' + desafio.txt; guia.diz('🎉 Desafio cumprido! ' + avaliacao(), { tipo: 'sucesso', chave: 'des' }); SQ.som(880, 0.12); setTimeout(() => SQ.som(1320, 0.18), 110); }
+      }
+      function atualizar() {
+        const p = paleta(); pal.innerHTML = '';
+        p.forEach(([h, s, l], i) => { const hx = hex(h, s, l); pal.append(SQ.el('button', { type: 'button', style: { background: hx }, title: `${PAPEIS[i]}: ${hx} (clique para copiar)`, onclick: () => { navigator.clipboard?.writeText(hx).catch(() => {}); guia.diz(`Cor <b>${hx}</b> (${PAPEIS[i]}) copiada.`, { chave: 'copiar' }); } }, SQ.el('span', null, hx))); });
+        tela && tela.redesenhar(); conferir();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      const pegar = (p) => {
+        if (roda && Math.hypot(p.x - roda.x, p.y - roda.y) < roda.R + 6 && Math.hypot(p.x - roda.x, p.y - roda.y) > roda.r - 10) return 'roda';
+        if (!cena) return null;
+        const u = (p.x - cena.x) / cena.w, v = (p.y - cena.y) / cena.h;
+        if (Math.hypot((u - E.vp[0]) * cena.w, (v - E.vp[1]) * cena.h) < 16) return 'vp';
+        if (Math.hypot((u - E.sol[0]) * cena.w, (v - E.sol[1]) * cena.h) < cena.w * 0.06) return 'sol';
+        if (Math.abs((u - E.casa[0]) * cena.w) < 50 && v < E.casa[1] + 0.02 && v > E.casa[1] - 0.2) return 'casa';
+        return null;
+      };
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { arrasto = pegar(p); if (!arrasto) return false; mover(p); return true; },
+        mover(p) { mover(p); },
+        fim() { if (arrasto === 'casa' || arrasto === 'vp') { const an = analise(); if (arrasto === 'casa') guia.diz(an.forca ? '✅ Casa num ponto de força!' : an.centro ? 'No centro a imagem fica estática. Tente um ponto de força.' : 'Hmm, aproxime a casa de uma interseção dos terços.', { tipo: an.forca ? 'sucesso' : '', chave: 'comp' }); else guia.diz(an.horizonteTerco ? '✅ Horizonte num terço — e o ponto de fuga na altura dos olhos.' : an.meioHorizonte ? 'Horizonte no meio: tente um terço.' : 'Repare: todas as linhas da estrada e dos postes convergem para o ponto de fuga.', { chave: 'comp' }); } arrasto = null; },
+        hover(p) { tela.canvas.style.cursor = pegar(p) ? 'grab' : ''; },
+      });
+      function mover(p) {
+        if (arrasto === 'roda') { E.h = Math.round(norm((Math.atan2(p.y - roda.y, p.x - roda.x) * 180) / Math.PI + 90)); sH.valor = E.h; atualizar(); narrarMatiz(); return; }
+        const u = Math.max(0.03, Math.min(0.97, (p.x - cena.x) / cena.w)), v = Math.max(0.05, Math.min(0.97, (p.y - cena.y) / cena.h));
+        if (arrasto === 'vp') { E.vp = [u, Math.max(0.2, Math.min(0.75, v))]; if (E.casa[1] < E.vp[1] + 0.06) E.casa[1] = E.vp[1] + 0.06; }
+        if (arrasto === 'sol') E.sol = [u, Math.min(v, E.vp[1] - 0.04)];
+        if (arrasto === 'casa') E.casa = [u, Math.max(E.vp[1] + 0.06, v)];
+        tela.redesenhar(); conferir();
+      }
+      guia.contexto = () => ({ harmonia: HARMONIAS[E.harm].nome, matiz: E.h, nome: nomeMatiz(E.h), saturacao: E.s, luminosidade: E.l, paleta: paleta().map(([h, s, l]) => hex(h, s, l)), composicao: analise(), avaliacao: avaliacao() });
+      atualizar();
+    },
+  });
+  </script>
+</body>
+</html>

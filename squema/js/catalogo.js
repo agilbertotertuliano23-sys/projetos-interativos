@@ -166,21 +166,21 @@
       tags: ['3D'],
     }),
     // ---------------- Português ----------------
-    S('portugues', 'anatomia-do-texto', 'Anatomia do Texto', 'estrutura visual de frases/textos', 'analisar escrita', 4, null, {
+    S('portugues', 'anatomia-do-texto', 'Anatomia do Texto', 'estrutura visual de frases/textos', 'analisar escrita', 4, 'demos/anatomia-do-texto.html', {
       interacao: 'Cola um texto e lê o raio-x da estrutura',
       resumo: 'O aluno cola um texto e vê parágrafos, tópicos frasais, conectivos e repetições destacados como um raio-x.',
       objetivos: ['Reconhecer a estrutura do texto dissertativo', 'Usar conectivos com intenção', 'Revisar repetições e coesão'],
       roteiro: ['Área de texto com análise ao vivo', 'Mapa de parágrafos e ideia central', 'Painel de conectivos por função', 'IA sugere reescritas e explica o porquê'],
       tags: ['2D'],
     }),
-    S('portugues', 'literatura-imersiva', 'Literatura Imersiva', 'cenário, personagens, relações', 'explicar obra e contexto', 5, null, {
+    S('portugues', 'literatura-imersiva', 'Literatura Imersiva', 'cenário, personagens, relações', 'explicar obra e contexto', 5, 'demos/literatura-imersiva.html', {
       interacao: 'Navega pelos capítulos e personagens',
       resumo: 'Obra literária como mapa de personagens e cenários, com linha narrativa e contexto histórico.',
       objetivos: ['Mapear personagens e suas relações', 'Relacionar obra e contexto de produção', 'Interpretar o foco narrativo'],
       roteiro: ['Grafo de personagens por capítulo', 'Cenários ilustrados com trechos da obra', 'Linha do enredo com pontos de virada', 'IA responde como guia de leitura'],
       tags: ['2D'],
     }),
-    S('portugues', 'gramatica-visual', 'Gramática Visual', 'palavras conectadas', 'analisar sintaxe dinamicamente', 4, null, {
+    S('portugues', 'gramatica-visual', 'Gramática Visual', 'palavras conectadas', 'analisar sintaxe dinamicamente', 4, 'demos/gramatica-visual.html', {
       interacao: 'Escolhe ou digita frases e destaca funções',
       roteiro: ['Frases decompostas em sujeito e predicado', 'Classes de palavras coloridas e ligações sintáticas', 'Modo desafio: o aluno marca as funções', 'IA analisa frases digitadas e explica'],
       resumo: 'Frases decompostas em sujeito, predicado e complementos, com classes de palavras coloridas e ligações sintáticas.',
@@ -188,7 +188,7 @@
       tags: ['2D'],
     }),
     // ---------------- Idiomas ----------------
-    S('idiomas', 'conversacao-ia', 'Conversação IA', 'avatar/personagem', 'diálogo adaptativo', 5, null, {
+    S('idiomas', 'conversacao-ia', 'Conversação IA', 'avatar/personagem', 'diálogo adaptativo', 5, 'demos/conversacao-ia.html', {
       interacao: 'Conversa por voz ou texto com o personagem',
       resumo: 'Personagem que conversa em inglês ajustando vocabulário e velocidade ao nível do aluno.',
       objetivos: ['Praticar compreensão e produção oral', 'Ampliar vocabulário em contexto', 'Receber correção gentil'],
@@ -202,14 +202,14 @@
       tags: ['3D', 'modelos livres', 'áudio'],
     }),
     // ---------------- Artes ----------------
-    S('artes', 'museu-virtual', 'Museu Virtual', 'obras e movimentos', 'crítico/guia de arte IA', 5, null, {
+    S('artes', 'museu-virtual', 'Museu Virtual', 'obras e movimentos', 'crítico/guia de arte IA', 5, 'demos/museu-virtual.html', {
       interacao: 'Caminha pelas salas e abre as obras',
       resumo: 'Galeria navegável organizada por movimentos artísticos, com obras de domínio público e guia crítico.',
       objetivos: ['Reconhecer características de movimentos', 'Ler uma obra (cor, forma, tema)', 'Relacionar arte e contexto'],
       roteiro: ['Salas por movimento com obras em domínio público', 'Ficha da obra com leitura guiada', 'Comparador lado a lado', 'IA faz perguntas de apreciação'],
       tags: ['3D'],
     }),
-    S('artes', 'estudio-criativo', 'Estúdio Criativo', 'composição, cor, perspectiva', 'orientar processo artístico', 5, null, {
+    S('artes', 'estudio-criativo', 'Estúdio Criativo', 'composição, cor, perspectiva', 'orientar processo artístico', 5, 'demos/estudio-criativo.html', {
       interacao: 'Gira a roda de cores e ajusta a composição',
       roteiro: ['Roda de cores com harmonias', 'Composição com regra dos terços e ponto de fuga', 'Paletas aplicadas a uma cena', 'IA orienta escolhas de cor e composição'],
       resumo: 'Roda de cores com harmonias (complementar, análoga, tríade) aplicadas a uma composição com regra dos terços e perspectiva.',
@@ -217,7 +217,7 @@
       tags: ['2D'],
     }),
     // ---------------- Música ----------------
-    S('musica', 'musica-visual', 'Música Visual', 'ondas, notas, acordes', 'reconhecer e explicar música', 5, null, {
+    S('musica', 'musica-visual', 'Música Visual', 'ondas, notas, acordes', 'reconhecer e explicar música', 5, 'demos/musica-visual.html', {
       interacao: 'Toca o teclado e monta acordes',
       roteiro: ['Teclado sintetizado no navegador', 'Acordes montados por intervalos', 'Partitura e osciloscópio ao vivo', 'IA reconhece acordes e explica'],
       resumo: 'Teclado que soa no navegador, acordes montados por intervalos, partitura e osciloscópio com a forma de onda.',

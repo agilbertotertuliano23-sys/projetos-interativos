@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gramática Visual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/livro-aberto.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 4px; font-size: 18px; }
+    .paleta { display: flex; flex-wrap: wrap; gap: 6px; }
+    .paleta button { border: 2px solid var(--tinta); border-radius: 10px; padding: 4px 9px; font-size: 12px; font-weight: 900; color: #fff; box-shadow: 0 3px 0 rgba(11,20,56,.3); }
+    .paleta button[aria-pressed="true"] { outline: 3px solid var(--amarelo); outline-offset: 2px; transform: translateY(2px); box-shadow: none; }
+    .legenda-g { display: flex; flex-wrap: wrap; gap: 5px; font-size: 11px; font-weight: 900; }
+    .legenda-g span { border-radius: 7px; padding: 2px 7px; color: #fff; border: 1.5px solid var(--tinta); }
+    .aviso { font-size: 12px; color: var(--texto-suave); margin-top: 6px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const CLASSES = {
+    subst: ['Substantivo', '#1F5BE0', 'Nomeia seres, objetos, lugares, sentimentos (menino, livro, alegria).'],
+    art: ['Artigo', '#8B9BC8', 'Acompanha o substantivo, definindo-o (o, a) ou não (um, uma).'],
+    adj: ['Adjetivo', '#36C04A', 'Caracteriza o substantivo (curioso, feliz, azul).'],
+    verbo: ['Verbo', '#EE3B45', 'Indica ação, estado ou fenômeno da natureza, e varia em tempo e pessoa (leu, está, choveu).'],
+    adv: ['Advérbio', '#FF9416', 'Modifica o verbo, o adjetivo ou outro advérbio, indicando tempo, lugar, modo, intensidade (hoje, muito, aqui).'],
+    pron: ['Pronome', '#8B3DFF', 'Substitui ou acompanha o substantivo (eu, ela, meus, este).'],
+    prep: ['Preposição', '#19B8A6', 'Liga palavras, criando relações (de, em, para, com). Pode se contrair com artigos: na = em + a.'],
+    conj: ['Conjunção', '#C98B4E', 'Liga orações ou termos de mesma função (e, mas, ou, porque).'],
+    num: ['Numeral', '#E8A400', 'Indica quantidade ou ordem (dois, primeiro).'],
+  };
+  const FUNCOES = {
+    suj: ['Sujeito', '#1F5BE0', 'Termo sobre o qual se declara algo. Pergunte ao verbo: “quem?” ou “o quê?” (antes dele).'],
+    nv: ['Verbo (núcleo do predicado)', '#EE3B45', 'O verbo é o centro do predicado verbal. Verbos de ligação (ser, estar, ficar, parecer) ligam o sujeito a uma qualidade.'],
+    od: ['Objeto direto', '#FF9416', 'Completa o verbo transitivo direto, sem preposição obrigatória: “leu o quê?” → um livro.'],
+    oi: ['Objeto indireto', '#8B3DFF', 'Completa o verbo transitivo indireto, com preposição: “gostam de quê?” → de música.'],
+    aadv: ['Adjunto adverbial', '#19B8A6', 'Indica circunstância (tempo, lugar, modo, intensidade). É um termo acessório: a frase faz sentido sem ele.'],
+    pred: ['Predicativo do sujeito', '#36C04A', 'Atribui uma qualidade ou estado ao sujeito, por meio do verbo: Maria está <b>feliz</b>.'],
+    ag: ['Agente da passiva', '#C98B4E', 'Na voz passiva, é quem pratica a ação: foi feito <b>pela avó</b>.'],
+  };
+  // tokens: [palavra, classe, cabeça (índice ou -1), rótulo da ligação]; termos: [início, fim, função]
+  const FRASES = [
+    { t: [['O', 'art', 1, 'adj. adnominal'], ['menino', 'subst', 3, 'sujeito'], ['curioso', 'adj', 1, 'adj. adnominal'], ['leu', 'verbo', -1, ''], ['um', 'art', 5, 'adj. adnominal'], ['livro', 'subst', 3, 'obj. direto'], ['na', 'prep', 7, ''], ['biblioteca', 'subst', 3, 'adj. adverbial']], termos: [[0, 2, 'suj'], [3, 3, 'nv'], [4, 5, 'od'], [6, 7, 'aadv']], tipo: 'Predicado verbal: “leu” é verbo transitivo direto (quem lê, lê algo).', obs: '“na” = preposição “em” + artigo “a” (contração). O adjunto adverbial indica lugar.' },
+    { t: [['As', 'art', 1, 'adj. adnominal'], ['crianças', 'subst', 2, 'sujeito'], ['gostam', 'verbo', -1, ''], ['de', 'prep', 4, ''], ['música', 'subst', 2, 'obj. indireto']], termos: [[0, 1, 'suj'], [2, 2, 'nv'], [3, 4, 'oi']], tipo: 'Predicado verbal: “gostar” é transitivo indireto — quem gosta, gosta DE algo.', obs: 'Sem a preposição “de”, a frase ficaria agramatical: *As crianças gostam música.' },
+    { t: [['A', 'art', 1, 'adj. adnominal'], ['professora', 'subst', 2, 'sujeito'], ['entregou', 'verbo', -1, ''], ['as', 'art', 4, 'adj. adnominal'], ['provas', 'subst', 2, 'obj. direto'], ['aos', 'prep', 6, ''], ['alunos', 'subst', 2, 'obj. indireto']], termos: [[0, 1, 'suj'], [2, 2, 'nv'], [3, 4, 'od'], [5, 6, 'oi']], tipo: 'Predicado verbal: “entregar” é transitivo direto e indireto — quem entrega, entrega algo A alguém.', obs: '“aos” = preposição “a” + artigo “os”.' },
+    { t: [['Maria', 'subst', 1, 'sujeito'], ['está', 'verbo', -1, ''], ['feliz', 'adj', 1, 'predicativo'], ['hoje', 'adv', 1, 'adj. adverbial']], termos: [[0, 0, 'suj'], [1, 1, 'nv'], [2, 2, 'pred'], [3, 3, 'aadv']], tipo: 'Predicado nominal: “está” é verbo de ligação; o núcleo do predicado é o predicativo “feliz”.', obs: '“hoje” é advérbio de tempo.' },
+    { t: [['Choveu', 'verbo', -1, ''], ['muito', 'adv', 0, 'adj. adverbial'], ['ontem', 'adv', 0, 'adj. adverbial']], termos: [[0, 0, 'nv'], [1, 1, 'aadv'], [2, 2, 'aadv']], tipo: 'Oração sem sujeito: verbos que indicam fenômenos da natureza (chover, ventar, nevar) são impessoais.', obs: '“muito” indica intensidade; “ontem”, tempo.' },
+    { t: [['Os', 'art', 1, 'adj. adnominal'], ['alunos', 'subst', 2, 'sujeito'], ['chegaram', 'verbo', -1, ''], ['cansados', 'adj', 1, 'predicativo']], termos: [[0, 1, 'suj'], [2, 2, 'nv'], [3, 3, 'pred']], tipo: 'Predicado verbo-nominal: há uma ação (chegaram) e um estado do sujeito (cansados).', obs: 'Repare na concordância: alunos cansados (masculino plural).' },
+    { t: [['O', 'art', 1, 'adj. adnominal'], ['bolo', 'subst', 3, 'sujeito paciente'], ['foi', 'verbo', 3, 'auxiliar'], ['feito', 'verbo', -1, ''], ['pela', 'prep', 5, ''], ['avó', 'subst', 3, 'agente']], termos: [[0, 1, 'suj'], [2, 3, 'nv'], [4, 5, 'ag']], tipo: 'Voz passiva analítica: o sujeito (o bolo) sofre a ação; quem pratica é o agente da passiva (pela avó).', obs: 'Na voz ativa: “A avó fez o bolo.” — o agente vira sujeito e o sujeito vira objeto direto.' },
+    { t: [['Meus', 'pron', 1, 'adj. adnominal'], ['amigos', 'subst', 4, 'sujeito'], ['e', 'conj', 3, ''], ['eu', 'pron', 4, 'sujeito'], ['viajamos', 'verbo', -1, ''], ['para', 'prep', 7, ''], ['a', 'art', 7, 'adj. adnominal'], ['praia', 'subst', 4, 'adj. adverbial']], termos: [[0, 3, 'suj'], [4, 4, 'nv'], [5, 7, 'aadv']], tipo: 'Sujeito composto (dois núcleos: amigos e eu). O verbo vai para a 1ª pessoa do plural (nós).', obs: '“para a praia” indica lugar (destino).' },
+  ];
+  // ---------- análise automática (regras simples) ----------
+  const L = {
+    art: 'o a os as um uma uns umas', prep: 'de da do das dos em na no nas nos para pra por pelo pela pelos pelas com sem sobre entre ao aos à às até desde contra',
+    pron: 'eu tu ele ela nós vós eles elas você vocês me te se lhe lhes meu minha meus minhas teu tua seu sua seus suas nosso nossa nossos nossas este esta estes estas esse essa esses essas aquele aquela aqueles aquelas isso isto aquilo alguém ninguém tudo nada',
+    conj: 'e mas ou porém contudo porque pois que quando embora', adv: 'não sim muito pouco hoje ontem amanhã aqui ali lá cá sempre nunca já bem mal cedo tarde depressa ainda agora logo talvez também',
+    num: 'dois três quatro cinco seis sete oito nove dez cem mil primeiro segundo terceiro',
+    lig: 'é são era eram foi foram será serão está estão estava estavam esteve ficou ficaram fica ficam parece parecem parecia continua continuam permanece sou somos estou estamos',
+    verbo: 'tem têm tinha tinham vai vão foi fui vou fez fazem faz fiz disse diz dizem viu vê veem quer querem pode podem deu dá dão gosta gostam gostei comeu come comem leu lê leem escreveu escreve correu corre chegou chegaram chega saiu sai saem pegou pega ganhou ganha brinca brincam estuda estudam estudou mora moram precisa precisam choveu chove ventou',
+    vti: 'gosta gostam gostei gostou precisa precisam precisou obedece obedecem confia confiam acredita acreditam',
+  };
+  const LX = Object.fromEntries(Object.entries(L).map(([k, v]) => [k, new Set(v.split(' '))]));
+  function analisarLivre(frase) {
+    const ws = frase.replace(/[.!?;,]+/g, ' ').split(/\s+/).filter(Boolean);
+    const cls = ws.map((w, i) => {
+      const x = w.toLowerCase();
+      if (LX.art.has(x) && i < ws.length - 1) return 'art';
+      if (LX.prep.has(x)) return 'prep'; if (LX.pron.has(x)) return 'pron'; if (LX.conj.has(x)) return 'conj';
+      if (LX.adv.has(x) || (x.endsWith('mente') && x.length > 6)) return 'adv'; if (LX.num.has(x) || /^\d+$/.test(x)) return 'num';
+      if (LX.lig.has(x) || LX.verbo.has(x)) return 'verbo';
+      return null;
+    });
+    // verbo: primeira palavra desconhecida com terminação verbal que não vem logo após artigo/preposição
+    let iv = cls.indexOf('verbo');
+    if (iv < 0) iv = ws.findIndex((w, i) => cls[i] == null && !['art', 'prep'].includes(cls[i - 1]) && /(ou|ei|eu|iu|ava|avam|ia|iam|aram|eram|iram|amos|emos|imos|am|em|a|e)$/.test(w.toLowerCase()) && i > 0);
+    if (iv >= 0) cls[iv] = 'verbo';
+    let ultimoSubst = -1;
+    cls.forEach((c, i) => { if (c) return; const ant = cls[i - 1]; cls[i] = (ant === 'subst' && i - 1 === ultimoSubst) || (ant === 'verbo' && LX.lig.has(ws[i - 1]?.toLowerCase())) ? 'adj' : 'subst'; if (cls[i] === 'subst') ultimoSubst = i; });
+    const t = ws.map((w, i) => [w, cls[i], -1, '']);
+    const termos = [];
+    if (iv < 0) return { t, termos, tipo: 'Não encontrei o verbo. Toda oração se organiza em torno de um verbo — confira a frase.', obs: '', livre: true };
+    if (iv > 0) termos.push([0, iv - 1, 'suj']);
+    let fimV = iv; if (cls[iv + 1] === 'verbo') fimV = iv + 1;
+    termos.push([iv, fimV, 'nv']);
+    const ligacao = LX.lig.has(ws[iv].toLowerCase()) && fimV === iv, vti = LX.vti.has(ws[iv].toLowerCase());
+    let i = fimV + 1, temOD = false;
+    while (i < ws.length) {
+      let j = i;
+      if (cls[i] === 'adv') { termos.push([i, i, 'aadv']); i++; continue; }
+      if (cls[i] === 'prep') { j = i + 1; while (j < ws.length - 1 && ['art', 'pron', 'adj', 'num'].includes(cls[j])) j++; const p = ws[i].toLowerCase(); termos.push([i, j, /^pel/.test(p) && fimV > iv ? 'ag' : vti && !temOD ? 'oi' : (/^(a|ao|aos|à|às)$/.test(p) && temOD) ? 'oi' : 'aadv']); i = j + 1; continue; }
+      while (j < ws.length - 1 && ['art', 'pron', 'num'].includes(cls[j])) j++;
+      while (j < ws.length - 1 && cls[j + 1] === 'adj') j++;
+      termos.push([i, j, ligacao ? 'pred' : 'od']); if (!ligacao) temOD = true; i = j + 1;
+    }
+    for (const [a, b] of termos.filter((x) => x[2] !== 'nv')) { const nuc = [...Array(b - a + 1).keys()].map((k) => a + k).find((k) => ['subst', 'pron', 'adj'].includes(cls[k]) && !(cls[k] === 'pron' && k < b)) ?? b; for (let k = a; k <= b; k++) if (k !== nuc) { t[k][2] = nuc; t[k][3] = ['art', 'adj', 'pron', 'num'].includes(cls[k]) ? 'adj. adnominal' : ''; } t[nuc][2] = iv; const f = termos.find((x) => x[0] === a)[2]; t[nuc][3] = { suj: 'sujeito', od: 'obj. direto', oi: 'obj. indireto', aadv: 'adj. adverbial', pred: 'predicativo', ag: 'agente' }[f]; }
+    if (fimV > iv) { t[iv][2] = fimV; t[iv][3] = 'auxiliar'; }
+    const tipo = iv === 0 ? 'Sem termo antes do verbo: o sujeito pode estar oculto (desinencial) ou a oração pode não ter sujeito.' : ligacao ? 'Verbo de ligação: predicado nominal.' : 'Predicado verbal.';
+    return { t, termos, tipo, obs: '', livre: true };
+  }
+
+  SQ.demo('gramatica-visual', {
+    fundo: 'papel',
+    dica: 'Clique numa palavra ou num termo para ver a explicação',
+    sala: ['Projete uma frase no modo “Termos” e peça que a turma faça as perguntas ao verbo (quem? o quê? a quem?).', 'No desafio, cada dupla marca as funções antes de conferir; discutam os erros mais comuns.', 'Peça frases com o mesmo verbo em transitividades diferentes e analisem juntos.'],
+    comoIA: 'As frases de exemplo têm análise conferida. Para frases digitadas, o guia usa regras simples (léxico e posição) e avisa que a análise é aproximada; com uma IA conectada, a frase é enviada para uma análise sintática completa, e o guia explica o porquê de cada função.',
+    guia: {
+      ola: 'Veja a frase como um <b>mapa</b>: as cores mostram as <b>classes de palavras</b>, as chaves mostram <b>sujeito</b> e <b>predicado</b>, e os arcos ligam cada palavra a quem ela se refere.',
+      perguntas: [
+        { p: 'Como acho o sujeito?', chaves: ['sujeito', 'acho', 'encontro'], r: 'Ache o <b>verbo</b> e pergunte “quem?” ou “o quê?” antes dele: “Quem leu?” → <b>o menino curioso</b>. Atenção: o sujeito concorda com o verbo em número e pessoa.' },
+        { p: 'Objeto direto ou indireto?', chaves: ['objeto', 'direto', 'indireto'], r: 'Veja se o verbo <b>pede preposição</b>. “Leu o quê?” (sem preposição) → direto. “Gostam de quê?” (com “de”) → indireto. Alguns verbos pedem os dois: entregar algo <b>a</b> alguém.' },
+        { p: 'O que é verbo de ligação?', chaves: ['ligacao', 'ser', 'estar'], r: 'Ele não indica ação: liga o sujeito a uma característica (o <b>predicativo</b>). Os principais: ser, estar, ficar, parecer, permanecer, continuar, andar (no sentido de estar).' },
+        { p: 'Classe e função são a mesma coisa?', chaves: ['classe', 'funcao', 'morfologia', 'sintaxe'], r: 'Não! A <b>classe</b> (morfologia) é o que a palavra é: substantivo, verbo… A <b>função</b> (sintaxe) é o papel que ela cumpre na frase: sujeito, objeto… “Livro” é sempre substantivo, mas pode ser sujeito ou objeto.' },
+        { p: 'Explique esta frase', chaves: ['explique', 'frase', 'esta'], r: (c) => c.explicacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let F = FRASES[0], modo = 'classes', sel = null, caixas = [], blocosTermo = [], marcados = {}, funcaoAtiva = null, conferido = false;
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const n = F.t.length;
+        let tam = 26; const font = (s) => `800 ${s}px "Baloo 2", "Trebuchet MS", sans-serif`;
+        const larguras = () => { ctx.font = font(tam); return F.t.map(([p]) => ctx.measureText(p).width + 28); };
+        let ws = larguras(), total = ws.reduce((a, b) => a + b, 0) + (n - 1) * 14;
+        while (total > w - 40 && tam > 13) { tam -= 1; ws = larguras(); total = ws.reduce((a, b) => a + b, 0) + (n - 1) * 14; }
+        const y = h * 0.42, hB = tam * 1.9; let x = (w - total) / 2;
+        caixas = F.t.map((tk, i) => { const c = { i, x, y, w: ws[i], h: hB, cx: x + ws[i] / 2 }; x += ws[i] + 14; return c; });
+        // arcos (ligações sintáticas)
+        if (modo !== 'desafio') for (const c of caixas) {
+          const [, , cab, rot] = F.t[c.i]; if (cab < 0) continue;
+          const alvo = caixas[cab], dist = Math.abs(alvo.cx - c.cx), alt = Math.min(y - 30, 26 + dist * 0.32);
+          const foco = sel && sel.tipo === 'w' && (sel.i === c.i || sel.i === cab);
+          ctx.strokeStyle = foco ? C.azul : '#9AA8D6'; ctx.lineWidth = foco ? 3.5 : 2.2;
+          ctx.beginPath(); ctx.moveTo(c.cx, y - 4); ctx.bezierCurveTo(c.cx, y - alt, alvo.cx, y - alt, alvo.cx, y - 6); ctx.stroke();
+          d.seta(ctx, alvo.cx + (c.cx < alvo.cx ? -3 : 3), y - 18, alvo.cx, y - 5, foco ? C.azul : '#9AA8D6', foco ? 3.5 : 2.2, 8);
+          if (rot) d.etiqueta(ctx, rot, (c.cx + alvo.cx) / 2, y - alt * 0.78, { tam: 11, cor: foco ? C.amarelo : '#fff' });
+        }
+        // palavras
+        for (const c of caixas) {
+          const [p, cl] = F.t[c.i], termo = F.termos.find(([a, b]) => c.i >= a && c.i <= b);
+          let cor = '#fff';
+          if (modo === 'classes') cor = CLASSES[cl][1];
+          else if (modo === 'termos' && termo) cor = FUNCOES[termo[2]][1];
+          else if (modo === 'desafio') { const k = blocosTermoIdx(c.i); cor = marcados[k] ? FUNCOES[marcados[k]][1] : '#fff'; }
+          const ativo = sel && sel.tipo === 'w' && sel.i === c.i;
+          d.bloco(ctx, c.x, c.y, c.w, c.h, { cor, r: 12, alt: 4, esp: ativo ? 4 : 2.5 });
+          ctx.font = font(tam); ctx.fillStyle = cor === '#fff' ? C.tinta : '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          if (cor !== '#fff') { ctx.lineWidth = 3; ctx.strokeStyle = C.tinta; ctx.lineJoin = 'round'; ctx.strokeText(p, c.cx, c.y + c.h / 2 + 1); }
+          ctx.fillText(p, c.cx, c.y + c.h / 2 + 1);
+          if (modo === 'classes') d.texto(ctx, CLASSES[cl][0].toLowerCase(), c.cx, c.y + c.h + 18, { tam: 11, alinhar: 'center', cor: C.suave });
+        }
+        // chaves: sujeito / predicado e termos
+        blocosTermo = [];
+        const yB = y + hB + (modo === 'classes' ? 34 : 18);
+        const chave = (i0, i1, rot, cor, nivel, idx) => {
+          const x0 = caixas[i0].x, x1 = caixas[i1].x + caixas[i1].w, yy = yB + nivel * 54;
+          ctx.strokeStyle = cor; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0 + 2, yy); ctx.quadraticCurveTo(x0 + 2, yy + 10, x0 + 12, yy + 10); ctx.lineTo((x0 + x1) / 2 - 8, yy + 10); ctx.lineTo((x0 + x1) / 2, yy + 18); ctx.lineTo((x0 + x1) / 2 + 8, yy + 10); ctx.lineTo(x1 - 12, yy + 10); ctx.quadraticCurveTo(x1 - 2, yy + 10, x1 - 2, yy); ctx.stroke();
+          const lw = d.etiqueta(ctx, rot, (x0 + x1) / 2, yy + 34, { tam: 12, cor: cor === '#CBD7F5' ? '#fff' : cor, texto: cor === '#CBD7F5' ? C.tinta : '#fff' });
+          if (idx != null) blocosTermo.push({ idx, x: (x0 + x1) / 2 - lw / 2, y: yy + 22, w: lw, h: 24, x0, x1 });
+        };
+        if (modo === 'desafio') {
+          F.termos.forEach(([a, b], k) => chave(a, b, marcados[k] ? FUNCOES[marcados[k]][0].replace(' (núcleo do predicado)', '') : '?', marcados[k] ? (conferido ? (marcados[k] === F.termos[k][2] ? C.verdeEscuro : C.vermelho) : FUNCOES[marcados[k]][1]) : '#CBD7F5', 0, k));
+          d.texto(ctx, 'Escolha uma função no painel e clique nas chaves (ou nas palavras) para marcar.', w / 2, h - 50, { tam: 13, alinhar: 'center', cor: C.suave });
+        } else {
+          const suj = F.termos.find((x) => x[2] === 'suj'), resto = F.termos.filter((x) => x[2] !== 'suj');
+          if (modo === 'termos') F.termos.forEach(([a, b, f], k) => chave(a, b, FUNCOES[f][0].replace(' (núcleo do predicado)', ''), FUNCOES[f][1], 0, k));
+          const nv = modo === 'termos' ? 1 : 0;
+          if (suj) chave(suj[0], suj[1], 'SUJEITO', C.azulEscuro, nv); else d.etiqueta(ctx, 'oração sem sujeito', caixas[0].x - 6, yB + nv * 54 + 34, { tam: 12, cor: '#FFF1CC', alinhar: 'right' });
+          if (resto.length) chave(resto[0][0], resto[resto.length - 1][1], 'PREDICADO', C.vermelho, nv);
+        }
+        if (F.livre) d.etiqueta(ctx, '⚠ análise automática aproximada — confira!', w / 2, 26, { tam: 12, cor: '#FFF1CC' });
+      }
+      const blocosTermoIdx = (i) => F.termos.findIndex(([a, b]) => i >= a && i <= b);
+
+      // ---------- painel ----------
+      const gF = ui.grupo('Frase');
+      ui.select({ opcoes: FRASES.map((f, i) => ({ valor: String(i), rotulo: f.t.map((x) => x[0]).join(' ') + '.' })), valor: '0', pai: gF, aoMudar: (v) => carregar(FRASES[+v]) });
+      const inp = SQ.el('input', { type: 'text', placeholder: 'Ou digite sua frase…', 'aria-label': 'Frase para analisar', maxlength: 90 });
+      gF.append(SQ.el('div', { class: 'ctrl' }, inp));
+      ui.linha(gF, ui.botao({ rotulo: '🔎 Analisar minha frase', classe: 'azul pequeno', aoClicar: () => { if (!inp.value.trim()) return; carregar(analisarLivre(inp.value.trim())); guia.diz('Fiz uma análise <b>automática e aproximada</b> com regras simples. Confira cada termo fazendo as perguntas ao verbo — e corrija o que estiver errado!', { tipo: 'alerta', chave: 'livre' }); } }));
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); gF.querySelector('.botao.azul').click(); } });
+      ui.segmentado({ opcoes: [{ valor: 'classes', rotulo: 'Classes' }, { valor: 'termos', rotulo: 'Termos' }, { valor: 'desafio', rotulo: '🎯 Desafio' }], valor: modo, pai: gF, aoMudar: (v) => { modo = v; sel = null; gD.hidden = v !== 'desafio'; pintarLegenda(); tela.redesenhar(); if (v === 'desafio') { marcados = {}; conferido = false; guia.diz('Desafio: escolha uma função na paleta e clique em cada termo (chave cinza) para marcá-lo. Depois, confira!', { tipo: 'dica', chave: 'des' }); } } });
+      const leg = SQ.el('div', { class: 'legenda-g' }); gF.append(leg);
+      function pintarLegenda() { const src = modo === 'classes' ? CLASSES : FUNCOES; const usados = new Set(modo === 'classes' ? F.t.map((x) => x[1]) : F.termos.map((x) => x[2])); leg.innerHTML = Object.entries(src).filter(([k]) => usados.has(k)).map(([, [n, c]]) => `<span style="background:${c}">${n}</span>`).join(''); }
+      const gD = ui.grupo('Desafio'); gD.hidden = true;
+      const paleta = SQ.el('div', { class: 'paleta' }); gD.append(paleta);
+      for (const [k, [n, c]] of Object.entries(FUNCOES)) { const b = SQ.el('button', { type: 'button', style: { background: c }, 'aria-pressed': 'false' }, n); b.addEventListener('click', () => { funcaoAtiva = k; paleta.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }); paleta.append(b); }
+      ui.linha(gD, ui.botao({ rotulo: '✔ Conferir', classe: 'verde pequeno', aoClicar: conferir }), ui.botao({ rotulo: 'Limpar', classe: 'branco pequeno', aoClicar: () => { marcados = {}; conferido = false; tela.redesenhar(); } }));
+      const gI = ui.grupo('Explicação');
+      const ficha = SQ.el('div', { class: 'ficha' }); gI.append(ficha);
+
+      function carregar(f) {
+        F = f; sel = null; marcados = {}; conferido = false; pintarLegenda(); tela && tela.redesenhar();
+        ficha.innerHTML = `<h3>${f.t.map((x) => x[0]).join(' ')}.</h3><p class="mb0">${f.tipo}</p>${f.obs ? `<p class="aviso">${f.obs}</p>` : ''}${f.livre ? '<p class="aviso">⚠ Análise automática por regras simples: pode errar em frases longas ou ambíguas.</p>' : ''}`;
+        if (!f.livre) guia.diz(explicacao(), { chave: 'frase' });
+      }
+      function explicacao() {
+        const termos = F.termos.map(([a, b, fn]) => `<b>${F.t.slice(a, b + 1).map((x) => x[0]).join(' ')}</b> = ${FUNCOES[fn][0].toLowerCase()}`).join('; ');
+        return `${F.tipo} Termos: ${termos}.`;
+      }
+      function conferir() {
+        const n = F.termos.length, certos = F.termos.filter((x, k) => marcados[k] === x[2]).length; conferido = true; tela.redesenhar();
+        if (certos === n) { guia.diz(`🎉 Perfeito! Você acertou os ${n} termos. ${F.tipo}`, { tipo: 'sucesso', chave: 'des' }); SQ.som(880, 0.12); setTimeout(() => SQ.som(1320, 0.18), 110); return; }
+        const erro = F.termos.findIndex((x, k) => marcados[k] !== x[2]), [a, b, fn] = F.termos[erro], txt = F.t.slice(a, b + 1).map((x) => x[0]).join(' ');
+        guia.diz(`Você acertou ${certos} de ${n}. Olhe de novo para “<b>${txt}</b>”: ${marcados[erro] ? `não é ${FUNCOES[marcados[erro]][0].toLowerCase()}. ` : 'ainda não foi marcado. '}Dica: ${FUNCOES[fn][2]}`, { tipo: 'alerta', chave: 'des' });
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const bt = blocosTermo.find((b) => p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h);
+          const cx = caixas.find((c) => p.x >= c.x && p.x <= c.x + c.w && p.y >= c.y && p.y <= c.y + c.h);
+          if (modo === 'desafio') {
+            const k = bt ? bt.idx : cx ? blocosTermoIdx(cx.i) : -1;
+            if (k < 0) return false;
+            if (!funcaoAtiva) { guia.diz('Primeiro escolha uma função na paleta do painel.', { tipo: 'alerta', chave: 'des' }); return false; }
+            marcados[k] = funcaoAtiva; conferido = false; SQ.som(560, 0.05); tela.redesenhar(); return false;
+          }
+          if (cx) {
+            sel = { tipo: 'w', i: cx.i }; const [pal, cl, cab, rot] = F.t[cx.i], termo = F.termos.find(([a, b]) => cx.i >= a && cx.i <= b);
+            ficha.innerHTML = `<h3>${pal}</h3><p class="mb0"><b>Classe:</b> ${CLASSES[cl][0]} — ${CLASSES[cl][2]}</p>${termo ? `<p class="mb0" style="margin-top:6px"><b>Faz parte do termo:</b> ${FUNCOES[termo[2]][0]}</p>` : ''}`;
+            guia.diz(`<b>${pal}</b> é ${CLASSES[cl][0].toLowerCase()}${cab >= 0 ? `, ligado a “${F.t[cab][0]}”${rot ? ` (${rot})` : ''}` : cl === 'verbo' ? ': é o núcleo da oração — tudo gira em torno dele' : ''}.${termo ? ` Faz parte do ${FUNCOES[termo[2]][0].toLowerCase()}.` : ''}`, { chave: 'sel' });
+            SQ.som(620, 0.05); tela.redesenhar(); return false;
+          }
+          if (bt) { const [a, b, fn] = F.termos[bt.idx]; guia.diz(`<b>${F.t.slice(a, b + 1).map((x) => x[0]).join(' ')}</b> — ${FUNCOES[fn][0]}: ${FUNCOES[fn][2]}`, { chave: 'sel' }); return false; }
+          sel = null; tela.redesenhar(); return false;
+        },
+        hover(p) { const sobre = caixas.some((c) => p.x >= c.x && p.x <= c.x + c.w && p.y >= c.y && p.y <= c.y + c.h) || blocosTermo.some((b) => p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h); tela.canvas.style.cursor = sobre ? 'pointer' : ''; },
+      });
+      guia.contexto = () => ({ frase: F.t.map((x) => x[0]).join(' '), classes: F.t.map((x) => [x[0], CLASSES[x[1]][0]]), termos: F.termos.map(([a, b, f]) => [F.t.slice(a, b + 1).map((x) => x[0]).join(' '), FUNCOES[f][0]]), aproximada: !!F.livre, explicacao: explicacao() });
+      carregar(FRASES[0]);
+    },
+  });
+  </script>
+</body>
+</html>

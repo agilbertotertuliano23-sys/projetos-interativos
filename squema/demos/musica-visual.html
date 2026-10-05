@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Música Visual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/musica.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .acorde-nome { font: 800 26px/1.1 var(--fonte-titulo); color: var(--roxo); margin: 2px 0 6px; }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const PT = ['Dó', 'Dó♯', 'Ré', 'Ré♯', 'Mi', 'Fá', 'Fá♯', 'Sol', 'Sol♯', 'Lá', 'Lá♯', 'Si'];
+  const LETRA = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+  const INTERVALOS = ['uníssono', '2ª menor', '2ª maior', '3ª menor', '3ª maior', '4ª justa', 'trítono', '5ª justa', '6ª menor', '6ª maior', '7ª menor', '7ª maior', 'oitava'];
+  const ACORDES = {
+    maior: { nome: 'maior', sufixo: '', iv: [0, 4, 7], txt: 'som alegre e estável' },
+    menor: { nome: 'menor', sufixo: 'm', iv: [0, 3, 7], txt: 'som mais triste ou introspectivo' },
+    dim: { nome: 'diminuto', sufixo: 'dim', iv: [0, 3, 6], txt: 'tenso, pede resolução' },
+    aum: { nome: 'aumentado', sufixo: 'aum', iv: [0, 4, 8], txt: 'misterioso, “flutuante”' },
+    sus4: { nome: 'suspenso (4ª)', sufixo: 'sus4', iv: [0, 5, 7], txt: 'aberto, sem 3ª: nem maior nem menor' },
+    sus2: { nome: 'suspenso (2ª)', sufixo: 'sus2', iv: [0, 2, 7], txt: 'aberto e leve' },
+    dom7: { nome: 'com sétima (dominante)', sufixo: '7', iv: [0, 4, 7, 10], txt: 'tensão que “quer” voltar à tônica' },
+    maj7: { nome: 'maior com sétima maior', sufixo: '7M', iv: [0, 4, 7, 11], txt: 'suave, muito usado na bossa nova' },
+    m7: { nome: 'menor com sétima', sufixo: 'm7', iv: [0, 3, 7, 10], txt: 'suave e melancólico' },
+  };
+  const MAPA_TECLAS = { a: 60, w: 61, s: 62, e: 63, d: 64, f: 65, t: 66, g: 67, y: 68, h: 69, u: 70, j: 71, k: 72, o: 73, l: 74, p: 75, 'ç': 76, ';': 76 };
+  const BRANCAS = [0, 2, 4, 5, 7, 9, 11];
+  const freq = (m) => 440 * 2 ** ((m - 69) / 12);
+  const nomeNota = (m) => `${PT[m % 12]}${Math.floor(m / 12) - 1}`;
+
+  function reconhecer(notas) {
+    if (!notas.length) return null;
+    const ord = [...notas].sort((a, b) => a - b), pcs = [...new Set(ord.map((m) => m % 12))];
+    if (ord.length === 1) return { tipo: 'nota', nome: `${PT[ord[0] % 12]} (${LETRA[ord[0] % 12]})` };
+    if (pcs.length === 2 || ord.length === 2) { const d = (ord[ord.length - 1] - ord[0]) % 12 || (ord[ord.length - 1] > ord[0] ? 12 : 0); return { tipo: 'intervalo', nome: `Intervalo de ${INTERVALOS[d]}`, semitons: d }; }
+    for (const r of pcs) for (const [k, a] of Object.entries(ACORDES)) {
+      const alvo = a.iv.map((i) => (r + i) % 12);
+      if (alvo.length === pcs.length && alvo.every((p) => pcs.includes(p))) {
+        const baixo = ord[0] % 12, inv = baixo === r ? 'estado fundamental' : baixo === (r + a.iv[1]) % 12 ? '1ª inversão (3ª no baixo)' : '2ª inversão';
+        return { tipo: 'acorde', k, raiz: r, nome: `${PT[r]} ${a.nome}`, cifra: `${LETRA[r]}${a.sufixo}${baixo !== r ? '/' + LETRA[baixo] : ''}`, inv, txt: a.txt };
+      }
+    }
+    return { tipo: 'cluster', nome: 'Acorde não catalogado', cifra: ord.map((m) => LETRA[m % 12]).join('-') };
+  }
+
+  SQ.demo('musica-visual', {
+    fundo: 'noite',
+    dica: 'Toque com o mouse, o dedo ou o teclado do computador (A S D F G H J K)',
+    sala: ['Toque Dó maior e Dó menor seguidos: o que muda no som? E na partitura?', 'Compare a forma de onda dos timbres com a mesma nota: por que soam diferentes?', 'Use o treino de ouvido em duplas: um toca, o outro diz se é maior ou menor.'],
+    comoIA: 'O guia lê as notas tocadas e reconhece intervalos e acordes (incluindo inversões), explicando sua estrutura em semitons. O som é sintetizado no navegador, e o osciloscópio mostra a forma de onda real. Com uma IA conectada, o reconhecimento pode vir do microfone, a partir de música tocada ao vivo.',
+    guia: {
+      ola: 'Toque o teclado! Veja a <b>forma de onda</b> no osciloscópio e as notas na <b>partitura</b>. Ligue “Manter notas” para montar acordes nota por nota — eu reconheço o acorde.',
+      perguntas: [
+        { p: 'Como se forma um acorde maior?', chaves: ['maior', 'forma', 'acorde'], r: 'Pegue a nota fundamental, some <b>4 semitons</b> (3ª maior) e depois mais <b>3 semitons</b> (5ª justa). Dó maior = Dó + Mi + Sol.' },
+        { p: 'Qual a diferença de maior e menor?', chaves: ['menor', 'diferenca', 'triste'], r: 'Só a <b>3ª</b> muda! Maior: 4 semitons da fundamental. Menor: 3 semitons. Dó maior (Dó-Mi-Sol) × Dó menor (Dó-Mi♭-Sol).' },
+        { p: 'O que é oitava?', chaves: ['oitava', 'dobra'], r: 'Duas notas com o mesmo nome, uma com o <b>dobro da frequência</b> da outra. O Lá4 vibra a 440 Hz; o Lá5, a 880 Hz.' },
+        { p: 'O que é timbre?', chaves: ['timbre', 'onda', 'forma'], r: 'É a “cor” do som: o que diferencia um piano de uma flauta tocando a mesma nota. Depende dos <b>harmônicos</b> — por isso a forma de onda muda no osciloscópio.' },
+        { p: 'Que acorde estou tocando?', chaves: ['qual', 'tocando', 'reconhec'], r: (c) => c.reconhecido },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { timbre: 'piano', vol: 0.6, manter: false, modoAcorde: 'livre' };
+      const ativas = new Map(), visuais = new Set();
+      let ac = null, mestre = null, analisador = null, buf = null, teclas = [], desafio = null;
+
+      function audio() {
+        if (ac) { ac.resume && ac.resume(); return true; }
+        try {
+          ac = new (window.AudioContext || window.webkitAudioContext)();
+          mestre = ac.createGain(); mestre.gain.value = E.vol * 0.5;
+          const comp = ac.createDynamicsCompressor(); analisador = ac.createAnalyser(); analisador.fftSize = 2048; buf = new Float32Array(analisador.fftSize);
+          mestre.connect(comp).connect(analisador).connect(ac.destination); return true;
+        } catch (e) { guia.diz('O áudio não está disponível neste navegador.', { tipo: 'alerta', chave: 'aud' }); return false; }
+      }
+      function ligar(m) {
+        if (ativas.has(m) || !audio()) return;
+        const t = ac.currentTime, g = ac.createGain(), oscs = [];
+        const parciais = E.timbre === 'piano' ? [[1, 1], [2, 0.42], [3, 0.2], [4, 0.1]] : E.timbre === 'orgao' ? [[1, 1], [2, 0.6], [4, 0.35], [8, 0.18]] : [[1, 1]];
+        for (const [h, a] of parciais) { const o = ac.createOscillator(), ga = ac.createGain(); o.type = E.timbre === 'piano' || E.timbre === 'orgao' ? 'sine' : E.timbre; o.frequency.value = freq(m) * h; ga.gain.value = a; o.connect(ga).connect(g); o.start(t); oscs.push(o); }
+        const pico = 0.35 / Math.max(1, Math.sqrt(ativas.size + 1));
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pico, t + 0.01);
+        if (E.timbre === 'piano') g.gain.setTargetAtTime(pico * 0.35, t + 0.02, 0.6);
+        g.connect(mestre); ativas.set(m, { g, oscs }); visuais.add(m);
+      }
+      function desligar(m) {
+        const v = ativas.get(m); if (!v) return;
+        const t = ac.currentTime; v.g.gain.cancelScheduledValues(t); v.g.gain.setValueAtTime(v.g.gain.value, t); v.g.gain.setTargetAtTime(0, t, 0.08);
+        v.oscs.forEach((o) => o.stop(t + 0.5)); ativas.delete(m); visuais.delete(m);
+      }
+      function apertar(m) {
+        if (E.modoAcorde !== 'livre') { const a = ACORDES[E.modoAcorde]; soltarTudo(); a.iv.forEach((i) => ligar(m + i)); if (!E.manter) setTimeout(() => a.iv.forEach((i) => desligar(m + i)), 900); depois(); return; }
+        if (E.manter) { ativas.has(m) ? desligar(m) : ligar(m); } else ligar(m);
+        depois();
+      }
+      function soltar(m) { if (!E.manter && E.modoAcorde === 'livre') { desligar(m); depois(); } }
+      function soltarTudo() { [...ativas.keys()].forEach(desligar); }
+      let tN = 0;
+      function depois() { pintar(); clearTimeout(tN); tN = setTimeout(narrar, 120); conferir(); }
+
+      function narrar() {
+        const notas = [...visuais].sort((a, b) => a - b), r = reconhecer(notas);
+        if (!r) return;
+        if (r.tipo === 'nota') guia.diz(`<b>${nomeNota(notas[0])}</b> — ${SQ.num(freq(notas[0]), 1)} Hz. ${notas[0] % 12 === 9 ? 'É o Lá de afinação (Lá4 = 440 Hz).' : ''}`, { chave: 'mus' });
+        else if (r.tipo === 'intervalo') guia.diz(`${r.nome} (${r.semitons} semitons) entre ${notas.map(nomeNota).join(' e ')}. ${r.semitons === 7 ? 'A 5ª justa é a base dos power chords do rock.' : r.semitons === 6 ? 'O trítono já foi chamado de “diabolus in musica” por soar instável.' : r.semitons === 12 ? `Repare: a frequência dobrou (${SQ.num(freq(notas[0]), 0)} → ${SQ.num(freq(notas[1]), 0)} Hz).` : ''}`, { chave: 'mus' });
+        else if (r.tipo === 'acorde') { const a = ACORDES[r.k]; guia.diz(`🎵 <b>${r.nome}</b> (${r.cifra}) — ${r.inv}. Estrutura: ${a.iv.slice(1).map((i) => `${PT[(r.raiz + i) % 12]} (${INTERVALOS[i]})`).join(', ')} a partir de ${PT[r.raiz]}. Som ${a.txt}.`, { tipo: 'sucesso', chave: 'mus' }); }
+        else guia.diz(`Notas ${notas.map(nomeNota).join(', ')}: esse agrupamento não está no meu catálogo de acordes básicos.`, { chave: 'mus' });
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const hO = h * 0.3, hP = h * 0.32, yT = hO + hP + 10, hT = h - yT - 10;
+        // osciloscópio
+        d.bloco(ctx, 12, 12, w - 24, hO - 18, { cor: '#0B1438', r: 14, alt: 0, esp: 2 });
+        ctx.strokeStyle = 'rgba(143,200,255,.18)'; ctx.lineWidth = 1; for (let k = 1; k < 8; k++) { ctx.beginPath(); ctx.moveTo(12 + ((w - 24) * k) / 8, 14); ctx.lineTo(12 + ((w - 24) * k) / 8, hO - 8); ctx.stroke(); }
+        const cy = 12 + (hO - 18) / 2; ctx.beginPath(); ctx.moveTo(14, cy); ctx.lineTo(w - 14, cy); ctx.stroke();
+        ctx.strokeStyle = '#7CFF9B'; ctx.lineWidth = 2.5; ctx.beginPath();
+        if (analisador) {
+          analisador.getFloatTimeDomainData(buf);
+          let ini = 0; for (let i = 1; i < buf.length / 2; i++) if (buf[i - 1] < 0 && buf[i] >= 0) { ini = i; break; }
+          const N = 700; for (let i = 0; i < N; i++) { const x = 14 + (i / N) * (w - 28), y = cy - buf[ini + i] * (hO - 30) * 0.9; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        } else { ctx.moveTo(14, cy); ctx.lineTo(w - 14, cy); }
+        ctx.stroke();
+        d.texto(ctx, `osciloscópio · timbre: ${({ piano: 'piano', orgao: 'órgão', sine: 'senoidal', square: 'quadrada', sawtooth: 'dente de serra', triangle: 'triangular' })[E.timbre]}`, 26, 32, { tam: 11, cor: '#8FC8FF' });
+        // partitura (clave de sol)
+        const yP = hO + 4; d.bloco(ctx, 12, yP, w - 24, hP - 4, { cor: '#FFFDF6', r: 14, alt: 0, esp: 2 });
+        const gap = Math.min(17, (hP - 30) / 9), base = yP + hP / 2 + 2 * gap;
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 1.6; for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.moveTo(30, base - k * gap); ctx.lineTo(w - 30, base - k * gap); ctx.stroke(); }
+        ctx.font = `${gap * 6.2}px "Noto Music", "Segoe UI Symbol", "DejaVu Sans", serif`; ctx.fillStyle = C.tinta; ctx.textBaseline = 'alphabetic'; ctx.fillText('𝄞', 36, base + gap * 1.15);
+        const notas = [...visuais].sort((a, b) => a - b), xN = w * 0.5;
+        let ultimoPasso = -99, desloca = 0;
+        for (const m of notas) {
+          const pc = m % 12, oit = Math.floor(m / 12) - 1, letra = [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6][pc], sust = [1, 3, 6, 8, 10].includes(pc);
+          const passo = oit * 7 + letra, y = base - (passo - 30) * (gap / 2);
+          desloca = passo - ultimoPasso === 1 && !desloca ? gap * 1.5 : 0; ultimoPasso = passo;
+          const x = xN + desloca;
+          ctx.lineWidth = 1.6; for (let p = 28; p >= passo; p -= 2) if (p <= 28) { const yy = base - (p - 30) * (gap / 2); ctx.beginPath(); ctx.moveTo(x - gap * 1.1, yy); ctx.lineTo(x + gap * 1.1, yy); ctx.stroke(); }
+          for (let p = 40; p <= passo; p += 2) { const yy = base - (p - 30) * (gap / 2); ctx.beginPath(); ctx.moveTo(x - gap * 1.1, yy); ctx.lineTo(x + gap * 1.1, yy); ctx.stroke(); }
+          ctx.save(); ctx.translate(x, y); ctx.rotate(-0.35); ctx.beginPath(); ctx.ellipse(0, 0, gap * 0.72, gap * 0.48, 0, 0, Math.PI * 2); ctx.fillStyle = C.tinta; ctx.fill(); ctx.beginPath(); ctx.ellipse(0, 0, gap * 0.36, gap * 0.22, 0.6, 0, Math.PI * 2); ctx.fillStyle = '#FFFDF6'; ctx.fill(); ctx.restore();
+          if (sust) d.texto(ctx, '♯', x - gap * 1.9 - (desloca ? 0 : 0), y + gap * 0.45, { tam: gap * 1.6, cor: C.tinta, peso: 700 });
+          d.texto(ctx, LETRA[pc], x + gap * 1.4 + desloca * 0.2, y + 4, { tam: 11, cor: C.roxo });
+        }
+        const r = reconhecer(notas);
+        if (r && r.tipo === 'acorde') d.etiqueta(ctx, `${r.cifra} · ${r.nome}`, w * 0.78, yP + 24, { tam: 13, cor: C.amarelo });
+        else if (r) d.etiqueta(ctx, r.nome, w * 0.78, yP + 24, { tam: 12, cor: '#fff' });
+        // teclado
+        teclas = [];
+        const nB = 14, larg = (w - 24) / nB, x0 = 12;
+        let bi = 0;
+        for (let m = 60; m < 84; m++) if (BRANCAS.includes(m % 12)) { const x = x0 + bi * larg, on = visuais.has(m); teclas.push({ m, x, y: yT, w: larg, h: hT, preta: false }); ctx.fillStyle = on ? C.amarelo : '#fff'; ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; d.rr(ctx, x + 1, yT, larg - 2, hT, 8); ctx.fill(); ctx.stroke(); d.texto(ctx, PT[m % 12], x + larg / 2, yT + hT - 22, { tam: Math.min(13, larg * 0.28), alinhar: 'center', cor: on ? C.tinta : C.suave }); if (m % 12 === 0) d.texto(ctx, `C${Math.floor(m / 12) - 1}`, x + larg / 2, yT + hT - 8, { tam: 10, alinhar: 'center', cor: C.azul }); bi++; }
+        bi = 0;
+        for (let m = 60; m < 84; m++) { if (BRANCAS.includes(m % 12)) { bi++; continue; } const x = x0 + bi * larg - larg * 0.3, on = visuais.has(m); teclas.unshift({ m, x, y: yT, w: larg * 0.6, h: hT * 0.6, preta: true }); ctx.fillStyle = on ? C.laranja : C.tinta; d.rr(ctx, x, yT, larg * 0.6, hT * 0.6, 6); ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke(); }
+        const atalho = Object.entries(MAPA_TECLAS).filter(([k]) => k !== ';');
+        for (const [k, m] of atalho) { const t = teclas.find((q) => q.m === m); if (t) d.texto(ctx, k.toUpperCase(), t.x + t.w / 2, t.y + (t.preta ? t.h - 10 : 18), { tam: 10, alinhar: 'center', cor: t.preta ? '#BFD3FF' : '#9AA8D6' }); }
+      }
+
+      // ---------- painel ----------
+      const gS = ui.grupo('Som');
+      ui.segmentado({ rotulo: 'Timbre', opcoes: [{ valor: 'piano', rotulo: 'Piano' }, { valor: 'orgao', rotulo: 'Órgão' }, { valor: 'sine', rotulo: 'Senoidal' }, { valor: 'square', rotulo: 'Quadrada' }, { valor: 'sawtooth', rotulo: 'Dente de serra' }, { valor: 'triangle', rotulo: 'Triangular' }], valor: E.timbre, pai: gS, aoMudar: (v) => { E.timbre = v; const ns = [...visuais]; soltarTudo(); ns.forEach(ligar); guia.diz(v === 'sine' ? 'A onda <b>senoidal</b> é um som “puro”, sem harmônicos: lembra um apito.' : v === 'square' ? 'A onda <b>quadrada</b> tem harmônicos ímpares fortes: som de videogame antigo.' : v === 'sawtooth' ? 'A <b>dente de serra</b> tem todos os harmônicos: som brilhante, de sintetizador.' : v === 'triangle' ? 'A <b>triangular</b> tem harmônicos ímpares fracos: som suave, de flauta.' : `O timbre de <b>${v === 'piano' ? 'piano' : 'órgão'}</b> soma vários harmônicos: veja a onda “desenhada” no osciloscópio.`, { chave: 'tim' }); } });
+      ui.slider({ rotulo: 'Volume', min: 0, max: 1, passo: 0.05, valor: E.vol, pai: gS, formatar: (v) => `${Math.round(v * 100)}%`, aoMudar: (v) => { E.vol = v; if (mestre) mestre.gain.value = v * 0.5; } });
+      const gA = ui.grupo('Acordes');
+      ui.select({ rotulo: 'Ao clicar numa tecla, tocar…', opcoes: [{ valor: 'livre', rotulo: 'só a nota' }, ...Object.entries(ACORDES).map(([k, a]) => ({ valor: k, rotulo: `acorde ${a.nome}` }))], valor: 'livre', pai: gA, aoMudar: (v) => { E.modoAcorde = v; soltarTudo(); pintar(); } });
+      const tManter = ui.alternar({ rotulo: 'Manter notas (montar acorde)', valor: false, pai: gA, aoMudar: (v) => { E.manter = v; if (!v) soltarTudo(); pintar(); } });
+      ui.botao({ rotulo: 'Soltar todas', classe: 'branco pequeno', pai: ui.linha(gA), aoClicar: () => { soltarTudo(); pintar(); } });
+      const nomeEl = SQ.el('div', { class: 'acorde-nome' }, '—'); gA.append(nomeEl);
+      const lei = ui.leituras([{ id: 'n', rotulo: 'Notas' }, { id: 'f', rotulo: 'Frequências (Hz)' }], gA);
+      const gD = ui.grupo('Treino');
+      const caixa = SQ.el('div', { class: 'desafio' }, 'Escolha um treino.'); gD.append(caixa);
+      ui.linha(gD, ui.botao({ rotulo: '👂 Maior ou menor?', classe: 'pequeno', aoClicar: treinoOuvido }), ui.botao({ rotulo: '🎹 Monte um acorde', classe: 'branco pequeno', aoClicar: treinoMontar }));
+      const resp = SQ.el('div', { class: 'linha-botoes', hidden: true }); gD.append(resp);
+      for (const k of ['maior', 'menor']) resp.append(ui.botao({ rotulo: k === 'maior' ? '😊 Maior' : '😔 Menor', classe: 'branco pequeno', aoClicar: () => responderOuvido(k) }));
+      resp.append(ui.botao({ rotulo: '🔁 Ouvir de novo', classe: 'branco pequeno', aoClicar: () => desafio && tocarAcorde(desafio.raiz, desafio.k) }));
+
+      function tocarAcorde(raiz, k) { soltarTudo(); ACORDES[k].iv.forEach((i) => ligar(raiz + i)); pintar(); setTimeout(() => { ACORDES[k].iv.forEach((i) => desligar(raiz + i)); pintar(); }, 1300); }
+      function treinoOuvido() { const raiz = 60 + Math.floor(Math.random() * 10), k = Math.random() < 0.5 ? 'maior' : 'menor'; desafio = { tipo: 'ouvido', raiz, k }; resp.hidden = false; caixa.className = 'desafio'; caixa.innerHTML = '👂 Ouça o acorde: ele é <b>maior</b> ou <b>menor</b>?'; tocarAcorde(raiz, k); }
+      function responderOuvido(k) {
+        if (!desafio || desafio.tipo !== 'ouvido') return;
+        const ok = k === desafio.k; caixa.className = ok ? 'desafio ok' : 'desafio'; caixa.innerHTML = ok ? `✅ Isso! Era ${PT[desafio.raiz % 12]} ${desafio.k}.` : `Era ${PT[desafio.raiz % 12]} <b>${desafio.k}</b>. Ouça de novo comparando com o outro.`;
+        guia.diz(ok ? '👏 Ouvido afiado! Clique em “Maior ou menor?” para outra rodada.' : `A diferença está na 3ª: ${desafio.k === 'maior' ? '4 semitons (maior)' : '3 semitons (menor)'}. Toque os dois seguidos no teclado para comparar.`, { tipo: ok ? 'sucesso' : 'alerta', chave: 'treino' });
+        if (!ok) { const outro = desafio.k === 'maior' ? 'menor' : 'maior'; setTimeout(() => tocarAcorde(desafio.raiz, desafio.k), 300); setTimeout(() => tocarAcorde(desafio.raiz, outro), 1900); }
+      }
+      function treinoMontar() {
+        const raiz = [0, 2, 4, 5, 7, 9][Math.floor(Math.random() * 6)], k = ['maior', 'menor', 'dom7'][Math.floor(Math.random() * 3)];
+        desafio = { tipo: 'montar', raiz, k }; resp.hidden = true; E.manter = true; tManter.valor = true; soltarTudo(); pintar();
+        caixa.className = 'desafio'; caixa.innerHTML = `🎹 Monte o acorde de <b>${PT[raiz]} ${ACORDES[k].nome}</b> (${LETRA[raiz]}${ACORDES[k].sufixo}). Clique nas teclas uma a uma.`;
+        guia.diz(`Dica: comece por ${PT[raiz]} e conte os semitons (teclas brancas e pretas): ${ACORDES[k].iv.slice(1).join(' e ')}.`, { tipo: 'dica', chave: 'treino' });
+      }
+      function conferir() {
+        if (!desafio || desafio.tipo !== 'montar' || caixa.classList.contains('ok')) return;
+        const r = reconhecer([...visuais]);
+        if (r && r.tipo === 'acorde' && r.raiz === desafio.raiz && r.k === desafio.k) { caixa.className = 'desafio ok'; caixa.innerHTML = `✅ ${PT[desafio.raiz]} ${ACORDES[desafio.k].nome} montado: ${r.cifra}!`; SQ.som(1320, 0.15); }
+      }
+      function pintar() {
+        const notas = [...visuais].sort((a, b) => a - b), r = reconhecer(notas);
+        nomeEl.textContent = r ? (r.tipo === 'acorde' ? `${r.cifra} — ${r.nome}` : r.nome) : '—';
+        lei.set('n', notas.map(nomeNota).join(' · ') || '—'); lei.set('f', notas.map((m) => SQ.num(freq(m), 0)).join(' · ') || '—');
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      const porPonteiro = new Map();
+      const tecla = (p) => teclas.find((t) => p.x >= t.x && p.x <= t.x + t.w && p.y >= t.y && p.y <= t.y + t.h);
+      tela.canvas.addEventListener('pointerdown', (e) => { const r = tela.canvas.getBoundingClientRect(), t = tecla({ x: e.clientX - r.left, y: e.clientY - r.top }); if (!t) return; tela.canvas.setPointerCapture(e.pointerId); porPonteiro.set(e.pointerId, t.m); apertar(t.m); });
+      const fim = (e) => { const m = porPonteiro.get(e.pointerId); if (m != null) { soltar(m); porPonteiro.delete(e.pointerId); } };
+      tela.canvas.addEventListener('pointerup', fim); tela.canvas.addEventListener('pointercancel', fim);
+      tela.canvas.addEventListener('pointermove', (e) => { const r = tela.canvas.getBoundingClientRect(), t = tecla({ x: e.clientX - r.left, y: e.clientY - r.top }); tela.canvas.style.cursor = t ? 'pointer' : ''; const ant = porPonteiro.get(e.pointerId); if (ant != null && t && t.m !== ant && !E.manter && E.modoAcorde === 'livre') { soltar(ant); porPonteiro.set(e.pointerId, t.m); apertar(t.m); } });
+      const presas = new Set();
+      addEventListener('keydown', (e) => { if (e.target.matches('input[type=text], textarea, select')) return; const m = MAPA_TECLAS[e.key.toLowerCase()]; if (m == null || e.repeat || presas.has(m)) return; presas.add(m); apertar(m); });
+      addEventListener('keyup', (e) => { const m = MAPA_TECLAS[e.key.toLowerCase()]; if (m == null) return; presas.delete(m); soltar(m); });
+      SQ.loop(() => tela.redesenhar()).iniciar();
+      guia.contexto = () => { const notas = [...visuais].sort((a, b) => a - b), r = reconhecer(notas); return { notas: notas.map(nomeNota), timbre: E.timbre, reconhecido: r ? (r.tipo === 'acorde' ? `Você está tocando <b>${r.nome}</b> (${r.cifra}), ${r.inv}.` : r.nome) : 'Nenhuma nota tocando agora. Ligue “Manter notas” e clique nas teclas.' }; };
+      pintar();
+    },
+  });
+  </script>
+</body>
+</html>

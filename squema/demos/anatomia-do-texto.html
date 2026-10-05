@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anatomia do Texto — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/livro-aberto.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .vista-texto { position: absolute; inset: 0; overflow: auto; padding: 18px 18px 56px; }
+    .par { position: relative; background: #fff; border: 2px solid var(--tinta); border-radius: 16px; padding: 12px 14px 10px; margin-bottom: 14px; box-shadow: 0 4px 0 var(--linha); font-size: 15px; line-height: 1.75; color: var(--tinta); }
+    .par .selo { display: inline-flex; gap: 6px; align-items: center; font: 900 11px var(--fonte); text-transform: uppercase; letter-spacing: .05em; color: #fff; background: var(--azul); border-radius: 7px; padding: 2px 8px; margin-bottom: 6px; }
+    .par .selo.intro { background: var(--roxo); } .par .selo.conc { background: var(--verde-escuro); }
+    .par .meta { float: right; font-size: 11px; font-weight: 800; color: var(--texto-suave); }
+    .topico { background: linear-gradient(transparent 55%, #FFE48A 55%); font-weight: 800; }
+    .longa { text-decoration: underline wavy var(--vermelho); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+    mark.con { border-radius: 5px; padding: 0 3px; color: var(--tinta); font-weight: 900; border: 1.5px solid currentColor; }
+    .rep { border-bottom: 3px dotted var(--vermelho); background: #FFE1E3; border-radius: 3px; }
+    .rep.foco { background: var(--vermelho); color: #fff; }
+    .legenda-t { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; font-size: 12px; font-weight: 800; }
+    .legenda-t span { border: 1.5px solid var(--tinta); border-radius: 999px; padding: 1px 8px; background: #fff; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips button { border: 2px solid var(--tinta); border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 800; background: #fff; }
+    .checklist { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+    .checklist li { padding: 3px 0 3px 26px; position: relative; }
+    .checklist li::before { content: "✗"; position: absolute; left: 4px; color: var(--vermelho); font-weight: 900; }
+    .checklist li.ok::before { content: "✓"; color: var(--verde-escuro); }
+    .mapa-svg { width: 100%; height: auto; display: block; }
+    textarea.texto { min-height: 180px; font-size: 14px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const FUNCOES = {
+    adicao: { nome: 'Adição', cor: '#2BB4F5', lista: ['além disso', 'ademais', 'também', 'bem como', 'não só', 'mas também', 'inclusive', 'além de', 'outrossim'] },
+    oposicao: { nome: 'Oposição', cor: '#EE3B45', lista: ['no entanto', 'entretanto', 'contudo', 'todavia', 'porém', 'mas', 'embora', 'apesar de', 'apesar disso', 'ainda que', 'por outro lado', 'em contrapartida'] },
+    causa: { nome: 'Causa', cor: '#FF9416', lista: ['porque', 'pois', 'visto que', 'uma vez que', 'já que', 'devido a', 'devido à', 'em razão de', 'por causa de', 'graças a'] },
+    conclusao: { nome: 'Conclusão', cor: '#36C04A', lista: ['portanto', 'logo', 'assim', 'dessa forma', 'desse modo', 'por isso', 'consequentemente', 'em suma', 'enfim', 'por conseguinte', 'sendo assim', 'diante disso', 'em síntese', 'dessa maneira'] },
+    tempo: { nome: 'Tempo', cor: '#8B3DFF', lista: ['atualmente', 'enquanto', 'em seguida', 'inicialmente', 'primeiramente', 'em primeiro lugar', 'em segundo lugar', 'por fim', 'finalmente', 'nos dias de hoje', 'antigamente'] },
+    condicao: { nome: 'Condição', cor: '#E8A400', lista: ['desde que', 'contanto que', 'a menos que', 'na hipótese de', 'caso contrário'] },
+    exemplo: { nome: 'Exemplo/explicação', cor: '#19B8A6', lista: ['por exemplo', 'isto é', 'ou seja', 'a saber', 'como exemplo', 'em outras palavras'] },
+    comparacao: { nome: 'Comparação', cor: '#C98B4E', lista: ['assim como', 'tal como', 'da mesma forma', 'igualmente', 'do mesmo modo'] },
+    finalidade: { nome: 'Finalidade', cor: '#1F5BE0', lista: ['a fim de', 'para que', 'com o objetivo de', 'com o intuito de', 'de modo que'] },
+  };
+  const STOP = new Set('a o as os um uma uns umas de do da dos das no na nos nas em por para com sem sob sobre entre e ou que se não nao mais menos muito muita muitos muitas seu sua seus suas ele ela eles elas isso isto esse essa esses essas este esta estes estas aquele aquela ao aos à às é ser são foi era está estão ter tem têm há como quando onde qual quais quem já também só mas porém pois porque assim então sua seus pelo pela pelos pelas lhe lhes me te nos vos eu tu você vocês nós cada todo toda todos todas outro outra outros outras mesmo mesma tal tão bem ainda pode podem deve devem'.split(' '));
+  const SINONIMOS = { tecnologia: ['recursos digitais', 'ferramentas tecnológicas', 'inovação'], escola: ['instituição de ensino', 'colégio', 'ambiente escolar'], escolas: ['instituições de ensino', 'colégios'], aluno: ['estudante', 'discente', 'jovem'], alunos: ['estudantes', 'discentes', 'jovens'], importante: ['relevante', 'essencial', 'fundamental'], problema: ['questão', 'desafio', 'obstáculo'], sociedade: ['população', 'coletividade'], pessoas: ['indivíduos', 'cidadãos'], coisa: ['elemento', 'aspecto', 'fator'], coisas: ['elementos', 'aspectos', 'fatores'], fazer: ['realizar', 'promover', 'executar'], grande: ['amplo', 'expressivo', 'significativo'], celular: ['smartphone', 'aparelho', 'dispositivo'], celulares: ['smartphones', 'aparelhos', 'dispositivos'], uso: ['utilização', 'emprego'], educação: ['ensino', 'formação'], internet: ['rede', 'ambiente virtual'], governo: ['poder público', 'Estado'], mostrar: ['evidenciar', 'demonstrar'], aula: ['atividade', 'encontro'], aulas: ['atividades pedagógicas', 'encontros'], professor: ['docente', 'educador'], professores: ['docentes', 'educadores'], bom: ['positivo', 'benéfico'], ruim: ['prejudicial', 'negativo'] };
+  const EXEMPLOS = {
+    bom: `O uso do celular nas escolas divide opiniões entre professores, famílias e estudantes. Embora o aparelho seja visto por muitos como fonte de distração, ele também pode se tornar um aliado da aprendizagem, desde que utilizado com objetivos claros.
+
+Em primeiro lugar, é preciso reconhecer que o smartphone reúne recursos valiosos para o estudo. Por exemplo, aplicativos de pesquisa, dicionários e vídeos educativos ampliam o acesso ao conhecimento. Além disso, a familiaridade dos jovens com a tecnologia torna as aulas mais próximas da realidade deles.
+
+No entanto, o uso sem orientação traz prejuízos evidentes. Pesquisas internacionais, como o relatório da UNESCO de 2023, apontam que a simples presença do aparelho reduz a concentração. Desse modo, notificações e redes sociais competem com o professor pela atenção da turma.
+
+Portanto, cabe às escolas, junto com as famílias, criar regras claras de uso, por meio de combinados discutidos com os estudantes, a fim de que o celular seja ferramenta de estudo, e não de dispersão. Assim, a tecnologia poderá servir à educação.`,
+    fraco: `O celular na escola é um problema muito grande porque os alunos ficam no celular o tempo todo e não prestam atenção na aula e o professor fica falando sozinho e os alunos não aprendem nada e isso é um problema muito sério que precisa ser resolvido logo pelas escolas e pelo governo.
+
+O celular também tem coisas boas. O celular ajuda a pesquisar. O celular tem aplicativos. Os alunos gostam do celular. O celular é importante para os alunos.`,
+  };
+  const esc = (s) => SQ.esc(s);
+  const sem = (s) => SQ.semAcento(s);
+
+  function paragrafos(t) { return t.split(/\n\s*\n|\r\n\s*\r\n/).map((p) => p.replace(/\s+/g, ' ').trim()).filter(Boolean); }
+  function frases(p) { return p.match(/[^.!?…]+[.!?…]+["”»)]*|[^.!?…]+$/g)?.map((s) => s.trim()).filter(Boolean) || []; }
+  const palavras = (s) => s.match(/[\p{L}\p{N}][\p{L}\p{N}'-]*/gu) || [];
+  const TODOS = Object.entries(FUNCOES).flatMap(([k, f]) => f.lista.map((c) => ({ c, k }))).sort((a, b) => b.c.length - a.c.length);
+  function conectivos(s) {
+    const achados = [], lower = s.toLowerCase();
+    for (const { c, k } of TODOS) {
+      const re = new RegExp(`(?<![\\p{L}])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'giu'); let m;
+      while ((m = re.exec(lower))) { const ini = m.index, fim = ini + c.length; if (!achados.some((a) => !(fim <= a.ini || ini >= a.fim))) achados.push({ ini, fim, k, c }); }
+    }
+    return achados.sort((a, b) => a.ini - b.ini);
+  }
+
+  function analisar(texto) {
+    const ps = paragrafos(texto), cont = {}, total = {};
+    const todas = palavras(texto).map((w) => w.toLowerCase());
+    for (const w of todas) { if (w.length < 4 || STOP.has(w)) continue; cont[w] = (cont[w] || 0) + 1; }
+    const repetidas = Object.entries(cont).filter(([, n]) => n >= 3).sort((a, b) => b[1] - a[1]);
+    const repSet = new Set(repetidas.map(([w]) => w));
+    const pars = ps.map((p, i) => {
+      const fs = frases(p).map((f) => ({ f, n: palavras(f).length, con: conectivos(f) }));
+      fs.forEach((x) => x.con.forEach((c) => { total[c.k] = (total[c.k] || 0) + 1; }));
+      const abre = conectivos(p.slice(0, 40)).find((c) => c.ini < 3);
+      return { p, i, fs, n: palavras(p).length, abre };
+    });
+    const nFr = pars.reduce((s, x) => s + x.fs.length, 0), nW = todas.length;
+    const conc = pars[pars.length - 1];
+    const concTxt = conc ? sem(conc.p) : '';
+    const proposta = {
+      agente: /\b(governo|ministerio|escola|escolas|familia|familias|midia|estado|poder publico|sociedade|ong|professores|prefeitura)\b/.test(concTxt),
+      acao: /\b(deve|devem|cabe|cabem|e necessario|precisa|precisam|e preciso|e fundamental)\b/.test(concTxt),
+      meio: /\b(por meio de|por meio da|por meio do|mediante|atraves de|atraves da|com o uso de|por intermedio)\b/.test(concTxt),
+      fim: /\b(a fim de|para que|com o objetivo de|com o intuito de|de modo que|com a finalidade)\b/.test(concTxt),
+    };
+    return { pars, repetidas, repSet, total, nFr, nW, media: nFr ? nW / nFr : 0, diversidade: nW ? new Set(todas).size / nW : 0, proposta, longas: pars.flatMap((x) => x.fs.filter((f) => f.n > 35).map((f) => ({ ...f, par: x.i }))) };
+  }
+
+  SQ.demo('anatomia-do-texto', {
+    fundo: 'papel',
+    dica: 'Edite o texto no painel: o raio-x se atualiza sozinho',
+    sala: ['Projete o texto “fraco” e peça que a turma reescreva um parágrafo; depois compare os dois raios-x.', 'Peça que cada aluno use pelo menos três funções de conectivo diferentes no próprio texto.', 'Use a checagem da proposta de intervenção para treinar a conclusão do ENEM.'],
+    comoIA: 'A análise da estrutura (parágrafos, tópico frasal, conectivos, repetições, frases longas e proposta de intervenção) é feita no navegador. O guia transforma esse diagnóstico em sugestões de reescrita explicadas. Com uma IA conectada, o texto e o diagnóstico são enviados juntos para uma revisão mais fina, de argumentação e coerência.',
+    guia: {
+      ola: 'Cole ou escreva um texto dissertativo no painel. Eu mostro o <b>raio-x</b>: parágrafos, tópicos frasais, <b>conectivos</b> por função e palavras <b>repetidas</b>. Depois clique em <b>💡 Sugerir reescrita</b>.',
+      perguntas: [
+        { p: 'O que é tópico frasal?', chaves: ['topico', 'frasal'], r: 'É a frase (geralmente a primeira) que anuncia a <b>ideia central</b> do parágrafo. As outras frases desenvolvem, explicam ou exemplificam essa ideia. No raio-x ela aparece grifada em amarelo.' },
+        { p: 'Para que servem os conectivos?', chaves: ['conectivo', 'conectivos', 'coesao', 'servem'], r: 'Eles mostram a <b>relação lógica</b> entre ideias: adição (além disso), oposição (no entanto), causa (porque), conclusão (portanto)… Sem eles, o leitor precisa adivinhar como as frases se ligam.' },
+        { p: 'Como evito repetições?', chaves: ['repeti', 'repetir', 'sinonimo'], r: 'Use <b>sinônimos</b> (escola → instituição de ensino), <b>pronomes</b> (o celular → ele, o aparelho), <b>hiperônimos</b> (cachorro → animal) ou elipse (omitir o termo já conhecido).' },
+        { p: 'O que é proposta de intervenção?', chaves: ['proposta', 'intervencao', 'enem'], r: 'No ENEM, a conclusão deve propor uma solução com <b>agente</b> (quem faz), <b>ação</b> (o que fazer), <b>meio</b> (como) e <b>finalidade</b> (para quê) — e respeitar os direitos humanos.' },
+        { p: 'Qual o principal problema do meu texto?', chaves: ['principal', 'problema', 'meu texto'], r: (c) => c.principal },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      palco.style.touchAction = 'auto';
+      const vistaEl = SQ.el('div', { class: 'vista-texto', 'aria-live': 'polite' }); palco.append(vistaEl);
+      let A = null, modo = 'raiox', foco = null;
+
+      function marcarFrase(f, repSet, longa) {
+        const cons = conectivos(f); let html = '', pos = 0;
+        const marcaRep = (txt) => esc(txt).replace(/[\p{L}\p{N}][\p{L}\p{N}'-]*/gu, (w) => (repSet.has(w.toLowerCase()) ? `<span class="rep${foco === w.toLowerCase() ? ' foco' : ''}">${w}</span>` : w));
+        for (const c of cons) { html += marcaRep(f.slice(pos, c.ini)); html += `<mark class="con" style="color:${FUNCOES[c.k].cor};background:${FUNCOES[c.k].cor}22" title="${FUNCOES[c.k].nome}">${esc(f.slice(c.ini, c.fim))}</mark>`; pos = c.fim; }
+        html += marcaRep(f.slice(pos));
+        return longa ? `<span class="longa" title="Frase longa: ${palavras(f).length} palavras">${html}</span>` : html;
+      }
+      function papel(i, n) { return n === 1 ? ['intro', 'Parágrafo único'] : i === 0 ? ['intro', 'Introdução'] : i === n - 1 ? ['conc', 'Conclusão'] : ['', `Desenvolvimento ${i}`]; }
+      function pintarRaioX() {
+        const n = A.pars.length;
+        vistaEl.innerHTML = `<div class="legenda-t">${Object.values(FUNCOES).map((f) => `<span style="border-color:${f.cor};color:${f.cor}">${f.nome}</span>`).join('')}<span class="topico" style="border-color:#D98E00">tópico frasal</span><span class="rep">repetição</span><span class="longa" style="border-color:#EE3B45">frase longa</span></div>` +
+          A.pars.map((x) => { const [cl, rot] = papel(x.i, n); return `<div class="par"><span class="meta">${x.fs.length} frase${x.fs.length > 1 ? 's' : ''} · ${x.n} palavras</span><span class="selo ${cl}">${rot}</span><div>${x.fs.map((f, k) => (k === 0 ? `<span class="topico">${marcarFrase(f.f, A.repSet, f.n > 35)}</span>` : marcarFrase(f.f, A.repSet, f.n > 35))).join(' ')}</div></div>`; }).join('') || '<p class="texto-suave">Escreva um texto no painel ao lado.</p>';
+      }
+      function pintarMapa() {
+        const n = A.pars.length, W = 720, H = Math.max(260, n * 120 + 40);
+        const ini = (f) => (f || '').split(/\s+/); const nos = A.pars.map((x, i) => ({ x: W / 2, y: 50 + i * 120, txt: ini(x.fs[0]?.f).slice(0, 12).join(' ') + (ini(x.fs[0]?.f).length > 12 ? '…' : ''), papel: papel(i, n)[1], abre: x.abre }));
+        const quebra = (t) => { const out = [], ws = t.split(' '); let l = ''; for (const w of ws) { if ((l + ' ' + w).length > 44) { out.push(l); l = w; } else l = l ? l + ' ' + w : w; } if (l) out.push(l); return out.slice(0, 2); };
+        vistaEl.innerHTML = `<svg class="mapa-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa dos parágrafos">
+          ${nos.slice(1).map((no, i) => { const a = nos[i]; const rot = no.abre ? `${no.abre.c} (${FUNCOES[no.abre.k].nome.toLowerCase()})` : 'sem conectivo'; return `<line x1="${W / 2}" y1="${a.y + 36}" x2="${W / 2}" y2="${no.y - 38}" stroke="#0B1438" stroke-width="3" ${no.abre ? '' : 'stroke-dasharray="6 6"'}/><polygon points="${W / 2 - 8},${no.y - 46} ${W / 2 + 8},${no.y - 46} ${W / 2},${no.y - 36}" fill="#0B1438"/><rect x="${W / 2 + 14}" y="${(a.y + no.y) / 2 - 13}" rx="9" width="${rot.length * 7.4 + 18}" height="24" fill="${no.abre ? FUNCOES[no.abre.k].cor : '#FFF1CC'}" stroke="#0B1438" stroke-width="2"/><text x="${W / 2 + 23}" y="${(a.y + no.y) / 2 + 4}" font-family="Nunito, sans-serif" font-weight="800" font-size="12" fill="${no.abre ? '#fff' : '#8A5A00'}">${esc(rot)}</text>`; }).join('')}
+          ${nos.map((no) => `<g><rect x="${W / 2 - 300}" y="${no.y - 34}" width="600" height="70" rx="16" fill="#fff" stroke="#0B1438" stroke-width="3"/><rect x="${W / 2 - 300}" y="${no.y - 34}" width="10" height="70" rx="4" fill="${no.papel.startsWith('Intro') ? '#8B3DFF' : no.papel.startsWith('Concl') ? '#1E8A30' : '#1F5BE0'}"/><text x="${W / 2 - 280}" y="${no.y - 12}" font-family="Nunito, sans-serif" font-weight="900" font-size="11" fill="#55628F">${esc(no.papel.toUpperCase())}</text>${quebra(no.txt).map((l, k) => `<text x="${W / 2 - 280}" y="${no.y + 8 + k * 18}" font-family="Nunito, sans-serif" font-weight="800" font-size="14" fill="#0B1438">${esc(l)}</text>`).join('')}</g>`).join('')}
+        </svg>`;
+      }
+      function pintar() { if (modo === 'raiox') pintarRaioX(); else pintarMapa(); }
+
+      // ---------- painel ----------
+      const gT = ui.grupo('Texto');
+      ui.select({ rotulo: 'Carregar exemplo', opcoes: [{ valor: 'bom', rotulo: 'Dissertação bem estruturada' }, { valor: 'fraco', rotulo: 'Texto com problemas de coesão' }, { valor: '', rotulo: 'Em branco' }], valor: 'bom', pai: gT, aoMudar: (v) => { area.value = EXEMPLOS[v] || ''; atualizar(true); } });
+      const area = SQ.el('textarea', { class: 'texto', 'aria-label': 'Texto para análise', spellcheck: 'true' }); area.value = EXEMPLOS.bom; gT.append(area);
+      ui.segmentado({ opcoes: [{ valor: 'raiox', rotulo: '🩻 Raio-x' }, { valor: 'mapa', rotulo: '🗺️ Mapa dos parágrafos' }], valor: modo, pai: gT, aoMudar: (v) => { modo = v; pintar(); } });
+      ui.botao({ rotulo: '💡 Sugerir reescrita', classe: 'azul pequeno', pai: ui.linha(gT), aoClicar: sugerir });
+      const gE = ui.grupo('Números do texto');
+      const lei = ui.leituras([{ id: 'w', rotulo: 'Palavras' }, { id: 'f', rotulo: 'Frases' }, { id: 'p', rotulo: 'Parágrafos' }, { id: 'm', rotulo: 'Palavras por frase', destaque: true }, { id: 'c', rotulo: 'Conectivos' }, { id: 'd', rotulo: 'Variedade vocabular' }], gE);
+      const gC = ui.grupo('Conectivos por função');
+      const chipsC = SQ.el('div', { class: 'chips' }); gC.append(chipsC);
+      const gR = ui.grupo('Repetições');
+      const chipsR = SQ.el('div', { class: 'chips' }); gR.append(chipsR);
+      const gS = ui.grupo('Estrutura dissertativa');
+      const check = SQ.el('ul', { class: 'checklist' }); gS.append(check);
+
+      let tA = 0;
+      area.addEventListener('input', () => { clearTimeout(tA); tA = setTimeout(() => atualizar(), 250); });
+      function atualizar(narrar) {
+        A = analisar(area.value); foco = null; pintar();
+        const nCon = Object.values(A.total).reduce((s, v) => s + v, 0);
+        lei.set('w', String(A.nW)); lei.set('f', String(A.nFr)); lei.set('p', String(A.pars.length)); lei.set('m', SQ.num(A.media, 1)); lei.set('c', String(nCon)); lei.set('d', `${SQ.num(A.diversidade * 100, 0)}%`);
+        chipsC.innerHTML = Object.entries(FUNCOES).map(([k, f]) => `<button type="button" style="border-color:${f.cor};${A.total[k] ? `background:${f.cor};color:#fff` : 'color:#55628F'}">${f.nome}: ${A.total[k] || 0}</button>`).join('');
+        chipsR.innerHTML = A.repetidas.length ? '' : '<span class="texto-suave miudo">Nenhuma palavra repetida 3 vezes ou mais. 👏</span>';
+        for (const [w, n] of A.repetidas.slice(0, 10)) chipsR.append(SQ.el('button', { type: 'button', onclick: () => { foco = w; pintar(); guia.diz(`“<b>${w}</b>” aparece ${n} vezes. ${SINONIMOS[w] ? `Alternativas: <b>${SINONIMOS[w].join('</b>, <b>')}</b> — ou use um pronome para retomar.` : 'Tente retomar com um pronome (ele, ela, isso) ou um sinônimo.'}`, { chave: 'rep' }); } }, `${w} ×${n}`));
+        const n = A.pars.length, conc = A.pars[n - 1], P = A.proposta;
+        const itens = [
+          [n >= 4, `Quatro ou mais parágrafos (tem ${n})`],
+          [A.pars.slice(1).filter((x) => x.abre).length >= Math.max(1, n - 2), 'Parágrafos ligados por conectivos'],
+          [conc && conc.abre && conc.abre.k === 'conclusao' && n > 1, 'Conclusão aberta com conectivo conclusivo'],
+          [A.longas.length === 0, A.longas.length ? `Frases longas demais: ${A.longas.length}` : 'Frases com tamanho adequado'],
+          [A.repetidas.filter(([, k]) => k >= 4).length === 0, 'Sem repetições excessivas'],
+          [P.agente, 'Proposta: agente (quem vai agir)'], [P.acao, 'Proposta: ação (o que fazer)'], [P.meio, 'Proposta: meio (por meio de…)'], [P.fim, 'Proposta: finalidade (a fim de…)'],
+        ];
+        check.innerHTML = itens.map(([ok, t]) => `<li class="${ok ? 'ok' : ''}">${t}</li>`).join('');
+        if (narrar) guia.diz(resumo(), { chave: 'res' });
+      }
+      function problemas() {
+        const out = [], n = A.pars.length;
+        if (A.longas.length) out.push({ peso: 5, tipo: 'longa', alvo: A.longas[0] });
+        const rep = A.repetidas.find(([, k]) => k >= 4) || A.repetidas[0]; if (rep) out.push({ peso: rep[1] >= 4 ? 4 : 2, tipo: 'rep', alvo: rep });
+        const semCon = A.pars.slice(1).find((x) => !x.abre); if (semCon) out.push({ peso: 3, tipo: "semcon", alvo: semCon });
+        if (n < 4) out.push({ peso: 3.5, tipo: 'poucos', alvo: n });
+        const P = A.proposta; if (n > 1 && !(P.agente && P.acao && P.meio && P.fim)) out.push({ peso: 2.5, tipo: 'proposta', alvo: P });
+        return out.sort((a, b) => b.peso - a.peso);
+      }
+      function resumo() {
+        const pr = problemas();
+        if (!A.nW) return 'Escreva ou cole um texto para eu analisar.';
+        return pr.length ? `Seu texto tem ${A.pars.length} parágrafos e ${A.nFr} frases (média de ${SQ.num(A.media, 1)} palavras por frase). Ponto a melhorar primeiro: <b>${{ longa: 'uma frase longa demais', rep: 'repetição de palavras', semcon: 'parágrafo sem conectivo de ligação', poucos: 'poucos parágrafos', proposta: 'proposta de intervenção incompleta' }[pr[0].tipo]}</b>. Clique em 💡 para ver uma sugestão.` : `Texto bem estruturado: ${A.pars.length} parágrafos, conectivos variados e proposta completa. 🎉`;
+      }
+      function sugerir() {
+        const pr = problemas();
+        if (!pr.length) { guia.diz('Não encontrei problemas de estrutura. Para ir além, revise a argumentação: cada parágrafo traz um dado, exemplo ou fato que comprove a ideia?', { tipo: 'sucesso', chave: 'sug' }); return; }
+        const p = pr[sugerir.k++ % pr.length];
+        if (p.tipo === 'longa') {
+          const f = p.alvo.f, partes = f.split(/\s+e\s+|,\s*/).filter(Boolean);
+          const nova = partes.length > 2 ? `${partes.slice(0, Math.ceil(partes.length / 2)).join(', ')}. Além disso, ${partes.slice(Math.ceil(partes.length / 2)).join(', ').replace(/^\w/, (c) => c.toLowerCase())}` : f;
+          guia.diz(`✂️ <b>Frase longa</b> (${p.alvo.n} palavras): fica difícil acompanhar a ideia. Quebre em duas e ligue com um conectivo:<br><i>“${esc(nova.slice(0, 260))}${nova.length > 260 ? '…' : ''}”</i><br><small>Por quê? Frases de até ~25 palavras facilitam a leitura e deixam clara a relação entre as ideias.</small>`, { tipo: 'dica', chave: 'sug' });
+        } else if (p.tipo === 'rep') {
+          const [w, n] = p.alvo; foco = w; pintar();
+          guia.diz(`🔁 “<b>${w}</b>” aparece ${n} vezes (destacada no raio-x). ${SINONIMOS[w] ? `Troque algumas ocorrências por <b>${SINONIMOS[w].join('</b>, <b>')}</b>` : 'Troque algumas ocorrências por um sinônimo'} ou retome com pronome (“ele”, “esse recurso”).<br><small>Por quê? Repetir a mesma palavra deixa o texto monótono; variar mantém a coesão e mostra domínio de vocabulário.</small>`, { tipo: 'dica', chave: 'sug' });
+        } else if (p.tipo === 'semcon') {
+          const n = A.pars.length, ultimo = p.alvo.i === n - 1, sug = ultimo ? 'Portanto,' : p.alvo.i === 1 ? 'Em primeiro lugar,' : 'Além disso,';
+          guia.diz(`🔗 O parágrafo ${p.alvo.i + 1} começa sem conectivo. Experimente: <i>“${sug} ${esc(p.alvo.p.slice(0, 90).replace(/^\w/, (c) => c.toLowerCase()))}…”</i><br><small>Por quê? O conectivo no início do parágrafo mostra ao leitor como esta ideia se relaciona com a anterior (${ultimo ? 'conclusão' : 'adição ou sequência'}).</small>`, { tipo: 'dica', chave: 'sug' });
+        } else if (p.tipo === 'poucos') {
+          guia.diz(`📐 O texto tem só ${p.alvo} parágrafo(s). A estrutura dissertativa clássica tem <b>introdução</b> (tema e tese), <b>dois desenvolvimentos</b> (um argumento cada, com dados ou exemplos) e <b>conclusão</b> (retomada e proposta).<br><small>Por quê? Separar as ideias em parágrafos ajuda o leitor a seguir o raciocínio.</small>`, { tipo: 'dica', chave: 'sug' });
+        } else {
+          const P = p.alvo, falta = Object.entries({ agente: 'quem vai agir (governo, escola, família…)', acao: 'o que deve ser feito (deve, cabe a…)', meio: 'como (por meio de…)', fim: 'para quê (a fim de…)' }).filter(([k]) => !P[k]).map(([, t]) => t);
+          guia.diz(`🧩 Na conclusão, falta${falta.length > 1 ? 'm' : ''}: <b>${falta.join('</b>; <b>')}</b>. Modelo: <i>“Portanto, cabe ao Ministério da Educação, por meio de formações para professores, orientar o uso do celular, a fim de que ele favoreça a aprendizagem.”</i>`, { tipo: 'dica', chave: 'sug' });
+        }
+      }
+      sugerir.k = 0;
+      guia.contexto = () => ({ texto: area.value.slice(0, 4000), paragrafos: A.pars.length, frases: A.nFr, mediaPalavras: A.media, conectivos: A.total, repetidas: A.repetidas.slice(0, 8), proposta: A.proposta, principal: resumo() });
+      atualizar(true);
+    },
+  });
+  </script>
+</body>
+</html>
