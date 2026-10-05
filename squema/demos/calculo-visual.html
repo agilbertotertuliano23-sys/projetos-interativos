@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cálculo Visual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/esquadro.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>.formula { font: 700 14px/1.6 var(--fonte-mono); background: var(--nevoa); border: 2px solid var(--linha); border-radius: 12px; padding: 8px 10px; margin-top: 10px; }</style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const FUNCOES = {
+    quad: { nome: 'x²', f: (x) => x * x, df: (x) => 2 * x, F: (x) => x ** 3 / 3, dom: [-3, 3], dLei: "f'(x) = 2x", ab: [0, 2] },
+    cub: { nome: 'x³ − 3x', f: (x) => x ** 3 - 3 * x, df: (x) => 3 * x * x - 3, F: (x) => x ** 4 / 4 - 1.5 * x * x, dom: [-2.6, 2.6], dLei: "f'(x) = 3x² − 3", ab: [-1.5, 2] },
+    sen: { nome: 'sen x', f: Math.sin, df: Math.cos, F: (x) => -Math.cos(x), dom: [-6.3, 6.3], dLei: "f'(x) = cos x", ab: [0, Math.PI] },
+    exp: { nome: 'e^(x/2)', f: (x) => Math.exp(x / 2), df: (x) => Math.exp(x / 2) / 2, F: (x) => 2 * Math.exp(x / 2), dom: [-4, 4], dLei: "f'(x) = ½·e^(x/2)", ab: [0, 2] },
+    pi: { nome: '4 / (1 + x²)', f: (x) => 4 / (1 + x * x), df: (x) => (-8 * x) / (1 + x * x) ** 2, F: (x) => 4 * Math.atan(x), dom: [-3, 3], dLei: "f'(x) = −8x / (1 + x²)²", ab: [0, 1] },
+  };
+  const n = (v, k = 3) => SQ.num(Math.abs(v) < 1e-10 ? 0 : v, k);
+
+  SQ.demo('calculo-visual', {
+    fundo: 'papel',
+    dica: 'Arraste o ponto P pela curva',
+    sala: ['Peça que a turma desenhe f′ no caderno só olhando a inclinação da tangente; depois revele o gráfico de baixo.', 'Na secante, diminua h e anote a inclinação: que número ela está “perseguindo”?', 'Com 4/(1+x²) de 0 a 1, aumente n e veja a soma se aproximar de π. Por que funciona?'],
+    comoIA: 'O guia acompanha o ponto da tangente, o valor de h e o número de retângulos. Ele comenta cada transformação — inclinação positiva ou negativa, pontos críticos, secante virando tangente, erro da soma de Riemann caindo — e uma IA conectada pode responder às conjecturas que o aluno escrever.',
+    guia: {
+      ola: 'Arraste o ponto <b>P</b>: a reta verde é a <b>tangente</b> e sua inclinação é a <b>derivada</b>. Embaixo, cada posição deixa um rastro — você está desenhando f′! Depois troque para <b>Integral</b>.',
+      perguntas: [
+        { p: 'O que é a derivada?', chaves: ['derivada', 'inclinacao', 'taxa'], r: 'A derivada f′(x₀) é a <b>inclinação da reta tangente</b> em x₀ — a taxa de variação instantânea. Formalmente: o limite da inclinação da secante, [f(x₀+h) − f(x₀)]/h, quando h → 0.' },
+        { p: 'Como acho máximos e mínimos?', chaves: ['maximo', 'minimo', 'critico', 'zero'], r: 'Nos pontos de máximo ou mínimo (suaves) a tangente fica <b>horizontal</b>: f′(x) = 0. Se f′ passa de + para −, é máximo; de − para +, mínimo.' },
+        { p: 'O que é a integral?', chaves: ['integral', 'area', 'riemann'], r: 'A integral definida de a até b é a <b>área com sinal</b> entre a curva e o eixo x. Somamos retângulos cada vez mais finos: o limite dessas somas (Riemann) é a integral.' },
+        { p: 'Por que a área pode ser negativa?', chaves: ['negativa', 'abaixo', 'sinal'], r: 'Onde a curva fica <b>abaixo do eixo x</b>, f(x) < 0 e cada retângulo entra com sinal negativo (vermelho). A integral soma as partes com sinal: elas podem até se cancelar!' },
+        { p: 'Qual a ligação entre derivada e integral?', chaves: ['ligacao', 'teorema', 'fundamental', 'primitiva'], r: 'O <b>Teorema Fundamental do Cálculo</b>: se F′ = f, então ∫ₐᵇ f(x)dx = F(b) − F(a). Derivar e integrar são operações inversas.' },
+        { p: 'Como está agora?', chaves: ['agora', 'estado', 'resum'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { fn: 'cub', modo: 'derivada', x0: -1.8, h: 1, secante: false, revelar: false, a: -1.5, b: 2, N: 4, metodo: 'meio', rastro: [], historico: [] };
+      let anim = null;
+      const F = () => FUNCOES[E.fn];
+      const vSup = SQ.vista({ x0: -3, x1: 3, y0: -3, y1: 3 }, { x: 0, y: 0, w: 1, h: 1 });
+      const vInf = SQ.vista({ x0: -3, x1: 3, y0: -3, y1: 3 }, { x: 0, y: 0, w: 1, h: 1 });
+
+      function faixa(f, x0, x1) {
+        let lo = Infinity, hi = -Infinity;
+        for (let i = 0; i <= 300; i++) { const y = f(x0 + ((x1 - x0) * i) / 300); if (Number.isFinite(y)) { lo = Math.min(lo, y); hi = Math.max(hi, y); } }
+        lo = Math.min(lo, 0); hi = Math.max(hi, 0); const pad = (hi - lo) * 0.14 || 1;
+        return [lo - pad, hi + pad];
+      }
+      function ajustarVistas() {
+        const { w, h } = tela, fx = F(), [x0, x1] = fx.dom, hs = Math.round(h * 0.6);
+        vSup.area = { x: 12, y: 12, w: w - 24, h: hs - 18 };
+        vInf.area = { x: 12, y: hs + 8, w: w - 24, h: h - hs - 20 };
+        const [y0, y1] = faixa(fx.f, x0, x1);
+        vSup.dom = { x0, x1, y0, y1 };
+        if (E.modo === 'derivada') { const [a, b] = faixa(fx.df, x0, x1); vInf.dom = { x0, x1, y0: a, y1: b }; }
+        else { const ex = exata(); E.historico = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => [k, soma(2 ** k)]); const lo = Math.min(...E.historico.map((p) => p[1]), ex), hi = Math.max(...E.historico.map((p) => p[1]), ex), pad = (hi - lo) * 0.15 + 0.05; vInf.dom = { x0: -0.3, x1: 7.4, y0: lo - pad, y1: hi + pad }; }
+      }
+      const exata = () => F().F(E.b) - F().F(E.a);
+      function soma(N = E.N) {
+        const f = F().f, dx = (E.b - E.a) / N; let s = 0;
+        for (let i = 0; i < N; i++) {
+          const xa = E.a + i * dx;
+          s += E.metodo === 'trapezio' ? ((f(xa) + f(xa + dx)) / 2) * dx : f(E.metodo === 'esquerda' ? xa : E.metodo === 'direita' ? xa + dx : xa + dx / 2) * dx;
+        }
+        return s;
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        ajustarVistas();
+        const fx = F();
+        d.eixos(ctx, vSup, { fundo: '#FBFCFF', nomeY: 'f(x)' });
+        if (E.modo === 'derivada') desenharDerivada(ctx, fx); else desenharIntegral(ctx, fx);
+      }
+      function desenharDerivada(ctx, fx) {
+        vSup.curva(ctx, fx.f, { cor: C.azul, esp: 4 });
+        const x0 = E.x0, y0 = fx.f(x0), m = fx.df(x0);
+        const corT = Math.abs(m) < 0.05 ? C.laranja : m > 0 ? C.verde : C.vermelho;
+        // secante
+        if (E.secante) {
+          const x1 = x0 + E.h, y1 = fx.f(x1), ms = (y1 - y0) / E.h;
+          vSup.curva(ctx, (x) => y0 + ms * (x - x0), { cor: C.roxo, esp: 2.5, tracejado: [8, 6] });
+          ctx.setLineDash([3, 4]); ctx.strokeStyle = C.roxo; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(vSup.X(x0), vSup.Y(y0)); ctx.lineTo(vSup.X(x1), vSup.Y(y0)); ctx.lineTo(vSup.X(x1), vSup.Y(y1)); ctx.stroke(); ctx.setLineDash([]);
+          d.bola(ctx, vSup.X(x1), vSup.Y(y1), 7, C.roxo);
+          d.texto(ctx, 'Q', vSup.X(x1) + 10, vSup.Y(y1) - 8, { tam: 13, contorno: '#fff' });
+          d.etiqueta(ctx, `secante: ${n(ms, 3)}`, vSup.X(x1) + (E.h > 0 ? 56 : -56), vSup.Y(y1) + 22, { cor: '#EFE4FF', tam: 11 });
+        }
+        vSup.curva(ctx, (x) => y0 + m * (x - x0), { cor: corT, esp: 3, x0: x0 - (fx.dom[1] - fx.dom[0]) * 0.22, x1: x0 + (fx.dom[1] - fx.dom[0]) * 0.22 });
+        d.bola(ctx, vSup.X(x0), vSup.Y(y0), 10, C.amarelo);
+        d.texto(ctx, 'P', vSup.X(x0) - 20, vSup.Y(y0) - 10, { tam: 14, contorno: '#fff' });
+        d.etiqueta(ctx, `f′(${n(x0, 2)}) = ${n(m, 2)}`, vSup.X(x0), vSup.Y(y0) - 30, { cor: Math.abs(m) < 0.05 ? '#FFE9C7' : m > 0 ? '#DDF7E1' : '#FFE1E3', tam: 12 });
+        // gráfico da derivada
+        d.eixos(ctx, vInf, { fundo: '#FFFFFF', nomeY: "f′(x)", alvoY: 4 });
+        if (E.revelar) vInf.curva(ctx, fx.df, { cor: '#9AA8D6', esp: 2.5, tracejado: [6, 6] });
+        for (const [x, y] of E.rastro) { ctx.fillStyle = y > 0.05 ? C.verde : y < -0.05 ? C.vermelho : C.laranja; ctx.beginPath(); ctx.arc(vInf.X(x), vInf.Y(y), 3.2, 0, Math.PI * 2); ctx.fill(); }
+        d.bola(ctx, vInf.X(x0), vInf.Y(m), 8, C.amarelo);
+        ctx.setLineDash([3, 5]); ctx.strokeStyle = C.suave; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(vSup.X(x0), vSup.Y(y0)); ctx.lineTo(vInf.X(x0), vInf.Y(m)); ctx.stroke(); ctx.setLineDash([]);
+      }
+      function desenharIntegral(ctx, fx) {
+        const f = fx.f, dx = (E.b - E.a) / E.N;
+        for (let i = 0; i < E.N; i++) {
+          const xa = E.a + i * dx, xb = xa + dx;
+          ctx.beginPath();
+          if (E.metodo === 'trapezio') { ctx.moveTo(vSup.X(xa), vSup.Y(0)); ctx.lineTo(vSup.X(xa), vSup.Y(f(xa))); ctx.lineTo(vSup.X(xb), vSup.Y(f(xb))); ctx.lineTo(vSup.X(xb), vSup.Y(0)); ctx.closePath(); }
+          else { const y = f(E.metodo === 'esquerda' ? xa : E.metodo === 'direita' ? xb : xa + dx / 2); ctx.rect(vSup.X(xa), Math.min(vSup.Y(0), vSup.Y(y)), vSup.X(xb) - vSup.X(xa), Math.abs(vSup.Y(y) - vSup.Y(0))); }
+          const yRef = E.metodo === 'trapezio' ? (f(xa) + f(xb)) / 2 : f(E.metodo === 'esquerda' ? xa : E.metodo === 'direita' ? xb : xa + dx / 2);
+          ctx.fillStyle = yRef >= 0 ? 'rgba(43,180,245,.45)' : 'rgba(238,59,69,.4)'; ctx.fill();
+          ctx.strokeStyle = C.tinta; ctx.lineWidth = E.N > 60 ? 0.6 : 1.6; ctx.stroke();
+        }
+        vSup.curva(ctx, f, { cor: C.azul, esp: 4 });
+        for (const [x, rot] of [[E.a, 'a'], [E.b, 'b']]) { ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(vSup.X(x), vSup.area.y); ctx.lineTo(vSup.X(x), vSup.area.y + vSup.area.h); ctx.setLineDash([6, 5]); ctx.stroke(); ctx.setLineDash([]); d.etiqueta(ctx, `${rot} = ${n(x, 2)}`, vSup.X(x), vSup.area.y + 18, { cor: C.amarelo, tam: 11 }); }
+        // convergência das somas
+        d.eixos(ctx, vInf, { fundo: '#FFFFFF', nomeX: 'log₂ n', nomeY: 'soma', alvoY: 4, eixoNaBorda: true, fmtX: (t) => (Number.isInteger(t) ? String(2 ** t) : '') });
+        const ex = exata(); ctx.setLineDash([6, 5]); ctx.strokeStyle = C.verdeEscuro; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(vInf.area.x, vInf.Y(ex)); ctx.lineTo(vInf.area.x + vInf.area.w, vInf.Y(ex)); ctx.stroke(); ctx.setLineDash([]);
+        d.texto(ctx, `exata = ${n(ex, 4)}`, vInf.area.x + vInf.area.w - 8, vInf.Y(ex) - 6, { tam: 12, alinhar: 'right', cor: C.verdeEscuro, contorno: '#fff' });
+        const pts = E.historico;
+        ctx.strokeStyle = C.azul; ctx.lineWidth = 2; ctx.beginPath(); pts.forEach(([k, s], i) => (i ? ctx.lineTo(vInf.X(k), vInf.Y(s)) : ctx.moveTo(vInf.X(k), vInf.Y(s)))); ctx.stroke();
+        pts.forEach(([k, s]) => { ctx.fillStyle = C.celeste; ctx.beginPath(); ctx.arc(vInf.X(k), vInf.Y(s), 4, 0, Math.PI * 2); ctx.fill(); });
+        const kAtual = Math.log2(E.N); d.bola(ctx, vInf.X(kAtual), vInf.Y(soma()), 8, C.amarelo);
+      }
+
+      // ---------- painel ----------
+      const gF = ui.grupo('Função');
+      ui.select({ opcoes: Object.entries(FUNCOES).map(([k, v]) => ({ valor: k, rotulo: `f(x) = ${v.nome}` })), valor: E.fn, pai: gF, aoMudar: (v) => { E.fn = v; E.rastro = []; [E.a, E.b] = FUNCOES[v].ab; sA.valor = E.a; sB.valor = E.b; ajustarSliders(); pintar(); narrar(true); } });
+      ui.segmentado({ opcoes: [{ valor: 'derivada', rotulo: "f′ Derivada" }, { valor: 'integral', rotulo: '∫ Integral' }], valor: E.modo, pai: gF, aoMudar: (v) => { E.modo = v; gD.hidden = v !== 'derivada'; gI.hidden = v !== 'integral'; palco.querySelector('.palco-dica').classList.remove('sumida'); palco.querySelector('.palco-dica').textContent = v === 'derivada' ? 'Arraste o ponto P pela curva' : 'Arraste as linhas a e b'; pintar(); narrar(true); } });
+
+      const gD = ui.grupo('Reta tangente');
+      const sX = ui.slider({ rotulo: 'Ponto x₀', min: -3, max: 3, passo: 0.01, valor: E.x0, pai: gD, aoMudar: (v) => moverX(v) });
+      ui.alternar({ rotulo: 'Mostrar secante PQ', valor: false, pai: gD, aoMudar: (v) => { E.secante = v; sH.el.hidden = !v; pintar(); if (v) guia.diz('A secante passa por P e Q = (x₀ + h, f(x₀ + h)). Diminua <b>h</b> e veja a inclinação dela se aproximar da tangente: isso é o <b>limite</b> que define a derivada.', { chave: 'sec' }); } });
+      const sH = ui.slider({ rotulo: 'h (distância até Q)', min: -2, max: 2, passo: 0.01, valor: E.h, pai: gD, aoMudar: (v) => { E.h = Math.abs(v) < 0.01 ? 0.01 : v; pintar(); narrarSecante(); } }); sH.el.hidden = true;
+      ui.alternar({ rotulo: "Revelar o gráfico de f′", valor: false, pai: gD, aoMudar: (v) => { E.revelar = v; pintar(); } });
+      ui.linha(gD, ui.botao({ rotulo: '▶ Percorrer a curva', classe: 'pequeno', aoClicar: percorrer }), ui.botao({ rotulo: 'Limpar rastro', classe: 'branco pequeno', aoClicar: () => { E.rastro = []; pintar(); } }));
+      const leiD = ui.leituras([{ id: 'f', rotulo: 'f(x₀)' }, { id: 'm', rotulo: "f′(x₀) (tangente)", destaque: true }, { id: 's', rotulo: 'Inclinação da secante' }, { id: 'c', rotulo: 'Comportamento' }], gD);
+      const formD = SQ.el('div', { class: 'formula' }); gD.append(formD);
+
+      const gI = ui.grupo('Soma de Riemann'); gI.hidden = true;
+      const sA = ui.slider({ rotulo: 'Início a', min: -6, max: 6, passo: 0.05, valor: E.a, pai: gI, aoMudar: (v) => { E.a = Math.min(v, E.b - 0.1); pintar(); narrarSoma(); } });
+      const sB = ui.slider({ rotulo: 'Fim b', min: -6, max: 6, passo: 0.05, valor: E.b, pai: gI, aoMudar: (v) => { E.b = Math.max(v, E.a + 0.1); pintar(); narrarSoma(); } });
+      const sN = ui.slider({ rotulo: 'Retângulos (n)', min: 0, max: 7, passo: 1, valor: 2, pai: gI, formatar: (k) => String(2 ** k), aoMudar: (k) => { E.N = 2 ** k; pintar(); narrarSoma(); } });
+      ui.segmentado({ rotulo: 'Altura do retângulo', opcoes: [{ valor: 'esquerda', rotulo: 'Esquerda' }, { valor: 'meio', rotulo: 'Ponto médio' }, { valor: 'direita', rotulo: 'Direita' }, { valor: 'trapezio', rotulo: 'Trapézio' }], valor: E.metodo, pai: gI, aoMudar: (v) => { E.metodo = v; pintar(); narrarSoma(); } });
+      ui.linha(gI, ui.botao({ rotulo: '▶ Afinar retângulos', classe: 'pequeno', aoClicar: afinar }));
+      const leiI = ui.leituras([{ id: 'S', rotulo: 'Soma (n retângulos)', destaque: true }, { id: 'I', rotulo: 'Integral exata' }, { id: 'e', rotulo: 'Erro' }, { id: 'dx', rotulo: 'Largura Δx' }], gI);
+      const formI = SQ.el('div', { class: 'formula' }); gI.append(formI);
+
+      function ajustarSliders() { const [a, b] = FUNCOES[E.fn].dom; for (const s of [sX, sA, sB]) { s.input.min = a; s.input.max = b; } E.x0 = Math.max(a, Math.min(b, E.x0)); sX.valor = E.x0; sA.valor = E.a; sB.valor = E.b; }
+      function moverX(v) {
+        const ant = F().df(E.x0); E.x0 = v; sX.valor = v; const m = F().df(v);
+        E.rastro.push([v, m]); if (E.rastro.length > 1500) E.rastro.shift();
+        if (Math.sign(ant) !== Math.sign(m) && Math.abs(ant) > 1e-3) guia.diz(`📍 Ponto crítico perto de x = ${n(v, 2)}: a tangente ficou horizontal (f′ = 0) e f′ passou de ${ant > 0 ? '+ para −' : '− para +'} → ${ant > 0 ? '<b>máximo</b> local' : '<b>mínimo</b> local'}.`, { tipo: 'sucesso', chave: 'crit' });
+        pintar(); narrar();
+      }
+      let tN = 0;
+      function narrar(forcar) {
+        clearTimeout(tN);
+        tN = setTimeout(() => {
+          const fx = F();
+          if (E.modo === 'derivada') { const m = fx.df(E.x0); guia.diz(`Em x₀ = ${n(E.x0, 2)} a tangente tem inclinação <b>${n(m, 2)}</b>: f está ${Math.abs(m) < 0.05 ? '<b>parada</b> (ponto crítico)' : m > 0 ? '<b>crescendo</b>' : '<b>decrescendo</b>'}${Math.abs(m) > 2 ? ', e bem rápido' : ''}.`, { chave: 'est' }); }
+          else if (forcar) narrarSoma();
+        }, forcar ? 0 : 350);
+      }
+      let tS = 0;
+      function narrarSecante() { clearTimeout(tS); tS = setTimeout(() => { const fx = F(), ms = (fx.f(E.x0 + E.h) - fx.f(E.x0)) / E.h, m = fx.df(E.x0); guia.diz(`Com h = ${n(E.h, 2)}, a secante tem inclinação ${n(ms, 3)}; a tangente, ${n(m, 3)}. Diferença: ${n(Math.abs(ms - m), 3)}. ${Math.abs(E.h) < 0.1 ? 'Quase iguais — no limite h → 0 elas coincidem.' : 'Diminua h!'}`, { chave: 'sec' }); }, 300); }
+      function narrarSoma() { clearTimeout(tS); tS = setTimeout(() => { const s = soma(), ex = exata(); guia.diz(`Com ${E.N} retângulo${E.N > 1 ? 's' : ''} (${E.metodo === 'meio' ? 'ponto médio' : E.metodo}), a soma é ${n(s, 4)}; a integral exata é ${n(ex, 4)}. Erro de ${n(Math.abs(s - ex), 4)}.${E.fn === 'pi' && Math.abs(E.a) < 0.01 && Math.abs(E.b - 1) < 0.01 ? ' Curiosidade: esta integral vale exatamente <b>π</b>!' : ''}${E.a < 0 && F().f(E.a) * F().f(E.b) < 0 ? ' Repare nos retângulos vermelhos: área abaixo do eixo conta negativo.' : ''}`, { chave: 'int' }); }, 280); }
+      function percorrer() {
+        if (anim) return;
+        const [a, b] = F().dom; let x = a; E.rastro = [];
+        anim = SQ.loop((dt) => { x += dt * (b - a) / 5; if (x >= b) { x = b; anim.parar(); anim = null; guia.diz('Pronto! Os pontos de baixo formam o gráfico de <b>f′</b>. Ligue “Revelar” para conferir com a fórmula.', { chave: 'est' }); } moverX(x); }).iniciar();
+      }
+      function afinar() {
+        if (anim) return;
+        let k = 0, t = 0; E.N = 1; sN.valor = 0; pintar();
+        anim = SQ.loop((dt) => { t += dt; if (t > 0.7) { t = 0; k++; E.N = 2 ** k; sN.valor = k; pintar(); if (k >= 7) { anim.parar(); anim = null; narrarSoma(); } } }).iniciar();
+      }
+      function pintar() {
+        const fx = F();
+        if (E.modo === 'derivada') {
+          const m = fx.df(E.x0), ms = (fx.f(E.x0 + E.h) - fx.f(E.x0)) / E.h;
+          leiD.set('f', n(fx.f(E.x0), 3)); leiD.set('m', n(m, 3)); leiD.set('s', E.secante ? n(ms, 3) : '—'); leiD.set('c', Math.abs(m) < 0.05 ? 'crítico' : m > 0 ? 'crescente' : 'decrescente');
+          formD.innerHTML = `f(x) = ${fx.nome}<br>${fx.dLei}<br>${E.secante ? `[f(x₀+h) − f(x₀)] / h = ${n(ms, 3)}` : 'tangente: y = f(x₀) + f′(x₀)(x − x₀)'}`;
+        } else {
+          const s = soma(), ex = exata();
+          leiI.set('S', n(s, 4)); leiI.set('I', n(ex, 4)); leiI.set('e', n(Math.abs(s - ex), 4)); leiI.set('dx', n((E.b - E.a) / E.N, 4));
+          formI.innerHTML = `Σ f(xᵢ)·Δx com n = ${E.N}<br>∫ de ${n(E.a, 2)} a ${n(E.b, 2)} de ${fx.nome} dx = F(b) − F(a)`;
+        }
+        tela && tela.redesenhar();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let arrasto = null;
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          if (E.modo === 'derivada') { if (vSup.dentro(p.x, p.y) || vInf.dentro(p.x, p.y)) { arrasto = 'x0'; moverX(Math.max(F().dom[0], Math.min(F().dom[1], vSup.ix(p.x)))); return true; } return false; }
+          const da = Math.abs(p.x - vSup.X(E.a)), db = Math.abs(p.x - vSup.X(E.b));
+          if (Math.min(da, db) < 24 && vSup.dentro(p.x, p.y)) { arrasto = da < db ? 'a' : 'b'; return true; }
+          return false;
+        },
+        mover(p) {
+          const x = Math.max(F().dom[0], Math.min(F().dom[1], vSup.ix(p.x)));
+          if (arrasto === 'x0') moverX(Math.round(x * 100) / 100);
+          else if (arrasto === 'a') { E.a = Math.min(Math.round(x * 20) / 20, E.b - 0.1); sA.valor = E.a; pintar(); narrarSoma(); }
+          else if (arrasto === 'b') { E.b = Math.max(Math.round(x * 20) / 20, E.a + 0.1); sB.valor = E.b; pintar(); narrarSoma(); }
+        },
+        fim() { arrasto = null; },
+        hover(p) { tela.canvas.style.cursor = E.modo === 'derivada' ? (vSup.dentro(p.x, p.y) ? 'ew-resize' : '') : Math.min(Math.abs(p.x - vSup.X(E.a)), Math.abs(p.x - vSup.X(E.b))) < 24 ? 'ew-resize' : ''; },
+      });
+      guia.contexto = () => {
+        const fx = F(), m = fx.df(E.x0);
+        return { funcao: fx.nome, modo: E.modo, x0: E.x0, derivada: m, h: E.h, a: E.a, b: E.b, n: E.N, metodo: E.metodo, soma: soma(), exata: exata(),
+          resumo: E.modo === 'derivada' ? `f(x) = ${fx.nome}; em x₀ = ${n(E.x0, 2)}, f′(x₀) = ${n(m, 3)} (${Math.abs(m) < 0.05 ? 'ponto crítico' : m > 0 ? 'crescente' : 'decrescente'}).` : `Soma com ${E.N} retângulos = ${n(soma(), 4)}; integral exata de ${n(E.a, 2)} a ${n(E.b, 2)} = ${n(exata(), 4)}.` };
+      };
+      ajustarSliders(); E.rastro = []; pintar(); narrar(true);
+    },
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratório de Mecânica — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/atomo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const GRAV = { terra: { nome: 'Terra', g: 9.8 }, marte: { nome: 'Marte', g: 3.7 }, lua: { nome: 'Lua', g: 1.6 } };
+  const RAD = Math.PI / 180;
+
+  SQ.demo('mecanica', {
+    fundo: 'ceu',
+    dica: 'Clique no chão para marcar sua previsão antes de lançar',
+    sala: ['Antes de lançar, cada aluno marca no chão onde acha que a bola cai; depois comparem as previsões.', 'Lance com 30° e 60° na mesma velocidade: por que o alcance é igual?', 'Nas colisões, peça que calculem a velocidade final com a conservação do momento e confiram no trilho.'],
+    comoIA: 'O guia recebe ângulo, velocidade, gravidade, a previsão marcada pelo aluno e o resultado do lançamento (ou as massas e velocidades da colisão). Ele compara previsão e resultado, aponta qual grandeza explica a diferença e sugere o próximo experimento.',
+    guia: {
+      ola: 'Bem-vindo ao laboratório! Marque no chão onde acha que a bola vai cair e clique em <b>Lançar</b>. Depois troque para <b>Colisões</b> e brinque com massas e velocidades.',
+      perguntas: [
+        { p: 'Qual ângulo dá o maior alcance?', chaves: ['angulo', 'maior', 'alcance', '45'], r: 'Saindo do chão e sem resistência do ar, <b>45°</b>: o alcance é R = v²·sen(2θ)/g, e sen(2θ) é máximo quando 2θ = 90°. Ângulos complementares (30° e 60°) dão o <b>mesmo alcance</b>.' },
+        { p: 'Por que a velocidade horizontal não muda?', chaves: ['horizontal', 'vx', 'constante', 'muda'], r: 'Sem resistência do ar, nenhuma força age na horizontal — só o peso, que é vertical. Por isso <b>vx = v·cos θ</b> fica constante e só <b>vy</b> diminui (sobe), zera (no topo) e cresce para baixo.' },
+        { p: 'A massa muda a trajetória?', chaves: ['massa', 'pesado', 'leve'], r: 'Não! A aceleração da gravidade é a mesma para qualquer massa (Galileu). Sem ar, uma bola de chumbo e uma de isopor lançadas igual fazem a mesma parábola.' },
+        { p: 'O que se conserva numa colisão?', chaves: ['conserva', 'colisao', 'momento', 'quantidade'], r: 'O <b>momento linear total</b> (p = m·v) se conserva em qualquer colisão do trilho, porque as forças entre os carrinhos são internas. A <b>energia cinética</b> só se conserva quando a colisão é elástica (e = 1).' },
+        { p: 'O que é o coeficiente de restituição?', chaves: ['restituicao', 'coeficiente', 'elastica', 'inelastica'], r: '<b>e</b> = velocidade de afastamento ÷ velocidade de aproximação. e = 1: elástica (quicam sem perder energia). e = 0: perfeitamente inelástica (grudam). Entre os dois, parte da energia vira calor, som e deformação.' },
+        { p: 'Como foi minha previsão?', chaves: ['previsao', 'acertei', 'errei'], r: (c) => c.previsao == null ? 'Você ainda não marcou previsão. Clique no chão antes de lançar!' : c.ultimo ? `Você marcou ${SQ.num(c.previsao, 1)} m e a bola caiu em ${SQ.num(c.ultimo, 1)} m — diferença de ${SQ.num(Math.abs(c.previsao - c.ultimo), 1)} m.` : 'Previsão marcada: agora é só lançar.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let modo = 'lancamento';
+      const L = { ang: 45, v: 20, h0: 0, g: 'terra', voando: false, t: 0, rastros: [], previsao: null, ultimo: null, vel: 1, verPrevista: false };
+      const K = { m1: 2, m2: 2, v1: 6, v2: -2, e: 1, xa: 4, xb: 14, va: 6, vb: -2, rodando: false, colidiu: false, antes: null };
+
+      const hud = SQ.el('div', { class: 'palco-hud' }); palco.append(hud);
+      const hudInfo = SQ.el('div', { class: 'hud-caixa' }); hud.append(hudInfo);
+
+      // ---------- física do lançamento ----------
+      const g = () => GRAV[L.g].g;
+      function trajetoria(ang = L.ang, v = L.v, h0 = L.h0, gg = g()) {
+        const vx = v * Math.cos(ang * RAD), vy = v * Math.sin(ang * RAD);
+        const T = (vy + Math.sqrt(vy * vy + 2 * gg * h0)) / gg;
+        return { vx, vy, T, R: vx * T, H: h0 + (vy * vy) / (2 * gg), tTopo: vy / gg, g: gg, h0 };
+      }
+      const pontoEm = (tr, t) => ({ x: tr.vx * t, y: tr.h0 + tr.vy * t - (tr.g * t * t) / 2 });
+
+      function escala() {
+        const tr = trajetoria();
+        let W = Math.max(tr.R, 20), H = Math.max(tr.H, 10);
+        for (const r of L.rastros) { W = Math.max(W, r.tr.R); H = Math.max(H, r.tr.H); }
+        if (L.previsao) W = Math.max(W, L.previsao);
+        W *= 1.12; H *= 1.25;
+        const s = Math.min((tela.w - 100) / W, (tela.h - 150) / H);
+        return { s, x0: 64, y0: tela.h - 84 };
+      }
+      function passoBonito(alcance) { const p = 10 ** Math.floor(Math.log10(alcance / 5)); return [1, 2, 5, 10].map((k) => k * p).find((k) => alcance / k <= 8) || p * 10; }
+
+      function desenharLancamento() {
+        const { ctx, w, h } = tela, { s, x0, y0 } = escala();
+        const X = (m) => x0 + m * s, Y = (m) => y0 - m * s;
+        // chão e régua
+        ctx.fillStyle = L.g === 'lua' ? '#C9CEDB' : L.g === 'marte' ? '#E9A47A' : '#8FD694';
+        ctx.fillRect(0, y0, w, h - y0);
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(w, y0); ctx.stroke();
+        const passo = passoBonito((w - x0) / s);
+        for (let m = 0; X(m) < w - 10; m += passo) {
+          ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(m), y0); ctx.lineTo(X(m), y0 + 8); ctx.stroke();
+          d.texto(ctx, `${SQ.num(m)} m`, X(m), y0 + 24, { tam: 12, alinhar: 'center', cor: C.tinta });
+        }
+        // plataforma
+        if (L.h0 > 0) { d.bloco(ctx, x0 - 34, Y(L.h0), 50, L.h0 * s, { cor: '#C98B4E', r: 6, alt: 0 }); }
+        // rastros anteriores
+        L.rastros.forEach((r, i) => {
+          ctx.setLineDash([6, 6]); ctx.lineWidth = 2.5; ctx.strokeStyle = ['#8B3DFF', '#19B8A6', '#FF6B8A'][i % 3]; ctx.beginPath();
+          for (let k = 0; k <= 60; k++) { const p = pontoEm(r.tr, (r.tr.T * k) / 60); k ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y)); }
+          ctx.stroke(); ctx.setLineDash([]);
+          d.etiqueta(ctx, `${r.ang}° · ${r.v} m/s → ${SQ.num(r.tr.R, 1)} m`, X(r.tr.R), y0 - 34 - i * 26, { tam: 11, cor: '#fff' });
+        });
+        const tr = trajetoria();
+        if (L.verPrevista && !L.voando) {
+          ctx.setLineDash([3, 6]); ctx.lineWidth = 2; ctx.strokeStyle = C.azul; ctx.beginPath();
+          for (let k = 0; k <= 60; k++) { const p = pontoEm(tr, (tr.T * k) / 60); k ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y)); }
+          ctx.stroke(); ctx.setLineDash([]);
+        }
+        // previsão do aluno
+        if (L.previsao != null) {
+          const px = X(L.previsao);
+          ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(px, y0); ctx.lineTo(px, y0 - 40); ctx.stroke();
+          ctx.fillStyle = C.amarelo; ctx.beginPath(); ctx.moveTo(px, y0 - 40); ctx.lineTo(px + 22, y0 - 33); ctx.lineTo(px, y0 - 26); ctx.closePath(); ctx.fill(); ctx.stroke();
+          d.texto(ctx, 'previsão', px + 4, y0 - 46, { tam: 11 });
+        }
+        // canhão
+        ctx.save(); ctx.translate(X(0), Y(L.h0)); ctx.rotate(-L.ang * RAD);
+        d.bloco(ctx, -8, -11, 56, 22, { cor: C.azul, r: 8, alt: 0 }); ctx.restore();
+        d.bola(ctx, X(0), Y(L.h0), 16, C.azulEscuro);
+        // bola e vetores
+        const t = L.voando ? L.t : L.ultimo != null ? tr.T : 0;
+        const p = pontoEm(tr, Math.min(t, tr.T));
+        if (L.voando || L.ultimo != null) {
+          ctx.strokeStyle = C.laranja; ctx.lineWidth = 3; ctx.beginPath();
+          for (let k = 0; k <= 80; k++) { const q = pontoEm(tr, (Math.min(t, tr.T) * k) / 80); k ? ctx.lineTo(X(q.x), Y(q.y)) : ctx.moveTo(X(q.x), Y(q.y)); }
+          ctx.stroke();
+        }
+        const vy = tr.vy - tr.g * Math.min(t, tr.T);
+        const kv = Math.min(4, 90 / L.v);
+        const bx = X(p.x), by = Y(p.y);
+        if (L.voando || L.ultimo == null) {
+          ctx.setLineDash([5, 4]);
+          d.seta(ctx, bx, by, bx + tr.vx * kv, by, C.verdeEscuro, 3, 10);
+          d.seta(ctx, bx, by, bx, by - vy * kv, C.vermelho, 3, 10);
+          ctx.setLineDash([]);
+          d.seta(ctx, bx, by, bx + tr.vx * kv, by - vy * kv, C.tinta, 4, 12);
+          d.texto(ctx, `vx = ${SQ.numFixo(tr.vx)} m/s`, bx + tr.vx * kv + 8, by + 16, { tam: 12, cor: C.verdeEscuro, contorno: '#fff' });
+          d.texto(ctx, `vy = ${SQ.numFixo(vy)} m/s`, bx + 8, by - vy * kv - 6, { tam: 12, cor: C.vermelho, contorno: '#fff' });
+        }
+        d.bola(ctx, bx, by, 11, C.laranja);
+        if (L.voando && Math.abs(t - tr.tTopo) < 0.06 * Math.max(1, L.vel) && tr.vy > 0) d.etiqueta(ctx, 'topo: vy = 0', bx, by - 30, { cor: C.amarelo });
+        hudInfo.innerHTML = `${GRAV[L.g].nome} · g = ${SQ.num(tr.g, 1)} m/s²${L.vel > 1.05 ? ` · tempo ×${SQ.num(L.vel, 1)}` : ''}`;
+      }
+
+      // ---------- colisões ----------
+      const TRILHO = 20;
+      const largura = (m) => 1.1 + Math.sqrt(m) * 0.55;
+      function desenharColisao() {
+        const { ctx, w, h } = tela;
+        const s = (w - 80) / TRILHO, x0 = 40, yT = h * 0.62;
+        const X = (m) => x0 + m * s;
+        d.bloco(ctx, x0 - 10, yT, TRILHO * s + 20, 18, { cor: '#B9C6E8', r: 6 });
+        for (let m = 0; m <= TRILHO; m += 2) d.texto(ctx, `${m}`, X(m), yT + 40, { tam: 11, alinhar: 'center', cor: C.suave });
+        const carro = (x, m, v, cor, nome) => {
+          const lw = largura(m) * s, alt = 34 + m * 3;
+          d.bloco(ctx, X(x) - lw / 2, yT - alt - 10, lw, alt, { cor, r: 10 });
+          d.bola(ctx, X(x) - lw / 3, yT - 8, 9, C.tinta, { brilho: false, esp: 0 });
+          d.bola(ctx, X(x) + lw / 3, yT - 8, 9, C.tinta, { brilho: false, esp: 0 });
+          d.texto(ctx, `${nome} · ${m} kg`, X(x), yT - alt / 2 - 6, { tam: 13, alinhar: 'center', base: 'middle', cor: '#fff', contorno: C.tinta, esp: 3 });
+          if (Math.abs(v) > 0.01) d.seta(ctx, X(x), yT - alt - 26, X(x) + v * 14, yT - alt - 26, C.tinta, 4, 12);
+          d.texto(ctx, `${SQ.numFixo(v)} m/s`, X(x), yT - alt - 40, { tam: 13, alinhar: 'center', contorno: '#fff' });
+        };
+        carro(K.xa, K.m1, K.va, C.azul, 'A'); carro(K.xb, K.m2, K.vb, C.laranja, 'B');
+        const p = K.m1 * K.va + K.m2 * K.vb, E = 0.5 * K.m1 * K.va ** 2 + 0.5 * K.m2 * K.vb ** 2;
+        // barras de momento e energia
+        const barra = (rot, val, max, y, cor) => {
+          d.texto(ctx, rot, 24, y + 13, { tam: 12 });
+          const bw = Math.min(1, Math.abs(val) / max) * (w * 0.32);
+          d.bloco(ctx, 150, y, Math.max(4, bw), 18, { cor, r: 6, alt: 0, esp: 2 });
+          d.texto(ctx, SQ.numFixo(val), 160 + bw, y + 14, { tam: 12 });
+        };
+        barra('Momento total', p, Math.max(Math.abs(K.antes ? K.antes.p : p), 1), 64, C.celeste);
+        barra('Energia cinética', E, Math.max(K.antes ? K.antes.E : E, 1), 92, C.amarelo);
+        hudInfo.innerHTML = K.colidiu ? `Depois do choque · e = ${SQ.num(K.e, 2)}` : K.rodando ? 'Em movimento…' : 'Ajuste e clique em Colidir';
+      }
+
+      function desenhar() {
+        tela.ctx.clearRect(0, 0, tela.w, tela.h);
+        modo === 'lancamento' ? desenharLancamento() : desenharColisao();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+
+      // ---------- interação: previsão no chão ----------
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          if (modo !== 'lancamento' || L.voando) return false;
+          const { s, x0, y0 } = escala();
+          if (p.y < y0 - 60) return false;
+          L.previsao = Math.max(0, (p.x - x0) / s); L.prevFeita = null; L.ultimo = null; tela.redesenhar();
+          guia.diz(`Previsão marcada em <b>${SQ.num(L.previsao, 1)} m</b>. Agora lance!`, { chave: 'prev' });
+          return false;
+        },
+      });
+
+      // ---------- painel ----------
+      const gModo = ui.grupo('Experimento');
+      ui.segmentado({ opcoes: [{ valor: 'lancamento', rotulo: '🎯 Lançamento' }, { valor: 'colisao', rotulo: '🚃 Colisões' }], valor: modo, pai: gModo, aoMudar: (v) => { modo = v; gL.hidden = v !== 'lancamento'; gK.hidden = v !== 'colisao'; palco.querySelector('.palco-dica').classList.remove('sumida'); palco.querySelector('.palco-dica').textContent = v === 'lancamento' ? 'Clique no chão para marcar sua previsão antes de lançar' : 'Escolha massas e velocidades e clique em Colidir'; tela.redesenhar(); } });
+
+      const gL = ui.grupo('Lançamento oblíquo');
+      ui.slider({ rotulo: 'Ângulo (θ)', min: 5, max: 85, valor: L.ang, unidade: '°', pai: gL, aoMudar: (v) => { L.ang = v; L.ultimo = null; tela.redesenhar(); pintarL(); } });
+      ui.slider({ rotulo: 'Velocidade inicial', min: 5, max: 30, valor: L.v, unidade: 'm/s', pai: gL, aoMudar: (v) => { L.v = v; L.ultimo = null; tela.redesenhar(); pintarL(); } });
+      ui.slider({ rotulo: 'Altura de lançamento', min: 0, max: 20, valor: L.h0, unidade: 'm', pai: gL, aoMudar: (v) => { L.h0 = v; L.ultimo = null; tela.redesenhar(); pintarL(); } });
+      ui.segmentado({ rotulo: 'Gravidade', opcoes: Object.entries(GRAV).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: L.g, pai: gL, aoMudar: (v) => { L.g = v; L.ultimo = null; tela.redesenhar(); pintarL(); guia.diz(`Na ${GRAV[v].nome === 'Terra' ? 'Terra' : GRAV[v].nome}, g = ${SQ.num(GRAV[v].g, 1)} m/s². Com a mesma velocidade, o alcance fica ${SQ.num(9.8 / GRAV[v].g, 1)}× o da Terra.`, { chave: 'g' }); } });
+      ui.alternar({ rotulo: 'Mostrar trajetória prevista', valor: false, pai: gL, aoMudar: (v) => { L.verPrevista = v; tela.redesenhar(); } });
+      ui.linha(gL,
+        ui.botao({ rotulo: '🚀 Lançar', classe: 'pequeno', aoClicar: lancar }),
+        ui.botao({ rotulo: 'Limpar rastros', classe: 'branco pequeno', aoClicar: () => { L.rastros = []; L.previsao = null; L.ultimo = null; tela.redesenhar(); } }));
+      const leiL = ui.leituras([{ id: 'R', rotulo: 'Alcance', destaque: true }, { id: 'H', rotulo: 'Altura máxima' }, { id: 'T', rotulo: 'Tempo de voo' }, { id: 'c', rotulo: 'vx · vy iniciais' }], gL);
+      function pintarL() {
+        const tr = trajetoria();
+        leiL.set('R', L.ultimo != null ? `${SQ.num(tr.R, 1)} m` : '?'); leiL.set('H', `${SQ.num(tr.H, 1)} m`); leiL.set('T', `${SQ.num(tr.T, 2)} s`);
+        leiL.set('c', `${SQ.num(tr.vx, 1)} · ${SQ.num(tr.vy, 1)}`);
+      }
+
+      const gK = ui.grupo('Colisões no trilho'); gK.hidden = true;
+      const sl = (rot, k, min, max, passo, un) => ui.slider({ rotulo: rot, min, max, passo, valor: K[k], unidade: un, pai: gK, aoMudar: (v) => { K[k] = v; reiniciarK(); } });
+      sl('Massa de A', 'm1', 1, 10, 1, 'kg'); sl('Velocidade de A', 'v1', -10, 10, 1, 'm/s');
+      sl('Massa de B', 'm2', 1, 10, 1, 'kg'); sl('Velocidade de B', 'v2', -10, 10, 1, 'm/s');
+      ui.slider({ rotulo: 'Restituição (e)', min: 0, max: 1, passo: 0.05, valor: K.e, pai: gK, formatar: (v) => `${SQ.num(v, 2)} ${v === 1 ? '(elástica)' : v === 0 ? '(grudam)' : ''}`, aoMudar: (v) => { K.e = v; reiniciarK(); } });
+      const prev = ui.select({ rotulo: 'Sua previsão: depois do choque, A…', opcoes: [{ valor: '', rotulo: '— escolha —' }, { valor: 'frente', rotulo: 'continua para a direita' }, { valor: 'para', rotulo: 'para' }, { valor: 'volta', rotulo: 'volta para a esquerda' }], valor: '', pai: gK });
+      ui.linha(gK, ui.botao({ rotulo: '💥 Colidir', classe: 'pequeno', aoClicar: () => { reiniciarK(); K.rodando = true; K.antes = { p: K.m1 * K.v1 + K.m2 * K.v2, E: 0.5 * K.m1 * K.v1 ** 2 + 0.5 * K.m2 * K.v2 ** 2 }; laco.iniciar(); } }),
+        ui.botao({ rotulo: 'Reiniciar', classe: 'branco pequeno', aoClicar: reiniciarK }));
+      const leiK = ui.leituras([{ id: 'pa', rotulo: 'p antes (kg·m/s)' }, { id: 'pd', rotulo: 'p depois', destaque: true }, { id: 'ea', rotulo: 'Ec antes (J)' }, { id: 'ed', rotulo: 'Ec depois' }], gK);
+      function reiniciarK() {
+        Object.assign(K, { xa: 4, xb: 14, va: K.v1, vb: K.v2, rodando: false, colidiu: false, antes: null });
+        leiK.set('pa', SQ.numFixo(K.m1 * K.v1 + K.m2 * K.v2)); leiK.set('ea', SQ.numFixo(0.5 * K.m1 * K.v1 ** 2 + 0.5 * K.m2 * K.v2 ** 2)); leiK.set('pd', '?'); leiK.set('ed', '?');
+        tela.redesenhar();
+      }
+
+      function lancar() {
+        if (L.voando) return;
+        const tr = trajetoria(); L.voando = true; L.t = 0; L.ultimo = null; L.vel = Math.max(1, tr.T / 3.2);
+        laco.iniciar();
+      }
+      function aterrissou() {
+        const tr = trajetoria(); L.voando = false; L.ultimo = tr.R;
+        L.rastros.unshift({ ang: L.ang, v: L.v, tr }); L.rastros = L.rastros.slice(0, 3);
+        pintarL();
+        let t = `Alcance: <b>${SQ.num(tr.R, 1)} m</b>, altura máxima ${SQ.num(tr.H, 1)} m, voo de ${SQ.num(tr.T, 2)} s.`;
+        if (L.previsao != null) {
+          const erro = Math.abs(L.previsao - tr.R), rel = erro / tr.R;
+          t += rel < 0.08 ? ` 🎯 Sua previsão (${SQ.num(L.previsao, 1)} m) foi certeira!` : ` Sua previsão foi ${SQ.num(L.previsao, 1)} m: ${L.previsao > tr.R ? 'passou' : 'ficou curta'} por ${SQ.num(erro, 1)} m.`;
+        }
+        const outro = L.rastros.find((r, i) => i > 0 && r.v === L.v && Math.abs(r.ang + L.ang - 90) < 0.5 && L.h0 === 0);
+        if (outro) t += ` Repare: ${outro.ang}° e ${L.ang}° são complementares e dão o <b>mesmo alcance</b>.`;
+        else if (L.ang !== 45 && L.h0 === 0) t += ` Experimente ${90 - L.ang}° com a mesma velocidade.`;
+        guia.diz(t, { tipo: L.previsao != null && Math.abs(L.previsao - tr.R) / tr.R < 0.08 ? 'sucesso' : '', chave: 'res' });
+        L.prevFeita = L.previsao; L.previsao = null;
+      }
+
+      function colidir() {
+        const { m1, m2, e } = K, u1 = K.va, u2 = K.vb, M = m1 + m2;
+        K.va = (m1 * u1 + m2 * u2 + m2 * e * (u2 - u1)) / M;
+        K.vb = (m1 * u1 + m2 * u2 + m1 * e * (u1 - u2)) / M;
+        K.colidiu = true;
+        const pd = m1 * K.va + m2 * K.vb, Ed = 0.5 * m1 * K.va ** 2 + 0.5 * m2 * K.vb ** 2;
+        leiK.set('pd', SQ.numFixo(pd)); leiK.set('ed', SQ.numFixo(Ed));
+        const real = K.va > 0.05 ? 'frente' : K.va < -0.05 ? 'volta' : 'para';
+        const perda = K.antes.E > 0 ? (1 - Ed / K.antes.E) * 100 : 0;
+        let t = `Depois do choque: A a <b>${SQ.numFixo(K.va)} m/s</b> e B a <b>${SQ.numFixo(K.vb)} m/s</b>. O momento total continuou ${SQ.numFixo(pd)} kg·m/s. ${e === 1 ? 'Colisão elástica: a energia cinética também se conservou.' : `Foram dissipados ${SQ.num(perda, 0)}% da energia cinética.`}`;
+        if (prev.valor) t += prev.valor === real ? ' ✅ Sua previsão para A estava certa!' : ` Sua previsão para A não bateu: ele ${real === 'frente' ? 'continuou para a direita' : real === 'para' ? 'parou' : 'voltou'}.`;
+        if (m1 === m2 && e === 1) t += ' Massas iguais e choque elástico: os carrinhos <b>trocam de velocidade</b>!';
+        guia.diz(t, { tipo: prev.valor && prev.valor === real ? 'sucesso' : '', chave: 'col' });
+      }
+
+      const laco = SQ.loop((dt) => {
+        if (modo === 'lancamento' && L.voando) {
+          L.t += dt * L.vel;
+          if (L.t >= trajetoria().T) { L.t = trajetoria().T; aterrissou(); }
+        } else if (modo === 'colisao' && K.rodando) {
+          K.xa += K.va * dt; K.xb += K.vb * dt;
+          const ha = largura(K.m1) / 2, hb = largura(K.m2) / 2;
+          if (!K.colidiu && K.xb - K.xa <= ha + hb && K.va - K.vb > 0) { K.xa = K.xb - ha - hb; colidir(); }
+          if (K.xa - ha < 0 || K.xb + hb > TRILHO || K.xa + ha > TRILHO || K.xb - hb < 0) {
+            K.rodando = false;
+            if (!K.colidiu) guia.diz(K.va - K.vb <= 0 ? 'Os carrinhos não se encontraram: B estava mais rápido para a direita (ou A ia para a esquerda). Para colidir, a velocidade de A precisa ser maior que a de B.' : 'Fim do trilho.', { tipo: 'alerta', chave: 'col' });
+          }
+        }
+        tela.redesenhar();
+        if (!L.voando && !K.rodando) laco.parar();
+      });
+
+      guia.contexto = () => ({ modo, angulo: L.ang, velocidade: L.v, altura: L.h0, gravidade: g(), previsao: L.previsao ?? L.prevFeita ?? null, ultimo: L.ultimo, colisao: { m1: K.m1, m2: K.m2, v1: K.v1, v2: K.v2, e: K.e } });
+      pintarL(); reiniciarK();
+    },
+  });
+  </script>
+</body>
+</html>

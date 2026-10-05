@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Funções Visuais — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/esquadro.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .lei-funcao { font: 800 20px/1.3 var(--fonte-mono); color: var(--tinta); background: var(--nevoa); border: 2px solid var(--linha); border-radius: 12px; padding: 8px 12px; margin-bottom: 12px; overflow-wrap: anywhere; }
+    .lei-funcao .p { color: var(--azul); }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const PI = Math.PI;
+  const FAMILIAS = {
+    afim: { nome: 'Afim', lei: 'f(x) = a·x + b', params: { a: [-5, 5, 0.1, 1.5], b: [-10, 10, 0.5, 2] },
+      f: ({ a, b }) => (x) => a * x + b },
+    quadratica: { nome: 'Quadrática', lei: 'f(x) = a·x² + b·x + c', params: { a: [-3, 3, 0.1, 1], b: [-6, 6, 0.5, -2], c: [-10, 10, 0.5, -3] },
+      f: ({ a, b, c }) => (x) => a * x * x + b * x + c },
+    exponencial: { nome: 'Exponencial', lei: 'f(x) = a·bˣ + c', params: { a: [-5, 5, 0.1, 1], b: [0.1, 4, 0.05, 2], c: [-5, 5, 0.5, 0] },
+      f: ({ a, b, c }) => (x) => a * b ** x + c },
+    senoidal: { nome: 'Senoidal', lei: 'f(x) = a·sen(b·x + c) + d', params: { a: [-5, 5, 0.1, 2], b: [0.1, 4, 0.05, 1], c: [-3.14, 3.14, 0.02, 0], d: [-5, 5, 0.5, 0] },
+      f: ({ a, b, c, d }) => (x) => a * Math.sin(b * x + c) + d },
+  };
+  const n = (v, k = 2) => SQ.num(Math.abs(v) < 1e-9 ? 0 : v, k);
+  const sinal = (v) => (v < 0 ? `− ${n(-v)}` : `+ ${n(v)}`);
+
+  function analisar(fam, p) {
+    const out = [];
+    if (fam === 'afim') {
+      out.push(['Inclinação', n(p.a)], ['Intercepto y', `(0; ${n(p.b)})`]);
+      out.push(['Raiz', p.a ? `x = ${n(-p.b / p.a)}` : p.b ? 'não tem' : 'todo x']);
+      out.push(['Comportamento', p.a > 0 ? 'crescente' : p.a < 0 ? 'decrescente' : 'constante']);
+    } else if (fam === 'quadratica') {
+      if (!p.a) return analisar('afim', { a: p.b, b: p.c });
+      const D = p.b * p.b - 4 * p.a * p.c, xv = -p.b / (2 * p.a), yv = -D / (4 * p.a);
+      out.push(['Δ (discriminante)', n(D)], ['Vértice', `(${n(xv)}; ${n(yv)})`]);
+      out.push(['Raízes', D < 0 ? 'não reais' : D === 0 ? `x = ${n(xv)}` : `x = ${n((-p.b - Math.sqrt(D)) / (2 * p.a))} e ${n((-p.b + Math.sqrt(D)) / (2 * p.a))}`]);
+      out.push(['Concavidade', p.a > 0 ? 'para cima (∪)' : 'para baixo (∩)']);
+    } else if (fam === 'exponencial') {
+      out.push(['Assíntota', `y = ${n(p.c)}`], ['Intercepto y', `(0; ${n(p.a + p.c)})`]);
+      const r = -p.c / p.a;
+      out.push(['Raiz', p.a && r > 0 && p.b !== 1 ? `x = ${n(Math.log(r) / Math.log(p.b))}` : 'não tem']);
+      out.push(['Comportamento', !p.a || p.b === 1 ? 'constante' : (p.a > 0) === (p.b > 1) ? 'crescente' : 'decrescente']);
+    } else {
+      out.push(['Amplitude', n(Math.abs(p.a))], ['Período', `${n((2 * PI) / p.b)} (2π/b)`]);
+      out.push(['Deslocamento', `${n(-p.c / p.b)} na horizontal`], ['Imagem', `[${n(p.d - Math.abs(p.a))}; ${n(p.d + Math.abs(p.a))}]`]);
+    }
+    return out;
+  }
+
+  function explicar(fam, k, p, ant) {
+    const sobe = p[k] > ant[k];
+    const T = {
+      afim: { a: () => p.a === 0 ? 'Com a = 0 a reta fica <b>horizontal</b>: a função é constante.' : `<b>a</b> é a inclinação: a cada 1 unidade em x, f(x) ${p.a > 0 ? 'sobe' : 'desce'} ${n(Math.abs(p.a))}. ${Math.abs(p.a) > Math.abs(ant.a) ? 'A reta ficou mais íngreme.' : 'A reta ficou mais deitada.'}`,
+        b: () => `<b>b</b> é o coeficiente linear: a reta ${sobe ? 'subiu' : 'desceu'} inteira e agora corta o eixo y em ${n(p.b)}. A inclinação não mudou.` },
+      quadratica: { a: () => p.a === 0 ? 'Com a = 0 o termo x² some e o gráfico vira uma <b>reta</b> — deixa de ser quadrática!' : `<b>a</b> controla abertura e concavidade: |a| ${Math.abs(p.a) > Math.abs(ant.a) ? 'maior → parábola mais fechada' : 'menor → parábola mais aberta'}${Math.sign(p.a) !== Math.sign(ant.a) ? ', e a concavidade virou!' : '.'}`,
+        b: () => `<b>b</b> desloca o vértice ao longo de outra parábola (repare no fantasma): o vértice foi para x = ${n(-p.b / (2 * p.a))}. O ponto (0; c) não se mexe.`,
+        c: () => `<b>c</b> é onde a parábola corta o eixo y: o gráfico inteiro ${sobe ? 'subiu' : 'desceu'}. Isso muda o Δ e pode criar ou sumir com raízes.` },
+      exponencial: { a: () => `<b>a</b> estica a curva na vertical${p.a < 0 ? ' e, negativo, a espelha em relação à assíntota' : ''}. O intercepto passou a ${n(p.a + p.c)}.`,
+        b: () => p.b === 1 ? 'Com b = 1, 1ˣ = 1 sempre: a função vira constante.' : `<b>b</b> é a base: ${p.b > 1 ? `b > 1 → crescimento${p.b > ant.b ? ' mais rápido' : ' mais lento'}` : 'b entre 0 e 1 → decaimento (como meia-vida)'}.`,
+        c: () => `<b>c</b> move a assíntota horizontal para y = ${n(p.c)}: a curva se aproxima dessa reta sem nunca tocá-la.` },
+      senoidal: { a: () => `<b>a</b> é a amplitude: as ondas agora vão de ${n(p.d - Math.abs(p.a))} a ${n(p.d + Math.abs(p.a))}${p.a < 0 ? ' (a negativo inverte a onda)' : ''}.`,
+        b: () => `<b>b</b> muda a frequência: período = 2π/b = ${n((2 * PI) / p.b)}. ${p.b > ant.b ? 'Ondas mais apertadas.' : 'Ondas mais espaçadas.'}`,
+        c: () => `<b>c</b> é a fase: a onda deslizou ${n(Math.abs((p.c - ant.c) / p.b))} para a ${(p.c - ant.c) > 0 ? 'esquerda' : 'direita'}. Forma e período não mudam.`,
+        d: () => `<b>d</b> desloca o eixo de equilíbrio para y = ${n(p.d)}: a onda inteira ${sobe ? 'subiu' : 'desceu'}.` },
+    };
+    return T[fam][k]();
+  }
+
+  SQ.demo('funcoes-visuais', {
+    fundo: 'papel',
+    dica: 'Arraste para mover o plano · role para aproximar',
+    sala: ['Peça que cada dupla preveja o efeito de um parâmetro antes de mexer, e confira com o fantasma tracejado.', 'Use o desafio dos pontos: quem acerta com menos movimentos explica a estratégia para a turma.', 'Compare uma afim e uma exponencial com o mesmo intercepto: quem cresce mais a longo prazo?'],
+    comoIA: 'O guia recebe a família, os parâmetros e o valor anterior de cada um. A cada mudança, explica o efeito daquele parâmetro no gráfico e recalcula raízes, vértice ou assíntota. Os desafios são gerados com parâmetros novos; uma IA conectada pode adaptar as explicações ao erro mais comum do aluno.',
+    guia: {
+      ola: 'Escolha uma família e arraste os parâmetros. A curva <b>tracejada</b> é o fantasma de antes da mudança — compare e leia minha explicação!',
+      perguntas: [
+        { p: 'O que é uma raiz?', chaves: ['raiz', 'zero', 'raizes'], r: 'É o valor de x em que <b>f(x) = 0</b>: onde o gráfico cruza o eixo x. Os pontos verdes marcam as raízes.' },
+        { p: 'Para que serve o Δ?', chaves: ['delta', 'discriminante', 'bhaskara'], r: 'Na quadrática, <b>Δ = b² − 4ac</b> diz quantas raízes reais existem: Δ > 0 → duas, Δ = 0 → uma (vértice no eixo x), Δ < 0 → nenhuma.' },
+        { p: 'Afim × exponencial: qual cresce mais?', chaves: ['afim', 'exponencial', 'cresce', 'comparar'], r: 'A afim cresce sempre o <b>mesmo valor</b> a cada passo (soma). A exponencial cresce o <b>mesmo fator</b> (multiplica): no começo pode parecer lenta, mas sempre ultrapassa qualquer reta.' },
+        { p: 'O que é período?', chaves: ['periodo', 'onda', 'repete'], r: 'É o tamanho de um ciclo completo da senoide: <b>T = 2π/b</b>. Se b = 2, a onda se repete a cada π ≈ 3,14.' },
+        { p: 'Resuma minha função', chaves: ['resum', 'minha', 'funcao'], r: (c) => `Lei: <b>${c.lei}</b>. ${c.analise.map(([k, v]) => `${k}: ${v}`).join(' · ')}.` },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let fam = 'quadratica', P = {}, fantasma = null, ultimoParam = null, ultimoTempo = 0, mouse = null, alvo = null;
+      const vista = SQ.vista({ x0: -8, x1: 8, y0: -6, y1: 6 }, { x: 0, y: 0, w: 10, h: 10 });
+
+      const fn = () => FAMILIAS[fam].f(P);
+      function enquadrar() {
+        const r = vista.area.w / vista.area.h, alturaY = (vista.dom.y1 - vista.dom.y0), cy = (vista.dom.y0 + vista.dom.y1) / 2, cx = (vista.dom.x0 + vista.dom.x1) / 2;
+        const lx = (alturaY * r) / 2; vista.dom.x0 = cx - lx; vista.dom.x1 = cx + lx; void cy;
+      }
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const novaArea = { x: 12, y: 12, w: w - 24, h: h - 24 };
+        if (novaArea.w !== vista.area.w || novaArea.h !== vista.area.h) { vista.area = novaArea; enquadrar(); }
+        d.eixos(ctx, vista, { fundo: '#FBFCFF' });
+        if (fantasma) vista.curva(ctx, FAMILIAS[fantasma.fam].f(fantasma.P), { cor: '#9AA8D6', esp: 2.5, tracejado: [8, 7] });
+        if (alvo) for (const [x, y] of alvo.pontos) { d.bola(ctx, vista.X(x), vista.Y(y), 9, C.amarelo); d.texto(ctx, `(${n(x)}; ${n(y)})`, vista.X(x) + 12, vista.Y(y) - 10, { tam: 12, contorno: '#fff' }); }
+        const f = fn();
+        vista.curva(ctx, f, { cor: C.azul, esp: 4 });
+        // pontos notáveis
+        const ponto = (x, y, cor, rot) => { if (!Number.isFinite(x) || !Number.isFinite(y)) return; const px = vista.X(x), py = vista.Y(y); if (!vista.dentro(px, py)) return; d.bola(ctx, px, py, 7, cor); if (rot) d.texto(ctx, rot, px + 10, py + (y >= 0 ? -10 : 18), { tam: 12, cor: C.tinta, contorno: '#fff' }); };
+        if (Math.abs(f(0)) > 1e-6) ponto(0, f(0), C.roxo, `(0; ${n(f(0))})`);
+        raizes(f).forEach((x) => ponto(x, 0, C.verde, `x = ${n(x)}`));
+        if (fam === 'quadratica' && P.a) { const xv = -P.b / (2 * P.a); ponto(xv, f(xv), C.laranja, 'vértice'); }
+        if (fam === 'exponencial') { ctx.setLineDash([4, 6]); ctx.strokeStyle = C.vermelho; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(vista.area.x, vista.Y(P.c)); ctx.lineTo(vista.area.x + vista.area.w, vista.Y(P.c)); ctx.stroke(); ctx.setLineDash([]); d.texto(ctx, `assíntota y = ${n(P.c)}`, vista.area.x + 10, vista.Y(P.c) - 6, { tam: 12, cor: C.vermelho, contorno: '#fff' }); }
+        if (fam === 'senoidal') { ctx.setLineDash([4, 6]); ctx.strokeStyle = C.laranja; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(vista.area.x, vista.Y(P.d)); ctx.lineTo(vista.area.x + vista.area.w, vista.Y(P.d)); ctx.stroke(); ctx.setLineDash([]); const x0 = -P.c / P.b, T = (2 * PI) / P.b; const yb = vista.Y(P.d - Math.abs(P.a)) + 18; if (vista.dentro(vista.X(x0), yb - 18) || true) { d.seta(ctx, vista.X(x0), yb, vista.X(x0 + T), yb, C.laranja, 2.5, 8); d.texto(ctx, `período ${n(T)}`, (vista.X(x0) + vista.X(x0 + T)) / 2, yb + 16, { tam: 12, alinhar: 'center', cor: C.laranja, contorno: '#fff' }); } }
+        if (mouse && vista.dentro(mouse.x, mouse.y)) {
+          const x = vista.ix(mouse.x), y = f(x);
+          if (Number.isFinite(y)) { const py = vista.Y(y); ctx.setLineDash([3, 4]); ctx.strokeStyle = C.suave; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(mouse.x, vista.Y(0)); ctx.lineTo(mouse.x, py); ctx.stroke(); ctx.setLineDash([]); d.bola(ctx, mouse.x, py, 6, C.celeste); d.etiqueta(ctx, `f(${n(x)}) = ${n(y)}`, mouse.x, py - 22, { tam: 12 }); }
+        }
+      }
+      function raizes(f) {
+        const out = [], { x0, x1 } = vista.dom, N = 800; let ant = f(x0);
+        for (let i = 1; i <= N; i++) {
+          const x = x0 + ((x1 - x0) * i) / N, y = f(x);
+          if (Number.isFinite(y) && Number.isFinite(ant) && Math.sign(y) !== Math.sign(ant) && Math.abs(y - ant) < (vista.dom.y1 - vista.dom.y0)) {
+            let a = x - (x1 - x0) / N, b = x; for (let k = 0; k < 40; k++) { const m = (a + b) / 2; Math.sign(f(m)) === Math.sign(f(a)) ? (a = m) : (b = m); } out.push((a + b) / 2);
+          } else if (y === 0) out.push(x);
+          ant = y;
+          if (out.length > 12) break;
+        }
+        return out;
+      }
+
+      // ---------- painel ----------
+      const gF = ui.grupo('Família');
+      ui.segmentado({ opcoes: Object.entries(FAMILIAS).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: fam, pai: gF, aoMudar: (v) => trocarFamilia(v) });
+      const leiEl = SQ.el('div', { class: 'lei-funcao', 'aria-live': 'polite' }); gF.append(leiEl);
+      const caixaP = SQ.el('div'); gF.append(caixaP);
+      ui.linha(gF, ui.botao({ rotulo: '⌖ Centralizar', classe: 'branco pequeno', aoClicar: () => { vista.dom = { x0: -8, x1: 8, y0: -6, y1: 6 }; enquadrar(); tela.redesenhar(); } }),
+        ui.botao({ rotulo: 'Apagar fantasma', classe: 'branco pequeno', aoClicar: () => { fantasma = null; tela.redesenhar(); } }));
+      const gA = ui.grupo('Análise');
+      const leit = SQ.el('div', { class: 'leituras' }); gA.append(leit);
+      const gD = ui.grupo('Desafio dos pontos');
+      const caixaD = SQ.el('div', { class: 'desafio' }, 'Gere um desafio: ajuste os parâmetros até a curva passar pelos pontos amarelos.'); gD.append(caixaD);
+      ui.linha(gD, ui.botao({ rotulo: '🎯 Novo desafio', classe: 'pequeno', aoClicar: novoDesafio }), ui.botao({ rotulo: 'Mostrar resposta', classe: 'branco pequeno', aoClicar: () => { if (alvo) guia.diz(`Uma resposta: ${FAMILIAS[alvo.fam].lei.replace('f(x) = ', '')} com ${Object.entries(alvo.P).map(([k, v]) => `${k} = ${n(v)}`).join(', ')}.`, { tipo: 'dica', chave: 'des' }); } }));
+
+      const sliders = {};
+      function trocarFamilia(v, manterDesafio) {
+        fantasma = null; fam = v; P = {}; caixaP.innerHTML = '';
+        for (const [k, [mi, ma, pa, val]] of Object.entries(FAMILIAS[v].params)) {
+          P[k] = val;
+          sliders[k] = ui.slider({ rotulo: `Parâmetro ${k}`, min: mi, max: ma, passo: pa, valor: val, pai: caixaP, aoMudar: (x) => mudou(k, x) });
+        }
+        if (!manterDesafio) { alvo = null; caixaD.className = 'desafio'; caixaD.textContent = 'Gere um desafio: ajuste os parâmetros até a curva passar pelos pontos amarelos.'; }
+        pintar(); guia.diz(`Família <b>${FAMILIAS[v].nome}</b>: ${FAMILIAS[v].lei}. Mexa em um parâmetro de cada vez para isolar o efeito.`, { chave: 'exp' });
+      }
+      let tExp = 0;
+      function mudou(k, x) {
+        const agora = performance.now();
+        if (k !== ultimoParam || agora - ultimoTempo > 1200) { fantasma = { fam, P: { ...P } }; antes = { ...P }; }
+        ultimoParam = k; ultimoTempo = agora;
+        P[k] = x; pintar(); conferir();
+        clearTimeout(tExp); const a = antes; tExp = setTimeout(() => guia.diz(explicar(fam, k, P, a), { chave: 'exp' }), 280);
+      }
+      let antes = {};
+      function lei() {
+        const p = P, v = (x) => `<span class="p">${n(x)}</span>`;
+        if (fam === 'afim') return `f(x) = ${v(p.a)}x ${sinal(p.b).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}`;
+        if (fam === 'quadratica') return `f(x) = ${v(p.a)}x² ${sinal(p.b).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}x ${sinal(p.c).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}`;
+        if (fam === 'exponencial') return `f(x) = ${v(p.a)}·${v(p.b)}<sup>x</sup> ${sinal(p.c).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}`;
+        return `f(x) = ${v(p.a)}·sen(${v(p.b)}x ${sinal(p.c).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}) ${sinal(p.d).replace(/[\d,.]+/, (m) => `<span class="p">${m}</span>`)}`;
+      }
+      function pintar() {
+        leiEl.innerHTML = lei();
+        leit.innerHTML = analisar(fam, P).map(([k, v]) => `<div class="leitura"><small>${k}</small><b>${v}</b></div>`).join('');
+        tela && tela.redesenhar();
+      }
+      function novoDesafio() {
+        const r = (a, b, p = 1) => Math.round((a + Math.random() * (b - a)) / p) * p;
+        let Pa;
+        if (fam === 'afim') Pa = { a: r(-3, 3, 0.5) || 1, b: r(-6, 6, 1) };
+        else if (fam === 'quadratica') { const xv = r(-3, 3, 1), a = [-2, -1, -0.5, 0.5, 1, 2][Math.floor(Math.random() * 6)], yv = r(-4, 4, 1); Pa = { a, b: -2 * a * xv, c: a * xv * xv + yv }; }
+        else if (fam === 'exponencial') Pa = { a: [0.5, 1, 2, -1][Math.floor(Math.random() * 4)], b: [0.5, 1.5, 2, 3][Math.floor(Math.random() * 4)], c: r(-3, 3, 1) };
+        else Pa = { a: r(1, 4, 0.5), b: [0.5, 1, 2][Math.floor(Math.random() * 3)], c: 0, d: r(-2, 2, 1) };
+        const f = FAMILIAS[fam].f(Pa), xs = fam === 'senoidal' ? [0, PI / (2 * Pa.b), PI / Pa.b] : fam === 'exponencial' ? [-1, 0, 1] : [-2, 0, 2].map((k) => k + (fam === 'quadratica' ? -Pa.b / (2 * Pa.a) : 0));
+        alvo = { fam, P: Pa, pontos: xs.map((x) => [x, f(x)]) };
+        caixaD.className = 'desafio'; caixaD.innerHTML = `🎯 Faça a curva <b>${FAMILIAS[fam].nome.toLowerCase()}</b> passar pelos ${alvo.pontos.length} pontos amarelos.`;
+        guia.diz(fam === 'quadratica' ? 'Dica de estratégia: comece pelo <b>vértice</b> (ponto do meio) e depois ajuste a abertura com <b>a</b>.' : fam === 'afim' ? 'Dica: o ponto em x = 0 entrega o <b>b</b> de graça. Depois calcule a inclinação.' : fam === 'exponencial' ? 'Dica: em x = 0, f(0) = a + c. Compare f(1) e f(0) para descobrir a base.' : 'Dica: o ponto em x = 0 está no eixo de equilíbrio (d); a altura máxima dá a amplitude.', { tipo: 'dica', chave: 'des' });
+        tela.redesenhar();
+      }
+      function conferir() {
+        if (!alvo || alvo.fam !== fam || caixaD.classList.contains('ok')) return;
+        const f = fn(), tol = (vista.dom.y1 - vista.dom.y0) * 0.012 + 0.05;
+        if (alvo.pontos.every(([x, y]) => Math.abs(f(x) - y) < tol)) {
+          caixaD.className = 'desafio ok'; caixaD.innerHTML = `✅ A curva passa pelos ${alvo.pontos.length} pontos!`;
+          SQ.som(880, 0.15); setTimeout(() => SQ.som(1320, 0.2), 120);
+          guia.diz(`🎉 Acertou! ${lei().replace(/<[^>]+>/g, '')} passa por ${alvo.pontos.map(([x, y]) => `(${n(x)}; ${n(y)})`).join(', ')}.`, { tipo: 'sucesso', chave: 'des' });
+        }
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let ultimo = null;
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { ultimo = p; tela.canvas.style.cursor = 'grabbing'; return true; },
+        mover(p) { vista.arrastar(p.x - ultimo.x, p.y - ultimo.y); ultimo = p; mouse = null; tela.redesenhar(); },
+        fim() { tela.canvas.style.cursor = ''; pintar(); },
+        hover(p) { mouse = p; tela.redesenhar(); },
+      });
+      tela.canvas.addEventListener('pointerleave', () => { mouse = null; tela.redesenhar(); });
+      tela.canvas.addEventListener('wheel', (e) => { e.preventDefault(); const r = tela.canvas.getBoundingClientRect(); vista.zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); pintar(); }, { passive: false });
+      guia.contexto = () => ({ familia: FAMILIAS[fam].nome, lei: lei().replace(/<[^>]+>/g, ''), parametros: P, analise: analisar(fam, P), desafio: alvo && alvo.pontos });
+      trocarFamilia(fam);
+    },
+  });
+  </script>
+</body>
+</html>

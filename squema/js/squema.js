@@ -193,7 +193,11 @@
       { rotulo: area.nome, href: `${raiz}area.html?a=${area.id}` },
       { rotulo: s.nome }] });
     const palco = el('div', { class: 'palco', 'data-fundo': cfg.fundo || 'ceu', role: 'application', 'aria-label': `Cena interativa: ${s.nome}` });
-    if (cfg.dica) palco.append(el('div', { class: 'palco-dica' }, cfg.dica));
+    if (cfg.dica) {
+      const dica = el('div', { class: 'palco-dica' }, cfg.dica); palco.append(dica);
+      // a dica some na primeira interação com a cena (para não cobrir o conteúdo)
+      palco.addEventListener('pointerdown', () => setTimeout(() => dica.classList.add('sumida'), 1500), { once: true });
+    }
     const palcoBloco = el('div', { class: 'bloco palco-bloco' }, palco);
     const painel = el('aside', { class: 'painel', 'aria-label': 'Controles' });
     const btnTela = el('button', { class: 'botao branco pequeno', type: 'button', html: '⛶ Tela cheia' });
@@ -340,6 +344,75 @@
     },
   };
 
+  // ---------- gráficos (eixos cartesianos) ----------
+  // Passo "redondo" (1, 2 ou 5 × 10^n) para dividir um intervalo em ~alvo partes.
+  function passoBonito(intervalo, alvo = 8) {
+    const bruto = intervalo / alvo, p = 10 ** Math.floor(Math.log10(bruto || 1)), k = bruto / p;
+    return (k < 1.5 ? 1 : k < 3.5 ? 2 : k < 7.5 ? 5 : 10) * p;
+  }
+  // Vista: liga um retângulo da tela (area) a um domínio do mundo (dom).
+  function vista(dom, area) {
+    const v = {
+      dom: { ...dom }, area: { ...area },
+      X: (x) => v.area.x + ((x - v.dom.x0) / (v.dom.x1 - v.dom.x0)) * v.area.w,
+      Y: (y) => v.area.y + v.area.h - ((y - v.dom.y0) / (v.dom.y1 - v.dom.y0)) * v.area.h,
+      ix: (px) => v.dom.x0 + ((px - v.area.x) / v.area.w) * (v.dom.x1 - v.dom.x0),
+      iy: (py) => v.dom.y0 + ((v.area.y + v.area.h - py) / v.area.h) * (v.dom.y1 - v.dom.y0),
+      dentro: (px, py) => px >= v.area.x && px <= v.area.x + v.area.w && py >= v.area.y && py <= v.area.y + v.area.h,
+      // Zoom em torno de um ponto da tela (fator > 1 aproxima).
+      zoom(fator, px, py) {
+        const cx = v.ix(px), cy = v.iy(py);
+        v.dom = { x0: cx + (v.dom.x0 - cx) / fator, x1: cx + (v.dom.x1 - cx) / fator, y0: cy + (v.dom.y0 - cy) / fator, y1: cy + (v.dom.y1 - cy) / fator };
+      },
+      arrastar(dpx, dpy) {
+        const kx = (v.dom.x1 - v.dom.x0) / v.area.w, ky = (v.dom.y1 - v.dom.y0) / v.area.h;
+        v.dom.x0 -= dpx * kx; v.dom.x1 -= dpx * kx; v.dom.y0 += dpy * ky; v.dom.y1 += dpy * ky;
+      },
+      // Desenha y = f(x), quebrando a linha em descontinuidades e fora da área.
+      curva(ctx, f, { cor = CORES.azul, esp = 3.5, tracejado = null, x0 = v.dom.x0, x1 = v.dom.x1, passos = 600 } = {}) {
+        ctx.save(); ctx.beginPath(); ctx.rect(v.area.x, v.area.y, v.area.w, v.area.h); ctx.clip();
+        ctx.strokeStyle = cor; ctx.lineWidth = esp; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; if (tracejado) ctx.setLineDash(tracejado);
+        ctx.beginPath(); let ant = null;
+        const lim = (v.dom.y1 - v.dom.y0) * 4;
+        for (let i = 0; i <= passos; i++) {
+          const x = x0 + ((x1 - x0) * i) / passos, y = f(x);
+          const ok = Number.isFinite(y) && y > v.dom.y0 - lim && y < v.dom.y1 + lim;
+          if (ok && ant !== null && Math.abs(y - ant) < lim / 2) ctx.lineTo(v.X(x), v.Y(y)); else if (ok) ctx.moveTo(v.X(x), v.Y(y));
+          ant = ok ? y : null;
+        }
+        ctx.stroke(); ctx.restore();
+      },
+    };
+    return v;
+  }
+  function eixos(ctx, v, { grade = true, nomeX = 'x', nomeY = 'y', fmtX, fmtY, fundo = '#fff', corEixo = CORES.tinta, alvoX = 8, alvoY = 6, eixoNaBorda = false } = {}) {
+    const { x, y, w, h } = v.area, { x0, x1, y0, y1 } = v.dom;
+    ctx.save();
+    if (fundo) { ctx.fillStyle = fundo; ctx.fillRect(x, y, w, h); }
+    const px = passoBonito(x1 - x0, alvoX), py = passoBonito(y1 - y0, alvoY);
+    const fx = fmtX || ((t) => num(t, 3)), fy = fmtY || ((t) => num(t, 3));
+    ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+    if (grade) {
+      ctx.strokeStyle = '#E3EAFA'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let gx = Math.ceil(x0 / px) * px; gx <= x1; gx += px) { ctx.moveTo(Math.round(v.X(gx)) + 0.5, y); ctx.lineTo(Math.round(v.X(gx)) + 0.5, y + h); }
+      for (let gy = Math.ceil(y0 / py) * py; gy <= y1; gy += py) { ctx.moveTo(x, Math.round(v.Y(gy)) + 0.5); ctx.lineTo(x + w, Math.round(v.Y(gy)) + 0.5); }
+      ctx.stroke();
+    }
+    const ax = eixoNaBorda ? y + h : Math.min(y + h, Math.max(y, v.Y(0))), ay = eixoNaBorda ? x : Math.min(x + w, Math.max(x, v.X(0)));
+    ctx.strokeStyle = corEixo; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, ax); ctx.lineTo(x + w, ax); ctx.moveTo(ay, y); ctx.lineTo(ay, y + h); ctx.stroke();
+    ctx.font = '700 11px Nunito, "Segoe UI", system-ui, sans-serif'; ctx.fillStyle = CORES.suave;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let gx = Math.ceil(x0 / px) * px; gx <= x1; gx += px) { if (Math.abs(gx) < px / 1e6 && !eixoNaBorda) continue; const t = fx(Math.abs(gx) < px / 1e6 ? 0 : gx); ctx.fillText(t, v.X(gx), Math.min(y + h - 14, ax + 4)); }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let gy = Math.ceil(y0 / py) * py; gy <= y1; gy += py) { if (Math.abs(gy) < py / 1e6 && !eixoNaBorda) continue; const t = fy(Math.abs(gy) < py / 1e6 ? 0 : gy); ctx.fillText(t, Math.max(x + 30, ay - 5), v.Y(gy)); }
+    ctx.restore();
+    ctx.font = '800 12px Nunito, "Segoe UI", system-ui, sans-serif'; ctx.fillStyle = corEixo;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(nomeX, x + w - 4, ax - 4);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(nomeY, ay + 6, y + 4);
+    ctx.lineWidth = 2.5; ctx.strokeStyle = corEixo; d.rr(ctx, x, y, w, h, 10); ctx.stroke();
+  }
+  d.eixos = eixos;
+
   // Som curto sintetizado (sem arquivos de áudio).
   let audioCtx = null;
   function som(freq = 660, dur = 0.12, tipo = 'sine', vol = 0.08) {
@@ -360,6 +433,6 @@
 
   window.SQ = {
     raiz, dados: D, CORES, CONFIG, el, esc, num, numFixo, iconeArea, estrelas, maiuscula, semAcento, reduzMovimento,
-    moldura, ui, guia, demo, fluxoHTML, canvas2d, ponteiro, loop, d, som, falar,
+    moldura, ui, guia, demo, fluxoHTML, canvas2d, ponteiro, loop, d, som, falar, vista, passoBonito,
   };
 })();

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ondas — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/atomo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const PX_CM = 8, V_CM = 20; // escala da cuba e velocidade da onda (cm/s)
+
+  SQ.demo('ondas', {
+    fundo: 'noite',
+    dica: 'Arraste o detector (alvo amarelo) pela cuba',
+    sala: ['Ligue as linhas nodais e peça que meçam a diferença de caminho em dois pontos: quantos λ dá?', 'Dobre a frequência: o que acontece com o comprimento de onda? E com o número de linhas nodais?', 'Ligue o som e passeie com o detector: onde o som some? Relacione com fones com cancelamento de ruído.'],
+    comoIA: 'O guia recebe frequência, amplitude, distância entre as fontes, fase e a posição do detector, calcula λ = v/f e a diferença de caminho Δ = |r₁ − r₂| e traduz em palavras se ali a interferência é construtiva ou destrutiva. Uma IA conectada pode propor medições e conferir os cálculos do aluno.',
+    guia: {
+      ola: 'Duas fontes batem na água ao mesmo tempo. Onde as cristas se somam, a onda cresce; onde crista encontra vale, a água fica parada. Arraste o <b>detector</b> e ligue o <b>som</b>!',
+      perguntas: [
+        { p: 'Como f, λ e v se relacionam?', chaves: ['comprimento', 'frequencia', 'velocidade', 'lambda'], r: '<b>v = λ · f</b>. Na mesma cuba a velocidade não muda (depende do meio): se a frequência dobra, o comprimento de onda cai pela metade.' },
+        { p: 'O que é interferência destrutiva?', chaves: ['destrutiva', 'cancela', 'nodal', 'parada'], r: 'Quando a diferença de caminho é um número <b>meio-inteiro</b> de comprimentos de onda (½λ, 1½λ…), a crista de uma fonte chega junto com o vale da outra e elas se cancelam: são as <b>linhas nodais</b>.' },
+        { p: 'E a construtiva?', chaves: ['construtiva', 'soma', 'reforco'], r: 'Diferença de caminho igual a 0, 1λ, 2λ…: as ondas chegam em fase e as amplitudes se <b>somam</b>. Com fontes em oposição de fase, os papéis se invertem!' },
+        { p: 'O que muda com a amplitude?', chaves: ['amplitude', 'altura', 'volume', 'intensidade'], r: 'A amplitude é a "altura" da onda: no som, corresponde ao <b>volume</b> (intensidade). A frequência corresponde à <b>altura musical</b>: grave (baixa) ou aguda (alta).' },
+        { p: 'Como está o detector?', chaves: ['detector', 'aqui', 'ponto'], r: (c) => c.leitura },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { f: 2, A: 1, sep: 12, fonte2: true, oposicao: false, nodais: false, pausado: false, t: 0, det: null, som: false };
+      const hist = [];
+      const off = document.createElement('canvas'), octx = off.getContext('2d');
+      const CEL = 4, ALT_GRAF = 92;
+      let img = null;
+
+      const lambda = () => V_CM / E.f;
+      function fontes() {
+        const { w } = tela, hc = tela.h - ALT_GRAF, cx = w * 0.5, y = hc * 0.22, ds = (E.sep * PX_CM) / 2;
+        return E.fonte2 ? [[cx - ds, y, 0], [cx + ds, y, E.oposicao ? Math.PI : 0]] : [[cx, y, 0]];
+      }
+      function campo(x, y, fs, t) {
+        const k = (2 * Math.PI) / (lambda() * PX_CM), om = 2 * Math.PI * E.f;
+        let u = 0;
+        for (const [fx, fy, ph] of fs) { const r = Math.hypot(x - fx, y - fy); if (V_CM * PX_CM * t < r) continue; u += (E.A * Math.sin(k * r - om * t + ph)) / Math.sqrt(1 + r / 120); }
+        return u;
+      }
+      function infoPonto(x, y) {
+        const fs = fontes(); if (fs.length < 2) return { tipo: 'uma fonte', delta: 0, r1: Math.hypot(x - fs[0][0], y - fs[0][1]) / PX_CM };
+        const r1 = Math.hypot(x - fs[0][0], y - fs[0][1]) / PX_CM, r2 = Math.hypot(x - fs[1][0], y - fs[1][1]) / PX_CM;
+        const n = Math.abs(r1 - r2) / lambda() + (E.oposicao ? 0.5 : 0), frac = n - Math.floor(n);
+        const tipo = frac < 0.15 || frac > 0.85 ? 'construtiva' : Math.abs(frac - 0.5) < 0.15 ? 'destrutiva' : 'intermediária';
+        // amplitude resultante (fasores)
+        const k = (2 * Math.PI) / lambda(), a1 = 1 / Math.sqrt(1 + (r1 * PX_CM) / 120), a2 = 1 / Math.sqrt(1 + (r2 * PX_CM) / 120);
+        const ph2 = k * (r2 - r1) + (E.oposicao ? Math.PI : 0);
+        const amp = Math.hypot(a1 + a2 * Math.cos(ph2), a2 * Math.sin(ph2)) / (a1 + a2);
+        return { tipo, r1, r2, delta: Math.abs(r1 - r2), emLambda: Math.abs(r1 - r2) / lambda(), amp };
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const hc = h - ALT_GRAF, gw = Math.ceil(w / CEL), gh = Math.ceil(hc / CEL);
+        if (!img || img.width !== gw || img.height !== gh) { off.width = gw; off.height = gh; img = octx.createImageData(gw, gh); }
+        const fs = fontes(), px = img.data, lam = lambda() * PX_CM, amax = E.A * (fs.length === 2 ? 1.6 : 1);
+        for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+          const x = i * CEL + CEL / 2, y = j * CEL + CEL / 2;
+          let u = campo(x, y, fs, E.t) / amax; u = Math.max(-1, Math.min(1, u));
+          let r, g, b;
+          if (u >= 0) { r = 43 + (255 - 43) * u; g = 180 + (255 - 180) * u; b = 245 + 10 * u; } else { const k = -u; r = 43 + (11 - 43) * k; g = 180 + (29 - 180) * k; b = 245 + (99 - 245) * k; }
+          if (E.nodais && fs.length === 2) {
+            const dd = Math.abs(Math.hypot(x - fs[0][0], y - fs[0][1]) - Math.hypot(x - fs[1][0], y - fs[1][1])) / lam + (E.oposicao ? 0 : 0.5);
+            const fr = Math.abs(dd - Math.round(dd));
+            if (fr < 0.035) { r = 255; g = 194; b = 26; }
+          }
+          const o = (j * gw + i) * 4; px[o] = r; px[o + 1] = g; px[o + 2] = b; px[o + 3] = 255;
+        }
+        octx.putImageData(img, 0, 0);
+        ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, gw * CEL, gh * CEL);
+        // régua de λ
+        const yR = hc - 26, x0 = 20;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, yR); ctx.lineTo(x0 + lam, yR); ctx.moveTo(x0, yR - 6); ctx.lineTo(x0, yR + 6); ctx.moveTo(x0 + lam, yR - 6); ctx.lineTo(x0 + lam, yR + 6); ctx.stroke();
+        d.texto(ctx, `λ = ${SQ.num(lambda(), 1)} cm`, x0 + lam + 10, yR + 5, { tam: 13, cor: '#fff', contorno: C.tinta, esp: 3 });
+        // fontes
+        fs.forEach(([x, y], i) => { d.bola(ctx, x, y, 9, i ? C.rosa : C.laranja); d.texto(ctx, `F${i + 1}`, x, y - 16, { tam: 12, alinhar: 'center', cor: '#fff', contorno: C.tinta, esp: 3 }); });
+        // detector
+        const [dx, dy] = E.det;
+        const inf = infoPonto(dx, dy);
+        if (fs.length === 2) { ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2; ctx.beginPath(); fs.forEach(([x, y]) => { ctx.moveTo(x, y); ctx.lineTo(dx, dy); }); ctx.stroke(); ctx.setLineDash([]); }
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(dx, dy, 13, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = C.amarelo; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(dx, dy, 13, 0, Math.PI * 2); ctx.moveTo(dx - 19, dy); ctx.lineTo(dx + 19, dy); ctx.moveTo(dx, dy - 19); ctx.lineTo(dx, dy + 19); ctx.stroke();
+        if (fs.length === 2) d.etiqueta(ctx, `Δ = ${SQ.num(inf.emLambda, 2)} λ · ${inf.tipo}`, dx, dy + 34, { cor: inf.tipo === 'destrutiva' ? '#FFE1E3' : inf.tipo === 'construtiva' ? '#DDF7E1' : '#fff', tam: 11 });
+        // gráfico do detector
+        ctx.fillStyle = '#0B1438'; ctx.fillRect(0, hc, w, ALT_GRAF);
+        ctx.strokeStyle = 'rgba(191,216,255,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, hc + ALT_GRAF / 2); ctx.lineTo(w, hc + ALT_GRAF / 2); ctx.stroke();
+        d.texto(ctx, 'sinal no detector (últimos 3 s)', 12, hc + 18, { tam: 11, cor: '#BFD3FF' });
+        ctx.strokeStyle = C.amarelo; ctx.lineWidth = 2.5; ctx.beginPath();
+        hist.forEach((v, i) => { const x = w - (hist.length - i) * (w / 180), y = hc + ALT_GRAF / 2 - (v / (E.A * 2)) * (ALT_GRAF * 0.42); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+        ctx.stroke();
+      }
+
+      // ---------- som ----------
+      let ac = null, osc = null, ganho = null;
+      const fSom = () => 110 * E.f;
+      function ligarSom(v) {
+        E.som = v;
+        if (v) {
+          try {
+            ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+            osc = ac.createOscillator(); ganho = ac.createGain(); ganho.gain.value = 0; osc.frequency.value = fSom();
+            osc.connect(ganho).connect(ac.destination); osc.start(); ac.resume && ac.resume();
+            guia.diz(`🔊 Tocando ${SQ.num(fSom(), 0)} Hz (frequência da cuba × 110). O volume segue a amplitude no detector: encontre um ponto onde o som some!`, { chave: 'som' });
+          } catch (e) { guia.diz('Este navegador não liberou o áudio.', { tipo: 'alerta', chave: 'som' }); }
+        } else if (osc) { osc.stop(); osc.disconnect(); osc = null; }
+      }
+      function ajustarSom() {
+        if (!osc || !ac) return;
+        const inf = infoPonto(...E.det), amp = E.fonte2 ? inf.amp : 1;
+        osc.frequency.setTargetAtTime(fSom(), ac.currentTime, 0.05);
+        ganho.gain.setTargetAtTime(0.12 * E.A * amp * amp, ac.currentTime, 0.05);
+      }
+
+      // ---------- painel ----------
+      const gF = ui.grupo('Cuba de ondas');
+      ui.slider({ rotulo: 'Frequência', min: 0.5, max: 4, passo: 0.1, valor: E.f, unidade: 'Hz', pai: gF, aoMudar: (v) => { E.f = v; pintar(); narrarF(); } });
+      ui.slider({ rotulo: 'Amplitude', min: 0.2, max: 1, passo: 0.1, valor: E.A, pai: gF, aoMudar: (v) => { E.A = v; pintar(); } });
+      ui.slider({ rotulo: 'Distância entre as fontes', min: 4, max: 40, passo: 1, valor: E.sep, unidade: 'cm', pai: gF, aoMudar: (v) => { E.sep = v; E.t = Math.max(E.t, 8); pintar(); } });
+      ui.alternar({ rotulo: 'Segunda fonte ligada', valor: true, pai: gF, aoMudar: (v) => { E.fonte2 = v; E.t = 0; hist.length = 0; pintar(); guia.diz(v ? 'Duas fontes: agora aparece o padrão de interferência.' : 'Uma fonte só: ondas circulares, sem regiões de cancelamento.', { chave: 'fonte' }); } });
+      ui.alternar({ rotulo: 'Fontes em oposição de fase', valor: false, pai: gF, aoMudar: (v) => { E.oposicao = v; pintar(); guia.diz(v ? 'Em oposição de fase, onde antes era construtivo agora é destrutivo: a linha central vira <b>nodal</b>.' : 'Fontes em fase: a linha central (Δ = 0) é de interferência construtiva.', { chave: 'fase' }); } });
+      ui.alternar({ rotulo: 'Mostrar linhas nodais', valor: false, pai: gF, aoMudar: (v) => { E.nodais = v; } });
+      ui.alternar({ rotulo: '🔊 Ouvir no detector', valor: false, pai: gF, aoMudar: ligarSom });
+      ui.linha(gF, ui.botao({ rotulo: '⏯ Pausar', classe: 'branco pequeno', aoClicar: (e) => { E.pausado = !E.pausado; e.currentTarget.innerHTML = E.pausado ? '▶ Continuar' : '⏯ Pausar'; } }),
+        ui.botao({ rotulo: '↺ Reiniciar ondas', classe: 'branco pequeno', aoClicar: () => { E.t = 0; hist.length = 0; } }));
+      const lei = ui.leituras([{ id: 'lam', rotulo: 'Comprimento λ', destaque: true }, { id: 'v', rotulo: 'Velocidade v' }, { id: 'T', rotulo: 'Período T' }, { id: 'som', rotulo: 'Som equivalente' }, { id: 'r', rotulo: 'r₁ · r₂ (cm)' }, { id: 'dl', rotulo: 'Δ / λ' }], gF);
+      function pintar() {
+        lei.set('lam', `${SQ.num(lambda(), 1)} cm`); lei.set('v', `${V_CM} cm/s`); lei.set('T', `${SQ.num(1 / E.f, 2)} s`); lei.set('som', `${SQ.num(fSom(), 0)} Hz`);
+        if (!E.det) return;
+        const inf = infoPonto(...E.det);
+        lei.set('r', E.fonte2 ? `${SQ.num(inf.r1, 1)} · ${SQ.num(inf.r2, 1)}` : SQ.num(inf.r1, 1)); lei.set('dl', E.fonte2 ? `${SQ.num(inf.emLambda, 2)} → ${inf.tipo}` : '—');
+      }
+      let fT = 0;
+      function narrarF() { clearTimeout(fT); fT = setTimeout(() => guia.diz(`f = ${SQ.num(E.f, 1)} Hz → λ = v/f = ${V_CM}/${SQ.num(E.f, 1)} = <b>${SQ.num(lambda(), 1)} cm</b>. ${E.f > 2.5 ? 'Frequência alta: ondas curtas e mais linhas nodais.' : E.f < 1 ? 'Frequência baixa: ondas longas e poucas linhas nodais.' : ''}`, { chave: 'f' }), 250); }
+      let ultimoTipo = '';
+      function narrarDetector() {
+        const inf = infoPonto(...E.det);
+        if (!E.fonte2 || inf.tipo === ultimoTipo || inf.tipo === 'intermediária') return;
+        ultimoTipo = inf.tipo;
+        guia.diz(inf.tipo === 'construtiva' ? `Aqui a diferença de caminho é ${SQ.num(inf.delta, 1)} cm ≈ ${Math.round(inf.emLambda * 2) / 2} λ: ${E.oposicao ? 'como as fontes estão em oposição, isso dá' : ''} <b>interferência construtiva</b> — a água sobe e desce o dobro.` : `Aqui Δ = ${SQ.num(inf.delta, 1)} cm ≈ ${SQ.num(Math.round(inf.emLambda * 2) / 2, 1)} λ: crista encontra vale e a água quase não se mexe — <b>interferência destrutiva</b>.`, { tipo: inf.tipo === 'construtiva' ? 'sucesso' : 'dica', chave: 'det' });
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; if (!E.det) E.det = [api.w * 0.62, (api.h - ALT_GRAF) * 0.7]; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { if (Math.hypot(p.x - E.det[0], p.y - E.det[1]) > 30) { if (p.y < tela.h - ALT_GRAF) { E.det = [p.x, p.y]; pintar(); narrarDetector(); } return true; } return true; },
+        mover(p) { E.det = [Math.max(4, Math.min(tela.w - 4, p.x)), Math.max(4, Math.min(tela.h - ALT_GRAF - 4, p.y))]; pintar(); narrarDetector(); },
+      });
+      let acum = 0;
+      SQ.loop((dt) => {
+        if (!E.pausado) {
+          E.t += dt; acum += dt;
+          while (acum > 3 / 180) { acum -= 3 / 180; hist.push(campo(E.det[0], E.det[1], fontes(), E.t)); if (hist.length > 180) hist.shift(); }
+        }
+        ajustarSom();
+        tela.redesenhar();
+      }).iniciar();
+      guia.contexto = () => { const inf = infoPonto(...E.det); return { frequencia: E.f, amplitude: E.A, separacao: E.sep, duasFontes: E.fonte2, oposicao: E.oposicao, lambda: lambda(), detector: inf, leitura: E.fonte2 ? `No detector: r₁ = ${SQ.num(inf.r1, 1)} cm, r₂ = ${SQ.num(inf.r2, 1)} cm, Δ = ${SQ.num(inf.delta, 1)} cm = ${SQ.num(inf.emLambda, 2)} λ → interferência <b>${inf.tipo}</b>.` : 'Com uma fonte só não há interferência: o detector recebe uma onda circular simples.' }; };
+      pintar();
+      E.t = 6;
+    },
+  });
+  </script>
+</body>
+</html>

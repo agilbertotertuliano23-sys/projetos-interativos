@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Óptica Lab — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/atomo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .gauss { font: 700 14px/1.6 var(--fonte-mono); background: var(--nevoa); border: 2px solid var(--linha); border-radius: 12px; padding: 8px 10px; margin-top: 10px; }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const ELEMENTOS = {
+    convergente: { nome: 'Lente convergente', lente: true, sinal: 1 },
+    divergente: { nome: 'Lente divergente', lente: true, sinal: -1 },
+    concavo: { nome: 'Espelho côncavo', lente: false, sinal: 1 },
+    convexo: { nome: 'Espelho convexo', lente: false, sinal: -1 },
+  };
+  const DESAFIOS = {
+    convergente: [
+      { texto: 'Projete uma imagem <b>real, invertida e do mesmo tamanho</b> do objeto.', A: -1, dica: 'Isso acontece quando o objeto está sobre o ponto antiprincipal (2F).' },
+      { texto: 'Faça um <b>projetor</b>: imagem real, invertida e <b>2× maior</b>.', A: -2, dica: 'Aproxime o objeto entre F e 2F.' },
+      { texto: 'Imite uma <b>câmera</b>: imagem real, invertida e com <b>1/2 do tamanho</b>.', A: -0.5, dica: 'Afaste o objeto para além de 2F.' },
+      { texto: 'Use a lente como <b>lupa</b>: imagem virtual, direita e <b>2× maior</b>.', A: 2, dica: 'O objeto precisa ficar entre a lente e o foco.' },
+      { texto: 'Faça um <b>farol</b>: raios saindo paralelos (imagem no infinito).', inf: true, dica: 'Coloque o objeto exatamente sobre o foco F.' },
+    ],
+    divergente: [
+      { texto: 'Obtenha uma imagem virtual com <b>metade do tamanho</b> do objeto.', A: 0.5, dica: 'Na divergente, a imagem diminui à medida que o objeto se afasta. Tente p = |f|.' },
+      { texto: 'Obtenha uma imagem virtual com <b>1/3 do tamanho</b>.', A: 1 / 3, dica: 'Afaste o objeto para o dobro da distância focal.' },
+    ],
+    concavo: [
+      { texto: 'Faça um <b>espelho de maquiagem</b>: imagem direita e <b>2× maior</b>.', A: 2, dica: 'O rosto (objeto) deve ficar entre o espelho e o foco.' },
+      { texto: 'Imagem real, invertida e do <b>mesmo tamanho</b>.', A: -1, dica: 'Coloque o objeto sobre o centro de curvatura C (= 2f).' },
+      { texto: 'Imagem real, invertida e <b>3× maior</b>.', A: -3, dica: 'Entre F e C, mais perto de F.' },
+    ],
+    convexo: [
+      { texto: 'Simule um <b>retrovisor</b>: imagem virtual com <b>1/4 do tamanho</b>.', A: 0.25, dica: 'Afaste o objeto: no convexo a imagem sempre diminui. Tente p = 3|f|.' },
+      { texto: 'Imagem virtual com <b>metade do tamanho</b>.', A: 0.5, dica: 'Tente o objeto a uma distância igual a |f|.' },
+    ],
+  };
+
+  SQ.demo('optica', {
+    fundo: 'noite',
+    dica: 'Arraste a seta (objeto) para mudar distância e altura',
+    sala: ['Peça que desenhem os três raios principais no caderno e confiram arrastando o objeto.', 'Explore a lente convergente da posição 3F até 0,5F: em que ponto a imagem muda de real para virtual?', 'Relacione cada desafio a um instrumento real: projetor, câmera, lupa, retrovisor.'],
+    comoIA: 'O guia lê o tipo de elemento, a distância focal e a posição do objeto, aplica a equação de Gauss e classifica a imagem. O gerador de experimentos propõe metas (ampliação, natureza da imagem) e confere quando o aluno chega lá; uma IA conectada pode criar experimentos ligados ao dia a dia da turma.',
+    guia: {
+      ola: 'No banco óptico, a seta laranja é o <b>objeto</b>. Arraste-a e veja os três raios principais formarem a imagem. Depois clique em <b>Novo experimento</b>!',
+      perguntas: [
+        { p: 'Quais são os raios principais?', chaves: ['raios', 'principais', 'tracar'], r: '<span style="color:#EE3B45">①</span> paralelo ao eixo → sai passando pelo foco; <span style="color:#36C04A">②</span> pelo centro óptico (ou vértice) → não desvia (ou reflete simétrico); <span style="color:#2BB4F5">③</span> passando pelo foco → sai paralelo. Dois deles já bastam para achar a imagem.' },
+        { p: 'Imagem real ou virtual?', chaves: ['real', 'virtual', 'diferenca'], r: '<b>Real</b>: os raios de luz se cruzam de verdade e a imagem pode ser projetada numa tela. <b>Virtual</b>: só os prolongamentos (tracejados) se cruzam — você vê a imagem olhando pelo instrumento, mas não consegue projetá-la.' },
+        { p: 'Como uso a equação de Gauss?', chaves: ['gauss', 'equacao', 'formula'], r: '<b>1/f = 1/p + 1/p\'</b>, com f > 0 para convergente/côncavo e f < 0 para divergente/convexo. O aumento é <b>A = −p\'/p</b>: A negativo = invertida; |A| > 1 = maior.' },
+        { p: 'Por que a lupa aumenta?', chaves: ['lupa', 'aumenta', 'amplia'], r: 'Com o objeto entre a lente convergente e o foco, os raios saem divergindo; o olho os prolonga para trás e vê uma imagem <b>virtual, direita e maior</b>, mais longe que o objeto.' },
+        { p: 'Como está minha imagem agora?', chaves: ['minha', 'agora', 'classifica'], r: (c) => c.classificacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { tipo: 'convergente', f: 12, p: 30, o: 7, desafio: null, cumprido: false };
+      let arrastando = false, escalaFixa = 0;
+      const RAIOS = ['#EE3B45', '#36C04A', '#2BB4F5'];
+
+      const fSinal = () => E.f * ELEMENTOS[E.tipo].sinal;
+      function imagem() {
+        const f = fSinal(), p = E.p;
+        if (Math.abs(p - f) < 0.05) return { inf: true };
+        const pl = 1 / (1 / f - 1 / p), A = -pl / p;
+        return { pl, A, i: A * E.o, real: pl > 0, inf: false };
+      }
+      function classificar(im) {
+        if (im.inf) return 'Objeto sobre o foco: os raios saem <b>paralelos</b> e a imagem fica <b>imprópria</b> (no infinito).';
+        const tam = Math.abs(Math.abs(im.A) - 1) < 0.03 ? 'do mesmo tamanho' : Math.abs(im.A) > 1 ? `${SQ.num(Math.abs(im.A), 2)}× maior` : `${SQ.num(Math.abs(im.A), 2)}× o tamanho (menor)`;
+        return `Imagem <b>${im.real ? 'real' : 'virtual'}</b>, <b>${im.A < 0 ? 'invertida' : 'direita'}</b> e <b>${tam}</b>, a ${SQ.num(Math.abs(im.pl), 1)} cm ${ELEMENTOS[E.tipo].lente ? (im.real ? 'depois da lente' : 'antes da lente (do lado do objeto)') : (im.real ? 'na frente do espelho' : 'atrás do espelho')}.`;
+      }
+
+      function geo() {
+        const { w, h } = tela, cx = ELEMENTOS[E.tipo].lente ? w * 0.5 : w * 0.66, cy = h * 0.55;
+        if (!arrastando || !escalaFixa) escalaFixa = Math.min((cx - 36) / Math.max(30, E.p * 1.1, 2.3 * E.f), (h * 0.4) / Math.max(10, E.o * 1.3));
+        return { cx, cy, s: escalaFixa };
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const { cx, cy, s } = geo(), el = ELEMENTOS[E.tipo], f = fSinal(), im = imagem();
+        const xo = cx - E.p * s, yo = cy - E.o * s;
+        // eixo óptico
+        ctx.strokeStyle = 'rgba(191,216,255,.6)'; ctx.lineWidth = 2; ctx.setLineDash([10, 8]); ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke(); ctx.setLineDash([]);
+        // pontos notáveis
+        const marca = (xcm, rot) => { const x = cx + xcm * s; if (x < 8 || x > w - 8) return; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, cy, 5, 0, Math.PI * 2); ctx.fill(); d.texto(ctx, rot, x, cy + 22, { tam: 13, alinhar: 'center', cor: '#DCE8FF' }); };
+        if (el.lente) { marca(-Math.abs(f), 'F'); marca(Math.abs(f), "F'"); marca(-2 * Math.abs(f), 'A (2F)'); marca(2 * Math.abs(f), "A'"); }
+        else { marca(-f, 'F'); marca(-2 * f, 'C'); marca(0, 'V'); }
+        // elemento óptico
+        const H = Math.min(h * 0.4, 15 * s);
+        ctx.save();
+        if (el.lente) {
+          const b = el.sinal > 0 ? 16 : -12;
+          ctx.beginPath(); ctx.moveTo(cx - (el.sinal > 0 ? 2 : 14), cy - H);
+          ctx.quadraticCurveTo(cx + b + 6, cy, cx - (el.sinal > 0 ? 2 : 14), cy + H);
+          ctx.lineTo(cx + (el.sinal > 0 ? 2 : 14), cy + H);
+          ctx.quadraticCurveTo(cx - b - 6, cy, cx + (el.sinal > 0 ? 2 : 14), cy - H); ctx.closePath();
+          ctx.fillStyle = 'rgba(191,232,255,.45)'; ctx.fill(); ctx.strokeStyle = '#BFE8FF'; ctx.lineWidth = 3; ctx.stroke();
+        } else {
+          const curva = el.sinal > 0 ? -18 : 18;
+          ctx.beginPath(); ctx.moveTo(cx, cy - H);
+          ctx.quadraticCurveTo(cx - curva, cy, cx, cy + H);
+          ctx.strokeStyle = '#E6EEFF'; ctx.lineWidth = 5; ctx.stroke();
+          ctx.strokeStyle = 'rgba(191,216,255,.5)'; ctx.lineWidth = 2;
+          for (let y = -H + 6; y < H; y += 12) { ctx.beginPath(); ctx.moveTo(cx + 6, cy + y); ctx.lineTo(cx + 16, cy + y + 9); ctx.stroke(); }
+        }
+        ctx.restore();
+        d.etiqueta(ctx, `${el.nome} · f = ${SQ.num(f, 1)} cm`, cx, cy - H - 22, { cor: C.celesteClaro, tam: 12 });
+
+        // raios
+        const dirSaida = el.lente ? 1 : -1;
+        const xi = im.inf ? null : el.lente ? cx + im.pl * s : cx - im.pl * s, yi = im.inf ? null : cy - im.i * s;
+        const longe = (x0, y0, dx, dy) => { const L = Math.hypot(dx, dy) || 1, k = 3 * w / L; return [x0 + dx * k, y0 + dy * k]; };
+        const raio = (Q, cor, indice) => {
+          ctx.strokeStyle = cor; ctx.lineWidth = 2.6;
+          ctx.beginPath(); ctx.moveTo(xo, yo); ctx.lineTo(Q[0], Q[1]); ctx.stroke();
+          let dx, dy;
+          if (im.inf) { dx = el.lente ? cx - xo : -(cx - xo); dy = cy - yo; }
+          else { dx = xi - Q[0]; dy = yi - Q[1]; if (Math.sign(dx) !== dirSaida && Math.abs(dx) > 0.01) { dx = -dx; dy = -dy; } }
+          if (indice === 2 && !im.inf) { dx = dirSaida; dy = 0; }
+          const fim = longe(Q[0], Q[1], dx, dy);
+          ctx.beginPath(); ctx.moveTo(Q[0], Q[1]); ctx.lineTo(fim[0], fim[1]); ctx.stroke();
+          // seta no meio do raio de saída
+          const mx = Q[0] + Math.sign(dx || dirSaida) * 60, my = Q[1] + (dy / (Math.abs(dx) || 1)) * 60;
+          if (Math.abs(dx) > 0.01) d.seta(ctx, Q[0] + Math.sign(dx) * 40, Q[1] + (dy / Math.abs(dx)) * 40, mx, my, cor, 2.6, 9);
+          if (!im.inf && !im.real) { ctx.setLineDash([6, 6]); ctx.globalAlpha = 0.8; ctx.beginPath(); ctx.moveTo(Q[0], Q[1]); ctx.lineTo(xi, yi); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1; }
+        };
+        raio([cx, yo], RAIOS[0], 0);
+        raio([cx, cy], RAIOS[1], 1);
+        if (!im.inf && Math.abs(yi - cy) < h * 2) raio([cx, yi], RAIOS[2], 2);
+
+        // imagem
+        if (!im.inf && Math.abs(xi) < w * 3) {
+          ctx.save();
+          if (!im.real) ctx.setLineDash([7, 6]);
+          ctx.globalAlpha = im.real ? 1 : 0.85;
+          const top = Math.max(-h, Math.min(2 * h, yi));
+          ctx.strokeStyle = C.amarelo; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(xi, cy); ctx.lineTo(xi, top); ctx.stroke();
+          ctx.setLineDash([]);
+          const dir = Math.sign(cy - top) || 1;
+          ctx.fillStyle = C.amarelo; ctx.beginPath(); ctx.moveTo(xi, top - dir * 4); ctx.lineTo(xi - 10, top + dir * 14); ctx.lineTo(xi + 10, top + dir * 14); ctx.closePath(); ctx.fill();
+          ctx.restore();
+          if (xi > 0 && xi < w) d.etiqueta(ctx, `imagem ${im.real ? 'real' : 'virtual'}`, xi, im.i > 0 ? Math.max(14, yi - 22) : Math.min(h - 14, yi + 26), { cor: im.real ? C.amarelo : '#fff', tam: 11 });
+        }
+        // objeto
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(xo, cy); ctx.lineTo(xo, yo + 8); ctx.stroke();
+        ctx.strokeStyle = C.laranja; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(xo, cy); ctx.lineTo(xo, yo + 8); ctx.stroke();
+        ctx.fillStyle = C.laranja; ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(xo, yo - 4); ctx.lineTo(xo - 12, yo + 16); ctx.lineTo(xo + 12, yo + 16); ctx.closePath(); ctx.fill(); ctx.stroke();
+        d.bola(ctx, xo, yo, arrastando ? 9 : 7, C.amarelo);
+        d.etiqueta(ctx, `objeto · p = ${SQ.num(E.p, 1)} cm`, xo, yo - 26, { cor: '#fff', tam: 11 });
+      }
+
+      // ---------- painel ----------
+      const gE = ui.grupo('Banco óptico');
+      ui.segmentado({ opcoes: Object.entries(ELEMENTOS).map(([k, v]) => ({ valor: k, rotulo: v.nome.replace('Lente ', '').replace('Espelho ', 'esp. ') })), valor: E.tipo, pai: gE, aoMudar: (v) => { E.tipo = v; E.desafio = null; caixa.innerHTML = 'Clique em “Novo experimento”.'; caixa.className = 'desafio'; atualizar(true); } });
+      ui.slider({ rotulo: 'Distância focal |f|', min: 5, max: 25, passo: 0.5, valor: E.f, unidade: 'cm', pai: gE, aoMudar: (v) => { E.f = v; atualizar(); } });
+      const sP = ui.slider({ rotulo: 'Distância do objeto (p)', min: 1, max: 60, passo: 0.5, valor: E.p, unidade: 'cm', pai: gE, aoMudar: (v) => { E.p = v; atualizar(); } });
+      const sO = ui.slider({ rotulo: 'Altura do objeto', min: 2, max: 12, passo: 0.5, valor: E.o, unidade: 'cm', pai: gE, aoMudar: (v) => { E.o = v; atualizar(); } });
+      const lei = ui.leituras([{ id: 'pl', rotulo: "Imagem (p')" }, { id: 'A', rotulo: 'Aumento (A)', destaque: true }, { id: 'nat', rotulo: 'Natureza' }, { id: 'ori', rotulo: 'Orientação' }], gE);
+      const gauss = SQ.el('div', { class: 'gauss' }); gE.append(gauss);
+
+      const gD = ui.grupo('Experimentos gerados pelo guia');
+      const caixa = SQ.el('div', { class: 'desafio' }, 'Clique em “Novo experimento”.'); gD.append(caixa);
+      ui.linha(gD, ui.botao({ rotulo: '🧪 Novo experimento', classe: 'pequeno', aoClicar: novoDesafio }), ui.botao({ rotulo: 'Dica', classe: 'branco pequeno', aoClicar: () => E.desafio && guia.diz(E.desafio.dica, { tipo: 'dica', chave: 'des' }) }));
+
+      let ultimaClasse = '';
+      function atualizar(narrarSempre) {
+        const im = imagem(), f = fSinal();
+        if (im.inf) { lei.set('pl', '∞'); lei.set('A', '∞'); lei.set('nat', 'imprópria'); lei.set('ori', '—'); gauss.innerHTML = `1/f = 1/p + 1/p'<br>1/${f < 0 ? '(' + SQ.num(f, 1) + ')' : SQ.num(f, 1)} = 1/${SQ.num(E.p, 1)} + 1/p' → p' → ∞`; }
+        else {
+          lei.set('pl', `${SQ.num(im.pl, 1)} cm`); lei.set('A', SQ.num(im.A, 2)); lei.set('nat', im.real ? 'real' : 'virtual'); lei.set('ori', im.A < 0 ? 'invertida' : 'direita');
+          const fr = (v) => (v < 0 ? `(${SQ.num(v, 1)})` : SQ.num(v, 1));
+          gauss.innerHTML = `1/f = 1/p + 1/p'<br>1/${fr(f)} = 1/${fr(E.p)} + 1/${fr(im.pl)}<br>A = −p'/p = ${SQ.num(im.A, 2)}`;
+        }
+        const cl = im.inf ? 'inf' : `${im.real}|${im.A < 0}|${Math.abs(im.A) > 1}`;
+        if (narrarSempre || cl !== ultimaClasse) guia.diz(classificar(im), { chave: 'img' });
+        ultimaClasse = cl;
+        conferir(im);
+        tela && tela.redesenhar();
+      }
+      function novoDesafio() {
+        const lista = DESAFIOS[E.tipo], ant = E.desafio;
+        do { E.desafio = lista[Math.floor(Math.random() * lista.length)]; } while (lista.length > 1 && E.desafio === ant);
+        E.cumprido = false; caixa.className = 'desafio'; caixa.innerHTML = `🧪 ${E.desafio.texto}<br><small class="texto-suave">Arraste o objeto (ou use o controle de distância).</small>`;
+        guia.diz('Novo experimento! Antes de arrastar, preveja: o objeto deve ficar <b>mais perto</b> ou <b>mais longe</b> que o foco?', { chave: 'des' });
+        if (E.p < 20) { E.p = 40; sP.valor = 40; }
+        atualizar();
+      }
+      function conferir(im) {
+        if (!E.desafio || E.cumprido) return;
+        const ok = E.desafio.inf ? im.inf || Math.abs(E.p - Math.abs(fSinal())) < 0.3 : !im.inf && Math.abs(im.A - E.desafio.A) <= Math.abs(E.desafio.A) * 0.06;
+        if (ok) {
+          E.cumprido = true; caixa.className = 'desafio ok'; caixa.innerHTML = `✅ ${E.desafio.texto}<br><small>Cumprido com p = ${SQ.num(E.p, 1)} cm e f = ${SQ.num(fSinal(), 1)} cm.</small>`;
+          SQ.som(880, 0.15); setTimeout(() => SQ.som(1320, 0.2), 120);
+          guia.diz(`🎉 Experimento cumprido! Com p = ${SQ.num(E.p, 1)} cm, ${E.desafio.inf ? 'o objeto está no foco' : `A = ${SQ.num(im.A, 2)}`}. ${E.desafio.inf ? '' : `Pela equação de Gauss: 1/p' = 1/f − 1/p = 1/${SQ.num(fSinal(), 1)} − 1/${SQ.num(E.p, 1)}.`}`, { tipo: 'sucesso', chave: 'des' });
+        }
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const { cx, cy, s } = geo(), xo = cx - E.p * s, yo = cy - E.o * s;
+          if (Math.abs(p.x - xo) > 26 || p.y < yo - 30 || p.y > cy + 20) return false;
+          arrastando = true; tela.redesenhar(); return true;
+        },
+        mover(p) {
+          const { cx, cy, s } = geo();
+          E.p = Math.round(Math.min(60, Math.max(1, (cx - p.x) / s)) * 2) / 2; sP.valor = E.p;
+          if (p.y < cy - 10) { E.o = Math.round(Math.min(12, Math.max(2, (cy - p.y) / s)) * 2) / 2; sO.valor = E.o; }
+          atualizar();
+        },
+        fim() { arrastando = false; tela.redesenhar(); },
+        hover(p) { const { cx, cy, s } = geo(), xo = cx - E.p * s; tela.canvas.style.cursor = Math.abs(p.x - xo) < 26 && p.y > cy - E.o * s - 30 && p.y < cy + 20 ? 'grab' : ''; },
+      });
+      guia.contexto = () => ({ elemento: ELEMENTOS[E.tipo].nome, f: fSinal(), p: E.p, alturaObjeto: E.o, imagem: imagem(), classificacao: classificar(imagem()), experimento: E.desafio && E.desafio.texto });
+      atualizar(true);
+    },
+  });
+  </script>
+</body>
+</html>

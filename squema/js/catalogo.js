@@ -27,7 +27,7 @@
 
   const SISTEMAS = [
     // ---------------- Biologia ----------------
-    S('biologia', 'corpo-humano', 'Corpo Humano IA', 'órgãos, sistemas, células', 'explicar estruturas e simular condições', 5, null, {
+    S('biologia', 'corpo-humano', 'Corpo Humano IA', 'órgãos, sistemas, células', 'explicar estruturas e simular condições', 5, 'demos/corpo-humano.html', {
       interacao: 'Liga camadas do corpo e clica nos órgãos',
       resumo: 'Atlas 3D em camadas (esquelético, circulatório, digestório, nervoso) com simulação de condições como exercício e desidratação.',
       objetivos: ['Localizar órgãos e relacioná-los aos sistemas', 'Entender como os sistemas se integram', 'Observar respostas do corpo a condições simuladas'],
@@ -40,7 +40,7 @@
       objetivos: ['Identificar organelas e suas funções', 'Relacionar núcleo, DNA e cromossomos', 'Ordenar as fases da mitose'],
       tags: ['3D'],
     }),
-    S('biologia', 'genetica-lab', 'Genética Lab', 'DNA, cromossomos, heredogramas', 'gerar cruzamentos e explicar resultados', 5, null, {
+    S('biologia', 'genetica-lab', 'Genética Lab', 'DNA, cromossomos, heredogramas', 'gerar cruzamentos e explicar resultados', 5, 'demos/genetica-lab.html', {
       interacao: 'Escolhe os genótipos dos pais e sorteia filhotes',
       roteiro: ['Quadro de Punnett com genótipos dos pais escolhidos pelo aluno', 'Proporções de genótipo e fenótipo calculadas ao vivo', 'Sorteio de descendentes para comparar esperado × observado', 'IA explica o resultado e gera novos cruzamentos'],
       resumo: 'Quadro de Punnett interativo para mono e di-hibridismo, com proporções, sorteio de descendentes e leitura dos resultados.',
@@ -54,28 +54,28 @@
       tags: ['3D', 'modelos livres'],
     }),
     // ---------------- Física ----------------
-    S('fisica', 'mecanica', 'Laboratório de Mecânica', 'forças, velocidade, colisões', 'modificar parâmetros e explicar resultados', 5, null, {
+    S('fisica', 'mecanica', 'Laboratório de Mecânica', 'forças, velocidade, colisões', 'modificar parâmetros e explicar resultados', 5, 'demos/mecanica.html', {
       interacao: 'Define ângulo, velocidade e massas; lança e colide',
       roteiro: ['Lançamento oblíquo com ângulo e velocidade ajustáveis', 'Vetores de velocidade decompostos ao longo da trajetória', 'Trilho de colisões com massas e restituição', 'IA compara previsão do aluno com o resultado'],
       resumo: 'Lançamento oblíquo com vetores de velocidade e colisões em trilho com massas e coeficiente de restituição ajustáveis.',
       objetivos: ['Decompor a velocidade em componentes', 'Relacionar ângulo e alcance', 'Conservar momento linear em colisões'],
       tags: ['2D'],
     }),
-    S('fisica', 'eletricidade', 'Eletricidade Lab', 'circuitos e fluxo elétrico', 'diagnosticar circuito e orientar aluno', 5, null, {
+    S('fisica', 'eletricidade', 'Eletricidade Lab', 'circuitos e fluxo elétrico', 'diagnosticar circuito e orientar aluno', 5, 'demos/eletricidade.html', {
       interacao: 'Monta série ou paralelo, abre chaves e muda a tensão',
       roteiro: ['Bancada com bateria, lâmpadas e chaves', 'Associação em série e em paralelo com fluxo animado', 'Medidas de tensão, corrente e resistência (Lei de Ohm)', 'IA diagnostica circuito aberto ou curto e orienta'],
       resumo: 'Circuito com bateria e lâmpadas em série ou paralelo, chaves que abrem e fecham, fluxo de cargas animado e diagnóstico.',
       objetivos: ['Aplicar a Lei de Ohm', 'Comparar associação em série e em paralelo', 'Diagnosticar circuito aberto'],
       tags: ['2D'],
     }),
-    S('fisica', 'optica', 'Óptica Lab', 'luz, lentes, espelhos', 'gerar experimentos', 5, null, {
+    S('fisica', 'optica', 'Óptica Lab', 'luz, lentes, espelhos', 'gerar experimentos', 5, 'demos/optica.html', {
       interacao: 'Arrasta o objeto e troca o tipo de lente',
       roteiro: ['Banco óptico com lente convergente e divergente', 'Raios principais traçados ao arrastar o objeto', 'Classificação da imagem e equação de Gauss', 'IA propõe experimentos com novas distâncias'],
       resumo: 'Banco óptico com lente convergente ou divergente: arraste o objeto e veja os raios principais formarem a imagem.',
       objetivos: ['Traçar os raios principais', 'Classificar a imagem (real/virtual, direita/invertida)', 'Usar a equação de Gauss'],
       tags: ['2D'],
     }),
-    S('fisica', 'ondas', 'Ondas', 'som, frequência, interferência', 'transformar parâmetros em visualizações', 5, null, {
+    S('fisica', 'ondas', 'Ondas', 'som, frequência, interferência', 'transformar parâmetros em visualizações', 5, 'demos/ondas.html', {
       interacao: 'Muda frequência, amplitude e distância das fontes',
       roteiro: ['Cuba de ondas com duas fontes', 'Frequência, amplitude e distância ajustáveis', 'Padrão de interferência e som correspondente', 'IA traduz parâmetros em explicações visuais'],
       resumo: 'Duas fontes em uma cuba de ondas mostram interferência; frequência e amplitude também podem ser ouvidas.',
@@ -83,7 +83,7 @@
       tags: ['2D', 'áudio'],
     }),
     // ---------------- Química ----------------
-    S('quimica', 'laboratorio-virtual', 'Laboratório Virtual', 'vidrarias e reações', 'conduzir experimento virtual', 5, null, {
+    S('quimica', 'laboratorio-virtual', 'Laboratório Virtual', 'vidrarias e reações', 'conduzir experimento virtual', 5, 'demos/laboratorio-virtual.html', {
       interacao: 'Goteja a base e escolhe o indicador',
       roteiro: ['Bancada de titulação com bureta e erlenmeyer', 'Gotejamento controlado e indicador que muda de cor', 'Curva de pH desenhada ao vivo', 'IA conduz o procedimento e aponta o ponto de equivalência'],
       resumo: 'Titulação ácido-base em bancada: goteje a base, acompanhe o pH, a cor do indicador e a curva de titulação.',
@@ -109,14 +109,14 @@
       objetivos: ['Reconhecer elementos dos sólidos', 'Calcular área e volume', 'Resolver problemas com valores novos a cada rodada'],
       tags: ['3D'],
     }),
-    S('matematica', 'funcoes-visuais', 'Funções Visuais', 'gráficos vivos', 'explicar alteração de parâmetros', 5, null, {
+    S('matematica', 'funcoes-visuais', 'Funções Visuais', 'gráficos vivos', 'explicar alteração de parâmetros', 5, 'demos/funcoes-visuais.html', {
       interacao: 'Troca a família de funções e arrasta os parâmetros',
       roteiro: ['Famílias afim, quadrática, exponencial e senoidal', 'Parâmetros deslizantes com gráfico ao vivo', 'Raízes, vértice e interceptos destacados', 'IA explica o efeito de cada parâmetro'],
       resumo: 'Afim, quadrática, exponencial e senoidal com parâmetros deslizantes — o gráfico e a explicação mudam juntos.',
       objetivos: ['Interpretar o papel de cada parâmetro', 'Encontrar raízes, vértice e interceptos', 'Comparar famílias de funções'],
       tags: ['2D'],
     }),
-    S('matematica', 'calculo-visual', 'Cálculo Visual', 'derivadas, integrais, áreas', 'explicar cada transformação', 4, null, {
+    S('matematica', 'calculo-visual', 'Cálculo Visual', 'derivadas, integrais, áreas', 'explicar cada transformação', 4, 'demos/calculo-visual.html', {
       interacao: 'Desliza o ponto da tangente e o número de retângulos',
       roteiro: ['Reta tangente que desliza pela curva', 'Somas de Riemann com número de retângulos ajustável', 'Comparação com a integral exata', 'IA comenta cada transformação'],
       resumo: 'Reta tangente que desliza pela curva e somas de Riemann que se aproximam da integral à medida que os retângulos afinam.',
@@ -130,14 +130,14 @@
       objetivos: ['Localizar países e continentes', 'Ler coordenadas geográficas', 'Comparar indicadores entre regiões'],
       tags: ['3D', 'dados reais'],
     }),
-    S('geografia', 'clima-simulator', 'Clima Simulator', 'chuva, temperatura, massas de ar', 'simular cenários climáticos', 5, null, {
+    S('geografia', 'clima-simulator', 'Clima Simulator', 'chuva, temperatura, massas de ar', 'simular cenários climáticos', 5, 'demos/clima-simulator.html', {
       interacao: 'Muda estação, umidade e relevo',
       resumo: 'Mapa com massas de ar, frentes e relevo; o aluno muda estação e umidade e vê chuva e temperatura responderem.',
       objetivos: ['Diferenciar tempo e clima', 'Entender massas de ar e frentes', 'Ler climogramas'],
       roteiro: ['Mapa regional com relevo e oceano', 'Massas de ar animadas com temperatura e umidade', 'Climograma gerado ao vivo', 'IA compara o cenário com climas reais'],
       tags: ['2D'],
     }),
-    S('geografia', 'relevo-3d', 'Relevo 3D', 'montanhas, placas, vulcões', 'explicar formação geológica', 5, null, {
+    S('geografia', 'relevo-3d', 'Relevo 3D', 'montanhas, placas, vulcões', 'explicar formação geológica', 5, 'demos/relevo-3d.html', {
       interacao: 'Move as placas e acelera o tempo geológico',
       roteiro: ['Bloco de terreno 3D com placas tectônicas', 'Movimento convergente e divergente controlado pelo aluno', 'Erosão ao longo do tempo geológico', 'IA explica a formação de cada relevo'],
       resumo: 'Bloco de terreno 3D: aproxime ou afaste placas tectônicas e veja surgirem cordilheiras, fossas e vulcões, com erosão ao longo do tempo.',
@@ -145,14 +145,14 @@
       tags: ['3D'],
     }),
     // ---------------- História ----------------
-    S('historia', 'maquina-do-tempo', 'Máquina do Tempo', 'ambientes históricos', 'reconstruir acontecimentos', 5, null, {
+    S('historia', 'maquina-do-tempo', 'Máquina do Tempo', 'ambientes históricos', 'reconstruir acontecimentos', 5, 'demos/maquina-do-tempo.html', {
       interacao: 'Escolhe uma época e explora a cena',
       resumo: 'Cenas históricas navegáveis em que o aluno escolhe um ponto no tempo e explora o ambiente com narração.',
       objetivos: ['Contextualizar acontecimentos', 'Comparar modos de vida em épocas diferentes', 'Trabalhar com fontes históricas'],
       roteiro: ['Seletor de época com cenários 3D', 'Personagens e objetos clicáveis com fontes', 'Narração adaptada à série do aluno', 'Desafio: encontrar anacronismos na cena'],
       tags: ['3D'],
     }),
-    S('historia', 'linha-do-tempo', 'Linha do Tempo IA', 'eventos conectados', 'explicar causa e consequência', 4, null, {
+    S('historia', 'linha-do-tempo', 'Linha do Tempo IA', 'eventos conectados', 'explicar causa e consequência', 4, 'demos/linha-do-tempo.html', {
       interacao: 'Navega pelos eventos e segue as conexões',
       roteiro: ['Linha do tempo navegável da história do Brasil', 'Eventos ligados por setas de causa e consequência', 'Zoom de séculos a anos', 'IA explica as conexões entre eventos'],
       resumo: 'Linha do tempo navegável da história do Brasil com conexões de causa e consequência entre eventos.',

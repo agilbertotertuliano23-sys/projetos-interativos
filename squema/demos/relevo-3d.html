@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relevo 3D — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/mapa.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const MODOS = {
+    cc: { nome: 'Convergente: continente × continente', curto: 'Colisão', ex: 'Himalaia (Índia × Ásia)', placas: ['Placa continental', 'Placa continental'], dir: [1, -1, 0] },
+    oc: { nome: 'Convergente: oceano × continente', curto: 'Subducção', ex: 'Andes e fossa do Peru-Chile', placas: ['Placa oceânica', 'Placa continental'], dir: [1, -1, 0] },
+    div: { nome: 'Divergente', curto: 'Rifte', ex: 'Rifte da África Oriental e dorsal do Atlântico', placas: ['Placa continental', 'Placa continental'], dir: [-1, 1, 0] },
+    tra: { nome: 'Transformante', curto: 'Falha', ex: 'Falha de San Andreas (EUA)', placas: ['Placa do Pacífico', 'Placa Norte-Americana'], dir: [0, 0, 1] },
+  };
+  const M_POR_UN = 2000; // 1 unidade de altura = 2000 m
+
+  SQ.demo('relevo-3d', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · clique no terreno para o guia explicar',
+    sala: ['Rode os quatro limites de placa e peça que a turma associe cada um a um lugar real do mapa-múndi.', 'Na subducção, pergunte: por que os vulcões ficam do lado continental e não sobre a fossa?', 'Ligue a erosão forte depois de formar uma cordilheira: por que o Brasil não tem montanhas tão altas quanto os Andes?'],
+    comoIA: 'O guia recebe o tipo de limite, a velocidade das placas, a erosão, o tempo geológico e o ponto clicado no terreno. Ele narra cada etapa — soerguimento, subducção, vulcanismo, rifte, deslocamento da falha — e compara com exemplos reais. Uma IA conectada pode responder perguntas abertas sobre qualquer relevo da Terra.',
+    guia: {
+      ola: 'Este bloco de terreno está sobre <b>duas placas tectônicas</b>. Escolha o tipo de limite e clique em <b>▶ Tempo geológico</b>: milhões de anos passam em segundos!',
+      perguntas: [
+        { p: 'O que move as placas?', chaves: ['move', 'placas', 'por que', 'conveccao'], r: 'O calor do interior da Terra cria <b>correntes de convecção</b> no manto; além disso, a placa que afunda numa subducção “puxa” o resto. As placas andam de 2 a 10 cm por ano — mais ou menos o quanto sua unha cresce.' },
+        { p: 'Como se forma uma cordilheira?', chaves: ['cordilheira', 'montanha', 'dobramento'], r: 'Quando duas placas se chocam, as rochas são <b>dobradas e empurradas para cima</b> (dobramentos modernos). Himalaia, Alpes e Andes são exemplos — e ainda estão subindo.' },
+        { p: 'Por que surgem vulcões na subducção?', chaves: ['vulcao', 'vulcoes', 'magma', 'subduccao'], r: 'A placa oceânica afunda e, a ~100 km de profundidade, libera água que <b>derrete o manto</b> acima. Esse magma sobe e forma uma fila de vulcões no continente, longe da fossa.' },
+        { p: 'O que a erosão faz?', chaves: ['erosao', 'desgaste', 'rebaixa'], r: 'Chuva, vento, rios e gelo desgastam o relevo e levam sedimentos para as partes baixas. Em centenas de milhões de anos, cordilheiras viram planaltos e serras arredondadas — como as do Brasil, que são muito antigas.' },
+        { p: 'Por que o Brasil tem poucos terremotos fortes?', chaves: ['brasil', 'terremoto', 'sismo'], r: 'O Brasil fica no <b>meio da Placa Sul-Americana</b>, longe dos limites onde as placas se chocam ou deslizam. Os tremores daqui são em geral fracos.' },
+        { p: 'O que está acontecendo agora?', chaves: ['agora', 'acontecendo', 'estado'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [7.5, 6.5, 9], alvo: [0, 0, 0], distancia: [6, 30], sombraRaio: 9, hemi: 1.05, sol: 2.2, polarMax: 1.45 });
+      const NX = 161, NZ = 81, LX = 12, LZ = 6, FUNDO = -2.2;
+      const E = { modo: 'cc', vel: 5, erosao: 0.3, rodando: false, t: 0, D: 0, avisos: {} };
+
+      // ---------- ruído ----------
+      const hash = (x, z) => { const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453; return s - Math.floor(s); };
+      const suav = (t) => t * t * (3 - 2 * t);
+      function ruido(x, z) { const xi = Math.floor(x), zi = Math.floor(z), xf = suav(x - xi), zf = suav(z - zi); const a = hash(xi, zi), b = hash(xi + 1, zi), cc = hash(xi, zi + 1), dd = hash(xi + 1, zi + 1); return a + (b - a) * xf + (cc - a) * zf + (a - b - cc + dd) * xf * zf; }
+      const fbm = (x, z) => ruido(x, z) * 0.55 + ruido(x * 2.1, z * 2.1) * 0.3 + ruido(x * 4.3, z * 4.3) * 0.15;
+
+      // ---------- terreno ----------
+      const geo = new T.PlaneGeometry(LX, LZ, NX - 1, NZ - 1); geo.rotateX(-Math.PI / 2);
+      const P = geo.attributes.position, cores = new Float32Array(P.count * 3); geo.setAttribute('color', new T.BufferAttribute(cores, 3));
+      const h = new Float32Array(P.count), aux = new Float32Array(P.count);
+      const terreno = new T.Mesh(geo, new T.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, flatShading: false })); terreno.receiveShadow = true; terreno.castShadow = true; c.scene.add(terreno);
+      const xs = (i) => P.getX(i), zs = (i) => P.getZ(i);
+      // paredes laterais (mostram as camadas)
+      const strata = S3D.texturaCanvas(256, 128, (g, w, hh) => { const cs = ['#C98B4E', '#E2B07A', '#A86A3A', '#D9A06B', '#8C5A33', '#B9784A', '#6B4428']; for (let k = 0; k < 14; k++) { g.fillStyle = cs[k % cs.length]; g.fillRect(0, (k * hh) / 14, w, hh / 14 + 1); } });
+      strata.wrapS = strata.wrapT = T.RepeatWrapping; strata.repeat.set(3, 1);
+      const bordas = [];
+      function criarBorda(indices) {
+        const n = indices.length, pos = new Float32Array(n * 2 * 3), uv = new Float32Array(n * 2 * 2), idx = [];
+        for (let k = 0; k < n - 1; k++) { const a = k * 2, b = a + 1, c2 = a + 2, d2 = a + 3; idx.push(a, b, c2, b, d2, c2); }
+        const g = new T.BufferGeometry(); g.setAttribute('position', new T.BufferAttribute(pos, 3)); g.setAttribute('uv', new T.BufferAttribute(uv, 2)); g.setIndex(idx);
+        const m = new T.Mesh(g, new T.MeshStandardMaterial({ map: strata, side: T.DoubleSide, roughness: 0.9 })); c.scene.add(m); bordas.push({ m, indices });
+      }
+      const linha = (z) => Array.from({ length: NX }, (_, i) => z * NX + i), coluna = (x) => Array.from({ length: NZ }, (_, k) => k * NX + x);
+      criarBorda(linha(0)); criarBorda(linha(NZ - 1)); criarBorda(coluna(0)); criarBorda(coluna(NX - 1));
+      const contornoBase = new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(LX, 0.02, LZ)), new T.LineBasicMaterial({ color: 0x0B1438 })); contornoBase.position.y = FUNDO; c.scene.add(contornoBase);
+      const tampa = new T.Mesh(new T.PlaneGeometry(LX, LZ), S3D.mat(0x6B4428)); tampa.rotation.x = Math.PI / 2; tampa.position.y = FUNDO; c.scene.add(tampa);
+      // mar
+      const mar = new T.Mesh(new T.BoxGeometry(LX - 0.01, 1, LZ - 0.01), new T.MeshPhysicalMaterial({ color: 0x2BB4F5, transparent: true, opacity: 0.45, roughness: 0.1, clearcoat: 1, depthWrite: false }));
+      mar.scale.y = 0.001; c.scene.add(mar);
+      // magma (rifte / dorsal)
+      const magma = new T.Mesh(new T.BoxGeometry(0.12, 0.05, LZ), new T.MeshBasicMaterial({ color: 0xFF5A1F })); magma.visible = false; c.scene.add(magma);
+      // vulcões: partículas de erupção
+      const VULC = [[1.35, -1.7], [1.25, 0.2], [1.4, 1.9]];
+      const NP = 240, pgeo = new T.BufferGeometry(), ppos = new Float32Array(NP * 3), pvel = new Float32Array(NP * 3), pvida = new Float32Array(NP);
+      pgeo.setAttribute('position', new T.BufferAttribute(ppos, 3));
+      const erupcao = new T.Points(pgeo, new T.PointsMaterial({ color: 0xFF7A1A, size: 0.12, transparent: true, opacity: 0.9 })); erupcao.visible = false; c.scene.add(erupcao);
+      // setas das placas e rótulos
+      const setas = new T.Group(); c.scene.add(setas);
+      function seta(x, dx, dz) {
+        const g = new T.Group(), mat = S3D.mat(0xFFC21A);
+        const corpo = new T.Mesh(new T.CylinderGeometry(0.09, 0.09, 1.1, 14), mat), ponta = new T.Mesh(new T.ConeGeometry(0.24, 0.45, 18), mat);
+        corpo.rotation.z = -Math.PI / 2; ponta.rotation.z = -Math.PI / 2; ponta.position.x = 0.75; g.add(corpo, ponta); S3D.contorno(g, 0.03);
+        g.position.set(x, 0, 0); g.rotation.y = Math.atan2(-dz, dx); g.userData.x = x; return g;
+      }
+      const rotPlacas = [S3D.rotulo('', { classe: 'escuro' }), S3D.rotulo('', { classe: 'escuro' })]; rotPlacas.forEach((r) => c.scene.add(r));
+      const rotFeicao = {}; const feicao = (id) => (rotFeicao[id] ??= (() => { const r = S3D.rotulo(''); r.element.classList.add('ativo'); c.scene.add(r); return r; })());
+      // anéis de terremoto
+      const aneis = [];
+      function terremoto(x, z) { const m = new T.Mesh(new T.RingGeometry(0.1, 0.16, 40), new T.MeshBasicMaterial({ color: 0xEE3B45, transparent: true, side: T.DoubleSide, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, alturaEm(x, z) + 0.05, z); m.userData.v = 0; c.scene.add(m); aneis.push(m); }
+
+      function indice(x, z) { const i = Math.round(((x + LX / 2) / LX) * (NX - 1)), k = Math.round(((z + LZ / 2) / LZ) * (NZ - 1)); return Math.max(0, Math.min(NZ - 1, k)) * NX + Math.max(0, Math.min(NX - 1, i)); }
+      const alturaEm = (x, z) => h[indice(x, z)];
+
+      function iniciarModo() {
+        E.t = 0; E.D = 0; E.avisos = {};
+        for (let i = 0; i < P.count; i++) {
+          const x = xs(i), z = zs(i), n = fbm(x * 0.7 + 3, z * 0.7);
+          if (E.modo === 'oc') h[i] = x < -0.3 ? -1.55 + n * 0.12 : x < 0.4 ? -1.55 + ((x + 0.3) / 0.7) * 1.85 + n * 0.1 : 0.3 + n * 0.18;
+          else h[i] = 0.18 + n * 0.22;
+        }
+        magma.visible = false; erupcao.visible = false;
+        S3D.limpar(setas);
+        const [d1, d2, dz] = MODOS[E.modo].dir;
+        if (E.modo === 'tra') { setas.add(seta(-3, 0, 1)); setas.add(seta(3, 0, -1)); }
+        else { setas.add(seta(-3, d1, 0)); setas.add(seta(3, d2, 0)); }
+        void dz;
+        Object.values(rotFeicao).forEach((r) => { r.visible = false; });
+        rotPlacas[0].element.textContent = MODOS[E.modo].placas[0]; rotPlacas[1].element.textContent = MODOS[E.modo].placas[1];
+        aplicar();
+      }
+      const corTmp = new T.Color();
+      function corDe(y, x, z) {
+        const m = y * M_POR_UN;
+        let r, g, b;
+        if (m < -2500) [r, g, b] = [0.12, 0.25, 0.55]; else if (m < -200) [r, g, b] = [0.2, 0.42, 0.72]; else if (m < 20) [r, g, b] = [0.93, 0.85, 0.6];
+        else if (m < 600) [r, g, b] = [0.36, 0.72, 0.3]; else if (m < 1600) [r, g, b] = [0.55, 0.68, 0.3]; else if (m < 3200) [r, g, b] = [0.62, 0.45, 0.28]; else if (m < 4800) [r, g, b] = [0.58, 0.56, 0.58]; else [r, g, b] = [0.97, 0.98, 1];
+        if (E.modo === 'tra') { const off = (x < 0 ? 1 : -1) * Math.min(2.4, E.D / 500); const zr = 0.6 + off; if (Math.abs(z - zr) < 0.12 && m > 20) [r, g, b] = [0.17, 0.55, 0.95]; if (Math.abs(x) < 0.04) [r, g, b] = [0.35, 0.2, 0.15]; }
+        const k = 0.9 + hash(x * 9, z * 9) * 0.14; corTmp.setRGB(r * k, g * k, b * k, T.SRGBColorSpace); return [corTmp.r, corTmp.g, corTmp.b];
+      }
+      function aplicar() {
+        let maxH = -9, minH = 9;
+        for (let i = 0; i < P.count; i++) {
+          P.setY(i, h[i]); maxH = Math.max(maxH, h[i]); minH = Math.min(minH, h[i]);
+          const [r, g, b] = corDe(h[i], xs(i), zs(i)); cores[i * 3] = r; cores[i * 3 + 1] = g; cores[i * 3 + 2] = b;
+        }
+        P.needsUpdate = true; geo.attributes.color.needsUpdate = true; geo.computeVertexNormals();
+        for (const { m, indices } of bordas) {
+          const pos = m.geometry.attributes.position, uv = m.geometry.attributes.uv;
+          indices.forEach((vi, k) => { const x = xs(vi), z = zs(vi); pos.setXYZ(k * 2, x, h[vi], z); pos.setXYZ(k * 2 + 1, x, FUNDO, z); const u = (Math.abs(x) > LX / 2 - 0.01 ? z : x) / 4; uv.setXY(k * 2, u, (h[vi] - FUNDO) / 7); uv.setXY(k * 2 + 1, u, 0); });
+          pos.needsUpdate = true; uv.needsUpdate = true; m.geometry.computeVertexNormals(); m.geometry.computeBoundingSphere();
+        }
+        geo.computeBoundingSphere();
+        mar.visible = minH < 0; mar.scale.y = Math.max(0.001, 0 - FUNDO); mar.position.y = FUNDO / 2;
+        setas.children.forEach((s) => { s.position.y = Math.max(0, alturaEm(s.userData.x, 0)) + 0.9; if (E.modo === 'tra') s.position.z = 0; });
+        rotPlacas[0].position.set(-3.6, Math.max(0, alturaEm(-3.6, -2.4)) + 0.6, -2.4); rotPlacas[1].position.set(3.6, Math.max(0, alturaEm(3.6, -2.4)) + 0.6, -2.4);
+        E.max = maxH; E.min = minH;
+        pintar();
+      }
+
+      function passo(dtMa) {
+        const v = E.vel, md = E.modo;
+        E.t += dtMa; E.D += v * 10 * dtMa;
+        for (let i = 0; i < P.count; i++) {
+          const x = xs(i), z = zs(i), n = 0.75 + 0.5 * fbm(z * 0.9 + 7, x * 0.3);
+          let dh = 0;
+          if (md === 'cc') { dh = 0.02 * v * Math.exp(-((x / 1.15) ** 2)) * n + 0.005 * v * Math.exp(-(((x - 1.6) / 1.4) ** 2)); if (h[i] > 4.4) dh *= 0.1; }
+          else if (md === 'oc') { dh = -0.016 * v * Math.exp(-(((x + 0.55) / 0.32) ** 2)) + 0.014 * v * Math.exp(-(((x - 1.35) / 0.65) ** 2)) * n; if (E.D > 250) for (const [vx, vz] of VULC) { const r = Math.hypot(x - vx, z - vz); dh += 0.024 * v * Math.max(0, 1 - r / 0.55); } if (h[i] < -3.9) dh = Math.max(dh, 0); if (h[i] > 3.4) dh *= 0.15; }
+          else if (md === 'div') { const cen = Math.exp(-((x / 0.45) ** 2)); dh = -0.012 * v * cen * (h[i] > -1.4 ? 1 : 0.05) + 0.003 * v * Math.exp(-(((Math.abs(x) - 1.1) / 0.45) ** 2)); }
+          h[i] += dh * dtMa;
+        }
+        // erosão: suaviza e rebaixa o que está acima do nível do mar
+        const e = E.erosao;
+        if (e > 0) {
+          aux.set(h);
+          for (let k = 1; k < NZ - 1; k++) for (let i = 1; i < NX - 1; i++) {
+            const id = k * NX + i; if (aux[id] < 0) continue;
+            const med = (aux[id - 1] + aux[id + 1] + aux[id - NX] + aux[id + NX]) / 4;
+            h[id] += Math.min(0.5, e * 0.9 * dtMa) * (med - aux[id]) - e * 0.03 * dtMa * Math.max(0, aux[id] - 0.4);
+          }
+        }
+        if (md === 'div') { const c0 = alturaEm(0, 0); magma.visible = E.D > 80; magma.position.y = c0 + 0.02; }
+        if (md === 'oc') { const vis = E.D > 280; erupcao.visible = vis; }
+        aplicar(); narrar();
+      }
+
+      function narrar() {
+        const md = E.modo, D = E.D, aviso = (k, cond, txt, tipo = '') => { if (cond && !E.avisos[k]) { E.avisos[k] = true; guia.diz(txt, { tipo, chave: 'ev' }); } };
+        const mx = Math.round(E.max * M_POR_UN), mn = Math.round(E.min * M_POR_UN);
+        if (md === 'cc') {
+          aviso('a', D > 120, `As placas já se aproximaram ${SQ.num(D, 0)} km. As rochas se <b>dobram</b> e o relevo começa a subir no limite.`);
+          aviso('b', E.max > 2.2, `Surgiu uma <b>cordilheira</b> de ${SQ.num(mx, 0)} m! Atrás dela forma-se um planalto alto — como o do Tibete.`, 'sucesso');
+          aviso('c', E.max > 3.6, `Picos acima de ${SQ.num(mx, 0)} m com neve permanente: é o padrão do <b>${MODOS.cc.ex}</b>.`, 'sucesso');
+          mostrarFeicao('cord', E.max > 1.5, 'Cordilheira', 0, -0.2);
+        } else if (md === 'oc') {
+          aviso('a', D > 100, 'A placa oceânica, mais densa, <b>mergulha</b> sob a continental (subducção) e cava uma <b>fossa</b>.');
+          aviso('b', E.D > 280, '🌋 A placa que afundou derrete o manto: o magma sobe e nascem <b>vulcões</b> no continente.', 'alerta');
+          aviso('c', E.min < -3, `A fossa já tem ${SQ.num(-mn, 0)} m de profundidade e a cordilheira ${SQ.num(mx, 0)} m de altitude: o padrão dos <b>${MODOS.oc.ex}</b>.`, 'sucesso');
+          mostrarFeicao('fossa', D > 100, 'Fossa oceânica', -0.55, 0); mostrarFeicao('vulc', E.D > 280, 'Vulcões', 1.35, 0.2);
+        } else if (md === 'div') {
+          aviso('a', D > 60, 'As placas se afastam: a crosta se estica, fratura e o centro <b>afunda</b> — um vale em rifte.');
+          aviso('b', D > 80, 'Magma sobe pelas fraturas (faixa laranja) e forma <b>crosta nova</b>.', 'alerta');
+          aviso('c', E.min < 0, 'O vale ficou abaixo do nível do mar e foi <b>inundado</b>: nasce um novo oceano! Foi assim que a América do Sul se separou da África.', 'sucesso');
+          mostrarFeicao('rift', D > 60, E.min < 0 ? 'Mar novo / dorsal' : 'Vale em rifte', 0, 0);
+        } else {
+          aviso('a', D > 60, 'As placas deslizam lado a lado. Repare no <b>rio azul</b>: ele está sendo cortado e deslocado pela falha.');
+          aviso('b', D > 400, `Deslocamento acumulado de ${SQ.num(D, 0)} km. Nas falhas transformantes quase não há vulcões, mas os <b>terremotos</b> são frequentes — como na ${MODOS.tra.ex}.`, 'alerta');
+          mostrarFeicao('falha', true, 'Falha transformante', 0, -1.6);
+        }
+      }
+      function mostrarFeicao(id, vis, txt, x, z) { const r = feicao(id); r.visible = vis; if (vis) { r.element.textContent = txt; r.position.set(x, Math.max(0, alturaEm(x, z)) + 0.5, z); } }
+
+      // ---------- painel ----------
+      const gM = ui.grupo('Limite entre as placas');
+      ui.select({ opcoes: Object.entries(MODOS).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: E.modo, pai: gM, aoMudar: (v) => { E.modo = v; iniciarModo(); guia.diz(`<b>${MODOS[v].nome}</b>. Exemplo real: ${MODOS[v].ex}. Clique em ▶ para acelerar o tempo.`, { chave: 'ev' }); } });
+      ui.slider({ rotulo: 'Velocidade das placas', min: 1, max: 10, passo: 0.5, valor: E.vel, unidade: 'cm/ano', pai: gM, aoMudar: (v) => { E.vel = v; } });
+      ui.slider({ rotulo: 'Erosão (chuva, rios, gelo)', min: 0, max: 1, passo: 0.05, valor: E.erosao, pai: gM, formatar: (v) => (v < 0.15 ? 'fraca' : v < 0.6 ? 'moderada' : 'forte'), aoMudar: (v) => { E.erosao = v; } });
+      const btT = ui.botao({ rotulo: '▶ Tempo geológico', classe: 'pequeno', aoClicar: () => { E.rodando = !E.rodando; btT.innerHTML = E.rodando ? '⏸ Pausar' : '▶ Tempo geológico'; } });
+      ui.linha(gM, btT, ui.botao({ rotulo: 'Só erosão (placas paradas)', classe: 'branco pequeno', aoClicar: () => { E.soErosao = !E.soErosao; guia.diz(E.soErosao ? 'Placas paradas: agora só a erosão age. Veja os picos se arredondarem com o tempo.' : 'Placas em movimento de novo.', { chave: 'ev' }); } }),
+        ui.botao({ rotulo: '↺ Recomeçar', classe: 'branco pequeno', aoClicar: () => { iniciarModo(); } }));
+      const lei = ui.leituras([{ id: 't', rotulo: 'Tempo', destaque: true }, { id: 'D', rotulo: 'Deslocamento' }, { id: 'max', rotulo: 'Ponto mais alto' }, { id: 'min', rotulo: 'Ponto mais baixo' }], gM);
+      function pintar() { lei.set('t', `${SQ.num(E.t, 1)} milhões de anos`); lei.set('D', `${SQ.num(E.D, 0)} km`); lei.set('max', `${SQ.num(E.max * M_POR_UN, 0)} m`); lei.set('min', `${SQ.num(E.min * M_POR_UN, 0)} m`); }
+
+      c.escolher([terreno], (obj, hit) => {
+        if (!hit) return;
+        const { x, z } = hit.point, y = alturaEm(x, z) * M_POR_UN, md = E.modo;
+        let t = `Aqui o relevo está a <b>${SQ.num(y, 0)} m</b> ${y < 0 ? 'abaixo' : 'acima'} do nível do mar. `;
+        if (md === 'oc' && x < -0.2 && x > -1) t += 'É a <b>fossa oceânica</b>: o ponto onde a placa oceânica mergulha no manto.';
+        else if (md === 'oc' && x < -1) t += 'Assoalho oceânico, feito de basalto mais denso que a crosta continental.';
+        else if (md === 'oc' && Math.abs(x - 1.3) < 0.7) t += E.D > 280 ? 'Cordilheira vulcânica, alimentada pelo magma da subducção.' : 'Esta área está subindo com a compressão.';
+        else if (md === 'cc' && Math.abs(x) < 1.3) t += 'Cinturão de <b>dobramentos</b>: as rochas das duas placas se empilham.';
+        else if (md === 'div' && Math.abs(x) < 0.6) t += E.min < 0 ? 'Fundo do novo oceano, com crosta recém-formada pelo magma.' : 'Fundo do <b>vale em rifte</b>, afundando entre falhas.';
+        else if (md === 'tra' && Math.abs(x) < 0.3) t += 'Bem em cima da <b>falha</b>: as rochas raspam e acumulam tensão, liberada em terremotos.';
+        else t += y > 3000 ? 'Alta montanha: frio intenso e neve nos picos.' : y > 600 ? 'Planalto ou serra.' : y > 0 ? 'Planície ou depressão.' : 'Plataforma submersa.';
+        guia.diz(t, { chave: 'clique' });
+      });
+
+      let acTerr = 0;
+      c.aoQuadro((dt) => {
+        if (E.rodando) {
+          if (E.soErosao) { const v = E.vel; E.vel = 0; passo(dt * 3); E.vel = v; } else passo(dt * 3);
+          acTerr += dt;
+          if ((E.modo === 'tra' || E.modo === 'oc' || E.modo === 'cc') && acTerr > (E.modo === 'tra' ? 0.5 : 1.3) && !E.soErosao) { acTerr = 0; terremoto(E.modo === 'tra' ? 0 : E.modo === 'oc' ? -0.4 + Math.random() * 1.6 : (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * (LZ - 1)); }
+        }
+        for (let k = aneis.length - 1; k >= 0; k--) { const a = aneis[k]; a.userData.v += dt; a.scale.setScalar(1 + a.userData.v * 6); a.material.opacity = Math.max(0, 1 - a.userData.v / 1.2); if (a.userData.v > 1.2) { c.scene.remove(a); aneis.splice(k, 1); } }
+        if (erupcao.visible) {
+          for (let i = 0; i < NP; i++) {
+            pvida[i] -= dt;
+            if (pvida[i] <= 0) { const [vx, vz] = VULC[i % 3]; ppos.set([vx, alturaEm(vx, vz) + 0.05, vz], i * 3); pvel.set([(Math.random() - 0.5) * 0.8, 1.6 + Math.random() * 1.6, (Math.random() - 0.5) * 0.8], i * 3); pvida[i] = 0.8 + Math.random() * 1.2; }
+            pvel[i * 3 + 1] -= 3 * dt; for (let a = 0; a < 3; a++) ppos[i * 3 + a] += pvel[i * 3 + a] * dt;
+          }
+          pgeo.attributes.position.needsUpdate = true;
+        }
+        if (magma.visible) magma.material.color.setHSL(0.05, 1, 0.5 + Math.sin(performance.now() / 300) * 0.08);
+        if (E.modo === 'tra') setas.children.forEach((s, i) => { s.position.z = Math.sin(performance.now() / 600) * 0.15 * (i ? -1 : 1); });
+      });
+      guia.contexto = () => ({ limite: MODOS[E.modo].nome, velocidade: E.vel, erosao: E.erosao, tempoMa: E.t, deslocamentoKm: E.D, maxM: E.max * M_POR_UN, minM: E.min * M_POR_UN,
+        resumo: `${MODOS[E.modo].nome}, ${SQ.num(E.t, 1)} milhões de anos simulados e ${SQ.num(E.D, 0)} km de deslocamento. Ponto mais alto: ${SQ.num(E.max * M_POR_UN, 0)} m; mais baixo: ${SQ.num(E.min * M_POR_UN, 0)} m. Exemplo real: ${MODOS[E.modo].ex}.` });
+      iniciarModo();
+    },
+  });
+  </script>
+</body>
+</html>

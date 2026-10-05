@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratório Virtual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/frasco-roxo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .passos-lab { margin: 0; padding-left: 20px; font-size: 14px; }
+    .passos-lab li.feito { color: var(--verde-escuro); }
+    .passos-lab li.feito::marker { content: "✔ "; }
+    .resposta { display: flex; gap: 6px; margin-top: 8px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const KW = 1e-14, VA = 25, CB = 0.1, BURETA = 50;
+  const ACIDOS = {
+    hcl: { nome: 'HCl (ácido forte)', ka: Infinity, formula: 'HCl + NaOH → NaCl + H₂O' },
+    acetico: { nome: 'CH₃COOH (ácido fraco)', ka: 1.8e-5, formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O' },
+    misterio: { nome: 'Amostra desconhecida', ka: Infinity, formula: 'HCl + NaOH → NaCl + H₂O' },
+  };
+  const INDICADORES = {
+    fenolftaleina: { nome: 'Fenolftaleína', faixa: [8.2, 10], acida: null, basica: [255, 64, 160] },
+    metila: { nome: 'Alaranjado de metila', faixa: [3.1, 4.4], acida: [232, 69, 44], basica: [247, 197, 49] },
+    bromotimol: { nome: 'Azul de bromotimol', faixa: [6.0, 7.6], acida: [242, 211, 60], basica: [47, 107, 224] },
+    repolho: { nome: 'Extrato de repolho roxo', faixa: [6, 8], tabela: [[1, [220, 40, 60]], [3, [235, 70, 140]], [5, [170, 80, 190]], [7, [120, 80, 200]], [8.5, [60, 100, 220]], [10, [40, 170, 130]], [12, [190, 210, 50]], [14, [240, 220, 60]]] },
+  };
+  const AGUA = [221, 239, 255];
+  const mistura = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+
+  function ph(Ca, Vb, ka) {
+    const V = VA + Vb, CaT = (Ca * VA) / V, Na = (CB * Vb) / V;
+    const g = (h) => h + Na - (ka === Infinity ? CaT : (CaT * ka) / (ka + h)) - KW / h;
+    let lo = -15, hi = 1;
+    for (let i = 0; i < 70; i++) { const m = (lo + hi) / 2; g(10 ** m) > 0 ? (hi = m) : (lo = m); }
+    return -(lo + hi) / 2;
+  }
+  function corIndicador(id, p) {
+    const I = INDICADORES[id];
+    if (I.tabela) { const t = I.tabela; if (p <= t[0][0]) return t[0][1]; for (let i = 1; i < t.length; i++) if (p <= t[i][0]) return mistura(t[i - 1][1], t[i][1], (p - t[i - 1][0]) / (t[i][0] - t[i - 1][0])); return t[t.length - 1][1]; }
+    const meio = (I.faixa[0] + I.faixa[1]) / 2, larg = (I.faixa[1] - I.faixa[0]) / 4.4;
+    const f = 1 / (1 + 10 ** ((meio - p) / larg));
+    return I.acida ? mistura(I.acida, I.basica, f) : mistura(AGUA, I.basica, Math.min(1, f * 1.1));
+  }
+  const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+  SQ.demo('laboratorio-virtual', {
+    fundo: 'ceu',
+    dica: 'Use os botões de gotejamento · perto da virada, vá gota a gota',
+    sala: ['Peça que cada grupo calcule o volume esperado de equivalência antes de titular (n ácido = n base).', 'Titule o ácido fraco com alaranjado de metila e com fenolftaleína: por que um deles erra o ponto?', 'Use a amostra desconhecida como desafio: quem chega mais perto da concentração real?'],
+    comoIA: 'O guia conduz o procedimento passo a passo e acompanha o volume, o pH e a cor. Ele avisa quando o ponto de equivalência se aproxima, explica a escolha do indicador e confere o cálculo da concentração. A curva é calculada pelo balanço de cargas, inclusive para o ácido fraco; uma IA conectada pode discutir erros experimentais do aluno.',
+    guia: {
+      ola: 'Bancada pronta: na bureta há <b>NaOH 0,1 mol/L</b>; no erlenmeyer, <b>25 mL de ácido</b> com indicador. Siga os passos do procedimento e acompanhe a curva de pH ao lado.',
+      perguntas: [
+        { p: 'O que é o ponto de equivalência?', chaves: ['equivalencia', 'ponto', 'neutraliza'], r: 'É quando a quantidade de base adicionada é exatamente a necessária para reagir com todo o ácido: <b>n(ácido) = n(base)</b>, ou C<sub>a</sub>·V<sub>a</sub> = C<sub>b</sub>·V<sub>b</sub>. Na curva, é o meio do “salto” de pH.' },
+        { p: 'Como escolho o indicador?', chaves: ['indicador', 'escolh', 'qual'], r: 'A faixa de viragem do indicador precisa cair <b>dentro do salto</b> de pH. Ácido forte × base forte: o salto vai de ~4 a ~10, quase todos servem. Ácido fraco × base forte: o equivalente fica em pH ~8,7 — use <b>fenolftaleína</b>.' },
+        { p: 'Por que gota a gota no fim?', chaves: ['gota', 'devagar', 'fim'], r: 'Perto da equivalência, uma única gota (0,05 mL) muda o pH em várias unidades. Se você passar do ponto, o volume medido fica maior que o real e a concentração calculada sai errada.' },
+        { p: 'Por que o ácido fraco tem pH maior?', chaves: ['fraco', 'acetico', 'vinagre'], r: 'O ácido acético se ioniza só um pouco (Ka = 1,8·10⁻⁵): com a mesma concentração, libera bem menos H⁺ que o HCl. Na equivalência forma acetato, que é básico — por isso o pH final passa de 7.' },
+        { p: 'Como calculo a concentração?', chaves: ['calcul', 'concentracao', 'molar'], r: (c) => c.equivalencia ? `Use C<sub>a</sub> = C<sub>b</sub>·V<sub>b</sub> / V<sub>a</sub> = 0,1 × ${SQ.num(c.equivalencia, 2)} / 25 ≈ <b>${SQ.num((0.1 * c.equivalencia) / 25, 3)} mol/L</b>.` : 'Titule até a viragem do indicador. Depois: C<sub>a</sub> = C<sub>b</sub>·V<sub>b</sub> / V<sub>a</sub>.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { acido: 'hcl', ind: 'fenolftaleina', Ca: 0.1, Vb: 0, aberta: false, fluxo: 0.6, pontos: [[0, 0]], gotas: [], virou: null, avisou: false, teorica: false, t: 0 };
+      E.pontos = [[0, ph(E.Ca, 0, ACIDOS[E.acido].ka)]];
+      const ka = () => ACIDOS[E.acido].ka;
+      const pHatual = () => ph(E.Ca, E.Vb, ka());
+      const Veq = () => (E.Ca * VA) / CB;
+      const vista = SQ.vista({ x0: 0, x1: BURETA, y0: 0, y1: 14 }, { x: 0, y: 0, w: 1, h: 1 });
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const largLab = Math.max(260, w * 0.44), cx = largLab * 0.55;
+        // bancada
+        d.bloco(ctx, 10, h - 46, largLab - 10, 30, { cor: '#C98B4E', r: 8 });
+        // suporte
+        ctx.fillStyle = '#5D6B94'; ctx.fillRect(cx - 70, 30, 8, h - 80); d.bloco(ctx, cx - 100, h - 64, 90, 18, { cor: '#5D6B94', r: 6, alt: 0 });
+        ctx.fillRect(cx - 66, 82, 60, 7);
+        // bureta
+        const bTop = 40, bBot = h * 0.56, bW = 22, bx = cx - bW / 2;
+        const nivel = bTop + 10 + ((bBot - bTop - 10) * E.Vb) / BURETA;
+        ctx.fillStyle = 'rgba(221,239,255,.95)'; ctx.fillRect(bx, nivel, bW, bBot - nivel);
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.strokeRect(bx, bTop, bW, bBot - bTop);
+        ctx.fillStyle = C.tinta; ctx.font = '700 9px Nunito, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        for (let mL = 0; mL <= BURETA; mL += 1) { const y = bTop + 10 + ((bBot - bTop - 10) * mL) / BURETA; ctx.fillRect(bx + bW - (mL % 5 ? 5 : 10), y, mL % 5 ? 5 : 10, 1); if (mL % 10 === 0) ctx.fillText(String(mL), bx - 4, y); }
+        ctx.strokeStyle = C.azul; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx - 1, nivel); ctx.lineTo(bx + bW + 1, nivel); ctx.stroke();
+        d.etiqueta(ctx, `${SQ.num(E.Vb, 2)} mL`, bx + bW + 42, nivel, { tam: 11, cor: C.celesteClaro });
+        d.texto(ctx, 'NaOH 0,1 M', cx, bTop - 8, { tam: 11, alinhar: 'center' });
+        // torneira e ponta
+        ctx.fillStyle = 'rgba(221,239,255,.95)'; ctx.strokeStyle = C.tinta; ctx.beginPath(); ctx.moveTo(bx, bBot); ctx.lineTo(cx - 3, bBot + 28); ctx.lineTo(cx + 3, bBot + 28); ctx.lineTo(bx + bW, bBot); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.save(); ctx.translate(cx, bBot + 12); ctx.rotate(E.aberta ? Math.PI / 2 : 0); d.bloco(ctx, -18, -4, 36, 8, { cor: E.aberta ? C.verde : C.vermelho, r: 4, alt: 0, esp: 2 }); ctx.restore();
+        // erlenmeyer
+        const fy = h - 66, fH = Math.min(170, h * 0.3), fW = fH * 0.9;
+        const pts = [[cx - 13, fy - fH], [cx + 13, fy - fH], [cx + 13, fy - fH * 0.62], [cx + fW / 2, fy - 8], [cx + fW / 2 - 8, fy], [cx - fW / 2 + 8, fy], [cx - fW / 2, fy - 8], [cx - 13, fy - fH * 0.62]];
+        const p = pHatual(), cor = corIndicador(E.ind, p);
+        const fr = Math.min(0.55, 0.3 + (E.Vb / BURETA) * 0.3), yl = fy - fH * fr;
+        ctx.save(); ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); ctx.clip();
+        ctx.fillStyle = rgb(cor, 0.92); ctx.beginPath(); ctx.moveTo(cx - fW, fy + 2);
+        for (let x = cx - fW; x <= cx + fW; x += 6) ctx.lineTo(x, yl + Math.sin(x * 0.08 + E.t * 6) * 2.2);
+        ctx.lineTo(cx + fW, fy + 2); ctx.closePath(); ctx.fill();
+        // gota recém-caída cria nuvem de cor (antes de misturar)
+        for (const g of E.gotas) if (g.nuvem) { ctx.fillStyle = rgb(g.cor, Math.max(0, 0.7 - g.idade)); ctx.beginPath(); ctx.arc(cx + g.dx, yl + 10 + g.idade * 30, 8 + g.idade * 30, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+        ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(cx - fW / 2 + 16, fy - fH * 0.4, 6, fH * 0.3);
+        // agitador
+        ctx.save(); ctx.translate(cx, fy - 6); ctx.scale(1, 0.35); ctx.rotate(E.t * 9); ctx.fillStyle = '#fff'; ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; d.rr(ctx, -14, -3, 28, 6, 3); ctx.fill(); ctx.stroke(); ctx.restore();
+        // gotas caindo
+        for (const g of E.gotas) if (!g.nuvem) { ctx.fillStyle = 'rgba(191,232,255,1)'; ctx.strokeStyle = C.tinta; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(cx, g.y, 3.5, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+        // pHmetro
+        const my = Math.max(100, fy - fH - 20);
+        ctx.strokeStyle = '#5D6B94'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(70, my + 58); ctx.quadraticCurveTo(80, fy - fH * 0.1, cx + 4, fy - fH * 0.9); ctx.lineTo(cx + 6, yl + 22); ctx.stroke();
+        d.bloco(ctx, 18, my, 104, 58, { cor: C.tinta, r: 10, sombra: '#2B3D8C' });
+        d.texto(ctx, 'pH', 30, my + 20, { tam: 11, cor: '#8FC8FF' });
+        d.texto(ctx, SQ.numFixo(p, 2), 110, my + 46, { tam: 26, alinhar: 'right', cor: '#7CFF9B', fonte: 'mono' });
+        // ---------- curva de titulação ----------
+        vista.area = { x: largLab + 18, y: 14, w: w - largLab - 30, h: h - 30 };
+        d.eixos(ctx, vista, { fundo: '#FBFCFF', nomeX: 'V NaOH (mL)', nomeY: 'pH', alvoX: 5, alvoY: 7, eixoNaBorda: true });
+        const I = INDICADORES[E.ind];
+        ctx.fillStyle = rgb(I.tabela ? [120, 80, 200] : I.basica, 0.16); ctx.fillRect(vista.area.x, vista.Y(I.faixa[1]), vista.area.w, vista.Y(I.faixa[0]) - vista.Y(I.faixa[1]));
+        d.texto(ctx, `viragem: ${I.nome.toLowerCase()}`, vista.area.x + 40, vista.Y(I.faixa[1]) - 5, { tam: 11, cor: C.suave });
+        if (E.teorica) vista.curva(ctx, (v) => ph(E.Ca, Math.max(0, v), ka()), { cor: '#9AA8D6', esp: 2, tracejado: [6, 6], x0: 0, x1: BURETA, passos: 400 });
+        if (E.teorica || E.virou != null) { const xe = vista.X(Veq()); if (xe < vista.area.x + vista.area.w) { ctx.setLineDash([4, 5]); ctx.strokeStyle = C.verdeEscuro; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(xe, vista.area.y); ctx.lineTo(xe, vista.area.y + vista.area.h); ctx.stroke(); ctx.setLineDash([]); if (E.teorica) d.etiqueta(ctx, `equivalência ${SQ.num(Veq(), 2)} mL`, xe, vista.area.y + 26, { tam: 11, cor: '#DDF7E1' }); } }
+        ctx.strokeStyle = C.azul; ctx.lineWidth = 3; ctx.beginPath(); E.pontos.forEach(([v, q], i) => (i ? ctx.lineTo(vista.X(v), vista.Y(q)) : ctx.moveTo(vista.X(v), vista.Y(q)))); ctx.stroke();
+        const [vu, pu] = E.pontos[E.pontos.length - 1]; d.bola(ctx, vista.X(vu), vista.Y(pu), 7, C.amarelo);
+        ctx.fillStyle = rgb(cor); ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; d.rr(ctx, vista.area.x + vista.area.w - 42, vista.area.y + 10, 30, 30, 8); ctx.fill(); ctx.stroke();
+      }
+
+      function adicionar(mL) {
+        if (E.Vb >= BURETA - 1e-9) { guia.diz('A bureta acabou! Reinicie a titulação.', { tipo: 'alerta', chave: 'lab' }); E.aberta = false; tAberta.valor = false; return; }
+        const pAnt = pHatual();
+        E.Vb = Math.min(BURETA, E.Vb + mL);
+        const p = pHatual(); E.pontos.push([E.Vb, p]);
+        if (mL <= 0.06 || Math.random() < 0.4) E.gotas.push({ y: tela.h * 0.56 + 30, v: 0, cor: corIndicador(E.ind, Math.max(p, pAnt) + 1.5) });
+        marcarPasso(2); avaliar(pAnt, p);
+        pintar();
+      }
+      function avaliar(pAnt, p) {
+        const I = INDICADORES[E.ind], meio = (I.faixa[0] + I.faixa[1]) / 2;
+        if (!E.avisou && Veq() - E.Vb < 2 && Veq() - E.Vb > 0 && E.aberta) { E.avisou = true; guia.diz('⚠️ O pH começou a subir mais rápido: você está chegando perto. Feche a torneira e continue <b>gota a gota</b>.', { tipo: 'alerta', chave: 'lab' }); }
+        if (E.virou == null && pAnt < meio && p >= meio) {
+          E.virou = E.Vb; marcarPasso(3);
+          const erro = E.Vb - Veq(), ok = Math.abs(erro) <= 0.3;
+          let t = `🎨 <b>Viragem!</b> A cor mudou com ${SQ.num(E.Vb, 2)} mL de NaOH. `;
+          if (E.acido === 'misterio') t += 'Feche a torneira e calcule a concentração da amostra: C<sub>a</sub> = C<sub>b</sub>·V<sub>b</sub>/V<sub>a</sub>.';
+          else t += ok ? `Excelente: o ponto de equivalência teórico é ${SQ.num(Veq(), 2)} mL.` : erro < 0 ? `Mas o equivalente real é ${SQ.num(Veq(), 2)} mL: este indicador vira <b>antes</b> do ponto (faixa ${I.faixa.join('–')} fora do salto de pH).` : `O equivalente teórico é ${SQ.num(Veq(), 2)} mL: você passou ${SQ.num(erro, 2)} mL. Perto do fim, vá gota a gota!`;
+          if (E.aberta) { E.aberta = false; tAberta.valor = false; t += ' (fechei a torneira para você)'; }
+          guia.diz(t, { tipo: ok || E.acido === 'misterio' ? 'sucesso' : 'alerta', chave: 'lab' });
+          SQ.som(660, 0.12); setTimeout(() => SQ.som(990, 0.18), 110);
+        }
+      }
+
+      // ---------- painel ----------
+      const gS = ui.grupo('Amostra e indicador');
+      ui.select({ rotulo: 'Ácido no erlenmeyer (25 mL)', opcoes: Object.entries(ACIDOS).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: E.acido, pai: gS, aoMudar: (v) => { E.acido = v; if (v === 'misterio') E.Ca = Math.round((0.05 + Math.random() * 0.1) * 1000) / 1000; else E.Ca = sCa.valor; sCa.el.hidden = v === 'misterio'; gR.hidden = v !== 'misterio'; reiniciar(); } });
+      const sCa = ui.slider({ rotulo: 'Concentração do ácido', min: 0.05, max: 0.18, passo: 0.01, valor: E.Ca, unidade: 'mol/L', pai: gS, aoMudar: (v) => { E.Ca = v; reiniciar(); } });
+      ui.select({ rotulo: 'Indicador', opcoes: Object.entries(INDICADORES).map(([k, v]) => ({ valor: k, rotulo: `${v.nome} (${v.faixa.join('–')})` })), valor: E.ind, pai: gS, aoMudar: (v) => { E.ind = v; marcarPasso(1); const I = INDICADORES[v]; guia.diz(`${I.nome}: viragem entre pH ${I.faixa[0]} e ${I.faixa[1]}. ${E.acido === 'acetico' && v === 'metila' ? 'Hmm… com ácido fraco este indicador vai virar cedo demais. Teste e veja!' : v === 'repolho' ? 'Indicador natural: muda de cor ao longo de toda a escala de pH!' : ''}`, { chave: 'ind' }); tela.redesenhar(); } });
+      ui.alternar({ rotulo: 'Mostrar curva teórica', valor: false, pai: gS, aoMudar: (v) => { E.teorica = v; tela.redesenhar(); } });
+
+      const gB = ui.grupo('Bureta');
+      ui.linha(gB, ui.botao({ rotulo: '💧 1 gota', classe: 'pequeno', aoClicar: () => adicionar(0.05) }), ui.botao({ rotulo: '+0,5 mL', classe: 'branco pequeno', aoClicar: () => adicionar(0.5) }), ui.botao({ rotulo: '+2 mL', classe: 'branco pequeno', aoClicar: () => adicionar(2) }));
+      const tAberta = ui.alternar({ rotulo: 'Torneira aberta (fluxo contínuo)', valor: false, pai: gB, aoMudar: (v) => { E.aberta = v; if (v) marcarPasso(2); } });
+      ui.slider({ rotulo: 'Vazão da torneira', min: 0.1, max: 2, passo: 0.1, valor: E.fluxo, unidade: 'mL/s', pai: gB, aoMudar: (v) => { E.fluxo = v; } });
+      ui.botao({ rotulo: '↺ Reiniciar titulação', classe: 'branco pequeno', pai: ui.linha(gB), aoClicar: reiniciar });
+      const lei = ui.leituras([{ id: 'v', rotulo: 'V de NaOH' }, { id: 'p', rotulo: 'pH', destaque: true }, { id: 'h', rotulo: '[H⁺] (mol/L)' }, { id: 'n', rotulo: 'n NaOH (mmol)' }], gB);
+
+      const gP = ui.grupo('Procedimento');
+      const passos = ['Escolha o ácido e o indicador', 'Confira o indicador no erlenmeyer', 'Goteje a base com o agitador ligado', 'Pare na viragem e anote o volume', 'Calcule a concentração (Cₐ·Vₐ = C_b·V_b)'];
+      const ol = SQ.el('ol', { class: 'passos-lab' }, ...passos.map((t) => SQ.el('li', null, t))); gP.append(ol);
+      function marcarPasso(i) { for (let k = 0; k <= i; k++) ol.children[k].classList.add('feito'); }
+      const gR = ui.grupo('Resultado da amostra desconhecida'); gR.hidden = true;
+      const inp = SQ.el('input', { type: 'text', inputmode: 'decimal', placeholder: 'Concentração (mol/L)', 'aria-label': 'Concentração calculada' });
+      const btC = ui.botao({ rotulo: 'Conferir', classe: 'verde pequeno' }); gR.append(SQ.el('div', { class: 'resposta' }, inp, btC));
+      btC.addEventListener('click', () => {
+        const v = parseFloat(inp.value.replace(',', '.'));
+        if (Number.isNaN(v)) { guia.diz('Digite a concentração calculada, por exemplo 0,084.', { tipo: 'alerta', chave: 'res' }); return; }
+        const erro = Math.abs(v - E.Ca) / E.Ca; marcarPasso(4);
+        guia.diz(erro < 0.03 ? `✅ Na mosca! A amostra tinha <b>${SQ.num(E.Ca, 3)} mol/L</b> (erro de ${SQ.num(erro * 100, 1)}%).` : erro < 0.1 ? `Quase! A amostra tinha ${SQ.num(E.Ca, 3)} mol/L — erro de ${SQ.num(erro * 100, 0)}%. Provavelmente passou um pouco da viragem.` : `A concentração real era ${SQ.num(E.Ca, 3)} mol/L. Confira: C<sub>a</sub> = 0,1 × V<sub>b</sub> / 25.`, { tipo: erro < 0.03 ? 'sucesso' : 'alerta', chave: 'res' });
+      });
+
+      function reiniciar() {
+        Object.assign(E, { Vb: 0, aberta: false, gotas: [], virou: null, avisou: false }); tAberta.valor = false;
+        E.pontos = [[0, pHatual()]];
+        [...ol.children].forEach((li, i) => li.classList.toggle('feito', i === 0));
+        guia.diz(`Erlenmeyer com 25 mL de ${ACIDOS[E.acido].nome.split(' ')[0]}${E.acido === 'misterio' ? ' de concentração <b>desconhecida</b>' : ` ${SQ.num(E.Ca, 2)} mol/L`}: pH inicial ${SQ.num(pHatual(), 2)}. ${E.acido !== 'misterio' ? `Previsão: a equivalência deve ocorrer em ${SQ.num(Veq(), 2)} mL (${SQ.num(E.Ca, 2)} × 25 / 0,1).` : 'Titule e descubra!'} Reação: ${ACIDOS[E.acido].formula}.`, { chave: 'lab' });
+        pintar();
+      }
+      function pintar() {
+        const p = pHatual();
+        lei.set('v', `${SQ.num(E.Vb, 2)} mL`); lei.set('p', SQ.numFixo(p, 2)); lei.set('h', (10 ** -p).toExponential(2).replace('.', ',')); lei.set('n', SQ.num(E.Vb * CB, 3));
+        tela && tela.redesenhar();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let acum = 0;
+      SQ.loop((dt) => {
+        E.t += dt;
+        if (E.aberta) { acum += dt * E.fluxo; while (acum >= 0.05) { acum -= 0.05; adicionar(0.05); if (!E.aberta) break; } }
+        for (const g of E.gotas) { if (g.nuvem) g.idade += dt; else { g.v += 900 * dt; g.y += g.v * dt; if (g.y > tela.h - 66 - Math.min(170, tela.h * 0.3) * 0.4) { g.nuvem = true; g.idade = 0; g.dx = (Math.random() - 0.5) * 20; } } }
+        E.gotas = E.gotas.filter((g) => !g.nuvem || g.idade < 0.7).slice(-30);
+        tela.redesenhar();
+      }).iniciar();
+      guia.contexto = () => ({ acido: ACIDOS[E.acido].nome, concentracao: E.acido === 'misterio' ? 'desconhecida' : E.Ca, indicador: INDICADORES[E.ind].nome, volumeBase: E.Vb, pH: pHatual(), viragem: E.virou, equivalencia: E.virou ?? (E.acido === 'misterio' ? null : Veq()) });
+      reiniciar();
+    },
+  });
+  </script>
+</body>
+</html>

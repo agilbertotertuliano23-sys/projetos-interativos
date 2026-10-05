@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Máquina do Tempo — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/ampulheta.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 4px; font-size: 18px; }
+    .ficha .fonte { margin-top: 8px; padding-top: 8px; border-top: 2px dashed var(--linha); font-size: 13px; color: var(--texto-suave); }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+    .linha-tempo { display: flex; gap: 6px; flex-wrap: wrap; }
+    .linha-tempo button { border: 2px solid var(--tinta); background: rgba(255,255,255,.92); border-radius: 10px; padding: 3px 9px; font: 800 12px var(--fonte); color: var(--tinta); box-shadow: 0 3px 0 rgba(11,20,56,.3); }
+    .linha-tempo button[aria-pressed="true"] { background: var(--amarelo); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const EPOCAS = {
+    aldeia: { nome: 'Aldeia Tupi', ano: 'antes de 1500', chao: 0x6FBF5A, ceu: 'linear-gradient(180deg,#8FD3FF 0%,#E6F7FF 80%)', intro: 'Litoral do atual Brasil, antes da chegada dos portugueses. Os povos Tupi viviam em aldeias (tabas) de ocas ao redor de um pátio.' },
+    colonia: { nome: 'Vila colonial', ano: 'séc. XVIII', chao: 0xD9C29A, ceu: 'linear-gradient(180deg,#B5D8F7 0%,#FFF4DE 85%)', intro: 'Vila Rica (hoje Ouro Preto), no auge do ciclo do ouro. Igrejas barrocas, casarões, tropeiros e trabalho de pessoas escravizadas nas minas.' },
+    belle: { nome: 'Rio de Janeiro', ano: 'c. 1905', chao: 0xC9CED9, ceu: 'linear-gradient(180deg,#A9C3E6 0%,#F4F0E8 85%)', intro: 'A capital da República na Belle Époque: a reforma de Pereira Passos abre avenidas largas, os bondes elétricos circulam e cortiços são demolidos.' },
+    hoje: { nome: 'Cidade de hoje', ano: 'séc. XXI', chao: 0xB8C2D6, ceu: 'linear-gradient(180deg,#7CC4FF 0%,#EAF5FF 85%)', intro: 'Uma cidade brasileira atual. Repare: nem tudo é novo — alguns elementos do passado continuam aqui (permanências).' },
+  };
+  // [nome, fácil, completo, fonte, pergunta crítica]
+  const INFO = {
+    oca: ['Oca', 'Casa grande de madeira e palha onde moravam várias famílias juntas.', 'Cada oca abrigava dezenas de pessoas de uma família extensa. Várias ocas em círculo formavam a taba, com um pátio central para festas, conversas e rituais.', 'Hans Staden, “Duas viagens ao Brasil” (1557).', 'Staden foi prisioneiro dos Tupinambá. Como essa situação pode ter influenciado o que ele escreveu?'],
+    fogueira: ['Fogueira e moquém', 'O fogo servia para cozinhar, aquecer e afastar animais.', 'Sobre o moquém (grelha de varas) defumavam-se peixes e carnes. Da mandioca, cultivada na roça, faziam farinha e beiju.', 'Jean de Léry, “Viagem à terra do Brasil” (1578).', 'Léry era um missionário francês. O que um europeu daquela época achava estranho — e o que achava admirável?'],
+    canoa: ['Canoa', 'Barco feito de um tronco escavado, usado para pescar e viajar pelos rios e pelo mar.', 'As canoas de tronco (ou de casca) podiam levar dezenas de pessoas. Rios e costa eram caminhos de comércio, guerra e visitas entre aldeias.', 'Carta de Pero Vaz de Caminha ao rei D. Manuel (1500).', 'A carta é o primeiro documento escrito sobre o Brasil. Por que ela fala tanto da “inocência” dos indígenas e das riquezas da terra?'],
+    roca: ['Roça de mandioca', 'Plantação de mandioca, milho e outras plantas.', 'Os indígenas desenvolveram técnicas para tirar o veneno da mandioca-brava. Milho, batata-doce, amendoim e caju também vêm de saberes indígenas.', 'Gabriel Soares de Sousa, “Tratado descritivo do Brasil” (1587).', 'Que alimentos do seu dia a dia têm origem indígena?'],
+    pessoas: ['Povos indígenas', 'Antes de 1500 viviam aqui milhões de pessoas, de muitos povos diferentes.', 'Eram centenas de povos e línguas. Eles não desapareceram: hoje há mais de 300 povos indígenas no Brasil, que falam cerca de 270 línguas.', 'Censo IBGE 2022: 1,7 milhão de indígenas no Brasil.', 'Por que é um erro falar dos indígenas só no passado?'],
+    igreja: ['Igreja barroca', 'Igreja enfeitada com curvas, ouro e esculturas — o estilo barroco.', 'O ouro das Minas financiou igrejas como a de São Francisco de Assis, com projeto e esculturas de Antônio Francisco Lisboa, o Aleijadinho, e pinturas de Mestre Ataíde.', 'Igreja de São Francisco de Assis, Ouro Preto (1766) — patrimônio mundial da UNESCO.', 'Uma construção também é fonte histórica. O que ela revela sobre quem tinha riqueza e poder?'],
+    casaroes: ['Casarões', 'Casas de dois andares com paredes brancas, janelas coloridas e telhado de barro.', 'No térreo funcionavam lojas e oficinas; no andar de cima morava a família. As paredes eram de taipa ou pedra, caiadas de branco.', 'Gravuras de Johann Moritz Rugendas, “Viagem pitoresca através do Brasil” (1835).', 'As gravuras foram feitas por um artista europeu para europeus. O que ele escolheu mostrar?'],
+    chafariz: ['Chafariz', 'Fonte de água da vila. As pessoas buscavam água ali.', 'Sem água encanada nas casas, o chafariz era ponto de encontro. Quem carregava os barris d’água, quase sempre, eram pessoas escravizadas.', 'Jean-Baptiste Debret, “Viagem pitoresca e histórica ao Brasil” (1834).', 'Quem aparece trabalhando nas imagens de Debret? O que isso conta sobre a sociedade colonial?'],
+    carro: ['Carro de boi', 'Carroça puxada por bois que levava cargas pesadas.', 'Junto com as tropas de mulas, o carro de boi levava mantimentos às minas e trazia ouro e mercadorias. Suas rodas de madeira “cantavam” nas estradas.', 'Relatos de viajantes do século XVIII e XIX.', 'Por que as estradas eram tão importantes para a Coroa portuguesa controlar o ouro?'],
+    pelourinho: ['Pelourinho', 'Coluna de pedra no centro da vila, símbolo do poder do rei.', 'Marcava a autoridade da Coroa e era lugar de castigos públicos, aplicados sobretudo a pessoas escravizadas. Lembrar disso é parte de entender a violência da escravidão.', 'Debret, prancha “Castigo de escravos” (1834).', 'Por que alguns castigos eram feitos em público?'],
+    bonde: ['Bonde elétrico', 'Veículo que andava sobre trilhos, movido a eletricidade.', 'Os bondes elétricos chegaram ao Rio em 1892 e mudaram o ritmo da cidade: bairros distantes ficaram a minutos do centro.', 'Fotografias de Augusto Malta (fotógrafo oficial da prefeitura, a partir de 1903).', 'Malta fotografava para a prefeitura. Que lado da cidade suas fotos mostravam — e qual ficava de fora?'],
+    sobrados: ['Sobrados da avenida', 'Prédios elegantes inspirados em Paris.', 'A Avenida Central (hoje Rio Branco) foi aberta em 1904–05 com fachadas no estilo eclético. Para isso, milhares de moradores pobres de cortiços foram despejados.', 'Revista “Kosmos” e jornais da época, 1904–1906.', 'Quem ganhou e quem perdeu com a modernização da cidade?'],
+    poste: ['Poste de iluminação', 'Poste com lampião para iluminar a rua à noite.', 'A iluminação a gás já existia desde 1854; no início do século XX, a luz elétrica começou a se espalhar pelas ruas principais.', 'Arquivo da Light (companhia de eletricidade, fundada em 1905).', 'Como a iluminação pública mudou a vida noturna nas cidades?'],
+    gente: ['Pessoas na rua', 'Moradores da cidade passeando e trabalhando.', 'A cidade crescia com imigrantes europeus e com a população negra recém-liberta da escravidão (1888), que enfrentava falta de trabalho e de moradia.', 'Lima Barreto, crônicas e romances (1900–1920).', 'Lima Barreto criticava a reforma. Por que é importante ler autores que discordavam do governo?'],
+    predios: ['Prédios', 'Edifícios altos de concreto, com muitos apartamentos.', 'O concreto armado e os elevadores permitiram cidades verticais. Hoje mais de 85% dos brasileiros vivem em áreas urbanas.', 'IBGE, Censo Demográfico 2022.', 'Quais problemas e vantagens a concentração urbana traz?'],
+    carros: ['Veículos', 'Caminhões, motos e carros movidos a motor.', 'O automóvel tomou as ruas no século XX; os bondes foram desaparecendo nos anos 1960. Hoje, cidades discutem ônibus elétricos, metrôs e bicicletas.', 'Dados do Denatran / Senatran sobre a frota nacional.', 'Por que muitas cidades estão tentando trazer de volta o transporte sobre trilhos?'],
+    semaforo: ['Semáforo', 'Sinal de trânsito com luzes vermelha, amarela e verde.', 'Organiza o trânsito de carros e pedestres. Os primeiros semáforos elétricos do Brasil surgiram nos anos 1930.', 'Código de Trânsito Brasileiro (1997).', '—'],
+    // anacronismos
+    moto: ['Motocicleta', 'Uma moto? Ela só seria inventada no fim do século XIX!', 'A motocicleta a combustão surgiu na Alemanha em 1885. Numa aldeia de antes de 1500 ela é um <b>anacronismo</b>.', '', ''],
+    posteEl: ['Poste elétrico', 'Postes de energia só apareceram mais de 350 anos depois!', 'A eletricidade só chegou às cidades brasileiras no fim do século XIX. Na aldeia, isso é um <b>anacronismo</b>.', '', ''],
+    caminhao: ['Caminhão', 'Caminhão no século XVIII? Ainda não existiam motores!', 'Os primeiros caminhões a motor surgiram por volta de 1896. Na vila colonial, as cargas iam em carros de boi e mulas: <b>anacronismo</b>.', '', ''],
+    semaforoAna: ['Semáforo', 'Um semáforo na vila do ouro? Não havia nem eletricidade!', 'Semáforos elétricos são do século XX. Na vila colonial é um <b>anacronismo</b>.', '', ''],
+    robo: ['Robô', 'Um robô humanoide em 1905? Nem a palavra “robô” existia!', 'A palavra robô foi criada em 1920, numa peça de Karel Čapek. Robôs humanoides são do século XXI: <b>anacronismo</b>.', '', ''],
+    solar: ['Painel solar', 'Painéis solares só se popularizaram no século XXI.', 'A primeira célula solar de silício prática é de 1954. Na Belle Époque ela é um <b>anacronismo</b>.', '', ''],
+    // permanências
+    igrejaHoje: ['Igreja colonial', 'Uma igreja do século XVIII no meio da cidade moderna!', 'É uma <b>permanência</b>: construções tombadas pelo IPHAN são preservadas como patrimônio e convivem com prédios novos.', 'IPHAN — Instituto do Patrimônio Histórico e Artístico Nacional (1937).', ''],
+    bondeHoje: ['Bonde turístico', 'O bonde ainda existe!', 'O bondinho de Santa Teresa, no Rio, roda desde 1877 (elétrico desde 1896) e foi restaurado: é uma <b>permanência</b> do passado na cidade de hoje.', 'Bonde de Santa Teresa, Rio de Janeiro.', ''],
+  };
+  const ESPECIAIS = { aldeia: { tipo: 'anacronismos', ids: ['moto', 'posteEl'] }, colonia: { tipo: 'anacronismos', ids: ['caminhao', 'semaforoAna'] }, belle: { tipo: 'anacronismos', ids: ['robo', 'solar'] }, hoje: { tipo: 'permanências', ids: ['igrejaHoje', 'bondeHoje'] } };
+
+  SQ.demo('maquina-do-tempo', {
+    fundo: 'ceu',
+    dica: 'Escolha a época · clique nos objetos · ache o que está fora do lugar',
+    sala: ['Em grupos, cada um investiga uma época e apresenta 3 objetos e suas fontes para a turma.', 'Compare a aldeia e a cidade de hoje: o que mudou (rupturas) e o que continua (permanências)?', 'No nível Médio, discuta as perguntas críticas: quem produziu cada fonte e com que intenção?'],
+    comoIA: 'O guia sabe a época escolhida, o nível da turma e o objeto clicado. Ele narra o contexto no nível adequado, cita a fonte histórica e, no Ensino Médio, propõe uma pergunta de crítica da fonte. Uma IA conectada pode ampliar a conversa e reconstruir outros acontecimentos a pedido do aluno.',
+    guia: {
+      ola: 'Bem-vindo à <b>Máquina do Tempo</b>! Escolha uma época, explore a cena clicando nos objetos e encontre os <b>anacronismos</b> — coisas que não poderiam estar ali.',
+      perguntas: [
+        { p: 'O que é um anacronismo?', chaves: ['anacronismo'], r: 'É colocar algo numa época em que ele ainda não existia (ou já não existia). Ex.: um celular numa pintura do século XVIII. Encontrar anacronismos treina o olhar de historiador!' },
+        { p: 'O que é uma fonte histórica?', chaves: ['fonte', 'documento'], r: 'Tudo o que nos ajuda a conhecer o passado: cartas, diários, fotos, pinturas, objetos, construções, relatos orais. Toda fonte foi produzida por alguém, com um ponto de vista.' },
+        { p: 'O que são permanências?', chaves: ['permanencia', 'permanencias', 'continua', 'ruptura'], r: 'São elementos do passado que continuam presentes (uma igreja antiga, uma festa, uma palavra indígena). As <b>rupturas</b> são as mudanças profundas. A história é feita das duas coisas.' },
+        { p: 'Os indígenas desapareceram?', chaves: ['indigena', 'desaparec', 'hoje'], r: 'Não! Apesar da violência da colonização, hoje há mais de 300 povos indígenas no Brasil, com cerca de 1,7 milhão de pessoas (IBGE 2022), em todas as regiões do país.' },
+        { p: 'Conte sobre esta época', chaves: ['epoca', 'conte', 'contexto'], r: (c) => c.contexto },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [7, 6.5, 10], alvo: [0, 0.8, 0], distancia: [5, 24], polarMax: 1.3, sombraRaio: 9 });
+      const m = (cor, o) => S3D.mat(cor, o);
+      const base = S3D.chao(7.5, 0x6FBF5A); c.scene.add(base);
+      const matChao = base.children[0].material;
+      const cenas = {}, alvos = [];
+      let epoca = 'aldeia', nivel = 'f2', achados = {};
+      for (const k of Object.keys(EPOCAS)) achados[k] = new Set();
+      const reg = (g, id, cena) => { g.userData.info = id; alvos.push(g); cena.add(g); return g; };
+      const caixa = (w, h, d, cor, o) => { const b = new T.Mesh(new T.BoxGeometry(w, h, d), m(cor, o)); b.castShadow = b.receiveShadow = true; return b; };
+
+      // ---------- construções procedurais ----------
+      function oca(r = 1.2) { const g = new T.Group(); const d = new T.Mesh(new T.SphereGeometry(r, 28, 16, 0, Math.PI * 2, 0, Math.PI / 2), m(0xD9A06B, { rugosidade: 0.9, verniz: 0, facetado: true })); d.scale.y = 1.1; d.castShadow = true; g.add(d); const porta = caixa(0.45, 0.7, 0.3, 0x4A2C14); porta.position.set(0, 0.35, r * 0.92); g.add(porta); for (let k = 0; k < 10; k++) { const fa = new T.Mesh(new T.TorusGeometry(r * Math.cos(k * 0.15) * 1.0, 0.025, 4, 40), m(0xA86A3A)); fa.rotation.x = Math.PI / 2; fa.position.y = Math.sin(k * 0.15) * r * 1.1; if (k < 9) g.add(fa); } S3D.contorno(g, 0.025); return g; }
+      function fogueira() { const g = new T.Group(); for (let k = 0; k < 4; k++) { const l = new T.Mesh(new T.CylinderGeometry(0.07, 0.07, 0.8, 8), m(0x6B4428)); l.rotation.set(Math.PI / 2 - 0.35, (k * Math.PI) / 2, 0); l.position.y = 0.18; g.add(l); } const ch = new T.Mesh(new T.ConeGeometry(0.28, 0.75, 12), m(0xFF9416, { emissivo: 0xFF6A00, emissivoForca: 1.4 })); ch.position.y = 0.55; ch.userData.chama = true; g.add(ch); const mq = new T.Group(); for (const [x, z] of [[-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5], [0.5, 0.5]]) { const v = new T.Mesh(new T.CylinderGeometry(0.03, 0.03, 0.9, 6), m(0x8C5A33)); v.position.set(x, 0.45, z); mq.add(v); } const gr = caixa(1.1, 0.04, 1.1, 0x8C5A33); gr.position.y = 0.9; mq.add(gr); mq.position.x = 1.4; g.add(mq); S3D.contorno(g, 0.02); return g; }
+      function canoa() { const g = new T.Group(); const b = new T.Mesh(new T.CapsuleGeometry(0.28, 2.2, 8, 16), m(0x8C5A33)); b.rotation.z = Math.PI / 2; b.scale.set(1, 1, 0.55); b.position.y = 0.12; g.add(b); const remo = new T.Mesh(new T.CylinderGeometry(0.03, 0.03, 1.4, 6), m(0xC98B4E)); remo.rotation.set(0.3, 0, 1.1); remo.position.set(0.3, 0.4, 0.2); g.add(remo); S3D.contorno(g, 0.02); return g; }
+      function roca() { const g = new T.Group(); for (let i = 0; i < 4; i++) for (let k = 0; k < 3; k++) { const p = new T.Group(); const caule = new T.Mesh(new T.CylinderGeometry(0.03, 0.04, 0.6, 5), m(0x8C5A33)); caule.position.y = 0.3; p.add(caule); for (let f = 0; f < 5; f++) { const fo = new T.Mesh(new T.ConeGeometry(0.06, 0.4, 4), m(0x36C04A)); fo.position.y = 0.6; fo.rotation.set(0.9, (f * Math.PI * 2) / 5, 0); fo.position.x = Math.sin((f * Math.PI * 2) / 5) * 0.12; fo.position.z = Math.cos((f * Math.PI * 2) / 5) * 0.12; p.add(fo); } p.position.set(i * 0.45, 0, k * 0.45); g.add(p); } return g; }
+      function posteEletrico() { const g = new T.Group(); const p = new T.Mesh(new T.CylinderGeometry(0.06, 0.08, 3, 8), m(0x8C8C8C)); p.position.y = 1.5; g.add(p); const tr = caixa(1.0, 0.07, 0.07, 0x5D6B94); tr.position.y = 2.8; g.add(tr); const tf = new T.Mesh(new T.CylinderGeometry(0.16, 0.16, 0.4, 12), m(0x5D6B94)); tf.position.set(0.18, 2.4, 0); g.add(tf); S3D.contorno(g, 0.02); return g; }
+      function igreja(esc = 1) {
+        const g = new T.Group();
+        const corpo = caixa(2.2, 2.0, 3.0, 0xF4F7FF); corpo.position.y = 1.0; g.add(corpo);
+        const tel = new T.Mesh(new T.CylinderGeometry(0.01, 1.35, 0.9, 4, 1), m(0xC4532F)); tel.rotation.y = Math.PI / 4; tel.scale.set(1.15, 1, 1.55); tel.position.y = 2.45; g.add(tel);
+        for (const s of [-1, 1]) { const t = caixa(0.75, 3.1, 0.75, 0xF4F7FF); t.position.set(s * 1.3, 1.55, 1.25); g.add(t); const cu = new T.Mesh(new T.ConeGeometry(0.5, 0.7, 4), m(0x1F5BE0)); cu.rotation.y = Math.PI / 4; cu.position.set(s * 1.3, 3.45, 1.25); g.add(cu); const cr = caixa(0.05, 0.35, 0.05, 0xFFC21A); cr.position.set(s * 1.3, 3.95, 1.25); g.add(cr); const sino = caixa(0.3, 0.4, 0.05, 0x0B1438); sino.position.set(s * 1.3, 2.5, 1.63); g.add(sino); }
+        const porta = caixa(0.7, 1.1, 0.1, 0x6B4428); porta.position.set(0, 0.55, 1.51); g.add(porta);
+        const front = new T.Mesh(new T.CylinderGeometry(1.15, 1.15, 0.12, 3), m(0xF4F7FF)); front.rotation.set(Math.PI / 2, 0, Math.PI / 2); front.scale.set(1, 1, 0.45); front.position.set(0, 2.25, 1.5); g.add(front);
+        for (const y of [0.04, 1.98]) { const f = caixa(2.25, 0.1, 3.05, 0x1F5BE0); f.position.y = y; g.add(f); }
+        const jan = caixa(0.4, 0.4, 0.06, 0x2BB4F5); jan.position.set(0, 1.55, 1.52); g.add(jan);
+        g.scale.setScalar(esc); S3D.contorno(g, 0.025); return g;
+      }
+      function casarao(cor) {
+        const g = new T.Group(); const c0 = caixa(1.6, 1.8, 1.4, 0xF4F7FF); c0.position.y = 0.9; g.add(c0);
+        const tel = new T.Mesh(new T.CylinderGeometry(0.05, 1.25, 0.6, 4), m(0xC4532F)); tel.rotation.y = Math.PI / 4; tel.scale.set(1, 1, 0.85); tel.position.y = 2.1; g.add(tel);
+        for (const [x, y] of [[-0.45, 0.5], [0.45, 0.5], [-0.45, 1.3], [0.45, 1.3]]) { const j = caixa(0.38, 0.5, 0.06, cor); j.position.set(x, y, 0.71); g.add(j); const v = caixa(0.24, 0.36, 0.07, 0x0B1438); v.position.set(x, y, 0.72); g.add(v); }
+        const bar = caixa(1.65, 0.08, 0.2, cor); bar.position.set(0, 1.0, 0.75); g.add(bar);
+        S3D.contorno(g, 0.02); return g;
+      }
+      function pelourinho() { const g = new T.Group(); const b = caixa(0.8, 0.25, 0.8, 0xB9B9B9); b.position.y = 0.12; g.add(b); const col = new T.Mesh(new T.CylinderGeometry(0.14, 0.17, 2.0, 12), m(0xD9D9D9)); col.position.y = 1.2; g.add(col); const top = new T.Mesh(new T.SphereGeometry(0.22, 12, 8), m(0xD9D9D9)); top.position.y = 2.3; g.add(top); S3D.contorno(g, 0.02); return g; }
+      function carroDeBoi() {
+        const g = new T.Group(); const car = caixa(1.2, 0.35, 0.9, 0xA86A3A); car.position.set(0, 0.75, 0); g.add(car);
+        for (const s of [-1, 1]) { const r = new T.Mesh(new T.CylinderGeometry(0.5, 0.5, 0.1, 18), m(0x6B4428)); r.rotation.x = Math.PI / 2; r.position.set(0, 0.5, s * 0.52); g.add(r); }
+        const lanca = caixa(1.6, 0.08, 0.08, 0x6B4428); lanca.position.set(1.3, 0.65, 0); g.add(lanca);
+        for (const s of [-1, 1]) { const boi = new T.Group(); const cp = new T.Mesh(new T.CapsuleGeometry(0.28, 0.6, 6, 12), m(0xE6E0D6)); cp.rotation.z = Math.PI / 2; cp.position.y = 0.75; boi.add(cp); for (const [x, z] of [[-0.3, -0.15], [0.3, -0.15], [-0.3, 0.15], [0.3, 0.15]]) { const p = new T.Mesh(new T.CylinderGeometry(0.06, 0.06, 0.55, 6), m(0xE6E0D6)); p.position.set(x, 0.28, z); boi.add(p); } const cab = new T.Mesh(new T.SphereGeometry(0.2, 12, 10), m(0xE6E0D6)); cab.position.set(0.68, 0.9, 0); boi.add(cab); for (const z of [-0.12, 0.12]) { const ch = new T.Mesh(new T.ConeGeometry(0.04, 0.25, 6), m(0xF4F7FF)); ch.position.set(0.68, 1.1, z); ch.rotation.x = z * 3; boi.add(ch); } boi.position.set(2.0, 0, s * 0.38); g.add(boi); }
+        S3D.contorno(g, 0.02); return g;
+      }
+      function semaforo() { const g = new T.Group(); const p = new T.Mesh(new T.CylinderGeometry(0.05, 0.05, 2.2, 8), m(0x3A3F55)); p.position.y = 1.1; g.add(p); const cx = caixa(0.3, 0.8, 0.25, 0x0B1438); cx.position.y = 2.4; g.add(cx); [[0xEE3B45, 2.65], [0xFFC21A, 2.4], [0x36C04A, 2.15]].forEach(([cor, y], i) => { const l = new T.Mesh(new T.SphereGeometry(0.09, 12, 8), m(cor, { emissivo: cor, emissivoForca: i === 2 ? 1.6 : 0.2 })); l.position.set(0, y, 0.13); g.add(l); }); S3D.contorno(g, 0.02); return g; }
+      function bonde(cor = 0x36C04A) {
+        const g = new T.Group(); const corpo = caixa(3.0, 1.1, 1.1, cor); corpo.position.y = 0.95; g.add(corpo);
+        const teto = caixa(3.2, 0.12, 1.25, 0xF4F7FF); teto.position.y = 1.56; g.add(teto);
+        for (let k = 0; k < 6; k++) for (const s of [-1, 1]) { const j = caixa(0.36, 0.45, 0.05, 0xBFE8FF); j.position.set(-1.15 + k * 0.46, 1.1, s * 0.56); g.add(j); }
+        const base = caixa(2.6, 0.25, 0.9, 0x3A3F55); base.position.y = 0.3; g.add(base);
+        for (const x of [-0.9, 0.9]) for (const s of [-1, 1]) { const r = new T.Mesh(new T.CylinderGeometry(0.2, 0.2, 0.08, 14), m(0x3A3F55)); r.rotation.x = Math.PI / 2; r.position.set(x, 0.2, s * 0.42); g.add(r); }
+        const vara = new T.Mesh(new T.CylinderGeometry(0.025, 0.025, 1.4, 6), m(0x3A3F55)); vara.rotation.z = -0.9; vara.position.set(-0.4, 2.1, 0); g.add(vara);
+        S3D.contorno(g, 0.02); return g;
+      }
+      function trilhos(comp = 9) { const g = new T.Group(); for (const s of [-0.42, 0.42]) { const t = caixa(comp, 0.05, 0.08, 0x8C8C8C); t.position.set(0, 0.03, s); g.add(t); } return g; }
+      function posteGas() { const g = new T.Group(); const p = new T.Mesh(new T.CylinderGeometry(0.05, 0.08, 2.4, 8), m(0x1B2559)); p.position.y = 1.2; g.add(p); const l = caixa(0.3, 0.38, 0.3, 0xFFE08A, { emissivo: 0xFFC21A, emissivoForca: 0.6 }); l.position.y = 2.55; g.add(l); const tp = new T.Mesh(new T.ConeGeometry(0.25, 0.2, 4), m(0x1B2559)); tp.rotation.y = Math.PI / 4; tp.position.y = 2.82; g.add(tp); S3D.contorno(g, 0.02); return g; }
+      function painelSolar() { const g = new T.Group(); const s = new T.Mesh(new T.CylinderGeometry(0.04, 0.04, 0.8, 6), m(0x8C8C8C)); s.position.y = 0.4; g.add(s); const pn = caixa(1.2, 0.05, 0.8, 0x1236A8, { metal: 0.3 }); pn.position.y = 0.85; pn.rotation.x = -0.5; g.add(pn); for (let k = -1; k <= 1; k++) { const l = caixa(0.02, 0.06, 0.8, 0xBFE8FF); l.position.set(k * 0.3, 0.86, 0); l.rotation.x = -0.5; g.add(l); } S3D.contorno(g, 0.02); return g; }
+      function rio() { const r = new T.Mesh(new T.PlaneGeometry(15, 1.6), m(0x2BB4F5, { verniz: 1, rugosidade: 0.1 })); r.rotation.x = -Math.PI / 2; r.position.set(0, 0.02, 4.3); r.receiveShadow = true; return r; }
+      function calcadao(w = 12, d = 2.6) { const p = caixa(w, 0.04, d, 0x8C93A8); p.position.y = 0.02; return p; }
+
+      async function modelo(id, tam, opc = {}) { const r = await S3D.instancia(id, { tamanho: tam, porAltura: !!opc.porAltura }); if (r.mixer && opc.anim) { const a = r.acoes[opc.anim]; a && a.play(); } r.obj.userData.mixer = r.mixer; return r.obj; }
+      const mixers = [];
+      async function montar(ep) {
+        const cena = new T.Group(); cena.visible = false; c.scene.add(cena); cenas[ep] = cena;
+        const pos = (o, x, z, ry = 0, y = 0) => { o.position.set(x, y, z); o.rotation.y = ry; return o; };
+        if (ep === 'aldeia') {
+          cena.add(rio());
+          for (const [x, z, r] of [[-3, -1.5, 1.3], [0.2, -3.2, 1.25], [3.2, -1.2, 1.15]]) reg(pos(oca(r), x, z, Math.atan2(-x, -z) + Math.PI), 'oca', cena);
+          reg(pos(fogueira(), -0.4, 0.4), 'fogueira', cena);
+          reg(pos(canoa(), 1.8, 4.3, 0.2, 0.05), 'canoa', cena);
+          reg(pos(roca(), -5, 1.6), 'roca', cena);
+          const fl = await modelo('floresta', 3.2); cena.add(pos(fl, -4.6, -4.2)); const fl2 = await modelo('arvores-altas', 2.4); cena.add(pos(fl2, 5.0, -3.6));
+          for (const [x, z, r] of [[1.2, 1.2, 0.5], [-1.6, 1.4, 2.6]]) { const p = await modelo('personagem', 1.15, { porAltura: true, anim: 'idle' }); const g = new T.Group(); g.add(p); reg(pos(g, x, z, r), 'pessoas', cena); mixers.push(p.userData.mixer); }
+          reg(pos(await modelo('moto', 1.2), 4.6, 1.8, -0.6), 'moto', cena);
+          reg(pos(posteEletrico(), -2.5, 3.0), 'posteEl', cena);
+        } else if (ep === 'colonia') {
+          cena.add(pos(calcadao(14, 3), 0, 1.2));
+          reg(pos(igreja(), 0, -3.4), 'igreja', cena);
+          const cas = new T.Group(); [[0xEE3B45, -4.6], [0x1F5BE0, -2.9], [0x36C04A, 2.9], [0xFFC21A, 4.6]].forEach(([cor, x]) => cas.add(pos(casarao(cor), x, -2.4))); reg(cas, 'casaroes', cena);
+          reg(pos(await modelo('fonte', 1.5), -1.8, 1.0), 'chafariz', cena);
+          reg(pos(carroDeBoi(), 1.2, 3.3, 0.2), 'carro', cena);
+          reg(pos(pelourinho(), 2.6, 0.6), 'pelourinho', cena);
+          const ba = await modelo('barracas', 2.4); cena.add(pos(ba, -4.4, 3.4, 0.4));
+          reg(pos(await modelo('caminhao', 1.6), 4.8, 3.6, -1.2), 'caminhao', cena);
+          reg(pos(semaforo(), -3.2, 1.3), 'semaforoAna', cena);
+        } else if (ep === 'belle') {
+          cena.add(pos(calcadao(15, 2.2), 0, 1.0)); cena.add(pos(trilhos(15), 0, 1.0));
+          const so = new T.Group(); for (const [id, x] of [['casa-a', -4.6], ['casa-b', -2.4], ['casa-a', 2.4], ['casa-b', 4.6]]) so.add(pos(await modelo(id, 2.0), x, -2.2)); reg(so, 'sobrados', cena);
+          reg(pos(bonde(), -0.3, 1.0), 'bonde', cena);
+          for (const x of [-3.6, 3.6]) reg(pos(posteGas(), x, 2.6), 'poste', cena);
+          reg(pos(await modelo('fonte', 1.4), 0.2, -3.2), 'chafariz', cena);
+          for (const [x, z, r] of [[-1.8, 2.8, 0.3], [2.0, 3.2, -2.4]]) { const p = await modelo('personagem', 1.15, { porAltura: true, anim: 'walk' }); const g = new T.Group(); g.add(p); reg(pos(g, x, z, r), 'gente', cena); mixers.push(p.userData.mixer); }
+          const ro = await modelo('robo', 1.3, { porAltura: true, anim: 'Wave' }); const gr = new T.Group(); gr.add(ro); reg(pos(gr, 4.6, 3.2, -0.8), 'robo', cena); mixers.push(ro.userData.mixer);
+          reg(pos(painelSolar(), -4.8, 3.6, 0.6), 'solar', cena);
+        } else {
+          cena.add(pos(calcadao(15, 2.4), 0, 1.0));
+          for (const x of [-5.6, -3.6, -1.6, 0.4, 2.4, 4.4]) { const r = await modelo('rua', 2.0); cena.add(pos(r, x, 1.0, Math.PI / 2, 0.03)); }
+          const pr = new T.Group(); for (const [x, z] of [[-4.6, -2.8], [-2.2, -3.4], [3.4, -3.0]]) pr.add(pos(await modelo('predio', 3.4), x, z)); reg(pr, 'predios', cena);
+          reg(pos(igreja(0.62), 0.5, -3.2), 'igrejaHoje', cena);
+          const vs = new T.Group(); vs.add(pos(await modelo('caminhao', 1.6), -2.6, 1.6, Math.PI / 2)); vs.add(pos(await modelo('moto', 1.1), 1.6, 0.5, -Math.PI / 2)); reg(vs, 'carros', cena);
+          reg(pos(semaforo(), 3.4, 2.6), 'semaforo', cena);
+          const bh = bonde(0xFFC21A); bh.scale.setScalar(0.62); const gbh = new T.Group(); gbh.add(bh, trilhos(3.4)); reg(pos(gbh, 4.6, 3.6, 0.15), 'bondeHoje', cena);
+          for (const [x, z] of [[-4.8, 3.4], [-0.6, 3.3]]) cena.add(pos(await modelo('arvores', 1.6), x, z));
+          const p = await modelo('personagem', 1.15, { porAltura: true, anim: 'walk' }); const g = new T.Group(); g.add(p); reg(pos(g, 0.8, 2.8, 2.6), 'gente', cena); mixers.push(p.userData.mixer);
+        }
+        return cena;
+      }
+
+      // ---------- viagem ----------
+      const portal = new T.Mesh(new T.TorusGeometry(1, 0.08, 12, 80), new T.MeshBasicMaterial({ color: 0xFFC21A, transparent: true })); portal.rotation.x = Math.PI / 2; portal.visible = false; c.scene.add(portal);
+      let viajando = false;
+      async function irPara(ep, primeira) {
+        if (viajando) return; viajando = true;
+        const ant = cenas[epoca];
+        if (!primeira && ant) { portal.visible = true; await c.tween(0.55, (k) => { ant.scale.setScalar(1 - k); portal.scale.setScalar(1 + k * 8); portal.material.opacity = 1 - k * 0.5; ant.rotation.y = k * 1.5; }); ant.visible = false; ant.rotation.y = 0; }
+        epoca = ep; botoesLT.forEach((b) => b.setAttribute('aria-pressed', String(b._ep === ep)));
+        palco.style.background = EPOCAS[ep].ceu; matChao.color.setHex(EPOCAS[ep].chao);
+        const cena = cenas[ep] || (await montar(ep));
+        cena.visible = true; SQ.som(primeira ? 520 : 300, 0.25, 'sine'); setTimeout(() => SQ.som(780, 0.2), 140);
+        await c.tween(primeira ? 0.01 : 0.6, (k) => { cena.scale.setScalar(k); cena.rotation.y = (1 - k) * -1.5; portal.scale.setScalar(9 - k * 8); portal.material.opacity = 0.5 * (1 - k); }, { ease: 'saida' });
+        portal.visible = false; viajando = false;
+        mostrarFicha(null); pintarDesafio();
+        guia.diz(`⏳ <b>${EPOCAS[ep].nome} (${EPOCAS[ep].ano})</b>. ${EPOCAS[ep].intro} ${ESPECIAIS[ep].tipo === 'anacronismos' ? 'Há <b>2 anacronismos</b> escondidos: ache-os!' : 'Desafio: encontre <b>2 permanências</b> do passado.'}`, { chave: 'ep' });
+      }
+
+      // ---------- painel ----------
+      const hud = SQ.el('div', { class: 'palco-hud' }), lt = SQ.el('div', { class: 'linha-tempo', role: 'group', 'aria-label': 'Linha do tempo' }); hud.append(lt); palco.append(hud);
+      const botoesLT = Object.entries(EPOCAS).map(([k, v]) => { const b = SQ.el('button', { type: 'button', 'aria-pressed': String(k === epoca) }, `${v.ano} · ${v.nome}`); b._ep = k; b.addEventListener('click', () => irPara(k)); lt.append(b); return b; });
+      const gN = ui.grupo('Viagem');
+      ui.segmentado({ rotulo: 'Nível da turma', opcoes: [{ valor: 'f1', rotulo: 'Fund. I' }, { valor: 'f2', rotulo: 'Fund. II' }, { valor: 'em', rotulo: 'Médio' }], valor: nivel, pai: gN, aoMudar: (v) => { nivel = v; if (atual) mostrarFicha(atual); guia.diz(v === 'f1' ? 'Narração simples, frases curtas.' : v === 'f2' ? 'Narração com contexto e a fonte histórica.' : 'Narração completa, com fonte e uma <b>pergunta de crítica da fonte</b>.', { chave: 'niv' }); } });
+      ui.linha(gN, ui.botao({ rotulo: '⏪ Época anterior', classe: 'branco pequeno', aoClicar: () => { const ks = Object.keys(EPOCAS); irPara(ks[(ks.indexOf(epoca) + ks.length - 1) % ks.length]); } }), ui.botao({ rotulo: 'Próxima época ⏩', classe: 'pequeno', aoClicar: () => { const ks = Object.keys(EPOCAS); irPara(ks[(ks.indexOf(epoca) + 1) % ks.length]); } }));
+      const gF = ui.grupo('Ficha');
+      const ficha = SQ.el('div', { class: 'ficha' }); gF.append(ficha);
+      const gD = ui.grupo('Desafio');
+      const caixaD = SQ.el('div', { class: 'desafio' }); gD.append(caixaD);
+      ui.linha(gD, ui.botao({ rotulo: '💡 Dica', classe: 'branco pequeno', aoClicar: () => { const falta = ESPECIAIS[epoca].ids.find((id) => !achados[epoca].has(id)); if (!falta) { guia.diz('Você já achou tudo nesta época! Viaje para outra.', { chave: 'des' }); return; } const o = alvos.find((a) => a.userData.info === falta); const v = o.getWorldPosition(new T.Vector3()); guia.diz(`Procure ${v.x > 0 ? 'à direita' : 'à esquerda'}, ${v.z > 0 ? 'mais perto de você' : 'lá no fundo'} da cena…`, { tipo: 'dica', chave: 'des' }); } }));
+      let atual = null;
+      function mostrarFicha(id) {
+        atual = id;
+        if (!id) { ficha.innerHTML = '<p class="texto-suave mb0">Clique num objeto da cena para abrir a ficha.</p>'; return; }
+        const [nome, facil, comp, fonte, perg] = INFO[id];
+        ficha.innerHTML = `<h3>${nome}</h3><p class="mb0">${nivel === 'f1' ? facil : comp}</p>${fonte && nivel !== 'f1' ? `<div class="fonte">📜 <b>Fonte:</b> ${fonte}${nivel === 'em' && perg && perg !== '—' ? `<br>🔎 <b>Crítica da fonte:</b> ${perg}` : ''}</div>` : ''}`;
+      }
+      function pintarDesafio() {
+        const e = ESPECIAIS[epoca], n = achados[epoca].size;
+        caixaD.className = 'desafio' + (n === e.ids.length ? ' ok' : '');
+        caixaD.innerHTML = n === e.ids.length ? `✅ Você achou ${e.ids.length === 2 ? 'as 2' : 'todas as'} ${e.tipo} desta época!` : `🔍 Encontre as <b>${e.ids.length} ${e.tipo}</b> desta época: ${n}/${e.ids.length}`;
+      }
+      c.escolher(() => alvos.filter((a) => { let o = a; while (o) { if (!o.visible) return false; o = o.parent; } return true; }), (obj) => {
+        if (!obj || viajando) return;
+        const id = obj.userData.info, y0 = obj.position.y;
+        c.tween(0.4, (k) => { obj.position.y = y0 + Math.sin(k * Math.PI) * 0.3; });
+        mostrarFicha(id); SQ.som(620, 0.06);
+        const e = ESPECIAIS[epoca];
+        if (e.ids.includes(id)) {
+          const novo = !achados[epoca].has(id); achados[epoca].add(id); pintarDesafio();
+          guia.diz(`${e.tipo === 'anacronismos' ? '🚫 Anacronismo encontrado!' : '🏛️ Permanência encontrada!'} ${INFO[id][2]}${novo && achados[epoca].size === e.ids.length ? ' 🎉 Desafio da época completo!' : ''}`, { tipo: 'sucesso', chave: 'obj' });
+          if (novo) { SQ.som(880, 0.12); setTimeout(() => SQ.som(1320, 0.18), 110); }
+        } else guia.diz(`<b>${INFO[id][0]}</b>: ${nivel === 'f1' ? INFO[id][1] : INFO[id][2]}`, { chave: 'obj' });
+      });
+
+      c.aoQuadro((dt, t) => {
+        for (const mx of mixers) mx && mx.update(dt);
+        const cena = cenas[epoca]; if (!cena) return;
+        cena.traverse((o) => { if (o.userData.chama) { o.scale.set(1 + Math.sin(t * 13) * 0.08, 1 + Math.sin(t * 9 + 1) * 0.15, 1); } });
+      });
+      guia.contexto = () => ({ epoca: EPOCAS[epoca].nome, ano: EPOCAS[epoca].ano, nivel, objeto: atual && INFO[atual][0], achados: [...achados[epoca]], contexto: `<b>${EPOCAS[epoca].nome} (${EPOCAS[epoca].ano})</b>: ${EPOCAS[epoca].intro}` });
+      irPara('aldeia', true);
+    },
+  });
+  </script>
+</body>
+</html>

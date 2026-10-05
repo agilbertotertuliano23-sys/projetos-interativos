@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Genética Lab — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/dna.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  // alelos em ordem de dominância; fen(genótipo ordenado) → fenótipo
+  const CARACTERES = {
+    cor: { nome: 'Cor da semente (ervilha)', alelos: ['A', 'a'], genotipos: ['AA', 'Aa', 'aa'], fen: (g) => (g.includes('A') ? 'amarela' : 'verde'), cores: { amarela: '#FFC21A', verde: '#36C04A' }, tipo: 'ervilha', explica: 'A (amarela) é dominante sobre a (verde).' },
+    textura: { nome: 'Textura da semente (ervilha)', alelos: ['R', 'r'], genotipos: ['RR', 'Rr', 'rr'], fen: (g) => (g.includes('R') ? 'lisa' : 'rugosa'), cores: { lisa: '#FFC21A', rugosa: '#C98B4E' }, tipo: 'ervilha', explica: 'R (lisa) é dominante sobre r (rugosa).' },
+    maravilha: { nome: 'Cor da flor maravilha', alelos: ['V', 'B'], genotipos: ['VV', 'VB', 'BB'], fen: (g) => (g === 'VV' ? 'vermelha' : g === 'BB' ? 'branca' : 'rosa'), cores: { vermelha: '#EE3B45', rosa: '#FF8FB1', branca: '#F4F7FF' }, tipo: 'flor', explica: 'Dominância incompleta: o heterozigoto VB tem fenótipo intermediário (rosa).' },
+    sangue: { nome: 'Tipo sanguíneo ABO', alelos: ['Iᴬ', 'Iᴮ', 'i'], genotipos: ['IᴬIᴬ', 'Iᴬi', 'IᴮIᴮ', 'Iᴮi', 'IᴬIᴮ', 'ii'], fen: (g) => (g.includes('Iᴬ') && g.includes('Iᴮ') ? 'AB' : g.includes('Iᴬ') ? 'A' : g.includes('Iᴮ') ? 'B' : 'O'), cores: { A: '#2BB4F5', B: '#FF9416', AB: '#8B3DFF', O: '#36C04A' }, tipo: 'sangue', explica: 'Alelos múltiplos: Iᴬ e Iᴮ são codominantes e ambos dominam i.' },
+  };
+  const separa = (g) => g.match(/I[ᴬᴮ]|[A-Za-z]/g);
+  function ordena(tr, a, b) { const L = CARACTERES[tr].alelos; return L.indexOf(a) <= L.indexOf(b) ? a + b : b + a; }
+  const fracao = (k, n) => { const g = (x, y) => (y ? g(y, x % y) : x), m = g(k, n); return `${k / m}/${n / m}`; };
+
+  SQ.demo('genetica-lab', {
+    fundo: 'papel',
+    dica: 'Clique numa casa do quadro para ver como o genótipo se formou',
+    sala: ['Antes de sortear, peça a proporção esperada; depois compare com 10 e com 100 descendentes.', 'Monte Aa × aa (cruzamento-teste) e discuta como ele revela se um indivíduo dominante é heterozigoto.', 'No tipo sanguíneo, proponha: um casal A e B pode ter filho O? Em que condição?'],
+    comoIA: 'O guia recebe os genótipos dos pais, o quadro de Punnett e os resultados do sorteio. Ele explica a formação de cada genótipo, a diferença entre proporção esperada e observada (incluindo o teste qui-quadrado) e gera novos cruzamentos para a turma resolver.',
+    guia: {
+      ola: 'Escolha os genótipos dos pais e veja o <b>quadro de Punnett</b> se montar. Depois sorteie filhotes e compare o <b>esperado</b> com o <b>observado</b>!',
+      perguntas: [
+        { p: 'Genótipo × fenótipo?', chaves: ['genotipo', 'fenotipo', 'diferenca'], r: '<b>Genótipo</b> é a combinação de alelos (ex.: Aa). <b>Fenótipo</b> é a característica que aparece (ex.: semente amarela). Genótipos diferentes podem dar o mesmo fenótipo: AA e Aa são ambos amarelos.' },
+        { p: 'O que diz a 1ª Lei de Mendel?', chaves: ['primeira', '1a', 'segregacao', 'lei'], r: 'Cada indivíduo tem dois alelos por característica, que se <b>separam na formação dos gametas</b>: cada gameta leva só um. Por isso Aa forma gametas A e a na mesma proporção.' },
+        { p: 'De onde vem o 9:3:3:1?', chaves: ['9', 'dihibridismo', 'segunda', 'independente'], r: 'No di-hibridismo AaRr × AaRr, os genes se distribuem de forma <b>independente</b> (2ª Lei): (3/4 + 1/4) × (3/4 + 1/4) = 9/16 : 3/16 : 3/16 : 1/16.' },
+        { p: 'Por que o sorteio não deu exato?', chaves: ['sorteio', 'exato', 'acaso', 'observado'], r: 'A proporção é uma <b>probabilidade</b>. Em amostras pequenas o acaso pesa muito; com mais descendentes o observado tende ao esperado (lei dos grandes números). O χ² mede se a diferença é aceitável.' },
+        { p: 'Casal A × B pode ter filho O?', chaves: ['filho o', 'casal', 'sangue'], r: 'Pode, se os dois forem heterozigotos: <b>Iᴬi × Iᴮi</b> dá 1/4 de chance para cada tipo: AB, A, B e O. Monte esse cruzamento no modo tipo sanguíneo!' },
+        { p: 'Qual o resultado agora?', chaves: ['resultado', 'agora', 'proporcao'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { modo: 'mono', tr: 'cor', mae: ['Aa'], pai: ['Aa'], filhos: [], sel: null };
+      let celulas = [];
+
+      const traits = () => (E.modo === 'di' ? ['cor', 'textura'] : [E.tr]);
+      function gametas(gens) {
+        const listas = gens.map((g) => separa(g));
+        if (listas.length === 1) return listas[0].map((a) => [a]);
+        const out = []; for (const a of listas[0]) for (const b of listas[1]) out.push([a, b]); return out;
+      }
+      function filho(gm, gp) { return traits().map((tr, i) => ordena(tr, gm[i], gp[i])); }
+      const fenotipo = (gen) => traits().map((tr, i) => CARACTERES[tr].fen(gen[i])).join(' e ');
+      function tabela() {
+        const gm = gametas(E.mae), gp = gametas(E.pai), cel = [];
+        gm.forEach((a, i) => gp.forEach((b, j) => cel.push({ i, j, gm: a, gp: b, gen: filho(a, b) })));
+        return { gm, gp, cel };
+      }
+      function contagens() {
+        const { cel } = tabela(), G = {}, F = {};
+        for (const c of cel) { const g = c.gen.join(''), f = fenotipo(c.gen); G[g] = (G[g] || 0) + 1; F[f] = (F[f] || 0) + 1; }
+        return { G, F, n: cel.length };
+      }
+
+      // ---------- desenho ----------
+      function desenharIndividuo(ctx, x, y, r, gen) {
+        const trs = traits();
+        if (E.modo === 'di' || CARACTERES[trs[0]].tipo === 'ervilha') {
+          const corF = E.modo === 'di' ? CARACTERES.cor.fen(gen[0]) : trs[0] === 'cor' ? CARACTERES.cor.fen(gen[0]) : 'amarela';
+          const rug = E.modo === 'di' ? CARACTERES.textura.fen(gen[1]) === 'rugosa' : trs[0] === 'textura' && CARACTERES.textura.fen(gen[0]) === 'rugosa';
+          const cor = CARACTERES.cor.cores[corF];
+          ctx.beginPath();
+          for (let k = 0; k <= 40; k++) { const a = (k / 40) * Math.PI * 2, rr = r * (rug ? 1 + 0.09 * Math.sin(a * 7) : 1); k ? ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr) : ctx.moveTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+          ctx.closePath(); const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.1, x, y, r * 1.1); g.addColorStop(0, d.clarear(cor, 0.45)); g.addColorStop(1, cor);
+          ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = C.tinta; ctx.stroke();
+          if (rug) { ctx.strokeStyle = 'rgba(11,20,56,.35)'; ctx.lineWidth = 1.4; for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(x + (k - 1) * r * 0.3, y, r * 0.45, -0.8, 0.8); ctx.stroke(); } }
+        } else if (CARACTERES[trs[0]].tipo === 'flor') {
+          const cor = CARACTERES.maravilha.cores[CARACTERES.maravilha.fen(gen[0])];
+          for (let k = 0; k < 5; k++) { const a = (k / 5) * Math.PI * 2 - Math.PI / 2; d.bola(ctx, x + Math.cos(a) * r * 0.55, y + Math.sin(a) * r * 0.55, r * 0.5, cor, { esp: 2, brilho: false }); }
+          d.bola(ctx, x, y, r * 0.32, C.amarelo, { esp: 2 });
+        } else {
+          const tipo = CARACTERES.sangue.fen(gen[0]), cor = CARACTERES.sangue.cores[tipo];
+          ctx.beginPath(); ctx.moveTo(x, y - r * 1.05); ctx.bezierCurveTo(x + r * 0.9, y - r * 0.1, x + r * 0.85, y + r * 0.85, x, y + r * 0.85); ctx.bezierCurveTo(x - r * 0.85, y + r * 0.85, x - r * 0.9, y - r * 0.1, x, y - r * 1.05);
+          ctx.fillStyle = cor; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = C.tinta; ctx.stroke();
+          d.texto(ctx, tipo, x, y + r * 0.28, { tam: Math.max(10, r * 0.62), alinhar: 'center', base: 'middle', cor: '#fff', contorno: C.tinta, esp: 3 });
+        }
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const { gm, gp, cel } = tabela(), N = gm.length;
+        const hPed = Math.min(170, h * 0.27), lado = Math.min(h - hPed - 40, w * 0.56), x0 = 18 + lado / (N + 1), y0 = 18 + lado / (N + 1), c = (lado - lado / (N + 1)) / N;
+        celulas = [];
+        // cabeçalhos (gametas)
+        d.texto(ctx, '♀ \\ ♂', 18 + lado / (N + 1) / 2, 18 + lado / (N + 1) / 2 + 5, { tam: 13, alinhar: 'center', cor: C.suave });
+        gp.forEach((g, j) => { d.bloco(ctx, x0 + j * c + 4, 18, c - 8, lado / (N + 1) - 8, { cor: '#DDEBFF', r: 10, alt: 2 }); d.texto(ctx, g.join(''), x0 + j * c + c / 2, 18 + (lado / (N + 1) - 8) / 2 + 1, { tam: Math.min(20, c * 0.28), alinhar: 'center', base: 'middle', fonte: 'titulo', cor: C.azulEscuro }); });
+        gm.forEach((g, i) => { d.bloco(ctx, 18, y0 + i * c + 4, lado / (N + 1) - 8, c - 8, { cor: '#FFE1EA', r: 10, alt: 2 }); d.texto(ctx, g.join(''), 18 + (lado / (N + 1) - 8) / 2, y0 + i * c + c / 2, { tam: Math.min(20, c * 0.28), alinhar: 'center', base: 'middle', fonte: 'titulo', cor: '#B0204A' }); });
+        for (const ce of cel) {
+          const x = x0 + ce.j * c, y = y0 + ce.i * c, sel = E.sel && E.sel.i === ce.i && E.sel.j === ce.j;
+          d.bloco(ctx, x + 3, y + 3, c - 6, c - 6, { cor: sel ? '#FFF6D6' : '#fff', r: 10, alt: 2, esp: sel ? 3.5 : 2 });
+          desenharIndividuo(ctx, x + c / 2, y + c * 0.42, c * 0.2, ce.gen);
+          d.texto(ctx, ce.gen.join(''), x + c / 2, y + c * 0.82, { tam: Math.max(10, Math.min(15, c * 0.17)), alinhar: 'center', base: 'middle', cor: C.tinta });
+          celulas.push({ ...ce, x, y, c });
+        }
+        // proporções
+        const px = 18 + lado + 26, pw = w - px - 16, { G, F, n } = contagens();
+        let y = 26;
+        d.texto(ctx, 'Proporção esperada', px, y, { tam: 15, fonte: 'titulo' }); y += 14;
+        const obs = {}; for (const f of E.filhos) { const k = fenotipo(f); obs[k] = (obs[k] || 0) + 1; }
+        const ordemF = Object.keys(F).sort((a, b) => F[b] - F[a]);
+        const bw = pw - 70;
+        for (const f of ordemF) {
+          const cor = corFenotipo(f);
+          d.texto(ctx, f, px, y + 14, { tam: 12 });
+          y += 20;
+          d.bloco(ctx, px, y, Math.max(6, (F[f] / n) * bw), 14, { cor, r: 5, alt: 0, esp: 1.8 });
+          d.texto(ctx, `${fracao(F[f], n)} · ${SQ.num((F[f] / n) * 100, 1)}%`, px + (F[f] / n) * bw + 8, y + 12, { tam: 11 });
+          if (E.filhos.length) { y += 17; const o = (obs[f] || 0) / E.filhos.length; ctx.globalAlpha = 0.55; d.bloco(ctx, px, y, Math.max(4, o * bw), 10, { cor, r: 4, alt: 0, esp: 1.2 }); ctx.globalAlpha = 1; d.texto(ctx, `observado ${obs[f] || 0} (${SQ.num(o * 100, 1)}%)`, px + o * bw + 8, y + 9, { tam: 10, cor: C.suave }); }
+          y += 20;
+          if (y > h - hPed - 70) break;
+        }
+        y += 8; d.texto(ctx, 'Genótipos', px, y + 6, { tam: 13, fonte: 'titulo' }); y += 14;
+        const linhaG = Object.keys(G).sort().map((g) => `${fracao(G[g], n)} ${g}`);
+        ctx.font = '800 12px Nunito, "Segoe UI", system-ui, sans-serif'; let lx = px, ly = y + 10;
+        for (const t of linhaG) { const tw = ctx.measureText(t).width + 14; if (lx + tw > w - 10) { lx = px; ly += 18; } d.texto(ctx, t, lx, ly, { tam: 12, cor: C.texto }); lx += tw; }
+        // heredograma
+        desenharHeredograma(ctx, 12, h - hPed, w - 24, hPed - 12);
+      }
+      function corFenotipo(f) {
+        const trs = traits(), partes = f.split(' e ');
+        const cor = CARACTERES[trs[0]].cores[partes[0]];
+        return cor === '#F4F7FF' ? '#D9E2F5' : cor;
+      }
+      function desenharHeredograma(ctx, x, y, w, h) {
+        d.bloco(ctx, x, y, w, h, { cor: '#F4F7FF', r: 14, alt: 0, esp: 2 });
+        d.texto(ctx, 'Heredograma (primeiros descendentes sorteados)', x + 12, y + 18, { tam: 12, cor: C.suave });
+        const s = Math.min(26, h * 0.2), cy1 = y + h * 0.36, cy2 = y + h * 0.78, cx = x + w / 2;
+        const simbolo = (sx, sy, macho, gen, rot) => {
+          const cor = corFenotipo(fenotipo(gen));
+          ctx.fillStyle = cor; ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.4;
+          if (macho) { ctx.fillRect(sx - s / 2, sy - s / 2, s, s); ctx.strokeRect(sx - s / 2, sy - s / 2, s, s); } else { ctx.beginPath(); ctx.arc(sx, sy, s / 2, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+          if (rot) d.texto(ctx, rot, sx, sy + s / 2 + 12, { tam: 10, alinhar: 'center', cor: C.texto });
+        };
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(cx - 40, cy1); ctx.lineTo(cx + 40, cy1); ctx.moveTo(cx, cy1); ctx.lineTo(cx, (cy1 + cy2) / 2); ctx.stroke();
+        simbolo(cx + 40, cy1, true, E.pai, E.pai.join(' ')); simbolo(cx - 40, cy1, false, E.mae, E.mae.join(' '));
+        const lista = E.filhos.slice(0, Math.max(1, Math.floor((w - 40) / (s + 22))));
+        if (!lista.length) { d.texto(ctx, 'Sorteie descendentes para preencher a geração F1.', cx, cy2 + 4, { tam: 12, alinhar: 'center', cor: C.suave }); return; }
+        const passo = Math.min(s + 30, (w - 40) / lista.length), xi = cx - ((lista.length - 1) * passo) / 2;
+        ctx.beginPath(); ctx.moveTo(xi, (cy1 + cy2) / 2); ctx.lineTo(xi + (lista.length - 1) * passo, (cy1 + cy2) / 2); ctx.stroke();
+        lista.forEach((g, k) => { const sx = xi + k * passo; ctx.beginPath(); ctx.moveTo(sx, (cy1 + cy2) / 2); ctx.lineTo(sx, cy2 - s / 2); ctx.stroke(); simbolo(sx, cy2, g.macho, g, passo > 44 ? g.join('') : ''); });
+        // legenda
+        d.texto(ctx, '□ macho · ○ fêmea · cor = fenótipo', x + w - 12, y + 18, { tam: 11, alinhar: 'right', cor: C.suave });
+      }
+
+      // ---------- painel ----------
+      const gC = ui.grupo('Cruzamento');
+      ui.segmentado({ opcoes: [{ valor: 'mono', rotulo: 'Monoibridismo' }, { valor: 'di', rotulo: 'Di-hibridismo' }], valor: E.modo, pai: gC, aoMudar: (v) => { E.modo = v; selTr.el.hidden = v === 'di'; montarSeletores(); } });
+      const selTr = ui.select({ rotulo: 'Característica', opcoes: Object.entries(CARACTERES).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: E.tr, pai: gC, aoMudar: (v) => { E.tr = v; montarSeletores(); } });
+      const caixaPais = SQ.el('div'); gC.append(caixaPais);
+      ui.linha(gC, ui.botao({ rotulo: '🎲 Cruzamento surpresa', classe: 'branco pequeno', aoClicar: surpresa }));
+      const gS = ui.grupo('Sorteio de descendentes');
+      ui.linha(gS, ...[1, 10, 100].map((k) => ui.botao({ rotulo: `+${k}`, classe: k === 1 ? 'pequeno' : 'branco pequeno', aoClicar: () => sortear(k) })), ui.botao({ rotulo: 'Zerar', classe: 'branco pequeno', aoClicar: () => { E.filhos = []; pintar(); } }));
+      const lei = ui.leituras([{ id: 'n', rotulo: 'Descendentes' }, { id: 'chi', rotulo: 'χ² (esperado × obs.)', destaque: true }], gS);
+
+      function montarSeletores(m, p) {
+        caixaPais.innerHTML = '';
+        const trs = traits();
+        E.mae = trs.map((tr) => CARACTERES[tr].genotipos[1]); E.pai = trs.map((tr) => CARACTERES[tr].genotipos[1]);
+        if (E.tr === 'sangue' && E.modo === 'mono') { E.mae = ['Iᴬi']; E.pai = ['Iᴮi']; }
+        if (m) { E.mae = m; E.pai = p; }
+        for (const [quem, rot] of [['mae', '♀ Mãe'], ['pai', '♂ Pai']]) {
+          trs.forEach((tr, i) => {
+            const ops = CARACTERES[tr].genotipos.map((g) => ({ valor: g, rotulo: g }));
+            const pr = { rotulo: `${rot}${trs.length > 1 ? ' — ' + CARACTERES[tr].nome.split(' (')[0].toLowerCase() : ''}`, opcoes: ops, valor: E[quem][i], pai: caixaPais, aoMudar: (v) => { E[quem][i] = v; E.filhos = []; E.sel = null; pintar(); narrar(); } };
+            ops.length > 3 ? ui.select(pr) : ui.segmentado(pr);
+          });
+        }
+        E.filhos = []; E.sel = null; pintar(); narrar();
+      }
+      function surpresa() {
+        const trs = traits(), r = (l) => l[Math.floor(Math.random() * l.length)];
+        E.mae = trs.map((tr) => r(CARACTERES[tr].genotipos)); E.pai = trs.map((tr) => r(CARACTERES[tr].genotipos));
+        const m = [...E.mae], p = [...E.pai];
+        montarSeletores(m, p);
+        guia.diz(`🎲 Cruzamento gerado: <b>${m.join('')} × ${p.join('')}</b>. Antes de olhar o quadro: qual a chance de um filhote ${traits().map((tr) => CARACTERES[tr].fen(CARACTERES[tr].genotipos[CARACTERES[tr].genotipos.length - 1])).join(' e ')}?`, { tipo: 'dica', chave: 'cruz' });
+      }
+      function sortear(k) {
+        const gm = gametas(E.mae), gp = gametas(E.pai);
+        for (let i = 0; i < k; i++) { const f = filho(gm[Math.floor(Math.random() * gm.length)], gp[Math.floor(Math.random() * gp.length)]); f.macho = Math.random() < 0.5; E.filhos.push(f); }
+        pintar();
+        const { F, n } = contagens(), N = E.filhos.length, chi = qui();
+        const obs = {}; for (const f of E.filhos) { const q = fenotipo(f); obs[q] = (obs[q] || 0) + 1; }
+        const resumo = Object.keys(F).map((f) => `${f}: ${obs[f] || 0} (esperado ${SQ.num((F[f] / n) * N, 1)})`).join(' · ');
+        const gl = Object.keys(F).length - 1, crit = [0, 3.84, 5.99, 7.81][gl] || 7.81;
+        guia.diz(`${N} descendente${N > 1 ? 's' : ''}: ${resumo}. ${N < 20 ? 'Amostra pequena: o acaso ainda pesa muito.' : gl ? `χ² = ${SQ.num(chi, 2)} ${chi < crit ? `< ${SQ.num(crit, 2)}: diferença compatível com o acaso ✅` : `> ${SQ.num(crit, 2)}: diferença maior que a esperada pelo acaso (raro, mas acontece!)`}.` : ''}`, { chave: 'sort' });
+      }
+      function qui() {
+        const { F, n } = contagens(), N = E.filhos.length; if (!N) return 0;
+        const obs = {}; for (const f of E.filhos) { const q = fenotipo(f); obs[q] = (obs[q] || 0) + 1; }
+        return Object.keys(F).reduce((s, f) => { const e = (F[f] / n) * N; return s + ((obs[f] || 0) - e) ** 2 / e; }, 0);
+      }
+      function resumoTexto() {
+        const { F, G, n } = contagens();
+        return `${E.mae.join('')} × ${E.pai.join('')} → fenótipos ${Object.keys(F).map((f) => `${fracao(F[f], n)} ${f}`).join(', ')}; genótipos ${Object.keys(G).map((g) => `${fracao(G[g], n)} ${g}`).join(', ')}.`;
+      }
+      function narrar() {
+        const trs = traits();
+        guia.diz(`<b>${E.mae.join('')} × ${E.pai.join('')}</b>: ${resumoTexto().split('→ ')[1]} ${trs.map((t) => CARACTERES[t].explica).join(' ')}`, { chave: 'cruz' });
+      }
+      function pintar() { lei.set('n', String(E.filhos.length)); lei.set('chi', E.filhos.length ? SQ.num(qui(), 2) : '—'); tela && tela.redesenhar(); }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const ce = celulas.find((q) => p.x > q.x && p.x < q.x + q.c && p.y > q.y && p.y < q.y + q.c);
+          if (!ce) return false;
+          E.sel = ce; tela.redesenhar(); SQ.som(620, 0.06);
+          guia.diz(`Gameta da mãe <b>${ce.gm.join('')}</b> + gameta do pai <b>${ce.gp.join('')}</b> → genótipo <b>${ce.gen.join('')}</b>, fenótipo <b>${fenotipo(ce.gen)}</b>. ${ce.gen.map((g, i) => { const tr = traits()[i], al = separa(g); return al[0] === al[1] ? `${g}: homozigoto.` : `${g}: heterozigoto${tr === 'maravilha' ? ' (intermediário)' : tr === 'sangue' && g === 'IᴬIᴮ' ? ' (codominância: os dois se expressam)' : ` (${al[0]} domina ${al[1]})`}.`; }).join(' ')}`, { chave: 'cel' });
+          return false;
+        },
+        hover(p) { tela.canvas.style.cursor = celulas.some((q) => p.x > q.x && p.x < q.x + q.c && p.y > q.y && p.y < q.y + q.c) ? 'pointer' : ''; },
+      });
+      guia.contexto = () => ({ modo: E.modo, caracteristicas: traits(), mae: E.mae, pai: E.pai, descendentes: E.filhos.length, qui2: qui(), resumo: resumoTexto() });
+      montarSeletores();
+    },
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clima Simulator — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/mapa.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const cosM = (m, pico = 0) => Math.cos(((m - pico) / 12) * 2 * Math.PI);
+  // mar: entrada de umidade do oceano · cont: umidade continental (evapotranspiração, mEc) · frente: chuva frontal (mm/mês)
+  const LATITUDES = {
+    equatorial: { nome: 'Equatorial (0–5°)', media: 27, amp: 0.8, mar: (m) => 0.9 + 0.1 * cosM(m, 3), cont: (m) => 0.85 + 0.25 * cosM(m, 2.5), conv: 1.25, frente: 0 },
+    tropical: { nome: 'Tropical (10–23°)', media: 24.5, amp: 3, mar: (m) => 0.6 + 0.3 * cosM(m, 0.5), cont: (m) => 0.5 + 0.5 * cosM(m, 0.5), conv: 1, frente: 12 },
+    subtropical: { nome: 'Subtropical (23–33°)', media: 19.5, amp: 5.5, mar: (m) => 0.75 + 0.05 * cosM(m, 1), cont: (m) => 0.28 + 0.08 * cosM(m), conv: 0.6, frente: 70 },
+  };
+  // Normais climatológicas aproximadas (INMET 1991–2020, arredondadas)
+  const REAIS = [
+    { nome: 'Equatorial — Manaus (AM)', t: [26.8, 26.8, 26.9, 27, 27.2, 27.3, 27.5, 28.2, 28.6, 28.4, 28, 27.4], p: [290, 300, 330, 320, 250, 120, 80, 60, 75, 110, 170, 240] },
+    { nome: 'Tropical — Brasília (DF)', t: [21.8, 22, 22, 21.6, 20.3, 19.3, 19.2, 20.8, 22.4, 22.6, 21.8, 21.8], p: [210, 180, 210, 130, 30, 5, 5, 15, 45, 160, 230, 250] },
+    { nome: 'Semiárido — Petrolina (PE)', t: [27.4, 27.2, 26.9, 26.5, 25.8, 24.8, 24.5, 25.2, 26.6, 28, 28.4, 27.9], p: [80, 90, 120, 65, 15, 8, 5, 2, 3, 10, 40, 60] },
+    { nome: 'Subtropical — Porto Alegre (RS)', t: [25, 24.8, 23.4, 20.4, 17, 14.6, 14.2, 15.6, 17, 19.6, 21.7, 23.8], p: [110, 105, 110, 120, 110, 135, 150, 125, 140, 125, 110, 105] },
+    { nome: 'Tropical de altitude — Campos do Jordão (SP)', t: [17.4, 17.6, 16.9, 15, 12.4, 10.9, 10.6, 12, 13.6, 14.9, 15.7, 16.7], p: [280, 230, 210, 100, 70, 45, 35, 40, 85, 150, 190, 270] },
+    { nome: 'Tropical úmido litorâneo — Santos (SP)', t: [26, 26.3, 25.6, 24, 21.9, 20.6, 20, 20.4, 20.9, 22.4, 23.6, 25.1], p: [270, 250, 240, 190, 140, 100, 90, 85, 140, 160, 180, 230] },
+  ];
+  const LOCAIS = [{ id: 'litoral', nome: 'Litoral', x: 0.27 }, { id: 'serra', nome: 'Serra (barlavento)', x: 0.38 }, { id: 'interior', nome: 'Interior (sotavento)', x: 0.8 }];
+  const N = 120, X_MAR = 0.18;
+
+  SQ.demo('clima-simulator', {
+    fundo: 'ceu',
+    dica: 'Clique nos alfinetes para trocar o climograma',
+    sala: ['Peça que a turma explique por que o litoral da Serra do Mar é tão chuvoso e o outro lado da serra, não.', 'Mude só a latitude e compare os climogramas: o que muda mais, a temperatura ou a chuva?', 'Desafio: monte um cenário que o guia classifique como semiárido e explique cada escolha.'],
+    comoIA: 'O guia recebe latitude, mês, umidade do oceano, altura da serra e a frente fria, simula o perfil (subida do ar, resfriamento de ~6,5 °C/km, condensação e chuva orográfica) e gera o climograma de cada ponto. Depois compara o resultado com normais climatológicas reais de cidades brasileiras — com uma IA conectada, a comparação pode se estender a qualquer lugar do mundo.',
+    guia: {
+      ola: 'Este é um <b>perfil</b> do terreno: o vento traz ar úmido do oceano para o continente. Mexa na serra, na umidade e na latitude e veja a chuva e o climograma responderem.',
+      perguntas: [
+        { p: 'Tempo e clima são a mesma coisa?', chaves: ['tempo', 'clima', 'diferenca'], r: '<b>Tempo</b> é o estado da atmosfera agora (vai chover hoje?). <b>Clima</b> é o padrão médio ao longo de pelo menos 30 anos — é o que o climograma mostra.' },
+        { p: 'O que é chuva orográfica?', chaves: ['orografica', 'relevo', 'serra', 'montanha'], r: 'Quando o vento úmido encontra uma serra, o ar é forçado a <b>subir</b>, esfria (~6,5 °C a cada 1000 m), o vapor condensa e chove na encosta voltada ao vento (barlavento). Do outro lado (sotavento) o ar desce seco: é a <b>sombra de chuva</b>.' },
+        { p: 'O que são massas de ar?', chaves: ['massa', 'massas de ar'], r: 'Grandes volumes de ar com temperatura e umidade parecidas, que herdam da região onde se formam. No Brasil: mEa e mEc (equatoriais), mTa e mTc (tropicais) e mPa (polar atlântica), que traz as frentes frias.' },
+        { p: 'O que é uma frente fria?', chaves: ['frente', 'fria', 'polar'], r: 'É o encontro de uma massa de ar frio com uma quente. O ar frio, mais denso, entra por baixo e empurra o quente para cima: forma nuvens, chuva e depois a temperatura cai. Clique em “Frente fria” para ver!' },
+        { p: 'Como leio um climograma?', chaves: ['climograma', 'grafico', 'ler'], r: 'As <b>barras azuis</b> são a chuva de cada mês (mm, eixo da esquerda) e a <b>linha vermelha</b> é a temperatura média (°C, eixo da direita). Meses com menos de 60 mm costumam ser considerados secos.' },
+        { p: 'Com que clima real meu cenário parece?', chaves: ['real', 'parece', 'compar', 'classific'], r: (c) => c.comparacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { lat: 'tropical', mes: 0, umid: 80, serra: 1400, local: 'litoral', frente: -1, animando: false, t: 0 };
+      let SIM = null;
+
+      const relevo = (x) => {
+        if (x < X_MAR) return 0;
+        const pico = 0.42, larg = 0.08, H = E.serra;
+        const serra = H * Math.exp(-(((x - pico) / larg) ** 2) * (x < pico ? 1 : 0.55));
+        const planalto = x > pico ? H * 0.32 * Math.min(1, (x - pico) / 0.12) : 0;
+        return Math.max(serra, planalto) + 20 + (x - X_MAR) * 120;
+      };
+      function simularMes(m) {
+        const L = LATITUDES[E.lat], chuva = new Float32Array(N), temp = new Float32Array(N);
+        const saz = cosM(m), T0 = L.media + L.amp * saz, U = E.umid / 100;
+        let q = 260 * U * L.mar(m);                       // vapor disponível no ar que vem do mar
+        const evap = 0.045 * 260 * U * Math.max(0, L.cont(m)); // reciclagem de umidade sobre o continente
+        const front = L.frente * (1 - 0.25 * saz) * (0.4 + 0.6 * U);
+        for (let i = 0; i < N; i++) {
+          const x = i / (N - 1), z = relevo(x), z2 = relevo(Math.min(1, x + 1 / (N - 1))), dist = Math.max(0, x - X_MAR);
+          temp[i] = T0 - (6.5 * z) / 1000 + L.amp * 0.35 * saz * Math.min(1, dist * 2.5); // altitude e continentalidade
+          if (x < X_MAR) { chuva[i] = q * 0.3 + front * 0.5; continue; }
+          const sobe = Math.max(0, (z2 - z) / 1000), desce = Math.max(0, (z - z2) / 1000);
+          const fo = 1 - Math.exp(-0.75 * sobe);                                   // chuva orográfica (ar subindo)
+          const fc = ((0.012 * L.conv * Math.max(0, temp[i] - 14)) / 10) * (1 + 2.2 * Math.exp(-dist / 0.05)); // convecção + brisa
+          const rem = q * Math.min(0.9, fo + fc);
+          q = (q - rem) * (1 - 0.6 * desce) + evap * Math.min(1, dist * 6);       // ar descendo aquece e seca (sombra de chuva)
+          chuva[i] = rem * 30 + front;
+        }
+        return { chuva, temp };
+      }
+      function simular() {
+        const meses = Array.from({ length: 12 }, (_, m) => simularMes(m));
+        const anual = new Float32Array(N); meses.forEach((s) => s.chuva.forEach((v, i) => { anual[i] += v; }));
+        const locais = {}; for (const l of LOCAIS) { const i = Math.round(l.x * (N - 1)); locais[l.id] = { p: meses.map((s) => s.chuva[i]), t: meses.map((s) => s.temp[i]), z: relevo(l.x) }; }
+        SIM = { meses, anual, locais };
+      }
+      function comparar(id) {
+        const L = SIM.locais[id];
+        const feat = (t, p) => [t.reduce((a, b) => a + b) / 12, Math.max(...t) - Math.min(...t), p.reduce((a, b) => a + b), p.filter((v) => v < 60).length];
+        const f = feat(L.t, L.p);
+        const dist = (g) => Math.abs(f[0] - g[0]) / 3 + Math.abs(f[1] - g[1]) / 3 + Math.abs(f[2] - g[2]) / 500 + Math.abs(f[3] - g[3]) / 2.5;
+        const ord = REAIS.map((r) => ({ r, d: dist(feat(r.t, r.p)) })).sort((a, b) => a.d - b.d);
+        return { f, melhor: ord[0].r, d: ord[0].d };
+      }
+      const corVeg = (mm) => (mm > 2000 ? '#1E8A30' : mm > 1400 ? '#36C04A' : mm > 900 ? '#9BCB4B' : mm > 600 ? '#D7C25A' : '#D9A06B');
+      const corTemp = (t) => { const k = Math.max(0, Math.min(1, (t + 5) / 40)); return `hsl(${220 - k * 220},85%,55%)`; };
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const hP = Math.round(h * 0.56), Xp = (x) => 10 + x * (w - 20), zMax = 3200, Zp = (z) => hP - 18 - (z / zMax) * (hP * 0.72);
+        const mes = SIM.meses[E.mes], verao = Math.cos((E.mes / 12) * 2 * Math.PI) > 0;
+        // céu
+        const g = ctx.createLinearGradient(0, 0, 0, hP); g.addColorStop(0, verao ? '#7CC4FF' : '#A9C3E6'); g.addColorStop(1, '#EAF5FF'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, hP);
+        // frente fria
+        const fx = E.frente >= 0 ? E.frente : null;
+        if (fx != null) { ctx.fillStyle = 'rgba(31,91,224,.22)'; ctx.beginPath(); ctx.moveTo(Xp(fx), hP); ctx.quadraticCurveTo(Xp(fx - 0.1), Zp(1500), Xp(fx - 0.35), Zp(2600)); ctx.lineTo(Xp(-0.2), Zp(2600)); ctx.lineTo(Xp(-0.2), hP); ctx.fill(); ctx.strokeStyle = C.azul; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(Xp(fx), hP); ctx.quadraticCurveTo(Xp(fx - 0.1), Zp(1500), Xp(fx - 0.35), Zp(2600)); ctx.stroke(); for (let k = 0; k < 5; k++) { const yy = hP - 20 - k * 30, xx = Xp(fx) - k * 14; ctx.fillStyle = C.azul; ctx.beginPath(); ctx.moveTo(xx, yy); ctx.lineTo(xx + 12, yy - 6); ctx.lineTo(xx, yy - 12); ctx.fill(); } d.etiqueta(ctx, 'frente fria (mPa)', Xp(fx) - 30, Zp(2700), { cor: C.celesteClaro, tam: 11 }); }
+        // nuvens e chuva
+        for (let i = 0; i < N; i += 4) {
+          const x = i / (N - 1), p = mes.chuva[i] + (fx != null && Math.abs(x - fx) < 0.08 ? 160 : 0);
+          if (p < 70 || x < 0.05) continue;
+          const z = relevo(x), yN = Zp(Math.max(z + 700, 1500)), k = Math.min(1, p / 400);
+          ctx.fillStyle = `rgba(${Math.round(255 - k * 110)},${Math.round(255 - k * 100)},${Math.round(255 - k * 80)},.92)`;
+          for (const [dx, dy, r] of [[-12, 0, 16], [6, -8, 20], [22, 2, 14]]) { ctx.beginPath(); ctx.arc(Xp(x) + dx, yN + dy, r * (0.7 + k * 0.5), 0, Math.PI * 2); ctx.fill(); }
+          ctx.strokeStyle = 'rgba(31,91,224,.55)'; ctx.lineWidth = 1.5;
+          for (let r = 0; r < Math.round(k * 6); r++) { const rx = Xp(x) - 14 + r * 6, ry = yN + 18 + ((E.t * 160 + r * 23) % Math.max(10, Zp(z) - yN - 18)); ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 3, ry + 8); ctx.stroke(); }
+        }
+        // oceano
+        ctx.fillStyle = '#2BB4F5'; ctx.fillRect(0, Zp(0), Xp(X_MAR) + 2, hP - Zp(0));
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let k = 0; k < 4; k++) { ctx.beginPath(); for (let x = 0; x < Xp(X_MAR); x += 6) ctx.lineTo(x, Zp(0) + 8 + k * 10 + Math.sin(x * 0.08 + E.t * 2 + k) * 2); ctx.stroke(); }
+        // relevo com vegetação
+        for (let i = 0; i < N - 1; i++) {
+          const x0 = i / (N - 1), x1 = (i + 1) / (N - 1); if (x1 < X_MAR) continue;
+          ctx.fillStyle = corVeg(SIM.anual[i]); ctx.beginPath(); ctx.moveTo(Xp(x0), hP); ctx.lineTo(Xp(x0), Zp(relevo(x0))); ctx.lineTo(Xp(x1), Zp(relevo(x1))); ctx.lineTo(Xp(x1) + 0.5, hP); ctx.fill();
+        }
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i < N; i++) { const x = i / (N - 1); i ? ctx.lineTo(Xp(x), Zp(relevo(x))) : ctx.moveTo(Xp(x), Zp(relevo(x))); } ctx.stroke();
+        ctx.fillStyle = '#8B5A2B'; ctx.fillRect(0, hP - 10, w, 10);
+        // massa de ar (setas)
+        for (let k = 0; k < 7; k++) {
+          const x = ((E.t * 0.06 + k / 7) % 1), z = relevo(x) + 350 + (x < 0.42 ? 0 : 0), i = Math.round(x * (N - 1));
+          const T = mes.temp[i] - (fx != null && x < fx ? 6 : 0), umid = Math.min(1, SIM.meses[E.mes].chuva[Math.min(N - 1, i + 6)] / 250 + 0.2);
+          ctx.globalAlpha = 0.85; d.seta(ctx, Xp(x) - 18, Zp(z), Xp(x) + 18, Zp(relevo(Math.min(1, x + 0.03)) + 350), corTemp(T), 5, 12); ctx.globalAlpha = 1;
+          if (k % 2 === 0) d.texto(ctx, `${SQ.num(T, 0)}°C`, Xp(x), Zp(z) - 10, { tam: 10, alinhar: 'center', cor: C.tinta, contorno: 'rgba(255,255,255,.8)', esp: 3 }); void umid;
+        }
+        // alfinetes
+        for (const l of LOCAIS) {
+          const x = Xp(l.x), y = Zp(relevo(l.x)), at = l.id === E.local;
+          ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 30); ctx.stroke();
+          d.bola(ctx, x, y - 34, at ? 10 : 8, at ? C.amarelo : '#fff');
+          d.etiqueta(ctx, `${l.nome} · ${SQ.num(relevo(l.x), 0)} m`, x, y - 58, { cor: at ? C.amarelo : '#fff', tam: 11 });
+          l._hit = [x, y - 34];
+        }
+        d.etiqueta(ctx, `${MESES[E.mes]} · ${verao ? 'verão' : Math.abs(Math.cos((E.mes / 12) * 2 * Math.PI)) < 0.5 ? 'meia-estação' : 'inverno'}`, 70, 24, { cor: '#fff', tam: 12 });
+        d.texto(ctx, 'OCEANO', Xp(X_MAR / 2), hP - 22, { tam: 12, alinhar: 'center', cor: '#fff' });
+        // climograma
+        desenharClimograma(ctx, 10, hP + 8, w - 20, h - hP - 16);
+      }
+      function desenharClimograma(ctx, x, y, w, h) {
+        const L = SIM.locais[E.local], pMax = Math.max(400, ...L.p), tMin = Math.min(0, ...L.t), tMax = Math.max(35, ...L.t);
+        d.bloco(ctx, x, y, w, h, { cor: '#fff', r: 12, alt: 0, esp: 2 });
+        const ax = x + 46, aw = w - 92, ay = y + 28, ah = h - 52, bw = aw / 12;
+        d.texto(ctx, `Climograma — ${LOCAIS.find((l) => l.id === E.local).nome}`, x + 12, y + 18, { tam: 13, fonte: 'titulo' });
+        const tot = L.p.reduce((a, b) => a + b), med = L.t.reduce((a, b) => a + b) / 12;
+        d.texto(ctx, `${SQ.num(tot, 0)} mm/ano · média ${SQ.numFixo(med)} °C`, x + w - 12, y + 18, { tam: 12, alinhar: 'right', cor: C.suave });
+        ctx.strokeStyle = '#E3EAFA'; ctx.lineWidth = 1;
+        for (let k = 0; k <= 4; k++) { const yy = ay + ah - (k / 4) * ah; ctx.beginPath(); ctx.moveTo(ax, yy); ctx.lineTo(ax + aw, yy); ctx.stroke(); d.texto(ctx, `${Math.round((pMax * k) / 4)}`, ax - 6, yy + 4, { tam: 10, alinhar: 'right', cor: C.azul }); d.texto(ctx, `${Math.round(tMin + ((tMax - tMin) * k) / 4)}°`, ax + aw + 6, yy + 4, { tam: 10, cor: C.vermelho }); }
+        L.p.forEach((p, m) => { const bh = (p / pMax) * ah; ctx.fillStyle = m === E.mes ? C.azul : p < 60 ? '#BFE8FF' : C.celeste; ctx.fillRect(ax + m * bw + 4, ay + ah - bh, bw - 8, bh); ctx.strokeStyle = C.tinta; ctx.lineWidth = 1.5; ctx.strokeRect(ax + m * bw + 4, ay + ah - bh, bw - 8, bh); d.texto(ctx, MESES[m][0], ax + m * bw + bw / 2, ay + ah + 14, { tam: 11, alinhar: 'center', cor: m === E.mes ? C.tinta : C.suave }); });
+        const Ty = (t) => ay + ah - ((t - tMin) / (tMax - tMin)) * ah;
+        ctx.strokeStyle = C.vermelho; ctx.lineWidth = 3; ctx.beginPath(); L.t.forEach((t, m) => (m ? ctx.lineTo(ax + m * bw + bw / 2, Ty(t)) : ctx.moveTo(ax + m * bw + bw / 2, Ty(t)))); ctx.stroke();
+        L.t.forEach((t, m) => d.bola(ctx, ax + m * bw + bw / 2, Ty(t), m === E.mes ? 6 : 4, C.vermelho, { esp: 1.5, brilho: false }));
+      }
+
+      // ---------- painel ----------
+      const gC = ui.grupo('Cenário');
+      ui.segmentado({ rotulo: 'Latitude', opcoes: Object.entries(LATITUDES).map(([k, v]) => ({ valor: k, rotulo: v.nome.split(' ')[0] })), valor: E.lat, pai: gC, aoMudar: (v) => { E.lat = v; mudou(`Latitude ${LATITUDES[v].nome.toLowerCase()}: ${v === 'equatorial' ? 'quente o ano todo, muita convecção e chuva quase sempre.' : v === 'tropical' ? 'verão quente e chuvoso, inverno mais seco (as massas úmidas recuam).' : 'estações bem marcadas e chuvas distribuídas, com muitas frentes frias.'}`); } });
+      const sM = ui.slider({ rotulo: 'Mês', min: 0, max: 11, passo: 1, valor: E.mes, pai: gC, formatar: (v) => MESES[v], aoMudar: (v) => { E.mes = v; pintar(); } });
+      ui.slider({ rotulo: 'Umidade do ar oceânico', min: 10, max: 100, passo: 5, valor: E.umid, unidade: '%', pai: gC, aoMudar: (v) => { E.umid = v; mudou(v < 40 ? 'Ar oceânico seco (como numa corrente marinha fria): pouca água disponível para chover em qualquer lugar.' : 'Mais vapor no ar que vem do mar: mais chuva na encosta e no litoral.'); } });
+      ui.slider({ rotulo: 'Altura da serra', min: 0, max: 2800, passo: 100, valor: E.serra, unidade: 'm', pai: gC, aoMudar: (v) => { E.serra = v; mudou(v < 300 ? 'Sem serra, o ar úmido entra continente adentro e a chuva se espalha.' : `Serra de ${v} m: o ar sobe, esfria ~${SQ.num(6.5 * v / 1000, 1)} °C até o topo e despeja chuva na encosta. Do outro lado fica a sombra de chuva.`); } });
+      ui.linha(gC, ui.botao({ rotulo: '▶ Animar o ano', classe: 'pequeno', aoClicar: (e) => { E.animando = !E.animando; e.currentTarget.innerHTML = E.animando ? '⏸ Pausar' : '▶ Animar o ano'; } }),
+        ui.botao({ rotulo: '❄️ Frente fria', classe: 'azul pequeno', aoClicar: () => { E.frente = 0; guia.diz('Uma <b>frente fria</b> chega: o ar polar, mais denso, entra por baixo e levanta o ar quente e úmido. Forma uma faixa de nuvens e chuva, e atrás dela a temperatura cai uns 6 °C.', { tipo: 'dica', chave: 'frente' }); } }));
+      const gL = ui.grupo('Ponto analisado');
+      ui.segmentado({ opcoes: LOCAIS.map((l) => ({ valor: l.id, rotulo: l.nome.split(' ')[0] })), valor: E.local, pai: gL, aoMudar: (v) => { E.local = v; pintar(); narrarComparacao(); } }).el.classList.add('seg-local');
+      const lei = ui.leituras([{ id: 'z', rotulo: 'Altitude' }, { id: 't', rotulo: 'Temp. média anual' }, { id: 'p', rotulo: 'Chuva anual', destaque: true }, { id: 's', rotulo: 'Meses secos (< 60 mm)' }, { id: 'a', rotulo: 'Amplitude térmica' }, { id: 'c', rotulo: 'Parecido com' }], gL);
+      const segLocal = gL.querySelector('.seg-local');
+
+      let tM = 0;
+      function mudou(txt) { simular(); pintar(); clearTimeout(tM); tM = setTimeout(() => { guia.diz(txt, { chave: 'cen' }); narrarComparacao(); }, 300); }
+      function pintar() {
+        const L = SIM.locais[E.local], { f, melhor } = comparar(E.local);
+        lei.set('z', `${SQ.num(L.z, 0)} m`); lei.set('t', `${SQ.numFixo(f[0])} °C`); lei.set('p', `${SQ.num(f[2], 0)} mm`); lei.set('s', String(f[3])); lei.set('a', `${SQ.numFixo(f[1])} °C`); lei.set('c', melhor.nome.split(' — ')[0]);
+        tela && tela.redesenhar();
+      }
+      function textoComparacao() {
+        const { f, melhor, d: dd } = comparar(E.local), nome = LOCAIS.find((l) => l.id === E.local).nome.toLowerCase();
+        const r = melhor, tr = r.p.reduce((a, b) => a + b);
+        return `No ponto <b>${nome}</b>: ${SQ.num(f[2], 0)} mm/ano, média ${SQ.numFixo(f[0])} °C e ${f[3]} meses secos. O clima real mais parecido é <b>${r.nome}</b> (${SQ.num(tr, 0)} mm/ano, média ${SQ.numFixo(r.t.reduce((a, b) => a + b) / 12)} °C)${dd > 2.5 ? ', mas a semelhança é fraca — é um cenário bem diferente dos exemplos' : ''}.`;
+      }
+      function narrarComparacao() { guia.diz(textoComparacao(), { chave: 'comp' }); }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; if (SIM) desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { const l = LOCAIS.find((q) => q._hit && Math.hypot(p.x - q._hit[0], p.y - q._hit[1]) < 20); if (!l) return false; E.local = l.id; segLocal.querySelectorAll('.botao').forEach((b, i) => b.setAttribute('aria-pressed', String(LOCAIS[i].id === l.id))); pintar(); narrarComparacao(); return false; },
+        hover(p) { tela.canvas.style.cursor = LOCAIS.some((q) => q._hit && Math.hypot(p.x - q._hit[0], p.y - q._hit[1]) < 20) ? 'pointer' : ''; },
+      });
+      let acM = 0;
+      SQ.loop((dt) => {
+        E.t += dt;
+        if (E.animando) { acM += dt; if (acM > 1.1) { acM = 0; E.mes = (E.mes + 1) % 12; sM.valor = E.mes; pintar(); } }
+        if (E.frente >= 0) { E.frente += dt * 0.12; if (E.frente > 1.25) { E.frente = -1; guia.diz('A frente passou: o céu abre e o ar polar deixa o dia mais frio e seco.', { chave: 'frente' }); } }
+        tela.redesenhar();
+      }).iniciar();
+      guia.contexto = () => ({ latitude: LATITUDES[E.lat].nome, mes: MESES[E.mes], umidade: E.umid, serra: E.serra, ponto: E.local, climograma: SIM.locais[E.local], comparacao: textoComparacao() });
+      simular(); pintar(); narrarComparacao();
+    },
+  });
+  </script>
+</body>
+</html>

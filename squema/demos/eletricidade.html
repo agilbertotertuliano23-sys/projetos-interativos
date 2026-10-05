@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eletricidade Lab — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/atomo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .tab-lamp { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    .tab-lamp th, .tab-lamp td { padding: 4px 6px; text-align: right; border-bottom: 1px solid var(--linha); }
+    .tab-lamp th:first-child, .tab-lamp td:first-child { text-align: left; }
+    .tab-lamp th { font-size: 11px; text-transform: uppercase; color: var(--texto-suave); letter-spacing: .04em; }
+    .tab-lamp td { font-family: var(--fonte-mono); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const R_LAMP = 12, P_NOM = 3, R_INT = 0.2, LIM_FUSIVEL = 5; // lâmpada de 6 V / 3 W
+
+  SQ.demo('eletricidade', {
+    fundo: 'papel',
+    dica: 'Clique numa lâmpada para desrosqueá-la · clique nas chaves para abrir/fechar',
+    sala: ['Em série, desrosqueie uma lâmpada: por que todas apagam? Repita em paralelo.', 'Peça uma previsão: com 3 lâmpadas em série, cada uma brilha mais ou menos que uma sozinha?', 'Suba a tensão a 12 V em paralelo e discuta por que as lâmpadas de 6 V queimam.'],
+    comoIA: 'O guia recebe a montagem (série, paralelo ou misto), o estado de cada chave, lâmpada e fusível, e as medidas calculadas pela Lei de Ohm. No diagnóstico ele localiza o ponto aberto ou o curto-circuito e orienta o aluno a corrigir — com uma IA conectada, a conversa pode seguir as hipóteses do próprio aluno.',
+    guia: {
+      ola: 'Esta bancada tem bateria, três lâmpadas de <b>6 V / 3 W</b>, chaves e um fusível de 5 A. Escolha a associação, feche a chave geral e veja as cargas circulando!',
+      perguntas: [
+        { p: 'O que diz a Lei de Ohm?', chaves: ['ohm', 'lei', 'resistencia'], r: '<b>U = R · I</b>: a tensão (V) é a resistência (Ω) vezes a corrente (A). Com mais resistência e a mesma tensão, passa menos corrente.' },
+        { p: 'Série ou paralelo: qual a diferença?', chaves: ['serie', 'paralelo', 'diferenca'], r: 'Em <b>série</b> há um único caminho: a corrente é a mesma em todas e a tensão se divide. Em <b>paralelo</b> cada lâmpada tem seu caminho: todas recebem a tensão inteira e as correntes se somam.' },
+        { p: 'Por que em casa é tudo em paralelo?', chaves: ['casa', 'residencia', 'tomada'], r: 'Para que cada aparelho receba os 127 V ou 220 V da rede e funcione independente: desligar a geladeira não apaga a sala. Em série, um aparelho desligado cortaria todos.' },
+        { p: 'O que é um curto-circuito?', chaves: ['curto', 'fusivel'], r: 'É um caminho de resistência quase zero entre os polos: a corrente dispara (I = U/R com R ≈ 0), aquece os fios e pode causar incêndio. O <b>fusível</b> derrete e abre o circuito antes disso.' },
+        { p: 'Diagnostique meu circuito', chaves: ['diagnostic', 'problema', 'apagou', 'nao acende', 'defeito'], r: (c) => c.diagnostico },
+        { p: 'Elétrons andam para onde?', chaves: ['eletron', 'sentido', 'convencional'], r: 'Os elétrons saem do polo <b>negativo</b> e vão para o positivo (sentido real). Por convenção histórica, desenhamos a corrente do <b>+ para o −</b>. Ligue “Mostrar elétrons” para ver o sentido real.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { modo: 'serie', V: 6, geral: true, chaves: [true, true, true], lamp: [true, true, true], queimada: [false, false, false], fusivel: true, curto: false, eletrons: false };
+      let res = null, alvos = [], fases = {}, tempo = 0;
+
+      function resolver() {
+        const ok = (i) => E.lamp[i] && !E.queimada[i];
+        const r = { I: 0, Req: Infinity, L: [0, 1, 2].map(() => ({ V: 0, I: 0, P: 0 })), seg: {}, aberto: null };
+        if (!E.geral) { r.aberto = 'a chave geral está aberta'; return r; }
+        if (!E.fusivel) { r.aberto = 'o fusível está queimado'; return r; }
+        if (E.curto) { r.I = E.V / R_INT; r.Req = 0; r.curto = true; return r; }
+        const G = (lista) => lista.reduce((s, i) => s + (E.chaves[i] && ok(i) ? 1 / R_LAMP : 0), 0);
+        if (E.modo === 'serie') {
+          const falta = [0, 1, 2].find((i) => !ok(i));
+          if (falta != null) { r.aberto = `a lâmpada L${falta + 1} ${E.queimada[falta] ? 'queimou' : 'está desrosqueada'} e, em série, interrompe o único caminho`; return r; }
+          r.Req = 3 * R_LAMP; r.I = E.V / (r.Req + R_INT);
+          r.L.forEach((l) => { l.I = r.I; l.V = r.I * R_LAMP; });
+        } else if (E.modo === 'paralelo') {
+          const g = G([0, 1, 2]);
+          if (!g) { r.aberto = 'nenhum ramo está fechado com lâmpada boa'; return r; }
+          r.Req = 1 / g; r.I = E.V / (r.Req + R_INT); const Vt = E.V - r.I * R_INT;
+          r.L.forEach((l, i) => { if (E.chaves[i] && ok(i)) { l.V = Vt; l.I = Vt / R_LAMP; } });
+        } else {
+          if (!ok(0)) { r.aberto = `L1 ${E.queimada[0] ? 'queimou' : 'está desrosqueada'} e fica em série com o resto`; return r; }
+          const g = G([1, 2]);
+          if (!g) { r.aberto = 'os dois ramos do paralelo (L2 e L3) estão abertos'; return r; }
+          r.Req = R_LAMP + 1 / g; r.I = E.V / (r.Req + R_INT);
+          r.L[0].I = r.I; r.L[0].V = r.I * R_LAMP; const Vp = r.I / g;
+          [1, 2].forEach((i) => { if (E.chaves[i] && ok(i)) { r.L[i].V = Vp; r.L[i].I = Vp / R_LAMP; } });
+        }
+        r.L.forEach((l) => { l.P = l.V * l.I; });
+        return r;
+      }
+
+      function atualizar(motivo) {
+        res = resolver();
+        if (res.curto && E.fusivel) {
+          E.fusivel = false; SQ.som(140, 0.35, 'sawtooth', 0.1);
+          guia.diz(`⚡ <b>Curto-circuito!</b> A corrente passaria de ${SQ.num(res.I, 0)} A (U/R com R quase zero). O fusível de ${LIM_FUSIVEL} A derreteu e abriu o circuito. Tire o fio do curto e troque o fusível.`, { tipo: 'alerta', chave: 'evento' });
+          res = resolver();
+        }
+        const queimou = res.L.map((l, i) => l.P > P_NOM * 2.6 && !E.queimada[i] ? i : -1).filter((i) => i >= 0);
+        if (queimou.length) {
+          queimou.forEach((i) => { E.queimada[i] = true; }); SQ.som(900, 0.08, 'square', 0.06);
+          guia.diz(`💥 ${queimou.map((i) => 'L' + (i + 1)).join(' e ')} queimou: recebia ${SQ.num(res.L[queimou[0]].P, 1)} W, bem acima dos ${P_NOM} W nominais. Lâmpadas de 6 V ligadas direto em ${SQ.num(E.V, 1)} V não aguentam.`, { tipo: 'alerta', chave: 'evento' });
+          res = resolver();
+        }
+        pintarLeituras();
+        if (motivo) narrar(motivo);
+        tela.redesenhar();
+      }
+
+      function narrar(motivo) {
+        const acesas = res.L.filter((l) => l.P > 0.05).length;
+        if (res.aberto) { guia.diz(`Circuito <b>aberto</b>: ${res.aberto}. Sem caminho fechado, não há corrente.`, { chave: 'estado' }); return; }
+        const b = res.L.map((l) => l.P / P_NOM);
+        let t = `Corrente total <b>${SQ.num(res.I, 2)} A</b>, resistência equivalente ${SQ.num(res.Req, 1)} Ω, ${acesas} lâmpada${acesas === 1 ? '' : 's'} acesa${acesas === 1 ? '' : 's'}.`;
+        if (motivo === 'modo') t += E.modo === 'serie' ? ' Em série, a tensão se divide: cada lâmpada recebe só 1/3 e brilha fraco.' : E.modo === 'paralelo' ? ' Em paralelo, todas recebem a tensão inteira da bateria.' : ' No misto, L1 leva a corrente toda e brilha mais; L2 e L3 dividem o que sobra.';
+        if (Math.max(...b) > 1.6) t += ' Atenção: alguma lâmpada está acima da potência nominal.';
+        guia.diz(t, { chave: 'estado' });
+      }
+
+      function diagnostico() {
+        if (!E.fusivel) return 'O <b>fusível está queimado</b>. ' + (E.curto ? 'Primeiro retire o fio de curto-circuito, depois troque o fusível.' : 'Troque o fusível para religar.');
+        if (E.curto) return 'Há um <b>curto-circuito</b>: um fio liga os polos sem passar pelas lâmpadas. Retire-o.';
+        if (!E.geral) return 'A <b>chave geral</b> está aberta. Feche-a para completar o circuito.';
+        if (res.aberto) return `Encontrei o problema: ${res.aberto}. ${E.queimada.some(Boolean) ? 'Use “Trocar lâmpadas queimadas”.' : 'Rosqueie a lâmpada ou feche a chave do ramo.'}`;
+        const fracas = res.L.map((l, i) => (l.P > 0 && l.P < P_NOM * 0.5 ? i : -1)).filter((i) => i >= 0);
+        if (fracas.length) return `O circuito está fechado, mas ${fracas.map((i) => 'L' + (i + 1)).join(', ')} brilha${fracas.length > 1 ? 'm' : ''} fraco: recebe${fracas.length > 1 ? 'm' : ''} menos que 6 V. ${E.modo === 'serie' ? 'Em série a tensão se divide — mude para paralelo ou suba a tensão.' : 'Aumente a tensão ou reduza as lâmpadas em série.'}`;
+        return 'Tudo certo: circuito fechado, sem curto e lâmpadas dentro da potência nominal. ✅';
+      }
+
+      // ---------- geometria ----------
+      function layout() {
+        const { w, h } = tela;
+        const x0 = Math.max(70, w * 0.13), x1 = w - Math.max(50, w * 0.08), top = h * 0.2, bot = h * 0.8, mid = (top + bot) / 2;
+        const g = { x0, x1, top, bot, mid, bat: [x0, mid], fus: [x0 + (x1 - x0) * 0.12, top], geral: [x0 + (x1 - x0) * 0.1, bot], lamps: [], chaves: [], segs: [] };
+        const W = x1 - x0, I = res.I, Li = res.L.map((l) => l.I);
+        const seg = (id, pts, i) => g.segs.push({ id, pts, I: i });
+        if (E.modo === 'serie') {
+          g.lamps = [0.38, 0.6, 0.82].map((f) => [x0 + W * f, top]);
+          seg('s', [[x0, mid - 34], [x0, top], [x1, top], [x1, bot], [x0, bot], [x0, mid + 34]], I);
+        } else {
+          const xs = E.modo === 'paralelo' ? [0.42, 0.66, 0.9] : [null, 0.6, 0.9];
+          const xr = xs.map((f) => (f == null ? null : x0 + W * f));
+          if (E.modo === 'misto') g.lamps[0] = [x0 + W * 0.3, top];
+          const primeiro = E.modo === 'paralelo' ? 0 : 1;
+          for (let i = primeiro; i < 3; i++) { g.lamps[i] = [xr[i], (top + bot) / 2 + 14]; g.chaves[i] = [xr[i], top + (bot - top) * 0.22]; }
+          const iR = (k) => [0, 1, 2].filter((j) => j >= k).reduce((s, j) => s + Li[j], 0);
+          seg('a', [[x0, mid - 34], [x0, top], [xr[primeiro], top]], I);
+          for (let i = primeiro; i < 3; i++) {
+            if (i < 2) { seg('t' + i, [[xr[i], top], [xr[i + 1], top]], iR(i + 1)); seg('b' + i, [[xr[i + 1], bot], [xr[i], bot]], iR(i + 1)); }
+            seg('r' + i, [[xr[i], top], [xr[i], bot]], Li[i]);
+          }
+          seg('z', [[xr[primeiro], bot], [x0, bot], [x0, mid + 34]], I);
+        }
+        g.curto = [[x0 + W * 0.2, top], [x0 + W * 0.2, bot]];
+        return g;
+      }
+
+      function caminho(ctx, pts) { ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); }
+      function pontoNoCaminho(pts, dist) {
+        for (let i = 1; i < pts.length; i++) {
+          const [ax, ay] = pts[i - 1], [bx, by] = pts[i], L = Math.hypot(bx - ax, by - ay);
+          if (dist <= L) return [ax + ((bx - ax) * dist) / L, ay + ((by - ay) * dist) / L];
+          dist -= L;
+        }
+        return null;
+      }
+      const compr = (pts) => pts.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const g = layout(); alvos = [];
+        // fios
+        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        for (const s of g.segs) { caminho(ctx, s.pts); ctx.strokeStyle = C.tinta; ctx.lineWidth = 9; ctx.stroke(); caminho(ctx, s.pts); ctx.strokeStyle = s.I > 0.001 ? '#FFB547' : '#AEB9D6'; ctx.lineWidth = 4; ctx.stroke(); }
+        if (E.curto) { caminho(ctx, g.curto); ctx.strokeStyle = C.vermelho; ctx.lineWidth = 6; ctx.setLineDash([10, 6]); ctx.stroke(); ctx.setLineDash([]); d.etiqueta(ctx, 'fio de curto', g.curto[0][0], (g.top + g.bot) / 2, { cor: '#FFE1E3' }); }
+        // cargas em movimento
+        for (const s of g.segs) {
+          if (s.I < 0.001) continue;
+          const L = compr(s.pts), passo = 26, fase = ((fases[s.id] || 0) % passo + passo) % passo;
+          for (let dist = fase; dist < L; dist += passo) {
+            const p = pontoNoCaminho(s.pts, E.eletrons ? L - dist : dist); if (!p) continue;
+            ctx.beginPath(); ctx.arc(p[0], p[1], 4.2, 0, Math.PI * 2);
+            ctx.fillStyle = E.eletrons ? C.celeste : C.amarelo; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = C.tinta; ctx.stroke();
+          }
+        }
+        // bateria
+        const [bx, by] = g.bat;
+        d.bloco(ctx, bx - 30, by - 40, 60, 80, { cor: '#fff', r: 10 });
+        ctx.fillStyle = C.vermelho; ctx.fillRect(bx - 27, by - 37, 54, 30); ctx.fillStyle = C.tinta; ctx.fillRect(bx - 27, by + 7, 54, 30);
+        d.texto(ctx, '+', bx, by - 16, { tam: 20, alinhar: 'center', cor: '#fff' }); d.texto(ctx, '−', bx, by + 30, { tam: 20, alinhar: 'center', cor: '#fff' });
+        d.etiqueta(ctx, `${SQ.num(E.V, 1)} V`, bx - 62, by, { cor: C.amarelo });
+        // fusível
+        const [fx, fy] = g.fus;
+        d.bloco(ctx, fx - 22, fy - 11, 44, 22, { cor: E.fusivel ? '#E6EEFF' : '#FFD2D5', r: 11, alt: 2 });
+        ctx.strokeStyle = E.fusivel ? C.suave : C.vermelho; ctx.lineWidth = 2; ctx.beginPath();
+        if (E.fusivel) { ctx.moveTo(fx - 16, fy); for (let k = 0; k < 6; k++) ctx.lineTo(fx - 13 + k * 5.5, fy + (k % 2 ? 4 : -4)); ctx.lineTo(fx + 16, fy); }
+        else { ctx.moveTo(fx - 16, fy); ctx.lineTo(fx - 4, fy - 3); ctx.moveTo(fx + 4, fy + 3); ctx.lineTo(fx + 16, fy); }
+        ctx.stroke(); d.texto(ctx, E.fusivel ? 'fusível 5 A' : 'fusível queimado', fx, fy - 18, { tam: 11, alinhar: 'center', cor: E.fusivel ? C.suave : C.vermelho });
+        // chaves
+        const chave = (x, y, fechada, vertical, rot, id) => {
+          ctx.save(); ctx.translate(x, y); if (vertical) ctx.rotate(Math.PI / 2);
+          ctx.fillStyle = '#FBFCFF'; ctx.fillRect(-20, -9, 40, 18);
+          d.bola(ctx, -16, 0, 5, C.tinta, { brilho: false, esp: 0 }); d.bola(ctx, 16, 0, 5, C.tinta, { brilho: false, esp: 0 });
+          ctx.strokeStyle = fechada ? C.verdeEscuro : C.vermelho; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-16, 0);
+          ctx.lineTo(16, fechada ? 0 : -17); ctx.stroke(); ctx.restore();
+          d.texto(ctx, rot, x + (vertical ? 16 : 0), y + (vertical ? 4 : 26), { tam: 11, alinhar: vertical ? 'left' : 'center', cor: C.suave });
+          alvos.push({ tipo: 'chave', id, x, y, r: 24 });
+        };
+        chave(g.geral[0], g.geral[1], E.geral, false, 'chave geral', 'geral');
+        g.chaves.forEach((p, i) => p && chave(p[0], p[1], E.chaves[i], true, 'S' + (i + 1), i));
+        // lâmpadas
+        g.lamps.forEach((p, i) => {
+          if (!p) return;
+          const [x, y] = p, br = Math.min(2, res.L[i].P / P_NOM);
+          if (br > 0.02) { const gr = ctx.createRadialGradient(x, y, 6, x, y, 30 + br * 40); gr.addColorStop(0, `rgba(255,214,70,${Math.min(0.95, 0.35 + br * 0.4)})`); gr.addColorStop(1, 'rgba(255,214,70,0)'); ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, 30 + br * 40, 0, Math.PI * 2); ctx.fill(); }
+          if (E.lamp[i]) {
+            const cor = E.queimada[i] ? '#6B7280' : br > 0.02 ? `rgb(255,${Math.round(200 + 40 * Math.min(1, br))},${Math.round(60 + 120 * Math.min(1, br / 2))})` : '#F4F7FF';
+            d.bola(ctx, x, y, 21, cor.startsWith('#') ? cor : '#FFD84A', { esp: 3 });
+            if (br > 0.02 && !E.queimada[i]) { ctx.beginPath(); ctx.arc(x, y, 21, 0, Math.PI * 2); ctx.fillStyle = cor; ctx.globalAlpha = 0.55; ctx.fill(); ctx.globalAlpha = 1; }
+            ctx.strokeStyle = E.queimada[i] ? '#333' : C.laranja; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x - 9, y + 4); ctx.lineTo(x - 4, y - 6); ctx.lineTo(x, y + 2); ctx.lineTo(x + 4, y - 6); ctx.lineTo(x + 9, y + 4); ctx.stroke();
+            if (E.queimada[i]) d.texto(ctx, '✕', x, y + 6, { tam: 18, alinhar: 'center', cor: C.vermelho });
+          } else {
+            ctx.setLineDash([4, 4]); ctx.strokeStyle = C.suave; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 21, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+            ctx.fillStyle = '#FBFCFF'; ctx.fill();
+          }
+          const vertical = E.modo !== 'serie' && !(E.modo === 'misto' && i === 0);
+          d.etiqueta(ctx, `L${i + 1}${res.L[i].P > 0.01 ? ' · ' + SQ.num(res.L[i].P, 1) + ' W' : ''}`, vertical ? x + 50 : x, vertical ? y : y - 42, { tam: 11, cor: res.L[i].P > P_NOM * 1.4 ? '#FFE1E3' : '#fff' });
+          alvos.push({ tipo: 'lampada', id: i, x, y, r: 26 });
+        });
+        if (!res.aberto && res.I > 0) d.etiqueta(ctx, `I = ${SQ.num(res.I, 2)} A`, g.x0 + (g.x1 - g.x0) * 0.5, g.bot + 34, { cor: C.celesteClaro });
+        else if (res.aberto) d.etiqueta(ctx, 'circuito aberto · I = 0', g.x0 + (g.x1 - g.x0) * 0.5, g.bot + 34, { cor: '#FFF1CC' });
+      }
+
+      // ---------- painel ----------
+      const gM = ui.grupo('Montagem');
+      ui.segmentado({ opcoes: [{ valor: 'serie', rotulo: 'Série' }, { valor: 'paralelo', rotulo: 'Paralelo' }, { valor: 'misto', rotulo: 'Misto' }], valor: E.modo, pai: gM, aoMudar: (v) => { E.modo = v; atualizar('modo'); } });
+      ui.slider({ rotulo: 'Tensão da bateria', min: 1.5, max: 12, passo: 0.5, valor: E.V, unidade: 'V', pai: gM, aoMudar: (v) => { E.V = v; atualizar('v'); } });
+      const tGeral = ui.alternar({ rotulo: 'Chave geral fechada', valor: true, pai: gM, aoMudar: (v) => { E.geral = v; atualizar('chave'); } });
+      ui.alternar({ rotulo: 'Mostrar elétrons (sentido real)', valor: false, pai: gM, aoMudar: (v) => { E.eletrons = v; guia.diz(v ? 'Agora você vê os <b>elétrons</b> (azuis) saindo do polo negativo. O sentido convencional (amarelo) é o contrário.' : 'De volta ao sentido convencional: do + para o −.', { chave: 'sent' }); } });
+      const linha = ui.linha(gM);
+      const btCurto = ui.botao({ rotulo: '⚡ Fio de curto', classe: 'branco pequeno', pai: linha, aoClicar: () => { E.curto = !E.curto; btCurto.setAttribute('aria-pressed', String(E.curto)); atualizar(); if (!E.curto) guia.diz('Fio de curto retirado.' + (E.fusivel ? '' : ' Agora troque o fusível.'), { chave: 'evento' }); } });
+      ui.botao({ rotulo: 'Trocar fusível', classe: 'branco pequeno', pai: linha, aoClicar: () => { E.fusivel = true; atualizar('chave'); } });
+      ui.botao({ rotulo: 'Trocar lâmpadas queimadas', classe: 'branco pequeno', pai: linha, aoClicar: () => { E.queimada = [false, false, false]; E.lamp = [true, true, true]; atualizar('chave'); } });
+      ui.botao({ rotulo: '🩺 Diagnosticar circuito', classe: 'azul pequeno', pai: ui.linha(gM), aoClicar: () => guia.diz(diagnostico(), { tipo: 'dica', chave: 'diag' }) });
+
+      const gMed = ui.grupo('Multímetro');
+      const lei = ui.leituras([{ id: 'U', rotulo: 'Tensão (U)' }, { id: 'I', rotulo: 'Corrente total', destaque: true }, { id: 'R', rotulo: 'R equivalente' }, { id: 'P', rotulo: 'Potência total' }], gMed);
+      const tab = SQ.el('table', { class: 'tab-lamp' }); gMed.append(tab);
+      function pintarLeituras() {
+        lei.set('U', `${SQ.num(E.V, 1)} V`); lei.set('I', `${SQ.num(res.I, 2)} A`);
+        lei.set('R', res.aberto ? '∞ (aberto)' : res.curto ? '≈ 0 Ω' : `${SQ.num(res.Req, 1)} Ω`);
+        lei.set('P', `${SQ.num(res.L.reduce((s, l) => s + l.P, 0), 2)} W`);
+        tab.innerHTML = '<tr><th>Lâmpada</th><th>U (V)</th><th>I (A)</th><th>P (W)</th></tr>' + res.L.map((l, i) => `<tr><td>L${i + 1}${E.queimada[i] ? ' 💥' : E.lamp[i] ? '' : ' (fora)'}</td><td>${SQ.num(l.V, 2)}</td><td>${SQ.num(l.I, 3)}</td><td>${SQ.num(l.P, 2)}</td></tr>`).join('');
+      }
+
+      res = resolver();
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const a = alvos.find((o) => Math.hypot(o.x - p.x, o.y - p.y) < o.r);
+          if (!a) return false;
+          if (a.tipo === 'lampada') { if (E.queimada[a.id]) { E.queimada[a.id] = false; E.lamp[a.id] = true; guia.diz(`L${a.id + 1} trocada por uma nova.`, { chave: 'evento' }); } else E.lamp[a.id] = !E.lamp[a.id]; SQ.som(E.lamp[a.id] ? 520 : 300, 0.07); atualizar('lampada'); }
+          else if (a.id === 'geral') { E.geral = !E.geral; tGeral.valor = E.geral; SQ.som(400, 0.05, 'square', 0.04); atualizar('chave'); }
+          else { E.chaves[a.id] = !E.chaves[a.id]; SQ.som(400, 0.05, 'square', 0.04); atualizar('chave'); }
+          return false;
+        },
+        hover(p) { tela.canvas.style.cursor = alvos.some((o) => Math.hypot(o.x - p.x, o.y - p.y) < o.r) ? 'pointer' : ''; },
+      });
+      SQ.loop((dt) => {
+        tempo += dt;
+        for (const s of layout().segs) fases[s.id] = (fases[s.id] || 0) + dt * Math.min(220, s.I * 160);
+        tela.redesenhar();
+      }).iniciar();
+      guia.contexto = () => ({ montagem: E.modo, tensao: E.V, chaveGeral: E.geral, chaves: E.chaves, lampadas: E.lamp, queimadas: E.queimada, fusivel: E.fusivel, curto: E.curto, corrente: res.I, resistenciaEquivalente: res.Req, porLampada: res.L, diagnostico: diagnostico() });
+      atualizar('modo');
+    },
+  });
+  </script>
+</body>
+</html>

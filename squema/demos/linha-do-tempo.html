@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linha do Tempo IA — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/ampulheta.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 2px; font-size: 18px; }
+    .ficha .data { font: 800 13px var(--fonte-mono); color: var(--azul); }
+    .ligacoes { display: grid; gap: 6px; margin-top: 10px; }
+    .ligacoes h4 { margin: 4px 0 0; font: 900 11px var(--fonte); text-transform: uppercase; letter-spacing: .05em; color: var(--texto-suave); }
+    .ligacoes button { text-align: left; border: 2px solid var(--tinta); border-radius: 10px; background: #fff; padding: 5px 9px; font-size: 13px; font-weight: 800; color: var(--tinta); }
+    .ligacoes button.causa { border-left: 8px solid var(--laranja); }
+    .ligacoes button.conseq { border-left: 8px solid var(--verde); }
+    .ligacoes button:hover { background: var(--celeste-claro); }
+    .quiz { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .quiz .botao { min-height: 64px; font-size: 13px; line-height: 1.2; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const CATS = { politica: { nome: 'Política', cor: '#1F5BE0' }, economia: { nome: 'Economia', cor: '#FF9416' }, sociedade: { nome: 'Sociedade', cor: '#EE3B45' }, cultura: { nome: 'Cultura', cor: '#8B3DFF' } };
+  // id, ano, fim (ou null), título, categoria, descrição
+  const EVENTOS = [
+    ['cabral', 1500, null, 'Chegada de Cabral', 'politica', 'A esquadra de Pedro Álvares Cabral chega ao litoral da atual Bahia. A terra já era habitada por milhões de indígenas.'],
+    ['capitanias', 1534, null, 'Capitanias hereditárias', 'politica', 'A Coroa divide o território em faixas entregues a donatários, que deviam ocupá-las e defendê-las por conta própria.'],
+    ['governo', 1549, null, 'Governo-geral', 'politica', 'Tomé de Sousa chega e funda Salvador, a primeira capital. Com ele vêm os primeiros jesuítas.'],
+    ['acucar', 1550, 1650, 'Ciclo do açúcar', 'economia', 'Engenhos de cana no Nordeste fazem do Brasil o maior produtor de açúcar do mundo.'],
+    ['trafico', 1560, 1850, 'Tráfico de africanos escravizados', 'sociedade', 'Cerca de 4,8 milhões de africanos foram trazidos à força para o Brasil — o maior destino do tráfico nas Américas.'],
+    ['holandeses', 1630, 1654, 'Holandeses no Nordeste', 'politica', 'A Companhia das Índias Ocidentais ocupa Pernambuco para controlar o açúcar. Maurício de Nassau governa Recife.'],
+    ['palmares', 1605, 1695, 'Quilombo dos Palmares', 'sociedade', 'Maior quilombo das Américas, na Serra da Barriga (AL). Zumbi, seu líder, é morto em 1695 — 20 de novembro virou Dia da Consciência Negra.'],
+    ['ouro', 1695, 1785, 'Ciclo do ouro', 'economia', 'Descoberta de ouro em Minas Gerais: corrida do ouro, novas vilas e um grande deslocamento de pessoas para o interior.'],
+    ['capitalrio', 1763, null, 'Capital vai para o Rio', 'politica', 'O centro administrativo se muda de Salvador para o Rio de Janeiro, porto por onde saía o ouro.'],
+    ['inconfidencia', 1789, null, 'Inconfidência Mineira', 'politica', 'Membros da elite mineira conspiram contra os impostos da Coroa. Tiradentes é executado em 1792.'],
+    ['familia', 1808, null, 'Família real no Brasil', 'politica', 'Fugindo de Napoleão, a corte portuguesa se instala no Rio de Janeiro.'],
+    ['portos', 1808, null, 'Abertura dos portos', 'economia', 'Fim do monopólio comercial: o Brasil passa a negociar diretamente com nações amigas, sobretudo a Inglaterra.'],
+    ['reino', 1815, null, 'Reino Unido a Portugal', 'politica', 'O Brasil deixa de ser colônia e vira reino, unido a Portugal e Algarves.'],
+    ['independencia', 1822, null, 'Independência', 'politica', 'D. Pedro rompe com Portugal; começa o Império do Brasil. Houve guerras de independência na Bahia, no Pará e na Cisplatina.'],
+    ['constituicao1824', 1824, null, 'Constituição de 1824', 'politica', 'Primeira constituição, outorgada por D. Pedro I, com o Poder Moderador e voto censitário.'],
+    ['regencias', 1831, 1840, 'Período regencial', 'politica', 'D. Pedro I abdica e o país é governado por regentes até a maioridade de D. Pedro II.'],
+    ['farroupilha', 1835, 1845, 'Revolução Farroupilha', 'politica', 'Revolta no Rio Grande do Sul contra impostos e a centralização do Império — a mais longa revolta do período.'],
+    ['cafe', 1830, 1930, 'Ciclo do café', 'economia', 'O café se torna o principal produto de exportação, primeiro no Vale do Paraíba, depois no Oeste Paulista.'],
+    ['eusebio', 1850, null, 'Lei Eusébio de Queirós', 'sociedade', 'Proíbe o tráfico de africanos escravizados para o Brasil, sob pressão da Inglaterra.'],
+    ['paraguai', 1864, 1870, 'Guerra do Paraguai', 'politica', 'Brasil, Argentina e Uruguai contra o Paraguai. Guerra devastadora para o Paraguai; o Exército brasileiro sai fortalecido.'],
+    ['ventre', 1871, null, 'Lei do Ventre Livre', 'sociedade', 'Filhos de mulheres escravizadas nascidos a partir dessa data seriam livres — na prática, com muitas restrições.'],
+    ['aurea', 1888, null, 'Abolição da escravidão', 'sociedade', 'A Lei Áurea extingue a escravidão, sem indenização e sem políticas de inclusão para a população liberta.'],
+    ['republica', 1889, null, 'Proclamação da República', 'politica', 'Militares liderados por Deodoro da Fonseca derrubam a monarquia; a família imperial é exilada.'],
+    ['imigracao', 1880, 1930, 'Grande imigração', 'sociedade', 'Milhões de italianos, portugueses, espanhóis, alemães e, a partir de 1908, japoneses chegam ao Brasil.'],
+    ['semana', 1922, null, 'Semana de Arte Moderna', 'cultura', 'Artistas como Anita Malfatti, Mário e Oswald de Andrade propõem uma arte brasileira moderna.'],
+    ['crise29', 1929, null, 'Crise de 1929', 'economia', 'A quebra da Bolsa de Nova York derruba o preço do café e a economia agroexportadora.'],
+    ['vargas', 1930, null, 'Revolução de 1930', 'politica', 'Getúlio Vargas chega ao poder e encerra a República Velha e a política do café com leite.'],
+    ['estadonovo', 1937, 1945, 'Estado Novo', 'politica', 'Ditadura de Vargas: Congresso fechado, censura e forte centralização.'],
+    ['clt', 1943, null, 'CLT', 'sociedade', 'A Consolidação das Leis do Trabalho reúne direitos como jornada de 8 horas, férias e salário mínimo.'],
+    ['brasilia', 1960, null, 'Inauguração de Brasília', 'politica', 'JK transfere a capital para o Planalto Central, símbolo do plano de metas e da interiorização.'],
+    ['golpe', 1964, 1985, 'Ditadura militar', 'politica', 'Golpe de 1964 derruba João Goulart. Seguem-se 21 anos de governos militares, censura e repressão.'],
+    ['ai5', 1968, null, 'AI-5', 'politica', 'O Ato Institucional nº 5 fecha o Congresso, suspende direitos e amplia a censura e a tortura.'],
+    ['anistia', 1979, null, 'Lei da Anistia', 'politica', 'Exilados voltam ao país; começa a abertura política “lenta, gradual e segura”.'],
+    ['diretas', 1984, null, 'Diretas Já', 'sociedade', 'Milhões vão às ruas pedindo eleições diretas para presidente.'],
+    ['cf88', 1988, null, 'Constituição Cidadã', 'politica', 'Nova Constituição amplia direitos, cria o SUS e garante eleições diretas.'],
+    ['real', 1994, null, 'Plano Real', 'economia', 'Nova moeda controla a hiperinflação que marcou os anos 1980 e o início dos 1990.'],
+  ].map(([id, ano, fim, titulo, cat, desc]) => ({ id, ano, fim, titulo, cat, desc }));
+  const LIGACOES = [
+    ['cabral', 'capitanias', 'Para ocupar a terra e afastar franceses e outros europeus, a Coroa dividiu o território entre donatários.'],
+    ['capitanias', 'governo', 'A maioria das capitanias fracassou (falta de recursos, conflitos com indígenas): a Coroa centralizou o poder no governo-geral.'],
+    ['governo', 'acucar', 'Com a administração organizada, a Coroa incentivou os engenhos de açúcar no litoral do Nordeste.'],
+    ['acucar', 'trafico', 'Os engenhos exigiam muita mão de obra: senhores e comerciantes passaram a escravizar africanos em grande escala.'],
+    ['trafico', 'palmares', 'Pessoas escravizadas resistiram de muitas formas; fugas coletivas formaram quilombos como Palmares.'],
+    ['acucar', 'holandeses', 'Os holandeses financiavam e distribuíam o açúcar; quando perderam o acesso, invadiram o Nordeste para controlar a produção.'],
+    ['holandeses', 'ouro', 'Expulsos em 1654, os holandeses levaram a técnica para as Antilhas. A concorrência derrubou o açúcar e a Coroa incentivou a busca por metais.'],
+    ['ouro', 'capitalrio', 'O ouro de Minas saía pelo porto do Rio de Janeiro: a capital foi transferida para perto das minas.'],
+    ['ouro', 'inconfidencia', 'Impostos pesados sobre o ouro — o quinto e a ameaça da derrama — revoltaram a elite mineira.'],
+    ['familia', 'portos', 'Com Portugal ocupado por Napoleão, o comércio do império português precisava passar pelos portos do Brasil.'],
+    ['familia', 'reino', 'Com o rei morando no Rio, não fazia sentido o Brasil continuar como colônia.'],
+    ['reino', 'independencia', 'Quando D. João VI voltou, as Cortes de Lisboa tentaram reduzir de novo a autonomia do Brasil — e a elite apoiou a ruptura.'],
+    ['independencia', 'constituicao1824', 'O novo império precisava de uma constituição; D. Pedro I dissolveu a Assembleia e outorgou a sua.'],
+    ['constituicao1824', 'regencias', 'O autoritarismo de D. Pedro I e a crise econômica levaram à abdicação em 1831.'],
+    ['regencias', 'farroupilha', 'A instabilidade do período regencial abriu espaço para revoltas nas províncias.'],
+    ['eusebio', 'imigracao', 'Sem o tráfico, os cafeicultores passaram a trazer imigrantes europeus como mão de obra.'],
+    ['cafe', 'imigracao', 'A expansão do café em São Paulo exigia muitos trabalhadores: o governo subsidiou a vinda de imigrantes.'],
+    ['ventre', 'aurea', 'As leis graduais (Ventre Livre, Sexagenários) e a luta abolicionista e dos próprios escravizados levaram à abolição.'],
+    ['aurea', 'republica', 'Fazendeiros que perderam escravizados sem indenização deixaram de apoiar a monarquia.'],
+    ['paraguai', 'republica', 'O Exército saiu da guerra fortalecido, com ideias republicanas e insatisfeito com o Império.'],
+    ['crise29', 'vargas', 'A crise derrubou o preço do café e enfraqueceu a oligarquia cafeeira que dominava a República Velha.'],
+    ['vargas', 'estadonovo', 'Vargas centralizou cada vez mais o poder até dar um golpe e instaurar a ditadura em 1937.'],
+    ['vargas', 'clt', 'O governo Vargas criou o Ministério do Trabalho e reuniu as leis trabalhistas na CLT.'],
+    ['golpe', 'ai5', 'Diante de protestos e greves de 1968, a ditadura endureceu com o AI-5.'],
+    ['ai5', 'anistia', 'A repressão e a crise do “milagre econômico” aumentaram a pressão da sociedade pela abertura.'],
+    ['anistia', 'diretas', 'Com a abertura, a sociedade civil se reorganizou e foi às ruas pelas eleições diretas.'],
+    ['diretas', 'cf88', 'Mesmo derrotada no Congresso, a campanha mobilizou o país e abriu caminho para a nova Constituição.'],
+    ['cf88', 'real', 'Com a democracia consolidada, governos sucessivos enfrentaram a hiperinflação até o Plano Real.'],
+  ].map(([de, para, txt]) => ({ de, para, txt }));
+  const PERIODOS = [{ nome: 'Colônia', de: 1500, ate: 1822, cor: '#FFF1CC' }, { nome: 'Império', de: 1822, ate: 1889, cor: '#E6EEFF' }, { nome: 'República', de: 1889, ate: 2025, cor: '#DDF7E1' }];
+  const porId = Object.fromEntries(EVENTOS.map((e) => [e.id, e]));
+  const dataTxt = (e) => (e.fim ? `${e.ano}–${e.fim}` : String(e.ano));
+
+  SQ.demo('linha-do-tempo', {
+    fundo: 'papel',
+    dica: 'Arraste para navegar · role para dar zoom · clique num evento',
+    sala: ['Cada grupo escolhe um evento e reconstrói a cadeia de causas até 1500, apresentando para a turma.', 'Discuta: quais processos atravessam vários períodos (escravidão, café)? Por que são de “longa duração”?', 'Use o quiz “Qual veio primeiro?” como aquecimento no início da aula.'],
+    comoIA: 'O guia recebe o evento selecionado, suas causas e consequências e o trecho de tempo em vista. Ele explica cada conexão, aponta processos de longa duração e propõe perguntas. Uma IA conectada pode montar novas conexões a partir de perguntas do aluno ("por que a abolição aconteceu tão tarde?").',
+    guia: {
+      ola: 'Esta linha do tempo vai de 1500 até hoje. Clique num evento: setas <b style="color:#D96A00">laranjas</b> mostram as causas e <b style="color:#1E8A30">verdes</b>, as consequências. Role para dar zoom de séculos até anos.',
+      perguntas: [
+        { p: 'Causa e consequência: como ler?', chaves: ['causa', 'consequencia', 'ler'], r: 'Um evento raramente tem uma causa só. Pergunte: <b>o que tornou isso possível?</b> (causas) e <b>o que isso mudou?</b> (consequências). As setas mostram as conexões mais importantes — não todas!' },
+        { p: 'O que é longa duração?', chaves: ['longa', 'duracao', 'processo'], r: 'São processos que atravessam gerações, como a escravidão (mais de 300 anos) ou o ciclo do café. Eles aparecem como <b>barras</b> na linha do tempo, em vez de pontos.' },
+        { p: 'Por que a abolição foi tão tarde?', chaves: ['abolicao', 'tarde', 'escravidao'], r: 'A economia inteira (açúcar, ouro, café) dependia do trabalho escravizado, e os senhores tinham grande poder político. A abolição veio de forma gradual, por pressão inglesa, da luta abolicionista e da resistência dos próprios escravizados — e sem reparação.' },
+        { p: 'Quais são os períodos?', chaves: ['periodo', 'colonia', 'imperio', 'republica'], r: '<b>Colônia</b> (1500–1822), <b>Império</b> (1822–1889) e <b>República</b> (1889 até hoje), que se divide em República Velha, Era Vargas, período democrático, ditadura militar e Nova República.' },
+        { p: 'Explique o evento selecionado', chaves: ['explique', 'selecionado', 'este'], r: (c) => c.explicacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const v = SQ.vista({ x0: 1490, x1: 2005, y0: 0, y1: 1 }, { x: 0, y: 0, w: 1, h: 1 });
+      let sel = null, mouse = null, todas = false, filtros = new Set(Object.keys(CATS)), rects = [];
+      const LANES = Object.keys(CATS);
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        v.area = { x: 96, y: 34, w: w - 106, h: h - 74 };
+        const laneH = v.area.h / LANES.length;
+        // períodos
+        for (const p of PERIODOS) { const x0 = Math.max(v.area.x, v.X(p.de)), x1 = Math.min(v.area.x + v.area.w, v.X(p.ate)); if (x1 <= x0) continue; ctx.fillStyle = p.cor; ctx.fillRect(x0, 6, x1 - x0, h - 12); d.texto(ctx, p.nome.toUpperCase(), (x0 + x1) / 2, 22, { tam: 12, alinhar: 'center', cor: C.suave }); }
+        // raias
+        LANES.forEach((k, i) => { const y = v.area.y + i * laneH; ctx.strokeStyle = '#D6DFF5'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(v.area.x, y + laneH); ctx.lineTo(v.area.x + v.area.w, y + laneH); ctx.stroke(); });
+        // régua
+        const passo = SQ.passoBonito(v.dom.x1 - v.dom.x0, Math.max(4, w / 110)), yR = h - 34;
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(v.area.x, yR); ctx.lineTo(v.area.x + v.area.w, yR); ctx.stroke();
+        for (let a = Math.ceil(v.dom.x0 / passo) * passo; a <= v.dom.x1; a += passo) { const x = v.X(a); if (x < v.area.x) continue; ctx.beginPath(); ctx.moveTo(x, yR); ctx.lineTo(x, yR + 7); ctx.stroke(); d.texto(ctx, String(Math.round(a)), x, yR + 21, { tam: 12, alinhar: 'center', cor: C.tinta }); }
+        // eventos (com nível de detalhe conforme o zoom)
+        rects = [];
+        const linhas = LANES.map(() => [[], [], []]);
+        const lig = sel ? LIGACOES.filter((l) => l.de === sel || l.para === sel) : [];
+        const relacionados = new Set(lig.flatMap((l) => [l.de, l.para]));
+        const ord = [...EVENTOS].sort((a, b) => a.ano - b.ano);
+        ctx.save(); ctx.beginPath(); ctx.rect(v.area.x, 0, v.area.w, h); ctx.clip();
+        for (const e of ord) {
+          if (!filtros.has(e.cat)) continue;
+          const li = LANES.indexOf(e.cat), cor = CATS[e.cat].cor, yL = v.area.y + li * laneH;
+          ctx.font = '800 12px Nunito, "Segoe UI", system-ui, sans-serif';
+          const tw = ctx.measureText(e.titulo).width + 18, x = v.X(e.ano), xf = e.fim ? v.X(e.fim) : x;
+          const larg = Math.max(tw, xf - x + (e.fim ? 0 : 0));
+          let sub = -1;
+          for (let s = 0; s < 3; s++) { const ocup = linhas[li][s]; if (!ocup.some(([a, b]) => !(x + larg + 6 < a || x > b + 6))) { sub = s; break; } }
+          const alfa = sel && !relacionados.has(e.id) ? 0.28 : 1;
+          ctx.globalAlpha = alfa;
+          const subH = Math.min(30, (laneH - 10) / 3), y = yL + 6 + Math.max(0, sub) * (subH + 3);
+          if (e.fim) { ctx.fillStyle = d.clarear(cor, 0.55); ctx.fillRect(x, y + subH * 0.35, Math.max(3, xf - x), subH * 0.3); }
+          if (sub >= 0) {
+            linhas[li][sub].push([x, x + larg]);
+            d.bloco(ctx, x, y, tw, subH - 4, { cor: e.id === sel ? C.amarelo : '#fff', r: 8, alt: 2, esp: e.id === sel ? 3 : 2, sombra: cor });
+            ctx.fillStyle = cor; ctx.fillRect(x + 2, y + 2, 5, subH - 8);
+            d.texto(ctx, e.titulo, x + 11, y + (subH - 4) / 2 + 1, { tam: 12, base: 'middle', cor: C.tinta });
+            rects.push({ e, x, y, w: tw, h: subH - 4 });
+          } else {
+            d.bola(ctx, x, yL + laneH - 10, 6, cor, { esp: 2, brilho: false });
+            rects.push({ e, x: x - 7, y: yL + laneH - 17, w: 14, h: 14, ponto: true });
+          }
+          ctx.globalAlpha = 1;
+        }
+        // conexões
+        const centro = (id) => { const r = rects.find((q) => q.e.id === id); return r ? [r.x + r.w / 2, r.y + r.h / 2, r] : null; };
+        const desenharLig = (l, cor, esp) => {
+          const a = centro(l.de), b = centro(l.para); if (!a || !b) return;
+          const [x1, y1] = [a[2].x + a[2].w, a[1]], [x2, y2] = [b[2].x, b[1]];
+          ctx.strokeStyle = cor; ctx.lineWidth = esp; ctx.beginPath(); ctx.moveTo(x1, y1);
+          const mx = (x1 + x2) / 2 + (x2 < x1 ? 60 : 0); ctx.bezierCurveTo(mx, y1, mx, y2, x2 - 6, y2); ctx.stroke();
+          d.seta(ctx, x2 - 16, y2, x2 - 2, y2, cor, esp, 9);
+        };
+        if (todas && !sel) LIGACOES.forEach((l) => desenharLig(l, 'rgba(85,98,143,.45)', 2));
+        lig.forEach((l) => desenharLig(l, l.para === sel ? '#FF9416' : '#36C04A', 3.2));
+        ctx.restore();
+        // nomes das raias
+        LANES.forEach((k, i) => { const y = v.area.y + i * laneH; ctx.fillStyle = '#FBFCFF'; ctx.fillRect(0, y, v.area.x - 4, laneH); d.bloco(ctx, 8, y + laneH / 2 - 13, 82, 26, { cor: filtros.has(k) ? CATS[k].cor : '#CBD7F5', r: 8, alt: 2 }); d.texto(ctx, CATS[k].nome, 49, y + laneH / 2 + 1, { tam: 12, alinhar: 'center', base: 'middle', cor: '#fff' }); });
+        // dica de hover
+        if (mouse) { const r = rects.find((q) => mouse.x >= q.x && mouse.x <= q.x + q.w && mouse.y >= q.y && mouse.y <= q.y + q.h); if (r && r.ponto) d.etiqueta(ctx, `${dataTxt(r.e)} · ${r.e.titulo}`, Math.min(w - 120, Math.max(120, r.x)), r.y - 14, { tam: 12, cor: C.amarelo }); }
+      }
+
+      // ---------- painel ----------
+      const gN = ui.grupo('Navegar');
+      ui.linha(gN, ...[['Tudo', 1490, 2005], ['Colônia', 1490, 1830], ['Império', 1815, 1895], ['República', 1880, 2005]].map(([r, a, b]) => ui.botao({ rotulo: r, classe: 'branco pequeno', aoClicar: () => voar(a, b) })));
+      ui.alternar({ rotulo: 'Mostrar todas as conexões', valor: false, pai: gN, aoMudar: (x) => { todas = x; tela.redesenhar(); } });
+      const gC = ui.grupo('Categorias');
+      for (const [k, c] of Object.entries(CATS)) ui.alternar({ rotulo: c.nome, valor: true, pai: gC, aoMudar: (x) => { x ? filtros.add(k) : filtros.delete(k); tela.redesenhar(); } });
+      const gF = ui.grupo('Evento');
+      const ficha = SQ.el('div', { class: 'ficha' }, SQ.el('p', { class: 'texto-suave mb0' }, 'Clique num evento da linha do tempo.')); gF.append(ficha);
+      const gQ = ui.grupo('Quiz: qual veio primeiro?');
+      const quiz = SQ.el('div', { class: 'quiz' }); gQ.append(quiz);
+      const placar = ui.leituras([{ id: 'a', rotulo: 'Acertos seguidos', destaque: true }, { id: 'r', rotulo: 'Recorde' }], gQ);
+      let seq = 0, rec = 0;
+      function novaQuestao() {
+        let a, b; do { a = EVENTOS[Math.floor(Math.random() * EVENTOS.length)]; b = EVENTOS[Math.floor(Math.random() * EVENTOS.length)]; } while (a.ano === b.ano);
+        quiz.innerHTML = '';
+        for (const e of [a, b]) quiz.append(ui.botao({ rotulo: e.titulo, classe: 'branco', aoClicar: () => {
+          const certo = e.ano < (e === a ? b : a).ano;
+          seq = certo ? seq + 1 : 0; rec = Math.max(rec, seq); placar.set('a', String(seq)); placar.set('r', String(rec));
+          guia.diz(certo ? `✅ Isso! <b>${e.titulo}</b> (${dataTxt(e)}) veio antes de <b>${(e === a ? b : a).titulo}</b> (${dataTxt(e === a ? b : a)}).` : `Ops: <b>${(e === a ? b : a).titulo}</b> (${dataTxt(e === a ? b : a)}) veio antes de <b>${e.titulo}</b> (${dataTxt(e)}).`, { tipo: certo ? 'sucesso' : 'alerta', chave: 'quiz' });
+          SQ.som(certo ? 880 : 220, 0.12, certo ? 'sine' : 'sawtooth', certo ? 0.08 : 0.04); setTimeout(novaQuestao, 900);
+        } }));
+      }
+      placar.set('a', '0'); placar.set('r', '0');
+
+      function explicar(id) {
+        const e = porId[id], causas = LIGACOES.filter((l) => l.para === id), cons = LIGACOES.filter((l) => l.de === id);
+        let t = `<b>${e.titulo}</b> (${dataTxt(e)}). ${e.desc}`;
+        if (causas.length) t += ` <br>⬅ <b>Causas:</b> ${causas.map((l) => `${porId[l.de].titulo} — ${l.txt}`).join(' ')}`;
+        if (cons.length) t += ` <br>➡ <b>Consequências:</b> ${cons.map((l) => `${porId[l.para].titulo} — ${l.txt}`).join(' ')}`;
+        if (!causas.length && !cons.length) t += ' Este evento não tem conexões desenhadas aqui — que causas você imagina?';
+        return t;
+      }
+      function selecionar(id, centralizar) {
+        sel = id; const e = porId[id];
+        const causas = LIGACOES.filter((l) => l.para === id), cons = LIGACOES.filter((l) => l.de === id);
+        ficha.innerHTML = `<span class="data">${dataTxt(e)} · ${CATS[e.cat].nome}</span><h3>${e.titulo}</h3><p class="mb0">${e.desc}</p>`;
+        const lg = SQ.el('div', { class: 'ligacoes' });
+        if (causas.length) { lg.append(SQ.el('h4', null, 'Causas')); causas.forEach((l) => lg.append(SQ.el('button', { type: 'button', class: 'causa', onclick: () => selecionar(l.de, true) }, `⬅ ${porId[l.de].titulo} (${dataTxt(porId[l.de])})`))); }
+        if (cons.length) { lg.append(SQ.el('h4', null, 'Consequências')); cons.forEach((l) => lg.append(SQ.el('button', { type: 'button', class: 'conseq', onclick: () => selecionar(l.para, true) }, `➡ ${porId[l.para].titulo} (${dataTxt(porId[l.para])})`))); }
+        ficha.append(lg);
+        if (centralizar) { const span = v.dom.x1 - v.dom.x0; const alvo = e.ano - span * 0.35; voar(alvo, alvo + span); }
+        guia.diz(explicar(id), { chave: 'ev' }); SQ.som(600, 0.05);
+        tela.redesenhar();
+      }
+      function voar(a, b) {
+        const a0 = v.dom.x0, b0 = v.dom.x1; let k = 0;
+        const an = SQ.loop((dt) => { k = Math.min(1, k + dt * 2.2); const e = k * k * (3 - 2 * k); v.dom.x0 = a0 + (a - a0) * e; v.dom.x1 = b0 + (b - b0) * e; tela.redesenhar(); if (k >= 1) an.parar(); }).iniciar();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let ini = null, moveu = false;
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { ini = p; moveu = false; return true; },
+        mover(p) { if (Math.abs(p.x - ini.x) > 3) moveu = true; v.arrastar(p.x - ini.x, 0); ini = p; tela.redesenhar(); },
+        fim(p) {
+          if (moveu) return;
+          if (p.x < 92) { const i = Math.floor((p.y - v.area.y) / (v.area.h / LANES.length)); const k = LANES[i]; if (k) { filtros.has(k) ? filtros.delete(k) : filtros.add(k); gC.querySelectorAll('input')[i].checked = filtros.has(k); tela.redesenhar(); } return; }
+          const r = rects.find((q) => p.x >= q.x && p.x <= q.x + q.w && p.y >= q.y && p.y <= q.y + q.h);
+          if (r) selecionar(r.e.id); else { sel = null; tela.redesenhar(); }
+        },
+        hover(p) { mouse = p; const r = rects.some((q) => p.x >= q.x && p.x <= q.x + q.w && p.y >= q.y && p.y <= q.y + q.h); tela.canvas.style.cursor = r ? 'pointer' : 'grab'; tela.redesenhar(); },
+      });
+      tela.canvas.addEventListener('wheel', (e) => {
+        e.preventDefault(); const r = tela.canvas.getBoundingClientRect(), f = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+        const span = (v.dom.x1 - v.dom.x0) / f; if (span < 8 || span > 700) return;
+        const cx = v.ix(e.clientX - r.left); v.dom.x0 = cx + (v.dom.x0 - cx) / f; v.dom.x1 = cx + (v.dom.x1 - cx) / f; tela.redesenhar();
+      }, { passive: false });
+      guia.contexto = () => ({ selecionado: sel && porId[sel].titulo, vista: [Math.round(v.dom.x0), Math.round(v.dom.x1)], explicacao: sel ? explicar(sel) : 'Selecione um evento clicando nele na linha do tempo.' });
+      novaQuestao();
+    },
+  });
+  </script>
+</body>
+</html>

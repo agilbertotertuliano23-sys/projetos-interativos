@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corpo Humano IA — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/dna.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ficha { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .ficha h3 { margin: 0 0 4px; font-size: 18px; }
+    .ficha .sis { display: inline-block; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: #fff; border-radius: 6px; padding: 1px 7px; margin-bottom: 6px; }
+    .ficha p { margin: 4px 0 0; }
+    .camadas .alternar span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--tinta); background: var(--c); margin-right: 8px; vertical-align: -1px; }
+    .desafio { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .desafio.ok { background: #DDF7E1; border-color: var(--verde); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const SISTEMAS = {
+    tegumentar: { nome: 'Pele', cor: '#8FD3FF' },
+    esqueletico: { nome: 'Esquelético', cor: '#E6EEFF' },
+    circulatorio: { nome: 'Circulatório', cor: '#EE3B45' },
+    respiratorio: { nome: 'Respiratório', cor: '#FF8FB1' },
+    digestorio: { nome: 'Digestório', cor: '#FF9416' },
+    nervoso: { nome: 'Nervoso', cor: '#FFC21A' },
+    urinario: { nome: 'Urinário', cor: '#8B3DFF' },
+  };
+  const ORGAOS = {
+    cerebro: ['Encéfalo', 'nervoso', 'Centro de comando: interpreta os sentidos, controla movimentos, memória e emoções. O hipotálamo regula temperatura, sede e fome.', 'Usa cerca de 20% da energia do corpo, mesmo pesando só 2% dele.'],
+    medula: ['Medula espinal', 'nervoso', 'Leva mensagens entre o encéfalo e o corpo e comanda reflexos rápidos sem passar pelo cérebro.', 'Um reflexo patelar acontece em cerca de 50 milissegundos.'],
+    nervos: ['Nervos', 'nervoso', 'Feixes de neurônios que conduzem impulsos elétricos dos órgãos dos sentidos até o sistema nervoso central e dele até os músculos.', 'O nervo isquiático, na perna, é o mais longo e grosso do corpo.'],
+    coracao: ['Coração', 'circulatorio', 'Bomba muscular com 4 cavidades: o lado direito manda sangue aos pulmões, o esquerdo para o corpo todo.', 'Bate cerca de 100 mil vezes por dia.'],
+    arterias: ['Artérias', 'circulatorio', 'Levam o sangue que sai do coração, sob alta pressão. A aorta é a maior delas.', 'As paredes das artérias são elásticas: é essa onda que sentimos como pulso.'],
+    veias: ['Veias', 'circulatorio', 'Trazem o sangue de volta ao coração. Têm válvulas que impedem o refluxo.', 'Somados, os vasos sanguíneos de um adulto dariam mais de duas voltas na Terra.'],
+    pulmoes: ['Pulmões', 'respiratorio', 'Nos alvéolos, o oxigênio passa do ar para o sangue e o gás carbônico faz o caminho inverso (hematose).', 'Os alvéolos abertos cobririam uma quadra de tênis.'],
+    traqueia: ['Traqueia', 'respiratorio', 'Tubo com anéis de cartilagem que leva o ar da laringe aos brônquios. Cílios e muco filtram impurezas.', 'A epiglote fecha a traqueia quando engolimos.'],
+    esofago: ['Esôfago', 'digestorio', 'Leva o alimento da faringe ao estômago por ondas de contração (peristaltismo).', 'Por causa do peristaltismo, dá para engolir até de cabeça para baixo.'],
+    estomago: ['Estômago', 'digestorio', 'Mistura o alimento com suco gástrico (ácido clorídrico e pepsina) e começa a digestão das proteínas.', 'O pH do suco gástrico fica entre 1 e 2 — tão ácido quanto suco de limão concentrado.'],
+    figado: ['Fígado', 'digestorio', 'Produz a bile (que emulsiona gorduras), armazena glicogênio e neutraliza substâncias tóxicas.', 'É o maior órgão interno e consegue se regenerar.'],
+    pancreas: ['Pâncreas', 'digestorio', 'Produz o suco pancreático (enzimas digestivas) e os hormônios insulina e glucagon, que controlam a glicose.', 'É ao mesmo tempo glândula exócrina e endócrina.'],
+    delgado: ['Intestino delgado', 'digestorio', 'Termina a digestão e absorve os nutrientes pelas vilosidades.', 'Tem cerca de 6 a 7 metros de comprimento.'],
+    grosso: ['Intestino grosso', 'digestorio', 'Absorve água e sais e forma as fezes. Abriga trilhões de bactérias úteis (microbiota).', 'A microbiota produz vitaminas, como a K.'],
+    rins: ['Rins', 'urinario', 'Filtram o sangue, retiram resíduos (como a ureia) e regulam água e sais, formando a urina.', 'Filtram cerca de 180 litros de sangue por dia.'],
+    bexiga: ['Bexiga', 'urinario', 'Armazena a urina que chega dos rins pelos ureteres até a eliminação.', 'Comporta de 400 a 600 mL num adulto.'],
+    cranio: ['Crânio', 'esqueletico', 'Protege o encéfalo e dá forma ao rosto. É formado por ossos unidos por suturas.', 'O bebê nasce com "moleiras", áreas ainda não ossificadas.'],
+    coluna: ['Coluna vertebral', 'esqueletico', 'Sustenta o tronco e protege a medula espinal. Tem 33 vértebras.', 'Os discos entre as vértebras amortecem impactos.'],
+    costelas: ['Costelas', 'esqueletico', 'Formam a caixa torácica, que protege coração e pulmões e participa da respiração.', 'São 12 pares; os dois últimos são "flutuantes".'],
+    pelve: ['Pelve', 'esqueletico', 'Liga a coluna às pernas e sustenta os órgãos do abdome.', 'A pelve feminina costuma ser mais larga, adaptação ao parto.'],
+    femur: ['Fêmur', 'esqueletico', 'Osso da coxa: o maior e mais resistente do corpo.', 'Aguenta forças de várias vezes o peso do corpo ao correr.'],
+    umero: ['Úmero, rádio e ulna', 'esqueletico', 'Ossos do braço e do antebraço, movidos pelos músculos nas articulações do ombro e do cotovelo.', 'O "osso da sorte" do cotovelo é, na verdade, um nervo (o ulnar).'],
+    pele: ['Pele', 'tegumentar', 'Maior órgão do corpo: protege, sente o ambiente e regula a temperatura pelo suor e pelos vasos.', 'Um adulto tem cerca de 2 m² de pele.'],
+  };
+  const ATIV = { repouso: { nome: 'Repouso', fc: 70, fr: 14, t: 0 }, caminhada: { nome: 'Caminhada', fc: 100, fr: 20, t: 0.3 }, corrida: { nome: 'Corrida', fc: 155, fr: 36, t: 0.8 } };
+
+  SQ.demo('corpo-humano', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · clique num órgão',
+    sala: ['Desligue a pele e peça que cada grupo localize um sistema e explique como ele conversa com outro.', 'Simule corrida num dia quente com pouca água: liste todas as respostas do corpo e quem as comanda.', 'Use as perguntas de checagem como quiz rápido no início da aula.'],
+    comoIA: 'O guia sabe quais camadas estão ligadas, qual órgão foi clicado e as condições simuladas (atividade, temperatura do ambiente, hidratação). Ele explica a estrutura, descreve a resposta do corpo — frequência cardíaca, respiração, suor, urina — e faz perguntas de checagem. Uma IA conectada pode aprofundar a explicação conforme a série do aluno.',
+    guia: {
+      ola: 'Este é um atlas 3D em camadas. Ligue e desligue os <b>sistemas</b>, clique nos órgãos e depois mude as <b>condições</b> para ver o corpo reagir!',
+      perguntas: [
+        { p: 'O que é homeostase?', chaves: ['homeostase', 'equilibrio', 'regula'], r: 'É a capacidade do corpo de manter o ambiente interno estável — temperatura ~37 °C, glicose, água e pH — mesmo quando o ambiente muda. O hipotálamo é um dos grandes maestros.' },
+        { p: 'Por que o coração acelera na corrida?', chaves: ['coracao', 'acelera', 'corrida', 'exercicio'], r: 'Os músculos em atividade gastam mais oxigênio e glicose e produzem mais CO₂. O sistema nervoso autônomo acelera o coração e a respiração para levar O₂ e retirar CO₂ mais depressa.' },
+        { p: 'Por que suamos?', chaves: ['suor', 'suamos', 'calor', 'transpira'], r: 'O suor evapora na pele e, ao evaporar, retira calor do corpo. No calor também há <b>vasodilatação</b> periférica: a pele fica avermelhada para perder calor.' },
+        { p: 'O que acontece quando falta água?', chaves: ['agua', 'desidrata', 'hidrata', 'sede'], r: 'O hipotálamo libera o hormônio <b>ADH</b>: os rins devolvem mais água ao sangue e a urina fica escassa e concentrada. Com o volume de sangue menor, o coração bate mais rápido.' },
+        { p: 'Como os sistemas se integram?', chaves: ['integra', 'sistemas', 'juntos'], r: 'Exemplo: o digestório absorve glicose, o circulatório a transporta, o respiratório fornece O₂, as células produzem energia, e o urinário e o respiratório eliminam os resíduos — tudo coordenado pelos sistemas nervoso e endócrino.' },
+        { p: 'Como está o corpo agora?', chaves: ['agora', 'estado', 'como esta'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [2.5, 5.8, 11.5], alvo: [0, 5.0, 0], distancia: [4, 26], sombraRaio: 6, hemi: 1.1, sol: 2.0 });
+      const chao = S3D.chao(3.2, 0xEAF2FF); c.scene.add(chao);
+      const corpo = new T.Group(); c.scene.add(corpo);
+      const camadas = {}; for (const k of Object.keys(SISTEMAS)) { camadas[k] = new T.Group(); corpo.add(camadas[k]); }
+      const alvos = [], porOrgao = {};
+      const V = (x, y, z) => new T.Vector3(x, y, z);
+      const reg = (m, org) => { m.userData.org = org; alvos.push(m); (porOrgao[org] ||= []).push(m); return m; };
+      const mat = (cor, o) => S3D.mat(cor, o);
+      function entre(a, b, raio, material, org, sis, ponta = 0) {
+        const L = a.distanceTo(b), g = ponta ? new T.CylinderGeometry(raio * ponta, raio, L, 16) : new T.CapsuleGeometry(raio, L, 6, 16);
+        const m = new T.Mesh(g, material); m.position.copy(a).lerp(b, 0.5); m.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize());
+        camadas[sis].add(org ? reg(m, org) : m); return m;
+      }
+      function tubo(pts, raio, material, org, sis, segs = 80) {
+        const curva = new T.CatmullRomCurve3(pts.map((p) => V(...p)));
+        const m = new T.Mesh(new T.TubeGeometry(curva, segs, raio, 10), material); camadas[sis].add(org ? reg(m, org) : m); m.userData.curva = curva; return m;
+      }
+      const espelho = (f) => [-1, 1].forEach(f);
+
+      // ---------- pele (translúcida) ----------
+      const matPele = S3D.matBolha(0x8FD3FF, { opacidade: 0.16, borda: 0.84, lados: T.FrontSide });
+      const pele = (m) => { m.material = matPele; m.renderOrder = 10; camadas.tegumentar.add(reg(m, 'pele')); return m; };
+      const cabeca = pele(new T.Mesh(new T.SphereGeometry(0.85, 40, 28))); cabeca.position.set(0, 8.25, 0); cabeca.scale.set(0.88, 1.05, 1);
+      pele(new T.Mesh(new T.CylinderGeometry(0.32, 0.36, 0.7, 24))).position.set(0, 7.45, 0);
+      const tronco = pele(new T.Mesh(new T.CapsuleGeometry(1.0, 2.3, 10, 32))); tronco.position.set(0, 5.75, 0); tronco.scale.set(1.25, 1, 0.68);
+      const quadril = pele(new T.Mesh(new T.SphereGeometry(1.0, 32, 20))); quadril.position.set(0, 4.25, 0); quadril.scale.set(1.18, 0.62, 0.72);
+      const OMBRO = 1.35, COTOV = 1.62, PULSO = 1.78, QUAD = 0.52;
+      espelho((s) => {
+        const ombro = V(s * OMBRO, 7.0, 0), cot = V(s * COTOV, 5.35, 0), pul = V(s * PULSO, 3.85, 0.15);
+        for (const [a, b, r] of [[ombro, cot, 0.3], [cot, pul, 0.24]]) { const m = pele(new T.Mesh(new T.CapsuleGeometry(r, a.distanceTo(b), 6, 18))); m.position.copy(a).lerp(b, 0.5); m.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize()); }
+        const mao = pele(new T.Mesh(new T.SphereGeometry(0.26, 20, 14))); mao.position.set(s * 1.82, 3.45, 0.18); mao.scale.set(0.7, 1.2, 0.5);
+        const qd = V(s * QUAD, 4.0, 0), jo = V(s * 0.56, 2.1, 0.02), tor = V(s * 0.56, 0.35, 0);
+        for (const [a, b, r] of [[qd, jo, 0.44], [jo, tor, 0.33]]) { const m = pele(new T.Mesh(new T.CapsuleGeometry(r, a.distanceTo(b), 6, 18))); m.position.copy(a).lerp(b, 0.5); m.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize()); }
+        const pe = pele(new T.Mesh(new T.CapsuleGeometry(0.2, 0.5, 6, 14))); pe.position.set(s * 0.58, 0.12, 0.3); pe.rotation.x = Math.PI / 2;
+      });
+
+      // ---------- esqueleto ----------
+      const matOsso = mat(0xF4F7FF, { rugosidade: 0.5, verniz: 0.3 });
+      const cranio = new T.Mesh(new T.SphereGeometry(0.72, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.62), S3D.matBolha(0xF4F7FF, { opacidade: 0.55, borda: 0.8 }));
+      cranio.position.set(0, 8.25, 0); cranio.scale.set(0.9, 1.05, 1.05); camadas.esqueletico.add(reg(cranio, 'cranio'));
+      const mand = reg(new T.Mesh(new T.TorusGeometry(0.42, 0.09, 10, 30, Math.PI), matOsso), 'cranio'); mand.position.set(0, 7.85, 0.12); mand.rotation.set(Math.PI / 2 + 0.25, 0, Math.PI); camadas.esqueletico.add(mand);
+      const geoVert = new T.CylinderGeometry(0.15, 0.15, 0.17, 14);
+      for (let y = 4.35; y < 7.75; y += 0.22) { const v = reg(new T.Mesh(geoVert, matOsso), 'coluna'); v.position.set(0, y, -0.42 - Math.sin((y - 4.3) * 0.9) * 0.08); camadas.esqueletico.add(v); }
+      for (let i = 0; i < 10; i++) {
+        const r = 0.88 - Math.abs(i - 3.5) * 0.045, arc = Math.PI * (1.45 - i * 0.02);
+        const g = new T.TorusGeometry(r, 0.045, 8, 40, arc); g.rotateX(Math.PI / 2); g.rotateY(Math.PI / 2 + (Math.PI * 2 - arc) / 2 + Math.PI);
+        const cost = reg(new T.Mesh(g, matOsso), 'costelas'); cost.position.set(0, 7.0 - i * 0.26, -0.12); cost.scale.set(1.25, 1, 0.82); camadas.esqueletico.add(cost);
+      }
+      const esterno = reg(new T.Mesh(new T.BoxGeometry(0.22, 1.3, 0.08), matOsso), 'costelas'); esterno.position.set(0, 6.45, 0.62); camadas.esqueletico.add(esterno);
+      const pelve = reg(new T.Mesh(new T.TorusGeometry(0.66, 0.16, 12, 40), matOsso), 'pelve'); pelve.position.set(0, 4.3, -0.05); pelve.rotation.x = Math.PI / 2 - 0.35; pelve.scale.set(1.2, 0.85, 1); camadas.esqueletico.add(pelve);
+      espelho((s) => {
+        entre(V(s * 0.15, 7.25, 0.3), V(s * 1.2, 7.15, 0.05), 0.06, matOsso, 'costelas', 'esqueletico');
+        entre(V(s * 1.3, 6.95, 0), V(s * 1.6, 5.4, 0), 0.1, matOsso, 'umero', 'esqueletico');
+        entre(V(s * 1.62, 5.3, 0.05), V(s * 1.78, 3.95, 0.15), 0.065, matOsso, 'umero', 'esqueletico');
+        entre(V(s * 1.55, 5.3, -0.05), V(s * 1.7, 3.95, 0.05), 0.055, matOsso, 'umero', 'esqueletico');
+        entre(V(s * 0.55, 4.0, 0), V(s * 0.56, 2.15, 0.02), 0.13, matOsso, 'femur', 'esqueletico');
+        entre(V(s * 0.56, 2.0, 0.02), V(s * 0.56, 0.4, 0), 0.1, matOsso, 'femur', 'esqueletico');
+        for (const p of [V(s * 1.3, 7.0, 0), V(s * 1.6, 5.35, 0), V(s * 0.56, 2.08, 0.04)]) { const j = new T.Mesh(new T.SphereGeometry(0.15, 14, 10), matOsso); j.position.copy(p); camadas.esqueletico.add(reg(j, p.y > 3 ? 'umero' : 'femur')); }
+      });
+
+      // ---------- circulatório ----------
+      const coracao = new T.Group(); coracao.position.set(0.2, 6.2, 0.46); camadas.circulatorio.add(coracao);
+      const matCor = mat(0xEE3B45, { verniz: 0.7 });
+      for (const x of [-0.12, 0.12]) { const b = reg(new T.Mesh(new T.SphereGeometry(0.2, 24, 16), matCor), 'coracao'); b.position.set(x, 0.08, 0); coracao.add(b); }
+      const pontaC = reg(new T.Mesh(new T.ConeGeometry(0.29, 0.42, 24), matCor), 'coracao'); pontaC.rotation.z = Math.PI + 0.35; pontaC.position.set(0.04, -0.17, 0); coracao.add(pontaC);
+      coracao.rotation.z = -0.35; S3D.contorno(coracao, 0.022);
+      const matArt = mat(0xEE3B45, { verniz: 0.5 }), matVeia = mat(0x1F5BE0, { verniz: 0.5 });
+      const vasos = [];
+      const vaso = (pts, r, arteria) => { const t = tubo(pts, r, arteria ? matArt : matVeia, arteria ? 'arterias' : 'veias', 'circulatorio', 60); vasos.push({ curva: t.userData.curva, arteria }); return t; };
+      vaso([[0.2, 6.45, 0.3], [0.1, 6.95, 0.15], [-0.15, 6.85, -0.1], [-0.05, 6.2, -0.22], [0, 5.0, -0.22], [0, 4.25, -0.1]], 0.075, true);
+      espelho((s) => {
+        vaso([[0, 4.25, -0.1], [s * 0.42, 3.9, 0.08], [s * 0.6, 2.1, 0.15], [s * 0.6, 0.4, 0.12]], 0.05, true);
+        vaso([[0.05 * s, 6.9, 0.12], [s * 0.18, 7.4, 0.12], [s * 0.25, 8.0, 0.05]], 0.04, true);
+        vaso([[0.05 * s, 6.9, 0.12], [s * 0.8, 7.05, 0.05], [s * 1.45, 6.8, 0.12], [s * 1.7, 5.3, 0.15], [s * 1.82, 3.9, 0.25]], 0.04, true);
+        vaso([[s * 0.68, 0.45, -0.1], [s * 0.66, 2.1, -0.1], [s * 0.5, 3.95, -0.12], [0.12, 4.3, -0.2]], 0.05, false);
+        vaso([[s * 1.68, 3.9, -0.05], [s * 1.55, 5.3, -0.1], [s * 1.35, 6.8, -0.08], [s * 0.6, 7.1, -0.05], [0.12, 6.75, 0.0]], 0.04, false);
+        vaso([[s * 0.32, 8.0, -0.1], [s * 0.28, 7.4, -0.05], [0.12, 6.85, 0.05]], 0.04, false);
+      });
+      vaso([[0.12, 4.3, -0.2], [0.14, 5.3, -0.12], [0.12, 6.0, 0.05], [0.1, 6.35, 0.25]], 0.07, false);
+      // partículas de sangue
+      const GOTAS = 14, part = [];
+      const geoG = new T.SphereGeometry(0.05, 8, 6), matGA = new T.MeshBasicMaterial({ color: 0xFF9AA2 }), matGV = new T.MeshBasicMaterial({ color: 0xBFE8FF });
+      for (const v of vasos) for (let i = 0; i < GOTAS; i++) { const m = new T.Mesh(geoG, v.arteria ? matGA : matGV); m.raycast = () => {}; camadas.circulatorio.add(m); part.push({ m, v, f: i / GOTAS }); }
+
+      // ---------- respiratório ----------
+      const matPulmao = mat(0xFF8FB1, { verniz: 0.4, rugosidade: 0.5 });
+      const pulmoes = [];
+      espelho((s) => { const p = reg(new T.Mesh(new T.SphereGeometry(0.55, 32, 24), matPulmao), 'pulmoes'); p.position.set(s * 0.66, 6.45, -0.05); p.scale.set(s > 0 ? 0.68 : 0.8, 1.4, 0.72); p.userData.base = p.scale.clone(); camadas.respiratorio.add(p); S3D.contorno(p, 0.02); pulmoes.push(p); });
+      tubo([[0, 7.75, 0.12], [0, 7.2, 0.12], [0, 6.95, 0.1]], 0.08, mat(0xF4C2D4), 'traqueia', 'respiratorio');
+      espelho((s) => tubo([[0, 6.97, 0.1], [s * 0.25, 6.82, 0.06], [s * 0.48, 6.6, 0.02]], 0.05, mat(0xF4C2D4), 'traqueia', 'respiratorio'));
+
+      // ---------- digestório ----------
+      tubo([[0, 7.75, -0.12], [0, 7.0, -0.15], [0.08, 6.0, -0.12], [0.3, 5.4, 0.05]], 0.06, mat(0xFFB37A), 'esofago', 'digestorio');
+      const est = reg(new T.Mesh(new T.TorusGeometry(0.36, 0.22, 16, 30, Math.PI * 1.15), mat(0xFF9416)), 'estomago');
+      est.position.set(0.5, 5.15, 0.2); est.rotation.set(0.2, 0.3, 2.2); camadas.digestorio.add(est); S3D.contorno(est, 0.02);
+      const fig = reg(new T.Mesh(new T.SphereGeometry(0.6, 32, 20), mat(0xA0522D, { verniz: 0.5 })), 'figado'); fig.position.set(-0.42, 5.42, 0.18); fig.scale.set(1.35, 0.55, 0.78); fig.rotation.z = -0.2; camadas.digestorio.add(fig); S3D.contorno(fig, 0.02);
+      entre(V(-0.2, 4.95, -0.05), V(0.55, 5.02, -0.05), 0.08, mat(0xFFC21A), 'pancreas', 'digestorio');
+      const ptsD = []; for (let i = 0; i <= 26; i++) { const a = i * 1.05; ptsD.push([Math.sin(a) * 0.48 * (0.6 + 0.4 * Math.cos(i * 0.5)), 4.75 - i * 0.034, 0.3 + Math.cos(a) * 0.12]); }
+      tubo(ptsD, 0.085, mat(0xFF8FB1, { verniz: 0.5 }), 'delgado', 'digestorio', 260);
+      tubo([[0.15, 3.75, 0.22], [-0.72, 3.9, 0.25], [-0.78, 4.95, 0.22], [0, 5.0, 0.3], [0.78, 4.95, 0.22], [0.75, 3.95, 0.2], [0.2, 3.7, 0.05]], 0.15, mat(0xD9A06B, { verniz: 0.4 }), 'grosso', 'digestorio', 140);
+
+      // ---------- nervoso ----------
+      const matNervo = mat(0xFFC21A, { verniz: 0.6 });
+      const cerebroGeo = new T.SphereGeometry(0.6, 64, 48), pos = cerebroGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) { const v = V(pos.getX(i), pos.getY(i), pos.getZ(i)); const k = 1 + 0.045 * Math.sin(v.x * 18) * Math.sin(v.y * 16 + v.z * 9) - (Math.abs(v.x) < 0.05 && v.y > 0 ? 0.06 : 0); v.multiplyScalar(k); pos.setXYZ(i, v.x, v.y, v.z); }
+      cerebroGeo.computeVertexNormals();
+      const cerebro = reg(new T.Mesh(cerebroGeo, mat(0xFFB3C7, { verniz: 0.6 })), 'cerebro'); cerebro.position.set(0, 8.4, -0.02); cerebro.scale.set(0.95, 0.78, 1.12); camadas.nervoso.add(cerebro); S3D.contorno(cerebro, 0.02);
+      tubo([[0, 8.0, -0.2], [0, 7.6, -0.45], [0, 6.0, -0.5], [0, 4.4, -0.4]], 0.06, matNervo, 'medula', 'nervoso');
+      espelho((s) => {
+        tubo([[0, 7.1, -0.45], [s * 0.9, 7.05, -0.1], [s * 1.5, 6.6, 0.0], [s * 1.68, 5.3, -0.02], [s * 1.82, 3.7, 0.12]], 0.025, matNervo, 'nervos', 'nervoso');
+        tubo([[0, 4.45, -0.4], [s * 0.45, 3.9, -0.15], [s * 0.52, 2.1, -0.08], [s * 0.53, 0.35, -0.05]], 0.03, matNervo, 'nervos', 'nervoso');
+      });
+
+      // ---------- urinário ----------
+      const rins = [];
+      espelho((s) => { const r = reg(new T.Mesh(new T.SphereGeometry(0.22, 24, 16), mat(0x8B3DFF)), 'rins'); r.position.set(s * 0.55, 5.0, -0.38); r.scale.set(0.75, 1.15, 0.6); camadas.urinario.add(r); S3D.contorno(r, 0.02); rins.push(r); tubo([[s * 0.5, 4.8, -0.32], [s * 0.35, 4.3, -0.1], [s * 0.12, 3.95, 0.18]], 0.025, mat(0xB58CFF), 'rins', 'urinario'); });
+      const bexiga = reg(new T.Mesh(new T.SphereGeometry(0.24, 24, 16), mat(0xFFD84A, { verniz: 0.6 })), 'bexiga'); bexiga.position.set(0, 3.9, 0.25); camadas.urinario.add(bexiga); S3D.contorno(bexiga, 0.02);
+      corpo.traverse((o) => { if (o.isMesh) { o.castShadow = o.material !== matPele; } });
+
+      // ---------- seleção ----------
+      const rotulo = S3D.rotulo(''); rotulo.visible = false; c.scene.add(rotulo);
+      let selecionado = null, desafio = null;
+      const brilho = new Map();
+      function destacar(org) {
+        for (const [m, e] of brilho) { m.material.emissive.setHex(e); } brilho.clear();
+        if (!org) return;
+        for (const m of porOrgao[org]) { if (m.material === matPele || !m.material.emissive) continue; if (!m.userData.matProprio) { m.material = m.material.clone(); m.userData.matProprio = true; } if (!brilho.has(m)) brilho.set(m, m.material.emissive.getHex()); m.material.emissive.setHex(0x553300); }
+      }
+      function escolher(org, hit) {
+        selecionado = org; destacar(org === 'pele' ? null : org);
+        if (!org) { rotulo.visible = false; ficha.innerHTML = '<p class="texto-suave mb0">Clique num órgão para abrir a ficha.</p>'; return; }
+        const [nome, sis, funcao, curio] = ORGAOS[org];
+        rotulo.element.textContent = nome; rotulo.position.copy(hit ? hit.point : porOrgao[org][0].getWorldPosition(V(0, 0, 0))); rotulo.visible = true; rotulo.element.classList.add('ativo');
+        ficha.innerHTML = `<span class="sis" style="background:${SISTEMAS[sis].cor};${sis === 'esqueletico' || sis === 'nervoso' ? 'color:#0B1438' : ''}">${SISTEMAS[sis].nome}</span><h3>${nome}</h3><p>${funcao}</p><p class="texto-suave miudo">💡 ${curio}</p>`;
+        if (desafio) conferirDesafio(org);
+        else guia.diz(`<b>${nome}</b> (${SISTEMAS[sis].nome.toLowerCase()}): ${funcao}`, { chave: 'org' });
+        SQ.som(560, 0.06);
+      }
+      c.escolher(() => alvos.filter((m) => { let o = m; while (o) { if (!o.visible) return false; o = o.parent; } return m.userData.org !== 'pele' || !algumInternoVisivel(); }), (obj, hit) => escolher(obj ? obj.userData.org : null, hit));
+      const algumInternoVisivel = () => Object.keys(SISTEMAS).some((k) => k !== 'tegumentar' && camadas[k].visible);
+
+      // ---------- painel ----------
+      const gL = ui.grupo('Camadas do corpo', null, { class: 'bloco camadas' });
+      for (const [k, s] of Object.entries(SISTEMAS)) {
+        const a = ui.alternar({ rotulo: s.nome, valor: true, pai: gL, aoMudar: (v) => { camadas[k].visible = v; if (!v && selecionado && ORGAOS[selecionado][1] === k) escolher(null); guia.diz(v ? `Sistema <b>${s.nome.toLowerCase()}</b> ligado.` : `Sistema ${s.nome.toLowerCase()} desligado.`, { chave: 'cam' }); } });
+        a.el.style.setProperty('--c', s.cor);
+      }
+      ui.linha(gL, ui.botao({ rotulo: 'Só um sistema…', classe: 'branco pequeno', aoClicar: () => { const ks = Object.keys(SISTEMAS).filter((k) => k !== 'tegumentar'); soUm = (soUm + 1) % ks.length; const k = ks[soUm]; [...gL.querySelectorAll('input')].forEach((inp, i) => { const kk = Object.keys(SISTEMAS)[i]; inp.checked = kk === k || kk === 'tegumentar'; camadas[kk].visible = inp.checked; }); guia.diz(`Mostrando só o sistema <b>${SISTEMAS[k].nome.toLowerCase()}</b> (com a pele). Clique de novo para o próximo.`, { chave: 'cam' }); } }),
+        ui.botao({ rotulo: 'Todos', classe: 'branco pequeno', aoClicar: () => { [...gL.querySelectorAll('input')].forEach((inp, i) => { inp.checked = true; camadas[Object.keys(SISTEMAS)[i]].visible = true; }); } }));
+      let soUm = -1;
+      const gF = ui.grupo('Ficha do órgão');
+      const ficha = SQ.el('div', { class: 'ficha' }, SQ.el('p', { class: 'texto-suave mb0' }, 'Clique num órgão para abrir a ficha.')); gF.append(ficha);
+
+      const gC = ui.grupo('Simular condições');
+      const E = { ativ: 'repouso', amb: 24, agua: 90 };
+      ui.segmentado({ rotulo: 'Atividade', opcoes: Object.entries(ATIV).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: E.ativ, pai: gC, aoMudar: (v) => { E.ativ = v; atualizar('ativ'); } });
+      ui.slider({ rotulo: 'Temperatura do ambiente', min: -5, max: 45, valor: E.amb, unidade: '°C', pai: gC, aoMudar: (v) => { E.amb = v; atualizar('amb'); } });
+      ui.slider({ rotulo: 'Hidratação', min: 20, max: 100, valor: E.agua, unidade: '%', pai: gC, aoMudar: (v) => { E.agua = v; atualizar('agua'); } });
+      const lei = ui.leituras([{ id: 'fc', rotulo: 'Frequência cardíaca', destaque: true }, { id: 'fr', rotulo: 'Respiração' }, { id: 't', rotulo: 'Temperatura corporal' }, { id: 's', rotulo: 'Suor · urina' }], gC);
+
+      const gQ = ui.grupo('Pergunta de checagem');
+      const caixaQ = SQ.el('div', { class: 'desafio' }, 'O guia pergunta, você responde clicando no órgão certo.'); gQ.append(caixaQ);
+      ui.linha(gQ, ui.botao({ rotulo: '❓ Nova pergunta', classe: 'pequeno', aoClicar: novaPergunta }));
+      const PERGUNTAS = [['figado', 'Qual órgão produz a bile e armazena glicogênio?'], ['rins', 'Clique nos órgãos que filtram o sangue e formam a urina.'], ['pulmoes', 'Onde acontecem as trocas de O₂ e CO₂ com o sangue?'], ['estomago', 'Qual órgão tem suco ácido que começa a digerir proteínas?'], ['delgado', 'Onde a maior parte dos nutrientes é absorvida?'], ['coracao', 'Qual órgão bombeia o sangue para o corpo todo?'], ['cerebro', 'Onde fica o hipotálamo, que regula a temperatura?'], ['coluna', 'Qual estrutura protege a medula espinal?'], ['pancreas', 'Que órgão produz insulina?'], ['grosso', 'Onde a água é reabsorvida e as fezes se formam?'], ['femur', 'Clique no maior osso do corpo.'], ['bexiga', 'Onde a urina fica armazenada?']];
+      function novaPergunta() {
+        let q; do { q = PERGUNTAS[Math.floor(Math.random() * PERGUNTAS.length)]; } while (desafio && q[0] === desafio[0]);
+        desafio = q; caixaQ.className = 'desafio'; caixaQ.innerHTML = `❓ ${q[1]}`;
+        const sis = ORGAOS[q[0]][1]; if (!camadas[sis].visible) { camadas[sis].visible = true; [...gL.querySelectorAll('input')][Object.keys(SISTEMAS).indexOf(sis)].checked = true; }
+        guia.diz('Pergunta de checagem: responda clicando no órgão. Gire o corpo se precisar!', { tipo: 'dica', chave: 'org' });
+      }
+      function conferirDesafio(org) {
+        if (org === desafio[0]) { caixaQ.className = 'desafio ok'; caixaQ.innerHTML = `✅ ${desafio[1]}<br><b>${ORGAOS[org][0]}</b> — isso mesmo!`; guia.diz(`🎉 Certo! ${ORGAOS[org][2]}`, { tipo: 'sucesso', chave: 'org' }); SQ.som(880, 0.12); desafio = null; }
+        else guia.diz(`Esse é o(a) <b>${ORGAOS[org][0]}</b>. ${ORGAOS[org][2].split('.')[0]}. Tente outro! Dica: o órgão certo é do sistema <b>${SISTEMAS[ORGAOS[desafio[0]][1]].nome.toLowerCase()}</b>.`, { tipo: 'alerta', chave: 'org' });
+      }
+
+      // ---------- fisiologia simplificada ----------
+      let F = {};
+      function calcular() {
+        const a = ATIV[E.ativ];
+        let fc = a.fc, fr = a.fr, tc = 36.7 + a.t, suor = 0, frio = false;
+        if (E.agua < 65) fc += (65 - E.agua) * 0.7;
+        if (E.amb > 30) { fc += (E.amb - 30) * 1.3; suor += (E.amb - 30) / 12; }
+        suor += a.t * 0.9;
+        if (E.amb < 12) { fc += (12 - E.amb) * 0.4; frio = true; }
+        if (E.amb > 35 && E.agua < 50) tc += (E.amb - 35) * 0.09 + (50 - E.agua) * 0.02;
+        if (E.amb < 0 && E.ativ === 'repouso') tc -= 0.4;
+        const urina = Math.max(0.15, Math.min(1, (E.agua - 30) / 60 - suor * 0.25));
+        F = { fc: Math.round(fc), fr: Math.round(fr + (E.amb > 35 ? 2 : 0)), tc: Math.round(tc * 10) / 10, suor: Math.min(1, suor), frio, urina };
+      }
+      function atualizar(motivo) {
+        calcular();
+        lei.set('fc', `${F.fc} bpm`); lei.set('fr', `${F.fr} /min`); lei.set('t', `${SQ.numFixo(F.tc)} °C`);
+        lei.set('s', `${F.suor > 0.6 ? 'muito' : F.suor > 0.2 ? 'pouco' : 'sem'} suor · urina ${F.urina < 0.4 ? 'escassa' : 'normal'}`);
+        bexiga.scale.setScalar(0.6 + F.urina * 0.6);
+        matPele.color.setHex(F.frio ? 0xA9C8FF : F.suor > 0.4 || E.ativ === 'corrida' ? 0xFFA5B5 : 0x8FD3FF);
+        if (!motivo) return;
+        const partes = [];
+        if (motivo === 'ativ') partes.push(E.ativ === 'repouso' ? 'Em repouso, o coração bate em torno de 70 vezes por minuto.' : `Na ${ATIV[E.ativ].nome.toLowerCase()}, os músculos pedem mais O₂: o sistema nervoso autônomo acelera o coração (${F.fc} bpm) e a respiração (${F.fr}/min).`);
+        if (motivo === 'amb') partes.push(E.amb > 30 ? `Calor de ${E.amb} °C: o hipotálamo dispara o <b>suor</b> e dilata os vasos da pele (ela fica rosada) para perder calor.` : E.amb < 12 ? `Frio de ${E.amb} °C: os vasos da pele se contraem (ela fica azulada) para guardar calor, e podem vir os <b>calafrios</b> — contrações musculares que geram calor.` : 'Temperatura confortável: o corpo mantém ~37 °C sem esforço extra.');
+        if (motivo === 'agua') partes.push(E.agua < 50 ? `Desidratação (${E.agua}%): o <b>ADH</b> faz os rins pouparem água — urina escassa (repare na bexiga) — e o coração acelera para compensar o volume menor de sangue.` : 'Bem hidratado: rins trabalham com folga e a urina fica clara.');
+        if (F.tc >= 38) partes.push(`⚠️ A temperatura corporal chegou a ${SQ.numFixo(F.tc)} °C: risco de insolação. Pare, procure sombra e beba água!`);
+        guia.diz(partes.join(' '), { tipo: F.tc >= 38 ? 'alerta' : '', chave: 'cond' });
+      }
+
+      // ---------- animação ----------
+      let fase = 0, faseR = 0;
+      c.aoQuadro((dt, t) => {
+        fase += dt * (F.fc / 60) * Math.PI * 2; faseR += dt * (F.fr / 60) * Math.PI * 2;
+        const b = Math.max(0, Math.sin(fase)) ** 6;
+        coracao.scale.setScalar(1 + b * 0.13);
+        const r = (Math.sin(faseR) + 1) / 2;
+        pulmoes.forEach((p) => p.scale.set(p.userData.base.x * (1 + r * 0.07), p.userData.base.y * (1 + r * 0.05), p.userData.base.z * (1 + r * 0.1)));
+        tronco.scale.z = 0.68 * (1 + r * 0.03);
+        const vel = (F.fc / 70) * 0.18;
+        for (const p of part) { p.f = (p.f + dt * vel) % 1; p.m.position.copy(p.v.curva.getPointAt(p.f)); }
+        if (F.frio) corpo.position.x = Math.sin(t * 60) * 0.006; else corpo.position.x = 0;
+      });
+      guia.contexto = () => ({ camadas: Object.fromEntries(Object.keys(SISTEMAS).map((k) => [k, camadas[k].visible])), selecionado: selecionado && ORGAOS[selecionado][0], condicoes: E, respostas: F,
+        resumo: `${ATIV[E.ativ].nome} a ${E.amb} °C com ${E.agua}% de hidratação: coração a ${F.fc} bpm, respiração ${F.fr}/min, temperatura ${SQ.numFixo(F.tc)} °C, ${F.suor > 0.2 ? 'suando' : 'sem suar'} e urina ${F.urina < 0.4 ? 'escassa' : 'normal'}.` });
+      atualizar();
+    },
+  });
+  </script>
+</body>
+</html>
