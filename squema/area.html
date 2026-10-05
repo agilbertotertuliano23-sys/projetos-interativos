@@ -60,9 +60,17 @@
     const pagina = SQ.moldura({ ativo: 'areas', trilha: [{ rotulo: 'Áreas', href: 'index.html#areas' }, { rotulo: area.nome }] });
 
     // ---------- esquema radial da área ----------
-    const W = 460, H = 330, cx = W / 2, cy = H / 2;
-    const n = sistemas.length;
+    const n = sistemas.length, muitos = n > 6;
+    // Até 6 sistemas: elipse em volta do ícone. Mais que isso: duas colunas em arco
+    // ("( )"), metade de cada lado, para que os nomes não se sobreponham.
+    const W = muitos ? 500 : 460, H = muitos ? Math.max(360, Math.ceil(n / 2) * 66 + 34) : 330, cx = W / 2, cy = H / 2;
     const nos = sistemas.map((s, i) => {
+      if (muitos) {
+        const dir = Math.ceil(n / 2), lado = i < dir ? 1 : -1, k = i < dir ? i : i - dir, m = i < dir ? dir : n - dir;
+        const y = cy + (m === 1 ? 0 : (k / (m - 1) - 0.5) * (H - 70));
+        const curva = Math.abs(y - cy) / (H / 2 - 35 || 1);
+        return { s, x: cx + lado * (150 - 62 * curva * curva), y };
+      }
       const ang = n === 1 ? -Math.PI / 2 : -Math.PI / 2 + (i / n) * Math.PI * 2;
       const rx = n <= 2 ? 150 : 158, ry = n <= 2 ? 105 : 118;
       return { s, x: cx + Math.cos(ang) * rx, y: cy + Math.sin(ang) * ry };
