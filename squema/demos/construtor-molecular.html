@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Construtor Molecular — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/frasco-roxo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .mols { display: flex; flex-wrap: wrap; gap: 6px; }
+    .mols .botao { font-size: 13px; }
+    .barra-comp { display: flex; height: 22px; border: 2px solid var(--tinta); border-radius: 8px; overflow: hidden; margin: 6px 0 4px; }
+    .barra-comp span { display: block; height: 100%; }
+    .leg-comp { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; font-weight: 800; }
+    .leg-comp i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--tinta); margin-right: 4px; vertical-align: -1px; }
+    .bancada { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .contador { display: grid; justify-items: center; gap: 4px; background: var(--nevoa); border: 2px solid var(--linha); border-radius: 12px; padding: 6px 2px; }
+    .contador b { font: 800 22px/1 var(--fonte-titulo); }
+    .contador .linha-botoes { gap: 4px; }
+    .contador .botao { min-height: 30px; padding: 2px 9px; }
+    .formula { font: 800 24px/1.2 var(--fonte-titulo); color: var(--tinta); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script src="../assets/dados/moleculas.js"></script>
+  <script>
+  const MOL = window.SQUEMA_MOLECULAS;
+  // Cores CPK adaptadas à paleta SQUEMA; raios covalente e de van der Waals em Å.
+  const ATOMO = {
+    H: { cor: 0xF4F7FF, nome: 'Hidrogênio', rv: 1.2, val: 1 }, C: { cor: 0x4A5683, nome: 'Carbono', rv: 1.7, val: 4 },
+    N: { cor: 0x2B6CF0, nome: 'Nitrogênio', rv: 1.55, val: 3 }, O: { cor: 0xEE3B45, nome: 'Oxigênio', rv: 1.52, val: 2 },
+    S: { cor: 0xFFC21A, nome: 'Enxofre', rv: 1.8, val: 2 }, Cl: { cor: 0x36C04A, nome: 'Cloro', rv: 1.75, val: 1 },
+    Na: { cor: 0x8B3DFF, nome: 'Sódio', rv: 2.27, val: 1 }, F: { cor: 0x7FE08A, nome: 'Flúor', rv: 1.47, val: 1 }, P: { cor: 0xFF9416, nome: 'Fósforo', rv: 1.8, val: 3 },
+  };
+  const hexCss = (n) => '#' + n.toString(16).padStart(6, '0');
+  const GRUPOS = [['Simples', ['agua', 'co2', 'metano', 'amonia', 'oxigenio', 'nitrogenio']], ['Orgânicas', ['etanol', 'glicose', 'cafeina', 'aspirina', 'nicotina', 'cubano', 'colesterol']], ['Estruturas', ['buckyball', 'nacl', 'diamante', 'grafite']]];
+  const subscr = (f) => f.replace(/(\d+)/g, (m) => m.split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[d]).join(''));
+
+  // Arquivos PDB não trazem ligações duplas: inferimos uma estrutura de Kekulé pela valência.
+  function inferirOrdens(m) {
+    if (m.ionico || m.atomos.length > 120) return m.ligacoes.map((l) => [...l]);
+    const lig = m.ligacoes.map((l) => [...l]);
+    const resto = m.atomos.map(([e], i) => (ATOMO[e]?.val || 0) - lig.reduce((s, [a, b, o]) => s + (a === i || b === i ? o : 0), 0));
+    const pode = (l) => resto[l[0]] > 0 && resto[l[1]] > 0;
+    for (let guarda = 0; guarda < 200; guarda++) {
+      const cand = lig.filter(pode); if (!cand.length) break;
+      // prioriza átomos com uma única opção (evita "travar" anéis aromáticos)
+      let esc = null;
+      for (let i = 0; i < resto.length && !esc; i++) { if (resto[i] <= 0) continue; const op = cand.filter((l) => l[0] === i || l[1] === i); if (op.length === 1) esc = op[0]; }
+      esc = esc || cand[0];
+      esc[2]++; resto[esc[0]]--; resto[esc[1]]--;
+    }
+    return lig;
+  }
+
+  SQ.demo('construtor-molecular', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · clique em átomos para medir',
+    sala: ['Meça o ângulo H–O–H da água e compare com o do metano (H–C–H). Por que são diferentes?', 'Na bancada, peça fórmulas impossíveis (ex.: CH₅) e discuta a valência.', 'Compare diamante e grafite: mesmo elemento, estruturas diferentes.'],
+    comoIA: 'O guia recebe a molécula, os átomos selecionados e as medidas. Ele interpreta distâncias e ângulos à luz da geometria molecular; com uma IA conectada, poderia comentar propriedades e reatividade sob demanda.',
+    guia: {
+      ola: 'As estruturas aqui são reais (arquivos PDB e geometrias de referência). Escolha uma molécula, gire e clique em dois ou três átomos para medir distâncias e ângulos.',
+      perguntas: [
+        { p: 'Por que a água é angular?', chaves: ['agua', 'angular', 'angulo', '104'], r: 'O oxigênio tem 2 pares de elétrons não ligantes. Eles repelem as ligações O–H e "fecham" o ângulo para cerca de <b>104,5°</b> (em vez de 109,5° do tetraedro). Meça você mesmo: clique H, O, H.' },
+        { p: 'O que é massa molar?', chaves: ['massa molar', 'massa', 'mol'], r: (c) => `É a massa de 1 mol de moléculas (6,02 × 10²³). Soma-se a massa atômica de cada átomo${c.mol ? `: para ${c.formula}, dá <b>${SQ.num(c.massa, 2)} g/mol</b>` : ''}.` },
+        { p: 'O que é ligação dupla?', chaves: ['dupla', 'tripla', 'ligacao'], r: 'Dois átomos compartilham dois pares de elétrons. É mais curta e mais forte que a simples. No CO₂ cada O faz dupla com o C; no N₂ há uma ligação <b>tripla</b>.' },
+        { p: 'O que é insaturação?', chaves: ['insaturacao', 'insaturacoes', 'anel'], r: 'Cada anel ou ligação π (dupla conta 1, tripla 2) é uma insaturação. Para CₓHᵧNᵤOₜ: <b>I = x − y/2 + u/2 + 1</b>. A bancada calcula para você.' },
+        { p: 'Por que o NaCl não tem moléculas?', chaves: ['nacl', 'ionico', 'sal', 'cristal'], r: 'O sal é um composto <b>iônico</b>: Na⁺ e Cl⁻ se atraem em todas as direções formando um retículo cristalino. "NaCl" indica a proporção 1:1, não uma molécula isolada.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 1.5, 9], distancia: [2, 60], sombras: false, hemi: 1.1, sol: 2.2, contra: 1.2, ambiente: 0.7 });
+      const grupo = new T.Group(); c.scene.add(grupo);
+      let atual = 'agua', modo = 'bolas', selecao = [], malhasAtomos = [], marcas = new T.Group(); grupo.add(marcas);
+      const geoBola = new T.SphereGeometry(1, 28, 18), geoCil = new T.CylinderGeometry(1, 1, 1, 14);
+      const mats = {}; const matDe = (e) => (mats[e] ??= S3D.mat(ATOMO[e]?.cor ?? 0xC9D3EE, { rugosidade: 0.3 }));
+      const matLig = S3D.mat(0xC9D3EE, { rugosidade: 0.4 }), matSel = S3D.mat(0xFFC21A, { emissivo: 0xFFC21A, emissivoForca: 0.3 });
+
+      function desenhar() {
+        S3D.limpar(grupo); marcas = new T.Group(); grupo.add(marcas); malhasAtomos = []; selecao = [];
+        const m = MOL[atual], at = m.atomos.map(([e, x, y, z]) => ({ e, p: new T.Vector3(x, y, z) }));
+        const centro = new T.Vector3(); at.forEach((a) => centro.add(a.p)); centro.divideScalar(at.length);
+        at.forEach((a) => a.p.sub(centro));
+        const ligs = inferirOrdens(m);
+        const grande = at.length > 80;
+        const raio = (e) => modo === 'espaco' ? ATOMO[e]?.rv || 1.5 : modo === 'varetas' ? 0.16 : (e === 'H' ? 0.28 : 0.4) * (m.ionico ? 1.6 : 1);
+        const conteudo = new T.Group();
+        at.forEach((a, i) => {
+          const s = new T.Mesh(geoBola, matDe(a.e)); s.scale.setScalar(raio(a.e)); s.position.copy(a.p);
+          s.userData = { i, e: a.e }; conteudo.add(s); malhasAtomos.push(s);
+        });
+        if (modo !== 'espaco') {
+          const r = modo === 'varetas' ? 0.15 : 0.11, eixoY = new T.Vector3(0, 1, 0);
+          for (const [i, j, ordem] of ligs) {
+            const a = at[i].p, b = at[j].p, d = b.clone().sub(a), L = d.length();
+            const q = new T.Quaternion().setFromUnitVectors(eixoY, d.clone().normalize());
+            const lado = new T.Vector3(1, 0, 0).applyQuaternion(q).multiplyScalar(0.14);
+            const n = m.ionico ? 1 : Math.min(ordem, 3);
+            for (let k = 0; k < n; k++) {
+              const off = lado.clone().multiplyScalar(n === 1 ? 0 : k - (n - 1) / 2);
+              const cil = new T.Mesh(geoCil, m.ionico ? new T.MeshBasicMaterial({ color: 0x9AA7CF }) : matLig);
+              cil.scale.set(m.ionico ? 0.03 : n > 1 ? r * 0.65 : r, L, m.ionico ? 0.03 : n > 1 ? r * 0.65 : r);
+              cil.position.copy(a).add(b).multiplyScalar(0.5).add(off); cil.quaternion.copy(q); conteudo.add(cil);
+            }
+          }
+        }
+        if (!grande) S3D.contorno(conteudo, modo === 'espaco' ? 0.05 : 0.03);
+        grupo.add(conteudo);
+        const raioMol = Math.max(...at.map((a) => a.p.length())) + (modo === 'espaco' ? 2 : 1);
+        c.voarPara([0, raioMol * 0.4, Math.max(5, raioMol * 2.6)], [0, 0, 0], 0.8);
+        pintarInfo(m, ligs);
+      }
+
+      function selecionarAtomo(obj) {
+        if (!obj) return;
+        if (selecao.length >= 3) { selecao = []; S3D.limpar(marcas); }
+        selecao.push(obj);
+        const halo = new T.Mesh(geoBola, matSel); halo.scale.setScalar(obj.scale.x * 1.18); halo.position.copy(obj.position);
+        halo.material.transparent = true; halo.material.opacity = 0.55; halo.material.depthWrite = false; marcas.add(halo);
+        const rot = S3D.rotulo(`${selecao.length}. ${obj.userData.e}`, { classe: 'ativo' }); rot.position.copy(obj.position).add(new T.Vector3(0, obj.scale.x + 0.3, 0)); marcas.add(rot);
+        const P = selecao.map((s) => s.position);
+        if (selecao.length === 1) guia.diz(`Átomo de <b>${ATOMO[obj.userData.e]?.nome || obj.userData.e}</b>. Clique em outro para medir a distância.`, { chave: 'med' });
+        if (selecao.length >= 2) {
+          const linha = new T.Line(new T.BufferGeometry().setFromPoints(P), new T.LineDashedMaterial({ color: 0x0B1438, dashSize: 0.12, gapSize: 0.08, depthTest: false }));
+          linha.computeLineDistances(); linha.renderOrder = 5; marcas.add(linha);
+        }
+        if (selecao.length === 2) {
+          const d = P[0].distanceTo(P[1]);
+          guia.diz(`Distância ${selecao[0].userData.e}–${selecao[1].userData.e}: <b>${SQ.num(d, 2)} Å</b> (1 Å = 10⁻¹⁰ m). ${d < 1.25 ? 'Típica de ligação curta (envolvendo H ou ligação múltipla).' : d < 1.7 ? 'Típica de ligação simples entre átomos maiores.' : 'Provavelmente esses átomos não estão ligados diretamente.'} Clique num terceiro átomo para medir o ângulo.`, { chave: 'med' });
+        }
+        if (selecao.length === 3) {
+          const ang = THREE.MathUtils.radToDeg(P[0].clone().sub(P[1]).angleTo(P[2].clone().sub(P[1])));
+          const ref = Math.abs(ang - 109.5) < 3 ? ' — próximo do tetraédrico (109,5°)' : Math.abs(ang - 120) < 3 ? ' — próximo do trigonal plano (120°)' : Math.abs(ang - 180) < 3 ? ' — linear!' : Math.abs(ang - 104.5) < 2 ? ' — o ângulo clássico da água!' : '';
+          guia.diz(`Ângulo ${selecao.map((s) => s.userData.e).join('–')}: <b>${SQ.num(ang, 1)}°</b>${ref}.`, { chave: 'med' });
+        }
+      }
+      c.escolher(() => malhasAtomos, selecionarAtomo);
+
+      // ---------- painel ----------
+      const gMol = ui.grupo('Molécula');
+      const botoes = {};
+      for (const [titulo, ids] of GRUPOS) {
+        gMol.append(SQ.el('h3', { style: { marginTop: '8px' } }, titulo));
+        const linha = SQ.el('div', { class: 'mols' });
+        for (const id of ids) {
+          const b = SQ.el('button', { type: 'button', class: 'botao branco pequeno', 'aria-pressed': String(id === atual) }, MOL[id].nome.replace(' (cristal)', '').replace(' (trecho)', ''));
+          b.addEventListener('click', () => trocar(id)); botoes[id] = b; linha.append(b);
+        }
+        gMol.append(linha);
+      }
+      ui.segmentado({ rotulo: 'Representação', opcoes: [{ valor: 'bolas', rotulo: 'Bolas e varetas' }, { valor: 'espaco', rotulo: 'Volume' }, { valor: 'varetas', rotulo: 'Varetas' }], valor: modo, pai: gMol,
+        aoMudar: (v) => { modo = v; desenhar(); guia.diz(v === 'espaco' ? 'Modelo de preenchimento espacial: cada átomo com seu raio de van der Waals — mostra o "volume" real da molécula.' : v === 'varetas' ? 'Só as ligações: bom para enxergar o esqueleto de moléculas grandes.' : 'Bolas e varetas: átomos menores para revelar as ligações e os ângulos.', { chave: 'modo' }); } });
+
+      const gInfo = ui.grupo('Análise');
+      const info = SQ.el('div'); gInfo.append(info);
+      function pintarInfo(m, ligs) {
+        const cont = {}; m.atomos.forEach(([e]) => (cont[e] = (cont[e] || 0) + 1));
+        const tot = m.atomos.length;
+        const duplas = ligs.filter((l) => l[2] === 2).length, triplas = ligs.filter((l) => l[2] === 3).length;
+        info.innerHTML = `<div class="formula">${subscr(m.formula)}</div><p class="miudo texto-suave" style="margin:0 0 8px">${SQ.esc(m.nome)} · ${SQ.esc(m.geometria)}</p>
+          <div class="leituras">
+            <div class="leitura destaque"><small>Massa molar</small><b>${SQ.num(m.massa, 2)} g/mol</b></div>
+            <div class="leitura"><small>Átomos</small><b>${tot}</b></div>
+            <div class="leitura"><small>Ligações</small><b>${m.ionico ? 'iônicas' : ligs.length}</b></div>
+            <div class="leitura"><small>Duplas / triplas</small><b>${m.ionico ? '—' : `${duplas} / ${triplas}`}</b></div>
+          </div>
+          <div class="barra-comp">${Object.entries(cont).map(([e, n]) => `<span title="${e}: ${n}" style="width:${(n / tot) * 100}%;background:${hexCss(ATOMO[e]?.cor ?? 0xC9D3EE)}"></span>`).join('')}</div>
+          <div class="leg-comp">${Object.entries(cont).map(([e, n]) => `<span><i style="background:${hexCss(ATOMO[e]?.cor ?? 0xC9D3EE)}"></i>${e} × ${n}</span>`).join('')}</div>
+          <p class="miudo" style="margin:10px 0 0">${SQ.esc(m.uso)}</p>
+          <p class="miudo texto-suave" style="margin:4px 0 0">Fonte: ${SQ.esc(m.fonte)}${m.fonte.includes('pdb') && !m.ionico ? ' · ligações duplas inferidas pela valência' : ''}</p>`;
+      }
+      function trocar(id) {
+        atual = id; Object.entries(botoes).forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === id)));
+        desenhar();
+        const m = MOL[id];
+        guia.diz(`<b>${m.nome}</b> (${subscr(m.formula)}): ${m.uso} Geometria: ${m.geometria.toLowerCase()}.`, { chave: 'mol' });
+      }
+
+      // ---------- bancada (montar por fórmula) ----------
+      const gBanc = ui.grupo('Bancada: monte pela fórmula');
+      const qtd = { C: 0, H: 2, O: 1, N: 0 };
+      const bancada = SQ.el('div', { class: 'bancada' });
+      const saidaF = SQ.el('div', { class: 'formula', style: { margin: '10px 0 4px' } });
+      const saidaI = SQ.el('p', { class: 'miudo', style: { margin: 0 } });
+      for (const e of Object.keys(qtd)) {
+        const n = SQ.el('b', null, qtd[e]);
+        const mais = ui.botao({ rotulo: '+', classe: 'branco pequeno', aoClicar: () => { qtd[e] = Math.min(30, qtd[e] + 1); n.textContent = qtd[e]; avaliar(); } });
+        const menos = ui.botao({ rotulo: '−', classe: 'branco pequeno', aoClicar: () => { qtd[e] = Math.max(0, qtd[e] - 1); n.textContent = qtd[e]; avaliar(); } });
+        bancada.append(SQ.el('div', { class: 'contador' }, SQ.el('span', { style: { color: hexCss(ATOMO[e].cor), fontWeight: 900, WebkitTextStroke: e === 'H' ? '1px #0B1438' : '' } }, e), n, SQ.el('div', { class: 'linha-botoes' }, menos, mais)));
+      }
+      const btMontar = ui.botao({ rotulo: 'Montar molécula', classe: 'azul pequeno' });
+      gBanc.append(bancada, saidaF, saidaI, SQ.el('div', { style: { marginTop: '8px' } }, btMontar));
+      const formulaDe = () => (qtd.C ? `C${qtd.C > 1 ? qtd.C : ''}` : '') + (qtd.H ? `H${qtd.H > 1 ? qtd.H : ''}` : '') + (qtd.N ? `N${qtd.N > 1 ? qtd.N : ''}` : '') + (qtd.O ? `O${qtd.O > 1 ? qtd.O : ''}` : '');
+      const normal = (f) => { const c2 = {}; f.replace(/([A-Z][a-z]?)(\d*)/g, (_, e, n) => { c2[e] = (c2[e] || 0) + (+n || 1); }); return JSON.stringify(Object.keys(c2).sort().map((k) => [k, c2[k]])); };
+      function avaliar() {
+        const f = formulaDe(); saidaF.textContent = f ? subscr(f) : '—';
+        const ins = qtd.C - qtd.H / 2 + qtd.N / 2 + 1;
+        const alvo = Object.entries(MOL).find(([, m]) => normal(m.formula) === normal(f));
+        if (!f) saidaI.textContent = 'Adicione átomos.';
+        else if (!qtd.C && !qtd.N && qtd.O && qtd.H && !alvo) saidaI.innerHTML = 'Combinação de H e O: teste H₂O (água) ou H₂O₂ (água oxigenada).';
+        else if (qtd.C && (ins < 0 || !Number.isInteger(ins))) saidaI.innerHTML = `<b>Impossível</b> com valências normais (insaturações = ${SQ.num(ins, 1)}). Lembre: C faz 4 ligações, N 3, O 2 e H 1.`;
+        else saidaI.innerHTML = alvo ? `Encontrei na biblioteca: <b>${MOL[alvo[0]].nome}</b>! ${qtd.C ? `Insaturações: ${ins}.` : ''}` : `${qtd.C ? `Fórmula possível (insaturações = ${ins}), mas não está na biblioteca.` : 'Não está na biblioteca.'}`;
+        btMontar.disabled = !alvo; btMontar._alvo = alvo && alvo[0];
+      }
+      btMontar.addEventListener('click', () => { if (btMontar._alvo) { trocar(btMontar._alvo); guia.diz(`Você montou <b>${MOL[btMontar._alvo].nome}</b> a partir da fórmula. Confira se cada átomo completou sua valência!`, { tipo: 'sucesso', chave: 'mol' }); } });
+      avaliar();
+
+      let girar = true;
+      c.aoQuadro((dt) => { if (girar) grupo.rotation.y += dt * 0.12; });
+      c.controls.addEventListener('start', () => (girar = false));
+      guia.contexto = () => ({ mol: MOL[atual].nome, formula: MOL[atual].formula, massa: MOL[atual].massa, selecao: selecao.map((s) => s.userData.e) });
+      desenhar();
+    },
+  });
+  </script>
+</body>
+</html>

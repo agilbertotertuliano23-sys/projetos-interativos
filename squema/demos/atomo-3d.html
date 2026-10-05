@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Átomo 3D — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/atomo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .tabela-periodica { display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); gap: 2px; }
+    .tabela-periodica button { aspect-ratio: 1; border: 1.5px solid var(--tinta); border-radius: 5px; padding: 0; font: 900 clamp(8px, .8vw, 11px)/1 var(--fonte); color: var(--tinta); min-width: 0; }
+    .tabela-periodica button[aria-pressed="true"] { outline: 3px solid var(--tinta); outline-offset: 1px; transform: scale(1.15); position: relative; z-index: 1; }
+    .config { font: 800 17px/1.5 var(--fonte-mono); color: var(--azul-escuro); background: var(--gelo); border-radius: 10px; padding: 6px 10px; overflow-wrap: anywhere; }
+    .cats { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; font-weight: 800; color: var(--texto-suave); margin-top: 8px; }
+    .cats i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; border: 1.5px solid var(--tinta); margin-right: 4px; vertical-align: -1px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  // [símbolo, nome, massa atômica, A do isótopo mais abundante, grupo, categoria]
+  const EL = [
+    ['H', 'Hidrogênio', 1.008, 1, 1, 'nm'], ['He', 'Hélio', 4.003, 4, 18, 'gn'],
+    ['Li', 'Lítio', 6.94, 7, 1, 'ma'], ['Be', 'Berílio', 9.012, 9, 2, 'mt'], ['B', 'Boro', 10.81, 11, 13, 'sm'], ['C', 'Carbono', 12.011, 12, 14, 'nm'], ['N', 'Nitrogênio', 14.007, 14, 15, 'nm'], ['O', 'Oxigênio', 15.999, 16, 16, 'nm'], ['F', 'Flúor', 18.998, 19, 17, 'ha'], ['Ne', 'Neônio', 20.18, 20, 18, 'gn'],
+    ['Na', 'Sódio', 22.99, 23, 1, 'ma'], ['Mg', 'Magnésio', 24.305, 24, 2, 'mt'], ['Al', 'Alumínio', 26.982, 27, 13, 'om'], ['Si', 'Silício', 28.085, 28, 14, 'sm'], ['P', 'Fósforo', 30.974, 31, 15, 'nm'], ['S', 'Enxofre', 32.06, 32, 16, 'nm'], ['Cl', 'Cloro', 35.45, 35, 17, 'ha'], ['Ar', 'Argônio', 39.948, 40, 18, 'gn'],
+    ['K', 'Potássio', 39.098, 39, 1, 'ma'], ['Ca', 'Cálcio', 40.078, 40, 2, 'mt'], ['Sc', 'Escândio', 44.956, 45, 3, 'tr'], ['Ti', 'Titânio', 47.867, 48, 4, 'tr'], ['V', 'Vanádio', 50.942, 51, 5, 'tr'], ['Cr', 'Cromo', 51.996, 52, 6, 'tr'], ['Mn', 'Manganês', 54.938, 55, 7, 'tr'], ['Fe', 'Ferro', 55.845, 56, 8, 'tr'], ['Co', 'Cobalto', 58.933, 59, 9, 'tr'], ['Ni', 'Níquel', 58.693, 58, 10, 'tr'], ['Cu', 'Cobre', 63.546, 63, 11, 'tr'], ['Zn', 'Zinco', 65.38, 64, 12, 'tr'], ['Ga', 'Gálio', 69.723, 69, 13, 'om'], ['Ge', 'Germânio', 72.63, 74, 14, 'sm'], ['As', 'Arsênio', 74.922, 75, 15, 'sm'], ['Se', 'Selênio', 78.971, 80, 16, 'nm'], ['Br', 'Bromo', 79.904, 79, 17, 'ha'], ['Kr', 'Criptônio', 83.798, 84, 18, 'gn'],
+  ];
+  const CAT = { nm: ['Não metal', '#36C04A'], gn: ['Gás nobre', '#B07BFF'], ma: ['Metal alcalino', '#FF6B6B'], mt: ['Metal alcalinoterroso', '#FF9416'], sm: ['Semimetal', '#19B8A6'], ha: ['Halogênio', '#FFC21A'], tr: ['Metal de transição', '#5FC2F5'], om: ['Outros metais', '#9AA7CF'] };
+  const FAMILIA = { 1: 'família 1 (metais alcalinos, exceto o H)', 2: 'família 2 (metais alcalinoterrosos)', 13: 'família 13 (do boro)', 14: 'família 14 (do carbono)', 15: 'família 15 (do nitrogênio)', 16: 'família 16 (calcogênios)', 17: 'família 17 (halogênios)', 18: 'família 18 (gases nobres)' };
+  const ORDEM = [[1, 0], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [3, 2], [4, 1], [5, 0], [4, 2], [5, 1]];
+  const LETRA = 'spdf', CAP = [2, 6, 10, 14], CAMADA = 'KLMNO';
+  const SUP = (n) => String(n).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).join('');
+
+  // Distribuição de Linus Pauling (ordem de Madelung) com as exceções clássicas Cr e Cu.
+  function configNeutra(z) {
+    const sub = []; let r = z;
+    for (const [n, l] of ORDEM) { if (r <= 0) break; const e = Math.min(r, CAP[l]); sub.push({ n, l, e }); r -= e; }
+    if (z === 24 || z === 29) { const s4 = sub.find((s) => s.n === 4 && s.l === 0), d3 = sub.find((s) => s.n === 3 && s.l === 2); s4.e -= 1; d3.e += 1; }
+    return sub;
+  }
+  function configIon(z, carga) {
+    let sub = configNeutra(z).map((s) => ({ ...s }));
+    if (carga > 0) { // retira primeiro da camada mais externa (por isso o Fe²⁺ perde os 4s antes dos 3d)
+      for (let k = 0; k < carga; k++) {
+        const alvo = [...sub].filter((s) => s.e > 0).sort((a, b) => b.n - a.n || b.l - a.l)[0];
+        if (alvo) alvo.e--;
+      }
+    } else if (carga < 0) {
+      let r = -carga;
+      for (const [n, l] of ORDEM) {
+        if (r <= 0) break;
+        let s = sub.find((x) => x.n === n && x.l === l);
+        if (!s) { s = { n, l, e: 0 }; sub.push(s); }
+        const add = Math.min(r, CAP[l] - s.e); s.e += add; r -= add;
+      }
+    }
+    return sub.filter((s) => s.e > 0);
+  }
+  const textoConfig = (sub) => [...sub].sort((a, b) => a.n - b.n || a.l - b.l).map((s) => `${s.n}${LETRA[s.l]}${SUP(s.e)}`).join(' ');
+  const camadas = (sub) => { const c = []; for (const s of sub) c[s.n - 1] = (c[s.n - 1] || 0) + s.e; return Array.from(c, (v) => v || 0); };
+
+  SQ.demo('atomo-3d', {
+    fundo: 'noite',
+    dica: 'Arraste para girar · role para aproximar',
+    sala: ['Escolha elementos da mesma coluna e compare os elétrons da última camada.', 'Monte o Na⁺ e o Cl⁻ e discuta por que formam o sal de cozinha.', 'Compare Fe e Fe²⁺: de qual subnível saem os elétrons?'],
+    comoIA: 'O guia recebe o elemento, a carga e a distribuição calculada. Ele explica a configuração subnível a subnível e liga os elétrons de valência à família — com uma IA conectada, o aluno pode pedir comparações livres entre elementos.',
+    guia: {
+      ola: 'Escolha um elemento na tabela. Eu monto o núcleo, distribuo os elétrons pelas camadas e explico a configuração.',
+      perguntas: [
+        { p: 'O que é número atômico?', chaves: ['numero atomico', 'z', 'protons'], r: 'É o número de <b>prótons</b> no núcleo (Z). Ele define o elemento: todo átomo com 6 prótons é carbono. No átomo neutro, o número de elétrons é igual a Z.' },
+        { p: 'Para que servem os nêutrons?', chaves: ['neutron', 'neutrons', 'isotopo'], r: 'Os nêutrons ajudam a manter o núcleo estável (a força nuclear forte supera a repulsão entre prótons). Átomos do mesmo elemento com nº de nêutrons diferente são <b>isótopos</b>. Aqui mostro o isótopo mais abundante.' },
+        { p: 'O que é camada de valência?', chaves: ['valencia', 'ultima camada', 'externa'], r: (c) => `É a camada mais externa — a que participa das ligações químicas. ${c.el ? `No ${c.el}, ela tem <b>${c.valencia}</b> elétron(s).` : ''}` },
+        { p: 'Por que o cromo é exceção?', chaves: ['cromo', 'cobre', 'excecao', 'cr', 'cu'], r: 'No Cr e no Cu um elétron do 4s passa para o 3d, deixando o 3d com 5 (meio cheio) ou 10 (cheio). Essas configurações são mais estáveis: Cr = [Ar] 4s¹ 3d⁵ e Cu = [Ar] 4s¹ 3d¹⁰.' },
+        { p: 'O que é um íon?', chaves: ['ion', 'cation', 'anion', 'carga'], r: 'Um átomo que ganhou ou perdeu elétrons. Perdeu → <b>cátion</b> (carga +); ganhou → <b>ânion</b> (carga −). O número de prótons não muda. Use o controle "Carga" para testar.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 4, 15], distancia: [5, 34], sombras: false, hemi: 1.2, sol: 2, contra: 1.2, ambiente: 0.7, solPos: [5, 8, 10] });
+      const atomo = new T.Group(); c.scene.add(atomo);
+      const matP = S3D.mat(0xEE3B45), matN = S3D.mat(0xDDE6FF, { rugosidade: 0.45 }), matE = S3D.mat(0x2BB4F5, { emissivo: 0x2BB4F5, emissivoForca: 0.35 });
+      const geoNuc = new T.SphereGeometry(0.34, 20, 14), geoE = new T.SphereGeometry(0.2, 18, 12);
+      let z = 6, carga = 0, mostrarOrb = false, mostrarAneis = true, velocidade = 1;
+      let nucleo, aneis = [], orbitais;
+      const rotulos = { nucleo: S3D.rotulo('', { classe: 'ativo' }) };
+
+      function montarNucleo(Z, A) {
+        if (nucleo) { nucleo.remove(rotulos.nucleo); S3D.remover(nucleo); }
+        nucleo = new T.Group();
+        const rn = 0.36 * Math.cbrt(A) * 1.18, ouro = Math.PI * (3 - Math.sqrt(5));
+        const tipos = Array.from({ length: A }, (_, i) => i < Z);
+        for (let i = tipos.length - 1; i > 0; i--) { const j = Math.floor(((i * 7919) % 104729) / 104729 * (i + 1)); [tipos[i], tipos[j]] = [tipos[j], tipos[i]]; }
+        for (let i = 0; i < A; i++) {
+          const y = 1 - ((i + 0.5) / A) * 2, rr = Math.sqrt(1 - y * y), th = ouro * i, r = A === 1 ? 0 : rn * Math.cbrt((i + 0.5) / A);
+          const m = new T.Mesh(geoNuc, tipos[i] ? matP : matN);
+          m.position.set(Math.cos(th) * rr * r, y * r, Math.sin(th) * rr * r);
+          nucleo.add(m);
+        }
+        S3D.contorno(nucleo, 0.035);
+        nucleo.add(rotulos.nucleo); rotulos.nucleo.position.y = rn + 0.8;
+        atomo.add(nucleo);
+        return rn;
+      }
+      function montarEletrons(cams, rn) {
+        aneis.forEach((a) => S3D.remover(a.grupo)); aneis = [];
+        cams.forEach((n, i) => {
+          const r = rn + 1.5 + i * 1.35;
+          const grupo = new T.Group();
+          grupo.rotation.set(0.35 + i * 0.5, i * 0.9, 0.15 * i);
+          const anel = new T.Mesh(new T.TorusGeometry(r, 0.035, 8, 140), new T.MeshBasicMaterial({ color: 0x8FC8FF, transparent: true, opacity: 0.7 }));
+          anel.rotation.x = Math.PI / 2; anel.visible = mostrarAneis; grupo.add(anel);
+          const giro = new T.Group(); grupo.add(giro);
+          for (let k = 0; k < n; k++) {
+            const e = new T.Mesh(geoE, matE); const a = (k / n) * Math.PI * 2;
+            e.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); giro.add(e);
+          }
+          S3D.contorno(giro, 0.03);
+          const rot = S3D.rotulo(`${CAMADA[i]} · ${n}`, { classe: 'escuro' }); rot.position.set(r, 0.3, 0); grupo.add(rot);
+          atomo.add(grupo);
+          aneis.push({ grupo, giro, anel, vel: 0.9 / (i + 1) });
+        });
+      }
+      function montarOrbitais(sub) {
+        S3D.remover(orbitais);
+        orbitais = new T.Group(); orbitais.visible = mostrarOrb;
+        const cores = [0xFFC21A, 0x8B3DFF, 0x2BB4F5];
+        for (const s of sub) {
+          if (s.l > 1) continue;
+          const esc = 1.4 + (s.n - 1) * 1.15;
+          if (s.l === 0) {
+            const m = new T.Mesh(new T.SphereGeometry(esc * 0.75, 32, 20), new T.MeshPhysicalMaterial({ color: 0x5FC2F5, transparent: true, opacity: 0.12 + 0.05 * (s.e), roughness: 0.2, depthWrite: false, side: T.DoubleSide }));
+            orbitais.add(m);
+          } else {
+            const lobos = Math.min(3, Math.ceil(s.e / 2) + (s.e > 3 ? 3 : 0)) ;
+            for (let eixo = 0; eixo < 3; eixo++) {
+              const ocupado = eixo < Math.min(3, s.e);
+              for (const sinal of [1, -1]) {
+                const m = new T.Mesh(new T.SphereGeometry(1, 28, 18), new T.MeshPhysicalMaterial({ color: cores[eixo], transparent: true, opacity: ocupado ? 0.38 : 0.08, roughness: 0.25, depthWrite: false }));
+                m.scale.set(esc * 0.32, esc * 0.6, esc * 0.32);
+                m.position.y = sinal * esc * 0.62;
+                const piv = new T.Group(); piv.add(m);
+                if (eixo === 0) piv.rotation.z = Math.PI / 2; if (eixo === 2) piv.rotation.x = Math.PI / 2;
+                orbitais.add(piv);
+              }
+            }
+            void lobos;
+          }
+          const r = S3D.rotulo(`${s.n}${LETRA[s.l]}${SUP(s.e)}`, { classe: 'escuro' }); r.position.set(-esc * 0.9, esc * 0.75, 0); orbitais.add(r);
+        }
+        atomo.add(orbitais);
+      }
+
+      // ---------- painel ----------
+      const gTab = ui.grupo('Escolha o elemento');
+      const tab = SQ.el('div', { class: 'tabela-periodica', role: 'group', 'aria-label': 'Tabela periódica (períodos 1 a 4)' });
+      const botoes = [];
+      const posicao = (Z) => {
+        const g = EL[Z - 1][4], periodo = Z <= 2 ? 1 : Z <= 10 ? 2 : Z <= 18 ? 3 : 4;
+        return [periodo, g];
+      };
+      for (let p = 1; p <= 4; p++) for (let g = 1; g <= 18; g++) {
+        const Z = EL.findIndex((e, i) => posicao(i + 1)[0] === p && e[4] === g) + 1;
+        if (!Z) { tab.append(SQ.el('span')); continue; }
+        const e = EL[Z - 1];
+        const b = SQ.el('button', { type: 'button', title: `${e[1]} (Z = ${Z})`, 'aria-pressed': 'false', style: { background: CAT[e[5]][1] } }, e[0]);
+        b.addEventListener('click', () => { z = Z; carga = 0; sCarga.valor = 0; atualizar(true); });
+        botoes[Z] = b; tab.append(b);
+      }
+      gTab.append(tab, SQ.el('div', { class: 'cats', html: Object.values(CAT).map(([n, cor]) => `<span><i style="background:${cor}"></i>${n}</span>`).join('') }));
+      const sCarga = ui.slider({ rotulo: 'Carga (íons)', min: -3, max: 3, passo: 1, valor: 0, pai: gTab, formatar: (v) => (v > 0 ? `+${v} (cátion)` : v < 0 ? `${v} (ânion)` : '0 (neutro)'), aoMudar: (v) => { carga = v; atualizar(false, true); } });
+
+      const gInfo = ui.grupo('Partículas');
+      const leit = ui.leituras([
+        { id: 'p', rotulo: 'Prótons (Z)' }, { id: 'n', rotulo: 'Nêutrons' }, { id: 'e', rotulo: 'Elétrons' }, { id: 'a', rotulo: 'Nº de massa (A)' },
+        { id: 'cam', rotulo: 'Camadas' }, { id: 'val', rotulo: 'Na última camada', destaque: true }], gInfo);
+      const cfgEl = SQ.el('div', { class: 'config', 'aria-live': 'polite' });
+      const cfgEn = SQ.el('div', { class: 'config', style: { fontSize: '14px', background: '#FFF6D6', color: 'var(--tinta)' } });
+      gInfo.append(SQ.el('h3', { style: { marginTop: '12px' } }, 'Distribuição por camadas'), cfgEl,
+        SQ.el('h3', { style: { marginTop: '10px' } }, 'Ordem energética (diagrama de Pauling)'), cfgEn);
+
+      const gVis = ui.grupo('Visualização');
+      ui.alternar({ rotulo: 'Órbitas (modelo de Bohr)', valor: true, pai: gVis, aoMudar: (v) => { mostrarAneis = v; aneis.forEach((a) => (a.anel.visible = v)); } });
+      ui.alternar({ rotulo: 'Orbitais s e p (nuvens)', valor: false, pai: gVis, aoMudar: (v) => {
+        mostrarOrb = v; orbitais.visible = v;
+        if (v) guia.diz('As nuvens mostram onde é mais provável encontrar o elétron: <b>s</b> é esférico; <b>p</b> tem dois lobos em cada eixo (x, y, z). Os orbitais d têm formas mais complexas e não aparecem aqui.', { chave: 'vis' });
+      } });
+      ui.slider({ rotulo: 'Velocidade dos elétrons', min: 0, max: 3, passo: 0.25, valor: 1, unidade: '×', pai: gVis, aoMudar: (v) => (velocidade = v) });
+      gVis.append(SQ.el('p', { class: 'miudo texto-suave', style: { margin: '6px 0 0' } }, 'Fora de escala: se o núcleo tivesse 1 cm, o átomo teria cerca de 1 km.'));
+
+      function atualizar(narrar, mudouCarga) {
+        const e = EL[z - 1], A = e[3], sub = configIon(z, carga), cams = camadas(sub), ne = z - carga;
+        botoes.forEach((b, i) => b && b.setAttribute('aria-pressed', String(i === z)));
+        const rn = montarNucleo(z, A); montarEletrons(cams, rn); montarOrbitais(sub);
+        const ion = carga ? `${e[0]}${carga > 0 ? SUP(carga) + '⁺' : SUP(-carga) + '⁻'}`.replace('¹⁺', '⁺').replace('¹⁻', '⁻') : e[0];
+        rotulos.nucleo.element.textContent = `${ion} · ${e[1]}`;
+        const valencia = cams[cams.length - 1] || 0;
+        leit.set('p', z); leit.set('n', A - z); leit.set('e', ne); leit.set('a', A);
+        leit.set('cam', cams.map((n, i) => `${CAMADA[i]}${n}`).join(' ')); leit.set('val', valencia);
+        cfgEl.textContent = textoConfig(sub) || '—';
+        const ordemE = (x) => ORDEM.findIndex(([n, l]) => n === x.n && l === x.l);
+        cfgEn.textContent = [...sub].sort((a, b) => ordemE(a) - ordemE(b)).map((x) => `${x.n}${LETRA[x.l]}${SUP(x.e)}`).join(' ') || '—';
+        if (narrar) {
+          const g = e[4], fam = FAMILIA[g] || 'grupo dos metais de transição';
+          let t = `<b>${e[1]} (${e[0]})</b>: ${z} prótons e ${A - z} nêutrons no núcleo (isótopo ${e[0]}-${A}), ${z} elétrons em ${cams.length} ${cams.length > 1 ? 'camadas' : 'camada'}. `;
+          t += g >= 3 && g <= 12 ? `Como metal de transição, o subnível mais energético é o 3d — repare que o 4s é preenchido antes.` : `Tem <b>${valencia}</b> elétron(s) na camada de valência, como todos da ${fam}.`;
+          if (z === 24 || z === 29) t += ' Atenção: é uma das exceções — um elétron do 4s vai para o 3d.';
+          guia.diz(t, { chave: 'el' });
+        }
+        if (mudouCarga) {
+          if (!carga) guia.diz(`${e[1]} neutro: elétrons = prótons = ${z}.`, { chave: 'el' });
+          else if (ne < 0) guia.diz('Não há elétrons para retirar!', { tipo: 'alerta', chave: 'el' });
+          else guia.diz(`<b>${ion}</b>: ${carga > 0 ? `perdeu ${carga} elétron(s) — cátion` : `ganhou ${-carga} elétron(s) — ânion`}. Os prótons continuam ${z}. ${carga > 0 ? 'Os elétrons saem da camada mais externa primeiro.' : ''} ${cams.length && [2, 8].includes(valencia) && (valencia === 8 || cams.length === 1) ? 'Agora a última camada está completa, como num gás nobre!' : ''}`, { chave: 'el' });
+        }
+      }
+      c.aoQuadro((dt) => {
+        aneis.forEach((a) => (a.giro.rotation.y += dt * a.vel * velocidade));
+        if (nucleo) nucleo.rotation.y += dt * 0.2;
+        if (orbitais) orbitais.rotation.y += dt * 0.1;
+      });
+      guia.contexto = () => { const e = EL[z - 1]; const cams = camadas(configIon(z, carga)); return { el: e[1], z, carga, configuracao: textoConfig(configIon(z, carga)), valencia: cams[cams.length - 1] }; };
+      atualizar(true);
+    },
+  });
+  </script>
+</body>
+</html>

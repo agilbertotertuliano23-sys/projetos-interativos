@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Universo 3D — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/planeta.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  // Dados: NASA Planetary Fact Sheet (diâmetro equatorial, semieixo maior, período orbital e de rotação) e
+  // contagem de luas conhecidas segundo a NASA (2024).
+  const PLANETAS = [
+    { id: 'mercurio', nome: 'Mercúrio', d: 4879, a: 0.387, T: 88.0, rot: 1407.6, luas: 0, tipo: 'Rochoso', temp: '167 °C (−173 a 427)', cor: '#8E9AC0', textura: 'crateras',
+      fato: 'Sem atmosfera para segurar calor, passa de 427 °C de dia a −173 °C à noite.' },
+    { id: 'venus', nome: 'Vênus', d: 12104, a: 0.723, T: 224.7, rot: -5832.5, luas: 0, tipo: 'Rochoso', temp: '464 °C', cor: '#FFC867', textura: 'nuvens',
+      fato: 'É o planeta mais quente: o CO₂ da atmosfera causa um efeito estufa extremo. Gira ao contrário dos outros.' },
+    { id: 'terra', nome: 'Terra', d: 12756, a: 1.0, T: 365.25, rot: 23.9, luas: 1, tipo: 'Rochoso', temp: '15 °C', cor: '#2B7BFF', textura: 'terra',
+      fato: 'O único lugar conhecido com água líquida na superfície e vida.' },
+    { id: 'marte', nome: 'Marte', d: 6792, a: 1.524, T: 687.0, rot: 24.6, luas: 2, tipo: 'Rochoso', temp: '−65 °C', cor: '#EE6A3B', textura: 'crateras',
+      fato: 'A cor vem do óxido de ferro na poeira. Tem o maior vulcão do Sistema Solar, o Monte Olimpo.' },
+    { id: 'jupiter', nome: 'Júpiter', d: 142984, a: 5.203, T: 4331, rot: 9.9, luas: 95, tipo: 'Gigante gasoso', temp: '−110 °C', cor: '#E9A565', textura: 'faixas', faixas: ['#F6D7A8', '#E09A55', '#FFF0D6', '#C97A42', '#F2C38A'],
+      fato: 'Caberiam cerca de 1.300 Terras dentro dele. A Grande Mancha Vermelha é uma tempestade maior que a Terra.' },
+    { id: 'saturno', nome: 'Saturno', d: 120536, a: 9.537, T: 10747, rot: 10.7, luas: 146, tipo: 'Gigante gasoso', temp: '−140 °C', cor: '#F2D27A', textura: 'faixas', faixas: ['#FBE7AE', '#EBC66E', '#FFF4D2', '#DDB25A'], aneis: true,
+      fato: 'Os anéis são feitos de gelo e rocha e têm só dezenas de metros de espessura.' },
+    { id: 'urano', nome: 'Urano', d: 51118, a: 19.19, T: 30589, rot: -17.2, luas: 28, tipo: 'Gigante de gelo', temp: '−195 °C', cor: '#7FD8F0', textura: 'lisa', inclinacao: 97.8,
+      fato: 'Gira "deitado": seu eixo é inclinado quase 98°, provavelmente por uma colisão antiga.' },
+    { id: 'netuno', nome: 'Netuno', d: 49528, a: 30.07, T: 59800, rot: 16.1, luas: 16, tipo: 'Gigante de gelo', temp: '−200 °C', cor: '#3D6BFF', textura: 'faixas', faixas: ['#4C7DFF', '#3560E8', '#6B95FF'],
+      fato: 'Tem os ventos mais rápidos medidos no Sistema Solar, acima de 2.000 km/h.' },
+  ];
+
+  SQ.demo('universo-3d', {
+    fundo: 'espaco',
+    dica: 'Arraste para girar · role para aproximar · clique num planeta',
+    sala: ['Peça que a turma preveja a ordem dos períodos antes de acelerar o tempo.', 'Compare a escala didática com a proporcional e discuta por que os livros "encolhem" o Sistema Solar.', 'Confira a 3ª lei de Kepler (T² ≈ a³) com dois planetas à escolha.'],
+    comoIA: 'O guia recebe o planeta selecionado, a velocidade do tempo e a escala. Com uma IA conectada, o aluno pode perguntar livremente ("e se a Terra estivesse onde está Marte?") e a resposta parte desses dados.',
+    guia: {
+      ola: 'Bem-vindo ao Sistema Solar! Clique num planeta para conhecê-lo e use o controle de tempo para ver as órbitas acontecendo.',
+      perguntas: [
+        { p: 'Por que os planetas distantes demoram mais?', chaves: ['distante', 'demora', 'devagar', 'periodo', 'lento'], r: 'Dois motivos: a órbita é maior (mais caminho) e a gravidade do Sol é mais fraca lá longe, então o planeta anda mais devagar. Kepler resumiu isso: <b>T² ∝ a³</b>.' },
+        { p: 'O que é unidade astronômica?', chaves: ['unidade', 'ua', 'astronomica', 'distancia'], r: '1 UA é a distância média Terra–Sol: cerca de <b>150 milhões de km</b>. Netuno está a ~30 UA — a luz do Sol leva 4 horas para chegar lá.' },
+        { p: 'Qual é o maior planeta?', chaves: ['maior', 'grande', 'tamanho'], r: '<b>Júpiter</b>: 142.984 km de diâmetro, mais de 11 vezes o da Terra. Na escala didática os tamanhos são aproximados para todos caberem na tela.' },
+        { p: 'Por que Vênus é mais quente que Mercúrio?', chaves: ['venus', 'quente', 'calor', 'mercurio'], r: 'Mercúrio está mais perto do Sol, mas não tem atmosfera. Vênus tem uma atmosfera espessa de CO₂ que prende o calor (efeito estufa) e chega a <b>464 °C</b>.' },
+        { p: 'Plutão é planeta?', chaves: ['plutao', 'anao'], r: 'Desde 2006 Plutão é classificado como <b>planeta anão</b>: ele orbita o Sol e é arredondado, mas não "limpou" sua órbita de outros corpos.' },
+        { p: 'Como confiro a lei de Kepler?', chaves: ['kepler', 'lei', 'conferir'], r: (c) => c.sel ? `Para ${c.sel.nome}: a = ${SQ.num(c.sel.a, 3)} UA e T = ${SQ.num(c.sel.T / 365.25, 2)} anos. a³ = ${SQ.num(c.sel.a ** 3, 2)} e T² = ${SQ.num((c.sel.T / 365.25) ** 2, 2)}. Quase iguais!` : 'Selecione um planeta e eu faço a conta com você: compare a³ (distância em UA ao cubo) com T² (período em anos ao quadrado).' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 26, 44], alvo: [0, 0, 0], longe: 4000, distancia: [4, 900], sombras: false, hemi: 0.35, sol: 0, contra: 0.25, ambiente: 0.25, exposicao: 1.1, ceu: 0x8EA8FF, solo: 0x10164A });
+
+      // estrelas
+      const pos = new Float32Array(2400 * 3);
+      for (let i = 0; i < 2400; i++) { const v = new T.Vector3().randomDirection().multiplyScalar(900 + Math.random() * 600); pos.set([v.x, v.y, v.z], i * 3); }
+      const gEst = new T.BufferGeometry(); gEst.setAttribute('position', new T.BufferAttribute(pos, 3));
+      c.scene.add(new T.Points(gEst, new T.PointsMaterial({ color: 0xCFE0FF, size: 2.2, sizeAttenuation: false })));
+
+      // Sol
+      const luz = new T.PointLight(0xFFF1D6, 3.2, 0, 0); c.scene.add(luz);
+      const sol = new T.Mesh(new T.SphereGeometry(3.2, 64, 32), new T.MeshBasicMaterial({ map: S3D.texturaCanvas(256, 128, (g, w, h) => {
+        g.fillStyle = '#FFC21A'; g.fillRect(0, 0, w, h);
+        for (let i = 0; i < 260; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(255,148,22,.5)' : 'rgba(255,240,170,.55)'; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, 2 + Math.random() * 6, 0, 7); g.fill(); }
+      }) }));
+      c.scene.add(sol);
+      const brilho = new T.Sprite(new T.SpriteMaterial({ map: S3D.texturaCanvas(256, 256, (g, w) => {
+        const gr = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
+        gr.addColorStop(0, 'rgba(255,214,90,.95)'); gr.addColorStop(0.35, 'rgba(255,170,40,.35)'); gr.addColorStop(1, 'rgba(255,150,20,0)');
+        g.fillStyle = gr; g.fillRect(0, 0, w, w);
+      }), blending: T.AdditiveBlending, depthWrite: false }));
+      brilho.scale.set(18, 18, 1); c.scene.add(brilho);
+      S3D.contorno(sol, 0.12);
+      const rotSol = S3D.rotulo('Sol', { classe: 'escuro' }); rotSol.position.set(0, -3.6, 0); sol.add(rotSol);
+
+      // texturas procedurais no estilo da marca
+      function textura(p) {
+        return S3D.texturaCanvas(512, 256, (g, w, h) => {
+          g.fillStyle = p.cor; g.fillRect(0, 0, w, h);
+          const rnd = mulberry(p.id.length * 97 + p.d);
+          if (p.textura === 'faixas') {
+            let y = 0; let i = 0;
+            while (y < h) { const alt = 8 + rnd() * 26; g.fillStyle = p.faixas[i++ % p.faixas.length]; g.fillRect(0, y, w, alt + 1); y += alt; }
+            if (p.id === 'jupiter') { g.fillStyle = '#D9572E'; g.beginPath(); g.ellipse(w * 0.62, h * 0.64, 30, 14, 0, 0, 7); g.fill(); }
+          } else if (p.textura === 'crateras') {
+            for (let i = 0; i < 90; i++) { const r = 3 + rnd() * 14; g.fillStyle = rnd() < 0.5 ? 'rgba(11,20,56,.18)' : 'rgba(255,255,255,.16)'; g.beginPath(); g.arc(rnd() * w, rnd() * h, r, 0, 7); g.fill(); }
+            if (p.id === 'marte') { g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, w, 10); g.fillRect(0, h - 8, w, 8); }
+          } else if (p.textura === 'nuvens') {
+            for (let i = 0; i < 70; i++) { g.fillStyle = rnd() < 0.5 ? 'rgba(255,255,255,.28)' : 'rgba(255,148,22,.22)'; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 20 + rnd() * 60, 5 + rnd() * 10, 0, 0, 7); g.fill(); }
+          } else if (p.textura === 'terra') {
+            // continentes por ruído de valor, nas cores do globo do logotipo
+            const img = g.getImageData(0, 0, w, h);
+            for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+              const n = ruido(x / 70, y / 70, rnd.semente) * 0.65 + ruido(x / 24, y / 24, rnd.semente + 7) * 0.35;
+              const lat = Math.abs(y / h - 0.5) * 2, k = (y * w + x) * 4;
+              const cor = lat > 0.86 ? [244, 247, 255] : n > 0.56 ? [54, 192, 74] : [31, 91, 224];
+              img.data[k] = cor[0]; img.data[k + 1] = cor[1]; img.data[k + 2] = cor[2]; img.data[k + 3] = 255;
+            }
+            g.putImageData(img, 0, 0);
+          }
+        });
+      }
+
+      const grupoOrbitas = new T.Group(); c.scene.add(grupoOrbitas);
+      const corpos = PLANETAS.map((p, i) => {
+        const raio = 0.45 + Math.log10(p.d / 4879 + 1) * 1.15;
+        const pivo = new T.Group(); c.scene.add(pivo);
+        const eixo = new T.Group(); eixo.rotation.z = T.MathUtils.degToRad(p.inclinacao || 12); pivo.add(eixo);
+        const malha = new T.Mesh(new T.SphereGeometry(raio, 48, 24), S3D.mat(0xffffff, { rugosidade: 0.55, verniz: 0.35 }));
+        malha.material.map = textura(p); malha.userData.planeta = p;
+        eixo.add(malha);
+        S3D.contorno(malha, 0.05);
+        if (p.aneis) {
+          const anel = new T.Mesh(new T.RingGeometry(raio * 1.35, raio * 2.25, 96), new T.MeshStandardMaterial({ map: S3D.texturaCanvas(256, 8, (g, w, h) => {
+            for (let x = 0; x < w; x++) { const v = 0.55 + 0.45 * Math.sin(x * 0.35) * Math.sin(x * 0.07); g.fillStyle = `rgba(${235 - x / 6},${205 - x / 8},${130},${0.35 + v * 0.55})`; g.fillRect(x, 0, 1, h); }
+          }), transparent: true, side: T.DoubleSide, roughness: 0.6, depthWrite: false }));
+          const uv = anel.geometry.attributes.uv, pp = anel.geometry.attributes.position, v3 = new T.Vector3();
+          for (let k = 0; k < uv.count; k++) { v3.fromBufferAttribute(pp, k); uv.setXY(k, (v3.length() - raio * 1.35) / (raio * 0.9), 0.5); }
+          anel.rotation.x = -Math.PI / 2 + 0.05; eixo.add(anel);
+        }
+        let lua = null;
+        if (p.id === 'terra') {
+          lua = new T.Mesh(new T.SphereGeometry(0.28, 24, 12), S3D.mat(0xC9D3EE, { rugosidade: 0.8, verniz: 0 }));
+          S3D.contorno(lua, 0.03); pivo.add(lua);
+        }
+        const rot = S3D.rotulo(p.nome, { classe: 'escuro', aoClicar: () => selecionar(i) });
+        rot.position.y = raio + 0.5; pivo.add(rot);
+        const orbita = new T.LineLoop(new T.BufferGeometry().setFromPoints(new T.EllipseCurve(0, 0, 1, 1).getPoints(160).map((v) => new T.Vector3(v.x, 0, v.y))),
+          new T.LineBasicMaterial({ color: 0x5FA8FF, transparent: true, opacity: 0.45 }));
+        grupoOrbitas.add(orbita);
+        return { p, pivo, malha, lua, rot, orbita, raio, ang: (i * 2.39) % (Math.PI * 2) };
+      });
+
+      let escala = 'didatica';
+      function distancia(cp, i) { return escala === 'didatica' ? 6.2 + i * 3.7 + cp.raio : 6 + cp.p.a * 14; }
+      function aplicarEscala() {
+        corpos.forEach((cp, i) => { const r = distancia(cp, i); cp.r = r; cp.orbita.scale.set(r, 1, r); });
+        visaoGeral();
+      }
+
+      let diasPorSeg = 20, rodando = true, dias = 0, sel = null, seguir = true;
+      const leit = ui.leituras([
+        { id: 'dias', rotulo: 'Dias decorridos', valor: '0' }, { id: 'anos', rotulo: 'Anos terrestres', valor: '0' }]);
+      c.aoQuadro((dt, t) => {
+        const ddias = rodando ? dt * diasPorSeg : 0;
+        dias += ddias;
+        sol.rotation.y += dt * 0.1;
+        for (const cp of corpos) {
+          cp.ang += (ddias / cp.p.T) * Math.PI * 2;
+          cp.pivo.position.set(Math.cos(cp.ang) * cp.r, 0, -Math.sin(cp.ang) * cp.r);
+          const voltasPorSeg = Math.min(Math.abs((diasPorSeg * 24) / cp.p.rot), 0.6) * Math.sign(cp.p.rot);
+          if (rodando) cp.malha.rotation.y += dt * voltasPorSeg * Math.PI * 2;
+          if (cp.lua) { const a = (dias / 27.3) * Math.PI * 2; cp.lua.position.set(Math.cos(a) * (cp.raio + 0.9), 0.1, -Math.sin(a) * (cp.raio + 0.9)); }
+        }
+        if (sel != null && seguir) {
+          const alvo = corpos[sel].pivo.position;
+          const delta = alvo.clone().sub(c.controls.target);
+          c.controls.target.add(delta); c.camera.position.add(delta);
+        }
+        leit.set('dias', SQ.num(Math.floor(dias), 0)); leit.set('anos', SQ.num(dias / 365.25, 2));
+      });
+
+      // ---------- controles ----------
+      const gTempo = ui.grupo('Tempo');
+      const btPlay = ui.botao({ rotulo: '⏸ Pausar', classe: 'azul pequeno', pai: gTempo, aoClicar: () => { rodando = !rodando; btPlay.innerHTML = rodando ? '⏸ Pausar' : '▶ Continuar'; } });
+      btPlay.style.marginBottom = '10px';
+      const passos = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+      ui.slider({ rotulo: 'Velocidade', min: 0, max: passos.length - 1, passo: 1, valor: 5, pai: gTempo, formatar: (v) => `1 s = ${SQ.num(passos[v])} ${passos[v] === 1 ? 'dia' : 'dias'}`,
+        aoMudar: (v) => {
+          diasPorSeg = passos[v];
+          const pct = Math.min(100, (diasPorSeg * 10 / 365.25) * 100);
+          guia.diz(`Agora 1 segundo equivale a <b>${SQ.num(diasPorSeg)} dias</b>. Em 10 segundos a Terra percorre ${pct >= 100 ? 'mais de uma volta inteira' : SQ.num(pct, 0) + '% da órbita'}; Netuno, só ${SQ.num(Math.min(100, diasPorSeg * 10 / 59800 * 100), 2)}%.`, { chave: 'tempo' });
+        } });
+      gTempo.append(leit.el);
+
+      const gVista = ui.grupo('Vista');
+      ui.segmentado({ rotulo: 'Escala das distâncias', opcoes: [{ valor: 'didatica', rotulo: 'Didática' }, { valor: 'proporcional', rotulo: 'Proporcional' }], valor: escala, pai: gVista,
+        aoMudar: (v) => {
+          escala = v; aplicarEscala();
+          guia.diz(v === 'proporcional'
+            ? 'Distâncias <b>proporcionais</b>: 1 UA = 14 unidades. Veja como os planetas externos ficam isolados! (Os tamanhos continuam aumentados — em escala real seriam pontinhos invisíveis.)'
+            : 'Escala <b>didática</b>: as distâncias foram comprimidas para todos os planetas caberem juntos na tela.', { chave: 'escala' });
+        } });
+      ui.alternar({ rotulo: 'Mostrar órbitas', valor: true, pai: gVista, aoMudar: (v) => (grupoOrbitas.visible = v) });
+      ui.alternar({ rotulo: 'Mostrar nomes', valor: true, pai: gVista, aoMudar: (v) => { corpos.forEach((cp) => (cp.rot.visible = v)); rotSol.visible = v; } });
+      ui.alternar({ rotulo: 'Câmera segue o planeta', valor: true, pai: gVista, aoMudar: (v) => (seguir = v) });
+      ui.botao({ rotulo: 'Visão geral', classe: 'branco pequeno', pai: gVista, aoClicar: () => { sel = null; pintarFicha(); visaoGeral(); } });
+
+      const gFicha = ui.grupo('Planeta');
+      const ficha = SQ.el('div');
+      gFicha.append(ficha);
+      const rotuloAtivo = () => corpos.forEach((cp, i) => cp.rot.element.classList.toggle('ativo', i === sel));
+      function pintarFicha() {
+        rotuloAtivo();
+        if (sel == null) { ficha.innerHTML = '<p class="texto-suave mb0">Clique num planeta (ou no nome dele) para ver a ficha.</p>'; return; }
+        const p = corpos[sel].p, anos = p.T / 365.25;
+        ficha.innerHTML = `<h3 style="font-size:22px">${p.nome} <span class="chip claro">${p.tipo}</span></h3>
+          <div class="leituras">
+            <div class="leitura"><small>Diâmetro</small><b>${SQ.num(p.d, 0)} km</b></div>
+            <div class="leitura"><small>Distância do Sol</small><b>${SQ.num(p.a, 2)} UA</b></div>
+            <div class="leitura"><small>Ano (volta no Sol)</small><b>${anos < 2 ? SQ.num(p.T, 0) + ' dias' : SQ.num(anos, 1) + ' anos'}</b></div>
+            <div class="leitura"><small>Dia (rotação)</small><b>${Math.abs(p.rot) > 48 ? SQ.num(Math.abs(p.rot) / 24, 1) + ' dias' : SQ.num(Math.abs(p.rot), 1) + ' h'}${p.rot < 0 ? ' ↺' : ''}</b></div>
+            <div class="leitura"><small>Luas</small><b>${p.luas}</b></div>
+            <div class="leitura"><small>Temperatura média</small><b>${p.temp}</b></div>
+          </div><p class="miudo" style="margin:10px 0 0">${p.fato}</p>`;
+      }
+      function selecionar(i) {
+        sel = i; pintarFicha();
+        const cp = corpos[i], p = cp.p, anos = p.T / 365.25;
+        const dist = cp.raio * 7 + 3, alvo = cp.pivo.position;
+        c.voarPara([alvo.x + dist * 0.6, dist * 0.45, alvo.z + dist], [alvo.x, 0, alvo.z], 1.0);
+        const kepler = `a³ = ${SQ.num(p.a ** 3, 2)} e T² = ${SQ.num(anos ** 2, 2)}`;
+        guia.diz(`<b>${p.nome}</b> leva ${anos < 2 ? SQ.num(p.T, 0) + ' dias' : SQ.num(anos, 1) + ' anos terrestres'} para dar uma volta no Sol, a ${SQ.num(p.a, 2)} UA. ${p.id === 'terra' ? 'É a nossa referência: 1 UA e 1 ano.' : `Teste de Kepler: ${kepler} — praticamente iguais!`}`, { chave: 'sel' });
+      }
+      function visaoGeral() {
+        const lim = escala === 'didatica' ? 66 : 470;
+        c.voarPara([0, lim * 0.62, lim * 0.9], [0, 0, 0], 1.0);
+      }
+      c.escolher(() => corpos.map((cp) => cp.malha), (obj) => { if (obj) selecionar(corpos.findIndex((cp) => cp.malha === obj)); });
+      guia.contexto = () => ({ sel: sel != null ? corpos[sel].p : null, diasPorSeg, escala, dias: Math.round(dias) });
+      aplicarEscala(); pintarFicha();
+
+      function mulberry(a) { const f = () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; f.semente = a; return f; }
+      function ruido(x, y, s) {
+        const h = (i, j) => { const n = Math.sin(i * 127.1 + j * 311.7 + s * 74.7) * 43758.5453; return n - Math.floor(n); };
+        const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+        return (h(xi, yi) * (1 - u) + h(xi + 1, yi) * u) * (1 - v) + (h(xi, yi + 1) * (1 - u) + h(xi + 1, yi + 1) * u) * v;
+      }
+    },
+  });
+  </script>
+</body>
+</html>

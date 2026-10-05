@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQUEMA — esquemas e demonstrações de sistemas educacionais com IA</title>
+  <meta name="description" content="Envoltório das demonstrações SQUEMA: 35 sistemas educacionais com IA em 17 áreas, com esquemas, demos interativas 2D e 3D e biblioteca de materiais.">
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="assets/icones/lampada.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/squema.css">
+  <style>
+    .heroi { position: relative; padding: 36px 0 24px; text-align: center; color: #fff; }
+    .heroi .logo { width: min(780px, 100%); margin: 0 auto; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, .35)); }
+    .heroi h1 { color: #fff; font-size: clamp(26px, 3.6vw, 40px); margin: 6px auto 10px; max-width: 820px; text-shadow: 0 4px 0 var(--azul-escuro); }
+    .heroi p.lead { color: #DCE8FF; font-size: clamp(16px, 2vw, 19px); max-width: 720px; margin: 0 auto 22px; }
+    .heroi .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .numeros { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+    .numero { background: rgba(255, 255, 255, .1); border: 2px solid rgba(191, 216, 255, .45); border-radius: 16px; padding: 8px 16px; min-width: 120px; }
+    .numero b { display: block; font: 800 30px/1 var(--fonte-titulo); color: var(--amarelo); text-shadow: 0 3px 0 var(--amarelo-escuro); }
+    .numero span { font-size: 13px; font-weight: 800; color: #DCE8FF; }
+    .flutuantes img { position: absolute; width: clamp(56px, 7vw, 96px); pointer-events: none; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .3)); }
+    .flutuantes img:nth-child(2n) { animation-delay: -2.5s; }
+    @media (max-width: 760px) { .flutuantes { display: none; } }
+
+    .passos { grid-template-columns: repeat(4, minmax(0, 1fr)); counter-reset: passo; }
+    .passo-card { position: relative; padding-top: 26px; }
+    .passo-card::before { counter-increment: passo; content: counter(passo); position: absolute; top: -18px; left: 18px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--amarelo); border: 3px solid var(--tinta); box-shadow: 0 3px 0 var(--amarelo-escuro); font: 800 20px/1 var(--fonte-titulo); color: var(--tinta); }
+    .passo-card img { width: 72px; height: 72px; object-fit: contain; margin-bottom: 6px; }
+    .passo-card p { color: var(--texto-suave); font-size: 15px; margin: 0; }
+    @media (max-width: 960px) { .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; } }
+    @media (max-width: 560px) { .passos { grid-template-columns: 1fr; } }
+
+    .destaque { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .destaque .capa { aspect-ratio: 16 / 10; background: linear-gradient(180deg, #DFF1FF, #F6FBFF); border-bottom: 3px solid var(--tinta); position: relative; overflow: hidden; }
+    .destaque .capa img.foto { width: 100%; height: 100%; object-fit: cover; }
+    .destaque .capa img.ic { position: absolute; inset: 0; margin: auto; width: 96px; height: 96px; object-fit: contain; }
+    .destaque .corpo { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .destaque .corpo p { color: var(--texto-suave); font-size: 14px; margin: 0; }
+    .destaque h3 { margin: 0; }
+
+    .estrutura { display: grid; grid-template-columns: 1fr 1.1fr; gap: 24px; align-items: start; }
+    .arvore { font: 700 14px/1.75 var(--fonte-mono); background: var(--tinta); color: #CFE0FF; border-radius: 16px; padding: 16px 18px; border: 3px solid #2B3D8C; overflow-x: auto; white-space: pre; margin: 0; }
+    .arvore b { color: var(--amarelo); font-weight: 700; } .arvore i { color: #8FC8FF; font-style: normal; }
+    @media (max-width: 860px) { .estrutura { grid-template-columns: 1fr; } }
+
+    .filtro-mapa { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .filtro-mapa input { max-width: 320px; }
+    .filtro-mapa select { max-width: 240px; }
+    .tabela td:first-child { white-space: nowrap; }
+  </style>
+</head>
+<body data-raiz="">
+  <noscript><p style="background:#fff;padding:16px;margin:0">Ative o JavaScript para navegar pelas demonstrações SQUEMA.</p></noscript>
+  <script src="js/catalogo.js"></script>
+  <script src="js/squema.js"></script>
+  <script>
+  (function () {
+    const { el, esc, estrelas, iconeArea, dados } = SQ;
+    const pagina = SQ.moldura({ ativo: 'inicio' });
+    const prontas = dados.SISTEMAS.filter((s) => s.demo);
+    const n3d = prontas.filter((s) => (s.tags || []).includes('3D')).length;
+
+    // ---------- herói ----------
+    pagina.insertAdjacentHTML('beforeend', `
+      <section class="heroi conteudo">
+        <div class="flutuantes" aria-hidden="true">
+          <img class="flutuar" src="assets/icones/atomo.webp" alt="" style="left:0;top:40px">
+          <img class="flutuar" src="assets/icones/frasco-verde.webp" alt="" style="left:4%;top:300px">
+          <img class="flutuar" src="assets/icones/livros.webp" alt="" style="left:-2%;top:470px">
+          <img class="flutuar" src="assets/icones/planeta.webp" alt="" style="right:0;top:30px">
+          <img class="flutuar" src="assets/icones/grafico.webp" alt="" style="right:3%;top:300px">
+          <img class="flutuar" src="assets/icones/calculadora.webp" alt="" style="right:-1%;top:480px">
+        </div>
+        <img class="logo" src="assets/marca/logo-hero.webp" alt="SQUEMA — mascote apontando para os ícones das disciplinas" width="1400" height="585">
+        <h1>Esquemas e demonstrações para aprender com IA</h1>
+        <p class="lead">Cada sistema do mapa educacional vira um caso: o esquema mostra o que visualizar e qual é o papel da IA; a demonstração deixa o aluno mexer, observar e perguntar.</p>
+        <div class="ctas">
+          <a class="botao" href="#areas">Explorar as áreas</a>
+          <a class="botao azul" href="#comece">Comece por aqui</a>
+          <a class="botao branco" href="biblioteca.html">Biblioteca de materiais</a>
+        </div>
+        <div class="numeros">
+          <div class="numero"><b>${dados.AREAS.length}</b><span>áreas</span></div>
+          <div class="numero"><b>${dados.SISTEMAS.length}</b><span>sistemas mapeados</span></div>
+          <div class="numero"><b>${prontas.length}</b><span>demos prontas</span></div>
+          <div class="numero"><b>${n3d}</b><span>em 3D</span></div>
+        </div>
+      </section>`);
+
+    // ---------- comece por aqui (arcabouço) ----------
+    pagina.insertAdjacentHTML('beforeend', `
+      <section class="secao conteudo" id="comece">
+        <div class="secao-titulo"><div><h2>Comece por aqui</h2><p>O arcabouço é o mesmo para todos os casos — do esquema à sala de aula.</p></div></div>
+        <div class="grade passos">
+          <div class="bloco passo-card"><img src="assets/icones/lupa.webp" alt=""><h3>Escolha a área</h3><p>${dados.AREAS.length} áreas com ${dados.SISTEMAS.length} sistemas. Cada área reúne seus casos num esquema geral.</p></div>
+          <div class="bloco passo-card"><img src="assets/icones/pergaminho.webp" alt=""><h3>Leia o esquema</h3><p>O que o aluno vê, o que a IA faz e o que se aprende — com o potencial visual de cada caso.</p></div>
+          <div class="bloco passo-card"><img src="assets/icones/notebook.webp" alt=""><h3>Abra a demonstração</h3><p>Mexa nos controles, gire a cena 3D, teste hipóteses. Tudo roda no navegador, inclusive offline.</p></div>
+          <div class="bloco passo-card"><img src="assets/icones/lampada.webp" alt=""><h3>Pergunte ao guia</h3><p>O mascote narra o que mudou e responde dúvidas. Use as sugestões de atividade para levar à turma.</p></div>
+        </div>
+        <div class="bloco" style="margin-top:28px">
+          <div class="flex entre"><h3 class="mb0">Estrutura de cada caso</h3><span class="miudo texto-suave">exemplo: Átomo 3D (Química)</span></div>
+          <p class="texto-suave" style="margin:6px 0 14px">Todo esquema segue quatro etapas. É o mesmo fluxo que aparece no fim de cada demonstração.</p>
+          ${SQ.fluxoHTML(dados.sistemaPorId['atomo-3d'], 'Escolhe um elemento, liga camadas e orbitais')}
+        </div>
+      </section>`);
+
+    // ---------- áreas ----------
+    const secAreas = el('section', { class: 'secao conteudo', id: 'areas' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Áreas</h2><p>Escolha uma área para ver o esquema geral e os casos com suas demonstrações.</p></div>' }));
+    const grade = el('div', { class: 'grade grade-areas' });
+    for (const a of dados.AREAS) {
+      const sis = dados.sistemasDaArea(a.id), dem = sis.filter((s) => s.demo).length;
+      grade.append(el('a', { class: 'bloco bloco-link card-area', href: `area.html?a=${a.id}`, style: { '--cor-area': a.cor }, html: `
+        <img class="icone-area" src="${iconeArea(a)}" alt="">
+        <h3>${esc(a.nome)}</h3>
+        <p class="miudo texto-suave mb0">${esc(a.resumo)}</p>
+        <div class="contagem"><span><b>${sis.length}</b> ${sis.length > 1 ? 'sistemas' : 'sistema'}</span><span>·</span><span><b>${dem}</b> ${dem === 1 ? 'demo' : 'demos'}</span></div>` }));
+    }
+    secAreas.append(grade); pagina.append(secAreas);
+
+    // ---------- destaques 3D ----------
+    const destaques = ['universo-3d', 'terra-interativa', 'robo-virtual', 'ecossistema-vivo', 'atomo-3d', 'mundo-interativo'].map((id) => dados.sistemaPorId[id]);
+    const secDest = el('section', { class: 'secao conteudo', id: 'destaques' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Destaques em 3D</h2><p>Cenas tridimensionais com modelos livres recoloridos para a identidade SQUEMA.</p></div><a class="botao branco pequeno" href="biblioteca.html#demos">Ver todas as demos</a>' }));
+    const gDest = el('div', { class: 'grade grade-cards' });
+    for (const s of destaques) {
+      const a = dados.areaPorId[s.area];
+      gDest.append(el('a', { class: 'bloco bloco-link destaque', href: s.demo, style: { '--cor-area': a.cor }, html: `
+        <div class="capa"><img class="ic" src="${iconeArea(a)}" alt=""><img class="foto" src="assets/capturas/${s.id}.webp" alt="" loading="lazy" onerror="this.remove()"></div>
+        <div class="corpo"><div class="flex entre"><span class="chip">${esc(a.nome)}</span>${estrelas(s.potencial)}</div><h3>${esc(s.nome)}</h3><p>${esc(s.resumo)}</p></div>` }));
+    }
+    secDest.append(gDest); pagina.append(secDest);
+
+    // ---------- onde ficam os materiais ----------
+    pagina.insertAdjacentHTML('beforeend', `
+      <section class="secao conteudo" id="materiais">
+        <div class="secao-titulo"><div><h2>Onde ficam os materiais</h2><p>Tudo o que as demonstrações usam está nesta pasta — sem servidor, sem conta, sem instalação.</p></div><a class="botao pequeno" href="biblioteca.html">Abrir a biblioteca</a></div>
+        <div class="estrutura">
+          <pre class="arvore" aria-label="Estrutura de pastas">squema/
+├─ <b>index.html</b>          <i>← este envoltório</i>
+├─ <b>area.html</b>           <i>esquema de cada área (?a=…)</i>
+├─ <b>biblioteca.html</b>     <i>repositório de materiais</i>
+├─ demos/             <i>${prontas.length} demonstrações interativas</i>
+├─ assets/
+│  ├─ marca/          <i>logotipos, mascote, avatar</i>
+│  ├─ icones/         <i>${26} ícones da identidade</i>
+│  ├─ modelos/        <i>modelos 3D livres (GLB embutido)</i>
+│  ├─ dados/          <i>países, moléculas</i>
+│  └─ capturas/       <i>miniaturas das demos</i>
+├─ css/ · js/         <i>visual e código compartilhados</i>
+├─ vendor/            <i>three.js (MIT)</i>
+├─ docs/              <i>mapa original dos sistemas</i>
+└─ ferramentas/       <i>scripts que geram assets e vendor</i></pre>
+          <div class="grade" style="grid-template-columns:1fr 1fr">
+            <a class="bloco bloco-link" href="biblioteca.html#demos"><img src="assets/icones/notebook.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Demonstrações</h3><p class="miudo texto-suave mb0">Todas as demos com filtro por área e busca.</p></a>
+            <a class="bloco bloco-link" href="biblioteca.html#modelos"><img src="assets/icones/engrenagem.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Modelos 3D</h3><p class="miudo texto-suave mb0">Visualize e baixe os GLB recoloridos.</p></a>
+            <a class="bloco bloco-link" href="biblioteca.html#marca"><img src="assets/icones/galeria.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Marca e ícones</h3><p class="miudo texto-suave mb0">Logotipos, mascote, ícones e paleta.</p></a>
+            <a class="bloco bloco-link" href="biblioteca.html#esquemas"><img src="assets/icones/pergaminho.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Esquemas</h3><p class="miudo texto-suave mb0">Os ${dados.SISTEMAS.length} casos, inclusive os roteiros a construir.</p></a>
+          </div>
+        </div>
+      </section>`);
+
+    // ---------- mapa completo ----------
+    const secMapa = el('section', { class: 'secao conteudo', id: 'mapa' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Mapa completo</h2><p>Os 35 sistemas do documento original, com o status de cada demonstração.</p></div><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Documento original (.md)</a>' }));
+    const busca = el('input', { type: 'text', placeholder: 'Buscar sistema, visualização ou papel da IA…', 'aria-label': 'Buscar no mapa' });
+    const filtroArea = el('select', { 'aria-label': 'Filtrar por área' }, el('option', { value: '' }, 'Todas as áreas'), ...dados.AREAS.map((a) => el('option', { value: a.id }, a.nome)));
+    const corpo = el('tbody');
+    const blocoMapa = el('div', { class: 'bloco' }, el('div', { class: 'filtro-mapa' }, busca, filtroArea),
+      el('div', { class: 'tabela-wrap' }, el('table', { class: 'tabela' },
+        el('thead', { html: '<tr><th>Disciplina</th><th>Sistema</th><th>O que visualizar</th><th>Papel da IA</th><th>Potencial</th><th>Status</th></tr>' }), corpo)));
+    function pintarMapa() {
+      const q = SQ.semAcento(busca.value), fa = filtroArea.value;
+      corpo.innerHTML = dados.SISTEMAS.filter((s) => (!fa || s.area === fa) && (!q || SQ.semAcento(`${s.nome} ${s.visualizar} ${s.ia} ${dados.areaPorId[s.area].nome}`).includes(q))).map((s) => `
+        <tr><td><a href="area.html?a=${s.area}">${esc(dados.areaPorId[s.area].nome)}</a></td><td><b>${esc(s.nome)}</b></td><td>${esc(s.visualizar)}</td><td>${esc(s.ia)}</td><td>${estrelas(s.potencial)}</td>
+        <td>${s.demo ? `<a class="selo-status pronta" href="${s.demo}">● Abrir demo</a>` : `<a class="selo-status roteiro" href="area.html?a=${s.area}#${s.id}">◐ Roteiro</a>`}</td></tr>`).join('') ||
+        '<tr><td colspan="6">Nenhum sistema encontrado.</td></tr>';
+    }
+    busca.addEventListener('input', pintarMapa); filtroArea.addEventListener('change', pintarMapa); pintarMapa();
+    secMapa.append(blocoMapa); pagina.append(secMapa);
+  })();
+  </script>
+</body>
+</html>

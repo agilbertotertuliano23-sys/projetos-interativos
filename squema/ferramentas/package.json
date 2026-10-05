@@ -1,0 +1,20 @@
+{
+  "name": "squema-ferramentas",
+  "private": true,
+  "type": "module",
+  "description": "Scripts que geram os arquivos de squema/vendor e squema/assets. Não são necessários para usar o site.",
+  "scripts": {
+    "three": "node construir-three.mjs",
+    "modelos": "node preparar-modelos.mjs",
+    "dados": "node preparar-dados.mjs",
+    "tudo": "npm run three && npm run modelos && npm run dados"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.2.1",
+    "@gltf-transform/functions": "^4.2.1",
+    "@gltf-transform/extensions": "^4.2.1",
+    "esbuild": "^0.25.0",
+    "pngjs": "^7.0.0",
+    "three": "^0.180.0"
+  }
+}

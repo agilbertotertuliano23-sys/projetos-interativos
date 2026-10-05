@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terra Interativa — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/globo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .legenda-mapa { display: flex; flex-direction: column; gap: 3px; }
+    .legenda-mapa i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--tinta); vertical-align: -2px; margin-right: 6px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script src="../assets/dados/mundo.js"></script>
+  <script>
+  const M = window.SQUEMA_MUNDO, Q = M.escala;
+  const PAISES = M.paises.map((p) => {
+    const aneis = p.an.map((a) => { const r = new Float32Array(a.length); for (let i = 0; i < a.length; i++) r[i] = a[i] / Q; return r; });
+    let x0 = 999, x1 = -999, y0 = 999, y1 = -999;
+    for (const a of aneis) for (let i = 0; i < a.length; i += 2) { x0 = Math.min(x0, a[i]); x1 = Math.max(x1, a[i]); y0 = Math.min(y0, a[i + 1]); y1 = Math.max(y1, a[i + 1]); }
+    return { ...p, aneis, caixa: [x0, y0, x1, y1] };
+  });
+  const POP_MUNDO = PAISES.reduce((s, p) => s + (p.pop > 0 ? p.pop : 0), 0);
+  const CONT_COR = { 'América do Norte': '#FFC21A', 'América do Sul': '#36C04A', Europa: '#8B3DFF', 'África': '#FF9416', 'Ásia': '#FF6B8A', Oceania: '#C98B4E', 'Antártida': '#F4F7FF', 'Ilhas oceânicas': '#BFE8FF' };
+  const RENDA_COR = { 'Alta renda (OCDE)': '#1E8A30', 'Alta renda': '#36C04A', 'Renda média-alta': '#FFC21A', 'Renda média-baixa': '#FF9416', 'Baixa renda': '#EE3B45' };
+  const fmtPop = (n) => n >= 1e9 ? SQ.num(n / 1e9, 2) + ' bilhões' : n >= 1e6 ? SQ.num(n / 1e6, 1) + ' milhões' : SQ.num(n, 0);
+  const fmtPib = (mi) => mi >= 1e6 ? 'US$ ' + SQ.num(mi / 1e6, 2) + ' tri' : 'US$ ' + SQ.num(mi / 1e3, 1) + ' bi';
+  const contar = (cont) => PAISES.filter((p) => p.c === cont).length;
+
+  SQ.demo('terra-interativa', {
+    fundo: 'espaco',
+    dica: 'Arraste para girar · role para aproximar · clique num país',
+    sala: ['Escolha dois países do mesmo continente e compare população e PIB per capita.', 'Ligue a camada de renda e discuta padrões regionais (e as exceções).', 'Use a grade para localizar países cortados pelo Equador ou pelos trópicos.'],
+    comoIA: 'Ao clicar num país, o guia recebe nome, continente, população, PIB e faixa de renda. Uma IA conectada pode responder perguntas abertas sobre a região selecionada usando esses dados como base, o que reduz respostas inventadas.',
+    guia: {
+      ola: 'Este globo foi desenhado com dados abertos do Natural Earth. Clique em qualquer país para ver os dados — ou busque pelo nome.',
+      perguntas: [
+        { p: 'Qual o país mais populoso?', chaves: ['populoso', 'mais gente', 'populacao', 'maior populacao'], r: () => { const o = [...PAISES].sort((a, b) => b.pop - a.pop); return `Nos dados (estimativas de ${o[0].popAno}), <b>${o[0].n}</b> (${fmtPop(o[0].pop)}) e <b>${o[1].n}</b> (${fmtPop(o[1].pop)}) lideram. Segundo a ONU, a Índia passou a China em 2023.`; } },
+        { p: 'O que é PIB per capita?', chaves: ['per capita', 'pib', 'renda'], r: 'É o PIB (tudo o que um país produz em um ano) dividido pela população. Ajuda a comparar países de tamanhos diferentes, mas não mostra como a renda está distribuída.' },
+        { p: 'O que são latitude e longitude?', chaves: ['latitude', 'longitude', 'coordenada', 'grade'], r: 'Latitude mede o ângulo ao norte ou ao sul do Equador (0° a 90°). Longitude mede o ângulo a leste ou oeste do meridiano de Greenwich (0° a 180°). Ligue a <b>grade</b> para ver as linhas.' },
+        { p: 'Quantos países há na América do Sul?', chaves: ['quantos', 'america do sul'], r: () => `Neste mapa há <b>${contar('América do Sul')}</b> territórios na América do Sul (o conjunto inclui a Guiana Francesa e as Malvinas).` },
+        { p: 'Por que a Antártida não tem população?', chaves: ['antartida', 'gelo', 'polo'], r: 'O frio extremo e o gelo permanente impedem a ocupação fixa. Lá vivem só pesquisadores, em bases científicas, protegidas pelo Tratado da Antártida.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE, R = 5;
+      const c = S3D.cena(palco, { camera: [0, 4, 15], distancia: [7, 30], sombras: false, hemi: 1.1, sol: 1.6, contra: 0.9, solPos: [8, 6, 10], ambiente: 0.5, pan: false });
+      c.controls.rotateSpeed = 0.6;
+
+      // ---------- textura do globo ----------
+      const W = 2048, H = 1024;
+      const tela = document.createElement('canvas'); tela.width = W; tela.height = H;
+      const g = tela.getContext('2d');
+      const tex = new T.CanvasTexture(tela); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 8;
+      let camada = 'politico', sel = null, passa = null;
+      function corPais(p) {
+        if (p === sel) return '#FFC21A';
+        if (camada === 'continentes') return CONT_COR[p.c] || '#36C04A';
+        if (camada === 'renda') return RENDA_COR[p.renda] || '#C9D3EE';
+        if (camada === 'populacao') {
+          if (!(p.pop > 0)) return '#C9D3EE';
+          const k = Math.min(1, Math.max(0, (Math.log10(p.pop) - 5) / 4.2));
+          const a = [255, 236, 160], b = [255, 148, 22], d = [214, 40, 57];
+          const m = k < 0.5 ? a.map((v, i) => v + (b[i] - v) * k * 2) : b.map((v, i) => v + (d[i] - v) * (k - 0.5) * 2);
+          return `rgb(${m.map(Math.round).join(',')})`;
+        }
+        return p.c === 'Antártida' ? '#F4F7FF' : '#36C04A';
+      }
+      function desenhar() {
+        const oc = g.createLinearGradient(0, 0, 0, H);
+        oc.addColorStop(0, '#2A6BF2'); oc.addColorStop(0.5, '#1F5BE0'); oc.addColorStop(1, '#2A6BF2');
+        g.fillStyle = oc; g.fillRect(0, 0, W, H);
+        g.lineJoin = 'round';
+        for (const p of PAISES) {
+          g.beginPath();
+          for (const a of p.aneis) {
+            for (let i = 0; i < a.length; i += 2) {
+              const x = ((a[i] + 180) / 360) * W, y = ((90 - a[i + 1]) / 180) * H;
+              i ? g.lineTo(x, y) : g.moveTo(x, y);
+            }
+            g.closePath();
+          }
+          g.fillStyle = p === passa && p !== sel ? '#7FE08A' : corPais(p);
+          g.fill('evenodd');
+          g.lineWidth = p === sel ? 3 : 1.4; g.strokeStyle = p === sel ? '#0B1438' : 'rgba(11,20,56,.55)'; g.stroke();
+        }
+        tex.needsUpdate = true;
+      }
+
+      const globo = new T.Mesh(new T.SphereGeometry(R, 128, 64), S3D.mat(0xffffff, { rugosidade: 0.5, verniz: 0.55 }));
+      globo.material.map = tex;
+      c.scene.add(globo);
+      S3D.contorno(globo, 0.07);
+      const atmosfera = new T.Sprite(new T.SpriteMaterial({ map: S3D.texturaCanvas(256, 256, (gg, w) => {
+        const gr = gg.createRadialGradient(w / 2, w / 2, w * 0.36, w / 2, w / 2, w / 2);
+        gr.addColorStop(0, 'rgba(110,190,255,.55)'); gr.addColorStop(1, 'rgba(110,190,255,0)'); gg.fillStyle = gr; gg.fillRect(0, 0, w, w);
+      }), blending: T.AdditiveBlending, depthWrite: false }));
+      atmosfera.scale.set(R * 2.75, R * 2.75, 1); atmosfera.renderOrder = -1; c.scene.add(atmosfera);
+
+      // anel orbital, eco do logotipo
+      const anel = new T.Mesh(new T.TorusGeometry(R * 1.32, 0.05, 12, 160), new T.MeshBasicMaterial({ color: 0x8FC8FF }));
+      anel.rotation.set(Math.PI / 2.3, 0.25, 0); c.scene.add(anel);
+      const satelite = new T.Mesh(new T.SphereGeometry(0.22, 20, 12), S3D.mat(0x2BB4F5));
+      S3D.contorno(satelite, 0.03); anel.add(satelite);
+
+      // estrelas
+      const pos = new Float32Array(1500 * 3);
+      for (let i = 0; i < 1500; i++) { const v = new T.Vector3().randomDirection().multiplyScalar(120 + Math.random() * 60); pos.set([v.x, v.y, v.z], i * 3); }
+      const ge = new T.BufferGeometry(); ge.setAttribute('position', new T.BufferAttribute(pos, 3));
+      c.scene.add(new T.Points(ge, new T.PointsMaterial({ color: 0xCFE0FF, size: 2, sizeAttenuation: false })));
+
+      // ---------- grade geográfica ----------
+      const vetor = (lon, lat, r = R) => {
+        const phi = ((lon + 180) / 360) * Math.PI * 2, th = ((90 - lat) / 180) * Math.PI;
+        return new T.Vector3(-Math.cos(phi) * Math.sin(th) * r, Math.cos(th) * r, Math.sin(phi) * Math.sin(th) * r);
+      };
+      const grade = new T.Group(); grade.visible = false; globo.add(grade);
+      const linha = (pts, cor, op = 0.6) => new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: cor, transparent: true, opacity: op }));
+      for (let lat = -60; lat <= 60; lat += 30) grade.add(linha(Array.from({ length: 181 }, (_, i) => vetor(i * 2 - 180, lat, R * 1.004)), lat === 0 ? 0xFFC21A : 0xffffff, lat === 0 ? 1 : 0.45));
+      for (const [lat, nome] of [[23.44, 'Trópico de Câncer'], [-23.44, 'Trópico de Capricórnio'], [66.56, 'Círculo Polar Ártico'], [-66.56, 'Círculo Polar Antártico']]) {
+        const l = linha(Array.from({ length: 181 }, (_, i) => vetor(i * 2 - 180, lat, R * 1.004)), 0xFF9416, 0.9); grade.add(l);
+        const r = S3D.rotulo(nome, { classe: 'escuro' }); r.position.copy(vetor(-30, lat, R * 1.02)); grade.add(r);
+      }
+      for (let lon = -180; lon < 180; lon += 30) grade.add(linha(Array.from({ length: 91 }, (_, i) => vetor(lon, i * 2 - 90, R * 1.004)), lon === 0 ? 0xFFC21A : 0xffffff, lon === 0 ? 1 : 0.45));
+      const rEq = S3D.rotulo('Equador 0°', { classe: 'ativo' }); rEq.position.copy(vetor(-10, 0, R * 1.02)); grade.add(rEq);
+      const rGr = S3D.rotulo('Greenwich 0°', { classe: 'ativo' }); rGr.position.copy(vetor(0, 30, R * 1.02)); grade.add(rGr);
+
+      const rotCont = new T.Group(); rotCont.visible = false; globo.add(rotCont);
+      for (const [n, lat, lon] of [['América do Norte', 48, -100], ['América do Sul', -15, -60], ['Europa', 52, 15], ['África', 4, 20], ['Ásia', 45, 90], ['Oceania', -25, 135], ['Antártida', -80, 30]]) {
+        const r = S3D.rotulo(n); r.position.copy(vetor(lon, lat, R * 1.03)); rotCont.add(r);
+      }
+
+      // alfinete (como o do ícone de mapa)
+      const pino = new T.Group();
+      const cabeca = new T.Mesh(new T.SphereGeometry(0.24, 24, 16), S3D.mat(0xEE3B45)); cabeca.position.y = 0.62;
+      const haste = new T.Mesh(new T.ConeGeometry(0.13, 0.5, 18), S3D.mat(0xEE3B45)); haste.rotation.x = Math.PI; haste.position.y = 0.3;
+      const furo = new T.Mesh(new T.SphereGeometry(0.09, 12, 8), S3D.mat(0xffffff)); furo.position.set(0, 0.66, 0.18);
+      pino.add(cabeca, haste, furo); S3D.contorno(pino, 0.025); pino.visible = false; globo.add(pino);
+      const rotPino = S3D.rotulo(''); rotPino.position.y = 1.0; pino.add(rotPino);
+
+      // ---------- interação ----------
+      function noPonto(lon, lat) {
+        for (const p of PAISES) {
+          const [x0, y0, x1, y1] = p.caixa;
+          if (lon < x0 || lon > x1 || lat < y0 || lat > y1) continue;
+          let dentro = false;
+          for (const a of p.aneis) for (let i = 0, j = a.length - 2; i < a.length; j = i, i += 2) {
+            const xi = a[i], yi = a[i + 1], xj = a[j], yj = a[j + 1];
+            if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) dentro = !dentro;
+          }
+          if (dentro) return p;
+        }
+        return null;
+      }
+      const lonlat = (hit) => [hit.uv.x * 360 - 180, hit.uv.y * 180 - 90];
+      let ultimo = null;
+      function selecionar(p, voar = true) {
+        if (p && sel && p !== sel) ultimo = sel;
+        sel = p; desenhar(); pintarFicha();
+        if (!p) { pino.visible = false; return; }
+        const v = vetor(p.lx, p.ly);
+        pino.visible = true; pino.position.copy(v); pino.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), v.clone().normalize());
+        rotPino.element.textContent = p.n;
+        if (voar) {
+          const dir = v.clone().normalize().applyQuaternion(globo.quaternion);
+          const d = c.camera.position.length();
+          c.voarPara(dir.multiplyScalar(Math.max(11, Math.min(d, 16))).toArray(), [0, 0, 0], 1.0);
+        }
+        const pct = (p.pop / POP_MUNDO) * 100;
+        let txt = `<b>${p.n}</b> fica em ${p.s === p.c ? p.c : `${p.s} (${p.c})`}. `;
+        if (p.pop > 0) txt += `População estimada em ${fmtPop(p.pop)} (${p.popAno}) — ${pct < 0.1 ? 'menos de 0,1%' : SQ.num(pct, 1) + '%'} da população mundial. `;
+        if (p.pib > 0 && p.pop > 0) txt += `PIB per capita aproximado: US$ ${SQ.num((p.pib * 1e6) / p.pop, 0)}.`;
+        if (ultimo && ultimo.pop > 0 && p.pop > 0) {
+          const k = p.pop / ultimo.pop;
+          txt += ` Comparando com ${ultimo.n}: ${k >= 1 ? SQ.num(k, 1) + ' vezes mais' : SQ.num(1 / k, 1) + ' vezes menos'} habitantes.`;
+        }
+        guia.diz(txt, { chave: 'pais' });
+      }
+      c.escolher([globo], (obj, hit) => {
+        if (!obj) return;
+        const [lon, lat] = lonlat(hit); const p = noPonto(lon, lat);
+        if (p) selecionar(p); else guia.diz(`Oceano! Latitude ${SQ.num(Math.abs(lat), 1)}° ${lat >= 0 ? 'N' : 'S'}, longitude ${SQ.num(Math.abs(lon), 1)}° ${lon >= 0 ? 'L' : 'O'}.`, { chave: 'pais' });
+      }, {
+        aoPassar: (obj, hit) => {
+          const p = obj ? noPonto(...lonlat(hit)) : null;
+          if (p !== passa) { passa = p; desenhar(); hud.textContent = p ? `${p.n} · ${p.c}` : 'Passe o mouse sobre um país'; }
+        },
+      });
+      let girar = true;
+      c.aoQuadro((dt) => {
+        if (girar && !sel) globo.rotation.y += dt * 0.05;
+        anel.rotation.z += dt * 0.25;
+        satelite.position.set(Math.cos(performance.now() / 1400) * R * 1.32, Math.sin(performance.now() / 1400) * R * 1.32, 0);
+      });
+      c.controls.addEventListener('start', () => (girar = false));
+      // rótulos do outro lado do globo ficam escondidos
+      const v1 = new T.Vector3(), v2 = new T.Vector3();
+      c.aoQuadro(() => {
+        for (const grupo of [grade, rotCont, pino]) grupo.traverse((o) => {
+          if (!o.isCSS2DObject) return;
+          o.getWorldPosition(v1); v2.copy(c.camera.position).normalize();
+          o.element.style.opacity = v1.normalize().dot(v2) > 0.15 ? '1' : '0';
+        });
+      });
+
+      // ---------- HUD e controles ----------
+      const hudBox = SQ.el('div', { class: 'palco-hud' }); const hud = SQ.el('div', { class: 'hud-caixa' }, 'Passe o mouse sobre um país');
+      const legenda = SQ.el('div', { class: 'hud-caixa legenda-mapa', hidden: true });
+      hudBox.append(hud, legenda); palco.append(hudBox);
+
+      const gBusca = ui.grupo('Buscar país');
+      const lista = SQ.el('datalist', { id: 'lista-paises' }, ...PAISES.map((p) => SQ.el('option', { value: p.n })));
+      const busca = SQ.el('input', { type: 'text', list: 'lista-paises', placeholder: 'Ex.: Brasil, Japão, Quênia…', 'aria-label': 'Nome do país' });
+      busca.addEventListener('change', () => {
+        const q = SQ.semAcento(busca.value.trim());
+        const p = PAISES.find((x) => SQ.semAcento(x.n) === q) || PAISES.find((x) => SQ.semAcento(x.n).startsWith(q) || SQ.semAcento(x.en).startsWith(q));
+        if (p) { girar = false; selecionar(p); } else guia.diz(`Não encontrei "${SQ.esc(busca.value)}". Tente o nome em português.`, { tipo: 'alerta' });
+      });
+      gBusca.append(busca, lista);
+
+      const gCam = ui.grupo('Camadas');
+      ui.segmentado({ rotulo: 'Colorir países por', opcoes: [{ valor: 'politico', rotulo: 'Terra' }, { valor: 'continentes', rotulo: 'Continente' }, { valor: 'populacao', rotulo: 'População' }, { valor: 'renda', rotulo: 'Renda' }], valor: camada, pai: gCam,
+        aoMudar: (v) => {
+          camada = v; desenhar();
+          const itens = v === 'continentes' ? Object.entries(CONT_COR).slice(0, 7) : v === 'renda' ? Object.entries(RENDA_COR) : v === 'populacao' ? [['menos de 1 milhão', 'rgb(255,236,160)'], ['~30 milhões', 'rgb(255,148,22)'], ['mais de 1 bilhão', 'rgb(214,40,57)']] : [];
+          legenda.hidden = !itens.length;
+          legenda.innerHTML = itens.map(([n, cor]) => `<span><i style="background:${cor}"></i>${n}</span>`).join('');
+          const msg = { politico: 'Visão física simples: terras emersas em verde, oceanos em azul — como o globo do logotipo.', continentes: 'Cada continente com uma cor da paleta. Repare em países transcontinentais, como Rússia e Turquia.', populacao: 'Quanto mais escuro, mais habitantes (escala logarítmica: cada faixa multiplica por 10).', renda: 'Classificação de renda do Banco Mundial presente no Natural Earth.' };
+          guia.diz(msg[v], { chave: 'camada' });
+        } });
+      ui.alternar({ rotulo: 'Grade (latitude e longitude)', valor: false, pai: gCam, aoMudar: (v) => { grade.visible = v; if (v) guia.diz('Linhas a cada 30°. Em amarelo, o <b>Equador</b> e o meridiano de <b>Greenwich</b>; em laranja, trópicos e círculos polares.', { chave: 'camada' }); } });
+      ui.alternar({ rotulo: 'Nomes dos continentes', valor: false, pai: gCam, aoMudar: (v) => (rotCont.visible = v) });
+      ui.alternar({ rotulo: 'Anel orbital', valor: true, pai: gCam, aoMudar: (v) => (anel.visible = v) });
+
+      const gFicha = ui.grupo('País selecionado');
+      const ficha = SQ.el('div'); gFicha.append(ficha);
+      function pintarFicha() {
+        if (!sel) { ficha.innerHTML = '<p class="texto-suave mb0">Nenhum país selecionado.</p>'; return; }
+        const p = sel;
+        ficha.innerHTML = `<h3 style="font-size:22px">${SQ.esc(p.n)}</h3><p class="miudo texto-suave" style="margin-top:-4px">${SQ.esc(p.en)}${p.a2 ? ' · ' + p.a2 : ''}</p>
+          <div class="leituras">
+            <div class="leitura"><small>Continente</small><b>${p.c}</b></div>
+            <div class="leitura"><small>Sub-região</small><b>${p.s}</b></div>
+            <div class="leitura"><small>População (${p.popAno})</small><b>${p.pop > 0 ? fmtPop(p.pop) : '—'}</b></div>
+            <div class="leitura"><small>PIB (${p.pibAno})</small><b>${p.pib > 0 ? fmtPib(p.pib) : '—'}</b></div>
+            <div class="leitura"><small>PIB per capita</small><b>${p.pib > 0 && p.pop > 0 ? 'US$ ' + SQ.num((p.pib * 1e6) / p.pop, 0) : '—'}</b></div>
+            <div class="leitura"><small>Coordenadas</small><b>${SQ.num(Math.abs(p.ly), 1)}° ${p.ly >= 0 ? 'N' : 'S'}, ${SQ.num(Math.abs(p.lx), 1)}° ${p.lx >= 0 ? 'L' : 'O'}</b></div>
+          </div>${p.renda ? `<p class="miudo" style="margin:10px 0 0">Faixa de renda: <b>${p.renda}</b></p>` : ''}
+          <div class="linha-botoes" style="margin-top:10px"><button class="botao branco pequeno" type="button" id="limpar">Limpar seleção</button></div>`;
+        ficha.querySelector('#limpar').addEventListener('click', () => selecionar(null));
+      }
+      guia.contexto = () => (sel ? { pais: sel.n, continente: sel.c, subregiao: sel.s, populacao: sel.pop, pib_milhoes_usd: sel.pib, renda: sel.renda, camada } : { camada });
+      desenhar(); pintarFicha();
+    },
+  });
+  </script>
+</body>
+</html>

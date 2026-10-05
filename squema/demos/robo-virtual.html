@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robô Virtual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/engrenagem.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .paleta-blocos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .paleta-blocos .botao { font-size: 13px; padding: 6px 6px; min-height: 40px; }
+    .programa { display: flex; flex-wrap: wrap; gap: 6px; min-height: 54px; padding: 8px; border: 2px dashed var(--linha); border-radius: 14px; background: var(--nevoa); margin: 10px 0; }
+    .programa:empty::before { content: "Seu programa aparece aqui"; color: var(--texto-suave); font-size: 13px; font-weight: 800; align-self: center; }
+    .bloco-cmd { display: inline-flex; align-items: center; gap: 4px; border: 2px solid var(--tinta); border-radius: 10px; padding: 3px 4px 3px 9px; font-weight: 900; font-size: 13px; color: #fff; box-shadow: 0 3px 0 rgba(11, 20, 56, .35); }
+    .bloco-cmd .vezes { background: rgba(255, 255, 255, .25); border: 0; border-radius: 6px; color: #fff; font-weight: 900; padding: 1px 6px; font-size: 12px; }
+    .bloco-cmd .tirar { background: none; border: 0; color: #fff; opacity: .8; font-size: 14px; padding: 0 3px; }
+    .bloco-cmd.ativo { outline: 4px solid var(--amarelo); outline-offset: 1px; transform: translateY(-2px); }
+    .bloco-cmd.erro { outline: 4px solid var(--vermelho); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  // R = robô (olhando para o norte), F = bandeira, T = árvore (obstáculo), C = moeda
+  const FASES = [
+    { nome: '1 · Primeiros passos', mapa: ['......', '..F...', '......', '......', '..R...', '......'], dica: 'A bandeira está bem à frente. Quantas casas o robô precisa andar?' },
+    { nome: '2 · Desvio', mapa: ['......', '.T..F.', '.T....', '.T....', '.R....', '......'], dica: 'Há árvores à frente. Vire, ande e vire de novo.' },
+    { nome: '3 · Corredor', mapa: ['F..T..', '.T.T.C', '.T....', '.TTT.T', '...C..', '.R....'], dica: 'Procure o caminho livre pela borda. Moedas são bônus!' },
+    { nome: '4 · O salto', mapa: ['..F...', '......', 'TTTTTT', '......', '..R...', '......'], dica: 'Uma fileira inteira de árvores… o bloco "Pular" atravessa uma casa ocupada.' },
+  ];
+  const CMDS = {
+    andar: { rotulo: '▲ Andar', cor: '#1F5BE0' },
+    esquerda: { rotulo: '↺ Esquerda', cor: '#8B3DFF' },
+    direita: { rotulo: '↻ Direita', cor: '#8B3DFF' },
+    pular: { rotulo: '⤒ Pular', cor: '#FF9416' },
+    sensor: { rotulo: '◉ Se obstáculo, ↻', cor: '#19B8A6' },
+    acenar: { rotulo: '👋 Acenar', cor: '#36C04A' },
+  };
+  const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+  const NOME_DIR = ['norte', 'leste', 'sul', 'oeste'];
+
+  SQ.demo('robo-virtual', {
+    fundo: 'ceu',
+    dica: 'Monte o programa ao lado e clique em Executar',
+    sala: ['Desafie a turma a resolver a fase 3 com o menor número de blocos (use as repetições).', 'Peça que escrevam o programa no papel antes de executar e comparem com o resultado.', 'Discuta: por que o bloco de sensor deixa o programa funcionar em mapas diferentes?'],
+    comoIA: 'O guia lê o mapa, a posição do robô e o programa. Quando o aluno pede ajuda, ele calcula um caminho (busca em largura) e o traduz em blocos; ao falhar, explica qual comando causou o erro. Uma IA conectada pode explicar a estratégia em linguagem natural.',
+    guia: {
+      ola: 'Este robô é um modelo 3D livre (CC0) recolorido com as cores SQUEMA. Monte um programa com os blocos e leve-o até a bandeira!',
+      perguntas: [
+        { p: 'Me dá uma dica?', chaves: ['dica', 'ajuda', 'como', 'nao sei'], r: (c) => c.dica },
+        { p: 'O que o sensor faz?', chaves: ['sensor', 'obstaculo', 'detecta'], r: 'O sensor de distância "olha" uma casa à frente. O bloco <b>Se obstáculo, ↻</b> só vira à direita quando há algo bloqueando — é uma <b>condicional</b>: o mesmo programa reage a mapas diferentes.' },
+        { p: 'Para que serve o ×2, ×3?', chaves: ['vezes', 'repetir', 'repeticao', 'x2', 'x3'], r: 'Clique no número de um bloco para repeti-lo. "▲ Andar ×3" é um <b>laço</b>: em vez de três blocos iguais, um só repetido três vezes.' },
+        { p: 'O que é um algoritmo?', chaves: ['algoritmo', 'programa'], r: 'Uma sequência finita de passos bem definidos para resolver um problema. Seu programa de blocos é um algoritmo para levar o robô até a bandeira.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE, LADO = 1.25, N = 6;
+      const c = S3D.cena(palco, { camera: [0, 8.2, 8.8], alvo: [0, 0, 0.4], distancia: [5, 20], polarMax: 1.35, sombraRaio: 6, pan: false });
+      const tab = new T.Group(); c.scene.add(tab);
+      const base = new T.Mesh(new T.RoundedBoxGeometry(N * LADO + 0.7, 0.6, N * LADO + 0.7, 4, 0.18), S3D.mat(0x1F5BE0, { verniz: 0.5 }));
+      base.position.y = -0.36; base.receiveShadow = true; tab.add(base); S3D.contorno(base, 0.04);
+      const tileGeo = new T.RoundedBoxGeometry(LADO * 0.94, 0.16, LADO * 0.94, 3, 0.06);
+      const matA = S3D.mat(0xF4F7FF, { rugosidade: 0.6, verniz: 0.3 }), matB = S3D.mat(0xD7E6FF, { rugosidade: 0.6, verniz: 0.3 });
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const t = new T.Mesh(tileGeo, (x + z) % 2 ? matA : matB); t.position.set(pos(x), -0.02, pos(z)); t.receiveShadow = true; tab.add(t);
+      }
+      function pos(i) { return (i - (N - 1) / 2) * LADO; }
+
+      // sensor: feixe à frente do robô
+      const feixe = new T.Mesh(new T.ConeGeometry(0.42, LADO * 0.9, 24, 1, true), new T.MeshBasicMaterial({ color: 0x2BB4F5, transparent: true, opacity: 0.28, side: T.DoubleSide, depthWrite: false }));
+      feixe.rotation.x = -Math.PI / 2; feixe.position.set(0, 0.9, LADO * 0.62);
+
+      let robo = null, mixer = null, acoes = {}, acaoAtual = null;
+      const objetos = new T.Group(); c.scene.add(objetos);
+      let fase = 0, estado = null, programa = [], executando = false, cancelar = false, velocidade = 1;
+
+      function tocar(nome, { fade = 0.2, loop = true } = {}) {
+        const a = acoes[nome]; if (!a || a === acaoAtual) return a;
+        a.reset(); a.setLoop(loop ? T.LoopRepeat : T.LoopOnce, Infinity); a.clampWhenFinished = !loop;
+        a.fadeIn(fade).play(); if (acaoAtual) acaoAtual.fadeOut(fade);
+        acaoAtual = a; return a;
+      }
+
+      async function carregarFase(i) {
+        fase = i; cancelar = true;
+        objetos.clear();
+        const f = FASES[i];
+        const mapa = f.mapa.map((l) => l.split(''));
+        estado = { x: 0, z: 0, dir: 0, mapa, moedas: 0, total: 0, moedasObj: {} };
+        const promessas = [];
+        mapa.forEach((linha, z) => linha.forEach((ch, x) => {
+          if (ch === 'R') { estado.x = x; estado.z = z; estado.ini = [x, z]; mapa[z][x] = '.'; }
+          if (ch === 'T') promessas.push(S3D.instancia('arvores', { tamanho: LADO * 0.95 }).then((r) => { r.obj.position.set(pos(x), 0.06, pos(z)); r.obj.rotation.y = (x * 7 + z * 3) % 4 * Math.PI / 2; objetos.add(r.obj); }));
+          if (ch === 'F') promessas.push(S3D.instancia('bandeira', { tamanho: 1.3, porAltura: true }).then((r) => { r.obj.position.set(pos(x), 0.06, pos(z)); objetos.add(r.obj); }));
+          if (ch === 'C') { estado.total++; promessas.push(S3D.instancia('moeda', { tamanho: 0.6 }).then((r) => { r.obj.position.set(pos(x), 0.45, pos(z)); r.obj.userData.gira = true; objetos.add(r.obj); estado.moedasObj[`${x},${z}`] = r.obj; })); }
+        }));
+        await Promise.all(promessas);
+        if (robo) posicionarRobo();
+        atualizarHud(); pintarPrograma();
+        guia.diz(`<b>Fase ${f.nome}</b>. ${f.dica}`, { chave: 'fase' });
+      }
+      function posicionarRobo() {
+        robo.position.set(pos(estado.x), 0.06, pos(estado.z));
+        robo.rotation.y = anguloDir(estado.dir);
+        tocar('Idle');
+      }
+      const anguloDir = (d) => Math.atan2(DIRS[d][0], DIRS[d][1]);
+      const livre = (x, z) => x >= 0 && z >= 0 && x < N && z < N && estado.mapa[z][x] !== 'T';
+      const aFrente = () => [estado.x + DIRS[estado.dir][0], estado.z + DIRS[estado.dir][1]];
+
+      // ---------- execução ----------
+      const espera = (s) => new Promise((ok) => setTimeout(ok, (s * 1000) / velocidade));
+      async function mover(nx, nz, dur, alto = 0) {
+        const x0 = robo.position.x, z0 = robo.position.z;
+        await c.tween(dur / velocidade, (k) => {
+          robo.position.x = x0 + (pos(nx) - x0) * k; robo.position.z = z0 + (pos(nz) - z0) * k;
+          robo.position.y = 0.06 + Math.sin(k * Math.PI) * alto;
+        }, { ease: 'linear' });
+        estado.x = nx; estado.z = nz; pegarMoeda();
+      }
+      async function girar(delta) {
+        const a0 = robo.rotation.y; estado.dir = (estado.dir + delta + 4) % 4;
+        let a1 = anguloDir(estado.dir); while (a1 - a0 > Math.PI) a1 -= Math.PI * 2; while (a1 - a0 < -Math.PI) a1 += Math.PI * 2;
+        await c.tween(0.35 / velocidade, (k) => (robo.rotation.y = a0 + (a1 - a0) * k));
+      }
+      function pegarMoeda() {
+        const k = `${estado.x},${estado.z}`, m = estado.moedasObj[k];
+        if (!m) return;
+        delete estado.moedasObj[k]; estado.moedas++; SQ.som(880, 0.15, 'triangle');
+        const y0 = m.position.y; c.tween(0.4, (t) => { m.position.y = y0 + t; m.scale.setScalar(1 - t); }).then(() => objetos.remove(m));
+        atualizarHud();
+      }
+      async function falhar(msg, idx) {
+        tocar('No', { loop: false }); SQ.som(180, 0.3, 'sawtooth', 0.05);
+        marcar(idx, 'erro');
+        guia.diz(msg, { tipo: 'alerta', chave: 'exec' });
+        await espera(1.4); return false;
+      }
+      async function executarBloco(b, idx) {
+        if (b.cmd === 'andar') {
+          const [nx, nz] = aFrente();
+          if (!livre(nx, nz)) return falhar(nx < 0 || nz < 0 || nx >= N || nz >= N
+            ? `O bloco ${idx + 1} mandaria o robô para fora do tabuleiro (virado para o ${NOME_DIR[estado.dir]}).`
+            : `Bloco ${idx + 1}: o sensor detectou uma árvore à frente. Vire antes de andar — ou use o bloco de sensor.`, idx);
+          tocar('Walking'); await mover(nx, nz, 0.7);
+        } else if (b.cmd === 'esquerda' || b.cmd === 'direita') {
+          tocar('Walking'); await girar(b.cmd === 'esquerda' ? -1 : 1);
+        } else if (b.cmd === 'sensor') {
+          const [nx, nz] = aFrente();
+          if (!livre(nx, nz)) { tocar('Idle'); feixe.material.color.set(0xEE3B45); await girar(1); feixe.material.color.set(0x2BB4F5); }
+          else { feixe.material.opacity = 0.55; await espera(0.3); feixe.material.opacity = 0.28; }
+        } else if (b.cmd === 'pular') {
+          const [mx, mz] = aFrente(), nx = mx + DIRS[estado.dir][0], nz = mz + DIRS[estado.dir][1];
+          if (!livre(nx, nz)) return falhar(`Bloco ${idx + 1}: não há onde pousar — o salto cobre exatamente duas casas.`, idx);
+          tocar('Jump', { loop: false, fade: 0.1 }); await espera(0.15); await mover(nx, nz, 0.85, 1.1);
+        } else if (b.cmd === 'acenar') {
+          tocar('Wave', { loop: false }); await espera(1.6);
+        }
+        return true;
+      }
+      async function executar(passoAPasso = false) {
+        if (executando) return;
+        if (!programa.length) { guia.diz('O programa está vazio. Adicione blocos clicando nos botões acima.', { tipo: 'alerta', chave: 'exec' }); return; }
+        executando = true; cancelar = false; reiniciarRobo(false);
+        await espera(0.2);
+        let ok = true;
+        fora: for (let i = 0; i < programa.length; i++) {
+          for (let r = 0; r < programa[i].n; r++) {
+            if (cancelar) { ok = false; break fora; }
+            marcar(i, 'ativo');
+            ok = await executarBloco(programa[i], i);
+            if (!ok) break fora;
+            if (chegou()) break fora;
+            if (passoAPasso) await espera(0.35);
+          }
+        }
+        marcar(-1);
+        if (ok && chegou()) {
+          tocar('Dance'); SQ.som(660, 0.12); setTimeout(() => SQ.som(990, 0.2), 140);
+          const blocos = programa.length;
+          guia.diz(`🎉 Chegou à bandeira com <b>${blocos} ${blocos === 1 ? 'bloco' : 'blocos'}</b>${estado.total ? ` e ${estado.moedas}/${estado.total} moedas` : ''}! ${fase < FASES.length - 1 ? 'Pronto para a próxima fase?' : 'Você concluiu todas as fases!'}`, { tipo: 'sucesso', chave: 'exec' });
+        } else if (ok && !cancelar) {
+          tocar('Idle');
+          guia.diz(`O programa terminou, mas o robô parou em (${estado.x + 1}, ${estado.z + 1}) olhando para o ${NOME_DIR[estado.dir]}. Falta pouco — acrescente blocos!`, { chave: 'exec' });
+        }
+        executando = false;
+      }
+      const chegou = () => estado.mapa[estado.z][estado.x] === 'F';
+      function reiniciarRobo(limparMsg = true) {
+        cancelar = !executando ? false : cancelar;
+        estado.x = estado.ini[0]; estado.z = estado.ini[1]; estado.dir = 0;
+        if (robo) posicionarRobo();
+        if (limparMsg) marcar(-1);
+      }
+
+      // ---------- "IA": busca de caminho e geração de blocos ----------
+      function sugerir() {
+        const ini = [estado.ini[0], estado.ini[1], 0], chave = (s) => s.join(',');
+        const fila = [ini], veio = { [chave(ini)]: null };
+        let fim = null;
+        while (fila.length) {
+          const s = fila.shift(); const [x, z, d] = s;
+          if (estado.mapa[z][x] === 'F') { fim = s; break; }
+          const viz = [];
+          const [dx, dz] = DIRS[d];
+          if (livre(x + dx, z + dz)) viz.push([[x + dx, z + dz, d], 'andar']);
+          viz.push([[x, z, (d + 3) % 4], 'esquerda'], [[x, z, (d + 1) % 4], 'direita']);
+          if (livre(x + 2 * dx, z + 2 * dz) && !livre(x + dx, z + dz)) viz.push([[x + 2 * dx, z + 2 * dz, d], 'pular']);
+          for (const [n, cmd] of viz) if (!(chave(n) in veio)) { veio[chave(n)] = [s, cmd]; fila.push(n); }
+        }
+        if (!fim) return null;
+        const cmds = []; let s = fim;
+        while (veio[chave(s)]) { const [ant, cmd] = veio[chave(s)]; cmds.unshift(cmd); s = ant; }
+        const blocos = [];
+        for (const cmd of cmds) { const ult = blocos[blocos.length - 1]; if (ult && ult.cmd === cmd && cmd !== 'esquerda' && cmd !== 'direita') ult.n++; else blocos.push({ cmd, n: 1 }); }
+        return blocos;
+      }
+
+      // ---------- interface ----------
+      const gFase = ui.grupo('Fase');
+      ui.segmentado({ opcoes: FASES.map((f, i) => ({ valor: i, rotulo: String(i + 1), titulo: f.nome })), valor: 0, pai: gFase, aoMudar: (v) => { programa = []; carregarFase(v); } });
+      const hud = ui.leituras([{ id: 'pos', rotulo: 'Posição', valor: '—' }, { id: 'sensor', rotulo: 'Sensor', valor: '—' }, { id: 'moedas', rotulo: 'Moedas', valor: '0' }, { id: 'blocos', rotulo: 'Blocos', valor: '0' }]);
+      gFase.append(hud.el);
+      function atualizarHud() {
+        if (!estado) return;
+        const [nx, nz] = aFrente();
+        hud.set('pos', `(${estado.x + 1}, ${estado.z + 1}) ${NOME_DIR[estado.dir]}`);
+        hud.set('sensor', livre(nx, nz) ? 'livre' : 'obstáculo!');
+        hud.set('moedas', `${estado.moedas}/${estado.total}`);
+        hud.set('blocos', String(programa.length));
+      }
+      c.aoQuadro(() => atualizarHud());
+
+      const gProg = ui.grupo('Programa');
+      const paleta = SQ.el('div', { class: 'paleta-blocos' });
+      for (const [cmd, cfg] of Object.entries(CMDS)) {
+        const b = SQ.el('button', { type: 'button', class: 'botao pequeno', style: { background: cfg.cor, color: '#fff', boxShadow: '0 3px 0 rgba(11,20,56,.45)' } }, cfg.rotulo);
+        b.addEventListener('click', () => { if (executando) return; programa.push({ cmd, n: 1 }); pintarPrograma(); });
+        paleta.append(b);
+      }
+      const area = SQ.el('div', { class: 'programa', 'aria-label': 'Programa', 'aria-live': 'polite' });
+      gProg.append(paleta, area);
+      function pintarPrograma() {
+        area.innerHTML = '';
+        programa.forEach((b, i) => {
+          const cfg = CMDS[b.cmd];
+          const vezes = SQ.el('button', { type: 'button', class: 'vezes', title: 'Repetir (clique para mudar)' }, `×${b.n}`);
+          vezes.addEventListener('click', () => { if (executando) return; b.n = b.n % 5 + 1; pintarPrograma(); });
+          const tirar = SQ.el('button', { type: 'button', class: 'tirar', 'aria-label': 'Remover bloco' }, '✕');
+          tirar.addEventListener('click', () => { if (executando) return; programa.splice(i, 1); pintarPrograma(); });
+          area.append(SQ.el('span', { class: 'bloco-cmd', style: { background: cfg.cor } }, cfg.rotulo, vezes, tirar));
+        });
+        atualizarHud();
+      }
+      function marcar(i, classe) {
+        [...area.children].forEach((el, j) => { el.classList.remove('ativo', 'erro'); if (j === i) el.classList.add(classe); });
+      }
+      ui.linha(gProg,
+        ui.botao({ rotulo: '▶ Executar', classe: 'verde', aoClicar: () => executar(false) }),
+        ui.botao({ rotulo: 'Passo a passo', classe: 'branco', aoClicar: () => executar(true) }),
+        ui.botao({ rotulo: '⟲ Reiniciar', classe: 'branco', aoClicar: () => { cancelar = true; setTimeout(() => reiniciarRobo(), 50); } }),
+        ui.botao({ rotulo: 'Limpar', classe: 'branco', aoClicar: () => { if (!executando) { programa = []; pintarPrograma(); } } }));
+      const gAjuda = ui.grupo('Ajuda do guia');
+      ui.slider({ rotulo: 'Velocidade', min: 0.5, max: 3, passo: 0.5, valor: 1, unidade: '×', pai: gAjuda, aoMudar: (v) => (velocidade = v) });
+      ui.botao({ rotulo: '💡 Gerar programa sugerido', classe: 'azul pequeno', pai: gAjuda, aoClicar: () => {
+        const s = sugerir();
+        if (!s) { guia.diz('Não encontrei um caminho nesta fase.', { tipo: 'alerta' }); return; }
+        const txt = s.map((b) => `${CMDS[b.cmd].rotulo}${b.n > 1 ? ' ×' + b.n : ''}`).join(' → ');
+        guia.diz(`Calculei o caminho mais curto (busca em largura) e traduzi em blocos: <b>${txt}</b>. Carreguei no programa — clique em Executar.`, { tipo: 'dica', chave: 'exec' });
+        programa = s.map((b) => ({ ...b })); pintarPrograma();
+      } });
+
+      guia.contexto = () => ({ fase: FASES[fase].nome, posicao: estado && [estado.x, estado.z], direcao: estado && NOME_DIR[estado.dir], programa, dica: FASES[fase].dica });
+
+      c.aoQuadro((dt, t) => {
+        mixer && mixer.update(dt);
+        objetos.children.forEach((o) => { if (o.userData.gira) o.rotation.y = t * 2; });
+      });
+      S3D.instancia('robo', { tamanho: 1.4, porAltura: true }).then((r) => {
+        robo = r.obj; mixer = r.mixer; acoes = r.acoes;
+        robo.add(feixe); c.scene.add(robo);
+        mixer.addEventListener('finished', (e) => { if (e.action === acoes.Jump || e.action === acoes.Wave) tocar('Idle'); });
+        posicionarRobo();
+      });
+      carregarFase(0);
+    },
+  });
+  </script>
+</body>
+</html>

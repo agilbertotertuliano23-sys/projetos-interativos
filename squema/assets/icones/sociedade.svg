@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Grupo de pessoas">
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD95A"/><stop offset="1" stop-color="#FFAE00"/></linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FD36B"/><stop offset="1" stop-color="#22A033"/></linearGradient>
+    <linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4C8DFF"/><stop offset="1" stop-color="#1F5BE0"/></linearGradient>
+    <g id="p"><circle cx="0" cy="-58" r="24"/><path d="M-38 30 C-38 -10 -22 -26 0 -26 C22 -26 38 -10 38 30 Z"/></g>
+  </defs>
+  <g stroke="#0B1438" stroke-width="12" stroke-linejoin="round">
+    <use href="#p" transform="translate(52 138) scale(.82)" fill="#0B1438" y="8"/>
+    <use href="#p" transform="translate(52 138) scale(.82)" fill="url(#a)"/>
+    <use href="#p" transform="translate(148 138) scale(.82)" fill="#0B1438" y="8"/>
+    <use href="#p" transform="translate(148 138) scale(.82)" fill="url(#b)"/>
+    <use href="#p" transform="translate(100 150)" fill="#0B1438" y="8"/>
+    <use href="#p" transform="translate(100 150)" fill="url(#c)"/>
+  </g>
+  <g fill="#fff" opacity=".75">
+    <ellipse cx="44" cy="84" rx="7" ry="4"/><ellipse cx="140" cy="84" rx="7" ry="4"/><ellipse cx="90" cy="84" rx="9" ry="5"/>
+  </g>
+</svg>

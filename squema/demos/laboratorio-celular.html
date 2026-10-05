@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratório Celular — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/dna.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .seq { font: 800 15px/1.6 var(--fonte-mono); letter-spacing: 2px; background: var(--gelo); border-radius: 10px; padding: 6px 10px; overflow-wrap: anywhere; }
+    .seq b { padding: 0 1px; border-radius: 3px; }
+    .fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; font-size: 11px; font-weight: 900; text-align: center; color: var(--texto-suave); }
+    .fases span.ativa { color: var(--tinta); background: var(--amarelo); border-radius: 6px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const ORGANELAS = {
+    membrana: { nome: 'Membrana plasmática', f: 'Envolve a célula e controla o que entra e sai (permeabilidade seletiva).', analogia: 'a portaria de um condomínio' },
+    nucleo: { nome: 'Núcleo', f: 'Guarda o DNA e comanda as atividades da célula. É envolvido pela carioteca, cheia de poros.', analogia: 'a diretoria' },
+    nucleolo: { nome: 'Nucléolo', f: 'Região do núcleo que produz os componentes dos ribossomos.', analogia: 'a fábrica de peças das máquinas' },
+    mitocondria: { nome: 'Mitocôndria', f: 'Realiza a respiração celular e produz ATP, a "moeda" de energia da célula. Tem DNA próprio.', analogia: 'a usina de energia' },
+    rer: { nome: 'Retículo endoplasmático rugoso', f: 'Rede de membranas coberta de ribossomos: produz e transporta proteínas.', analogia: 'a linha de montagem' },
+    rel: { nome: 'Retículo endoplasmático liso', f: 'Sem ribossomos: produz lipídios e ajuda a desintoxicar a célula.', analogia: 'o laboratório de química' },
+    golgi: { nome: 'Complexo de Golgi', f: 'Modifica, empacota e envia proteínas e lipídios em vesículas.', analogia: 'os correios' },
+    lisossomo: { nome: 'Lisossomo', f: 'Vesícula com enzimas digestivas que quebram partículas e organelas velhas.', analogia: 'a equipe de reciclagem' },
+    ribossomo: { nome: 'Ribossomos', f: 'Montam proteínas lendo as instruções do RNA mensageiro.', analogia: 'as impressoras 3D' },
+    centriolo: { nome: 'Centríolos', f: 'Pares de cilindros que organizam o fuso de divisão na mitose.', analogia: 'os coordenadores da mudança' },
+  };
+  const FASES = [
+    { nome: 'Interfase', d: 'A célula cresce e <b>duplica o DNA</b>. Os cromossomos ainda estão descondensados (cromatina).' },
+    { nome: 'Prófase', d: 'Os cromossomos se <b>condensam</b> e ficam visíveis, cada um com duas cromátides-irmãs. A carioteca começa a sumir e o fuso se forma.' },
+    { nome: 'Metáfase', d: 'Os cromossomos se alinham no <b>equador</b> da célula (placa metafásica), presos às fibras do fuso.' },
+    { nome: 'Anáfase', d: 'As cromátides-irmãs se <b>separam</b> e são puxadas para polos opostos.' },
+    { nome: 'Telófase', d: 'Cada polo recebe um conjunto completo de cromossomos; <b>novas cariotecas</b> se formam.' },
+    { nome: 'Citocinese', d: 'O citoplasma se divide: surgem <b>duas células-filhas</b> geneticamente iguais à original.' },
+  ];
+  const PAR = { A: 'T', T: 'A', C: 'G', G: 'C' };
+  const COR_BASE = { A: 0xFFC21A, T: 0x8B3DFF, C: 0x36C04A, G: 0xEE3B45 };
+  const NOME_BASE = { A: 'adenina', T: 'timina', C: 'citosina', G: 'guanina' };
+
+  SQ.demo('laboratorio-celular', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · clique nas estruturas',
+    sala: ['Peça que cada grupo escolha uma organela e crie uma analogia nova.', 'Pause a mitose em cada fase e peça que a turma desenhe o que vê.', 'No DNA, dite uma fita e peça a complementar antes de revelar.'],
+    comoIA: 'O guia narra cada estrutura clicada e cada fase da mitose a partir do estado da cena. Com uma IA conectada, o aluno pode perguntar "o que acontece se a mitocôndria parar?" e receber uma explicação contextualizada.',
+    guia: {
+      ola: 'Bem-vindo ao laboratório! Clique em qualquer estrutura da célula. Use "Cortar a célula" para ver o interior e troque para Mitose ou DNA no painel.',
+      perguntas: [
+        { p: 'Qual a diferença entre célula animal e vegetal?', chaves: ['vegetal', 'planta', 'diferenca'], r: 'A vegetal tem <b>parede celular</b> (celulose), <b>cloroplastos</b> (fotossíntese) e um grande <b>vacúolo</b>; geralmente não tem centríolos. Esta demonstração mostra uma célula animal.' },
+        { p: 'Por que a mitocôndria é importante?', chaves: ['mitocondria', 'energia', 'atp'], r: 'Ela transforma a energia da glicose em <b>ATP</b> (respiração celular), usado em quase tudo: contração muscular, transporte, síntese de moléculas. Células musculares têm milhares delas.' },
+        { p: 'Para que serve a mitose?', chaves: ['mitose', 'divisao', 'serve'], r: 'Para <b>crescimento</b>, <b>regeneração</b> e reposição de células: uma célula gera duas idênticas, com o mesmo número de cromossomos.' },
+        { p: 'Por que A pareia com T?', chaves: ['pareia', 'par', 'adenina', 'timina', 'complementar'], r: 'Pelo formato e pelas <b>ligações de hidrogênio</b>: A–T fazem 2 ligações e C–G fazem 3. Uma base grande (purina) sempre pareia com uma pequena (pirimidina), mantendo a largura da hélice constante.' },
+        { p: 'Qual a diferença entre DNA e RNA?', chaves: ['rna', 'diferenca', 'uracila'], r: 'O RNA tem fita simples, açúcar ribose e <b>uracila (U)</b> no lugar da timina. Use "Transcrever" no modo DNA para ver o RNA mensageiro.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 3.2, 11], distancia: [4, 26], sombras: false, hemi: 1.15, sol: 2.1, contra: 1.2, ambiente: 0.7 });
+      c.renderer.localClippingEnabled = true;
+      const plano = new T.Plane(new T.Vector3(0, 0, -1), 0.0);
+      const rnd = ((a) => () => { a = (a * 16807) % 2147483647; return a / 2147483647; })(42);
+      const alvos = [];
+      const registrar = (obj, id) => { obj.userData.org = id; alvos.push(obj); return obj; };
+      const mat = S3D.mat;
+
+      // =============== célula ===============
+      const cel = new T.Group(); c.scene.add(cel);
+      const matMemb = S3D.matBolha(0x8FD3FF, { opacidade: 0.3, borda: 0.86 });
+      const membrana = registrar(new T.Mesh(new T.SphereGeometry(4, 64, 40), matMemb), 'membrana'); membrana.scale.set(1.15, 0.9, 1); cel.add(membrana);
+      // borda do corte: elipse escura no plano de corte
+      const borda = new T.Mesh(new T.TorusGeometry(4, 0.06, 8, 120), new T.MeshBasicMaterial({ color: 0x0B1438 }));
+      borda.scale.copy(membrana.scale); borda.raycast = () => {}; cel.add(borda);
+      const citoplasma = new T.Mesh(new T.SphereGeometry(3.9, 48, 32), new T.MeshBasicMaterial({ color: 0xDDF2FF, transparent: true, opacity: 0.35, depthWrite: false, side: T.BackSide }));
+      citoplasma.scale.copy(membrana.scale); citoplasma.raycast = () => {}; cel.add(citoplasma);
+
+      const nucleo = registrar(new T.Mesh(new T.SphereGeometry(1.35, 48, 32), S3D.matBolha(0xA070FF, { opacidade: 0.55, borda: 0.8 })), 'nucleo'); nucleo.position.set(-0.4, 0.1, 0); cel.add(nucleo);
+      const poros = new T.InstancedMesh(new T.SphereGeometry(0.07, 8, 6), new T.MeshBasicMaterial({ color: 0x4B16B8 }), 60);
+      for (let i = 0; i < 60; i++) { const v = new T.Vector3().randomDirection().multiplyScalar(1.36); poros.setMatrixAt(i, new T.Matrix4().makeTranslation(v.x, v.y, v.z)); }
+      nucleo.add(poros);
+      const nucleolo = registrar(new T.Mesh(new T.SphereGeometry(0.5, 32, 20), mat(0x4B16B8)), 'nucleolo'); nucleolo.position.set(0.35, 0.25, 0.65); nucleo.add(nucleolo);
+      S3D.contorno(nucleolo, 0.03);
+
+      const geoMito = new T.CapsuleGeometry(0.28, 0.9, 8, 20);
+      for (const [x, y, z, rx, rz] of [[2.4, 1.2, 0.8, 0.4, 1.1], [1.9, -1.4, 1.2, 1.2, 0.3], [-2.6, -1.3, 0.9, 0.2, 0.7], [2.8, -0.2, -1.2, 0.9, 1.5], [-2.2, 1.5, -1.3, 1.4, 0.2], [0.8, 2.1, 1.4, 0.3, 1.6]]) {
+        const m = registrar(new T.Mesh(geoMito, mat(0xFF9416)), 'mitocondria'); m.position.set(x, y, z); m.rotation.set(rx, 0, rz);
+        const crista = new T.Mesh(new T.TorusKnotGeometry(0.16, 0.035, 48, 6, 2, 5), mat(0xD96A00)); crista.scale.set(0.9, 2.2, 0.9); m.add(crista);
+        cel.add(m); S3D.contorno(m, 0.03);
+      }
+      // RE rugoso: faixas curvas ao redor do núcleo, salpicadas de ribossomos
+      for (let k = 0; k < 4; k++) {
+        const pts = Array.from({ length: 9 }, (_, i) => { const a = -0.9 + i * 0.32 + k * 0.08; const r = 1.75 + k * 0.28; return new T.Vector3(Math.cos(a) * r - 0.4, Math.sin(i * 0.9 + k) * 0.25 + 0.1 + (k - 1.5) * 0.18, Math.sin(a) * r); });
+        const tubo = registrar(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts), 60, 0.1, 8), mat(0x2BB4F5)), 'rer');
+        tubo.scale.set(1, 1.6, 1); cel.add(tubo);
+        const rib = new T.InstancedMesh(new T.SphereGeometry(0.045, 6, 4), new T.MeshBasicMaterial({ color: 0xFFC21A }), 30);
+        const curva = new T.CatmullRomCurve3(pts);
+        for (let i = 0; i < 30; i++) { const p = curva.getPoint(i / 30).add(new T.Vector3(0, 0.12 * (i % 2 ? 1 : -1), 0)); p.y *= 1.6; rib.setMatrixAt(i, new T.Matrix4().makeTranslation(p.x, p.y, p.z)); }
+        cel.add(rib);
+      }
+      for (let k = 0; k < 3; k++) {
+        const pts = Array.from({ length: 7 }, (_, i) => new T.Vector3(-2.6 + Math.sin(i + k) * 0.4, -0.2 + (i - 3) * 0.32, -1.6 + k * 0.45 + Math.cos(i * 1.3) * 0.3));
+        cel.add(registrar(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts), 50, 0.09, 8), mat(0x19B8A6)), 'rel'));
+      }
+      // Golgi: pilha de cisternas curvas
+      const golgi = new T.Group(); golgi.position.set(1.7, 0.4, -0.6); golgi.rotation.set(0.3, -0.6, 0.4); cel.add(golgi);
+      for (let i = 0; i < 5; i++) {
+        const cist = registrar(new T.Mesh(new T.TorusGeometry(0.75 - i * 0.04, 0.09, 10, 40, Math.PI * 0.9), mat(0xFF6B8A)), 'golgi');
+        cist.position.z = i * 0.2; cist.rotation.z = Math.PI * 0.55; golgi.add(cist);
+      }
+      for (let i = 0; i < 4; i++) { const v = registrar(new T.Mesh(new T.SphereGeometry(0.11, 12, 8), mat(0xFF6B8A)), 'golgi'); v.position.set(0.95 + i * 0.12, -0.3 + i * 0.25, 0.4); golgi.add(v); }
+      S3D.contorno(golgi, 0.025);
+      for (const [x, y, z] of [[0.6, -1.9, 1.5], [-1.2, -2.0, -0.8], [2.9, 1.0, -0.4], [-0.9, 2.2, 0.9], [0.2, -1.2, -2.0]]) {
+        const l = registrar(new T.Mesh(new T.SphereGeometry(0.24, 20, 14), mat(0x36C04A)), 'lisossomo'); l.position.set(x, y, z); cel.add(l); S3D.contorno(l, 0.025);
+      }
+      const ribLivres = registrar(new T.InstancedMesh(new T.SphereGeometry(0.05, 6, 4), new T.MeshBasicMaterial({ color: 0xE8A400 }), 160), 'ribossomo');
+      for (let i = 0; i < 160; i++) { const v = new T.Vector3().randomDirection().multiplyScalar(2 + rnd() * 1.7); v.x *= 1.1; v.y *= 0.85; ribLivres.setMatrixAt(i, new T.Matrix4().makeTranslation(v.x, v.y, v.z)); }
+      cel.add(ribLivres);
+      const centri = new T.Group(); centri.position.set(1.0, -0.6, 1.9); cel.add(centri);
+      for (const r of [0, Math.PI / 2]) { const cil = registrar(new T.Mesh(new T.CylinderGeometry(0.12, 0.12, 0.5, 9), mat(0xC98B4E)), 'centriolo'); cil.rotation.x = r; centri.add(cil); }
+      S3D.contorno(centri, 0.02);
+
+      const rotulosCel = new T.Group(); cel.add(rotulosCel); rotulosCel.visible = false;
+      for (const [id, p] of [['nucleo', [-0.4, 1.7, 0]], ['mitocondria', [2.4, 1.8, 0.8]], ['golgi', [1.9, 1.3, -0.6]], ['lisossomo', [0.6, -2.4, 1.5]], ['rer', [-0.6, 0.9, 1.9]], ['rel', [-2.7, 1.2, -1.4]], ['centriolo', [1.0, -0.1, 2.1]], ['membrana', [0, 3.9, 0]]]) {
+        const r = S3D.rotulo(ORGANELAS[id].nome); r.position.set(...p); rotulosCel.add(r);
+      }
+
+      // =============== mitose ===============
+      const mit = new T.Group(); mit.visible = false; c.scene.add(mit);
+      const membMit = [0, 1].map(() => { const m = new T.Mesh(new T.SphereGeometry(2.7, 48, 32), S3D.matBolha(0x8FD3FF, { opacidade: 0.22, borda: 0.86, lados: T.FrontSide })); mit.add(m); return m; });
+      const carioteca = new T.Mesh(new T.SphereGeometry(1.4, 40, 24), S3D.matBolha(0xA070FF, { opacidade: 0.3, lados: T.FrontSide })); mit.add(carioteca);
+      const filhas = [0, 1].map(() => { const m = new T.Mesh(new T.SphereGeometry(0.9, 32, 20), S3D.matBolha(0xA070FF, { opacidade: 0, lados: T.FrontSide })); mit.add(m); return m; });
+      const cromatinaPts = new Float32Array(900 * 3);
+      for (let i = 0; i < 900; i++) { const v = new T.Vector3().randomDirection().multiplyScalar(Math.cbrt(rnd()) * 1.25); cromatinaPts.set([v.x, v.y, v.z], i * 3); }
+      const gCrom = new T.BufferGeometry(); gCrom.setAttribute('position', new T.BufferAttribute(cromatinaPts, 3));
+      const cromatina = new T.Points(gCrom, new T.PointsMaterial({ color: 0x4B16B8, size: 0.06, transparent: true })); mit.add(cromatina);
+      const CORES_CROM = [0x1F5BE0, 0x2BB4F5, 0xEE3B45, 0xFF6B8A];
+      const cromatides = [];
+      for (let i = 0; i < 4; i++) for (const s of [-1, 1]) {
+        const g = new T.Group();
+        const braco = new T.Mesh(new T.CapsuleGeometry(0.11, 0.75, 6, 12), mat(CORES_CROM[i]));
+        braco.rotation.z = s * 0.28; g.add(braco); S3D.contorno(braco, 0.02);
+        const ini = new T.Vector3().randomDirection().multiplyScalar(0.3 + rnd() * 0.7);
+        const yi = (i - 1.5) * 0.62, zi = i % 2 ? 0.28 : -0.28;
+        g.userData.k = [
+          { p: ini.clone(), r: rnd() * 3 }, { p: ini.clone().add(new T.Vector3(s * 0.1, 0, 0)), r: rnd() * 3 },
+          { p: new T.Vector3(s * 0.12, yi, zi), r: 0 }, { p: new T.Vector3(s * 1.75, yi * 0.75, zi), r: s * -0.6 },
+          { p: new T.Vector3(s * 2.35, yi * 0.45, zi * 0.6), r: s * -0.3 }, { p: new T.Vector3(s * 2.55, yi * 0.42, zi * 0.6), r: 0 },
+        ];
+        g.userData.s = s; mit.add(g); cromatides.push(g);
+      }
+      const fuso = new T.LineSegments(new T.BufferGeometry(), new T.LineBasicMaterial({ color: 0x5D6B94, transparent: true, opacity: 0.8 }));
+      fuso.geometry.setAttribute('position', new T.BufferAttribute(new Float32Array(cromatides.length * 6), 3)); mit.add(fuso);
+      const polos = [-1, 1].map((s) => { const m = new T.Mesh(new T.SphereGeometry(0.16, 16, 10), mat(0xC98B4E)); m.position.x = s * 2.9; mit.add(m); return m; });
+      let fase = 0, tocandoMit = false;
+      const suave = (k) => k * k * (3 - 2 * k), clamp01 = (v) => Math.max(0, Math.min(1, v));
+      function aplicarFase(p) {
+        const i0 = Math.min(4, Math.floor(p)), k = suave(p - i0);
+        for (const g of cromatides) {
+          const a = g.userData.k[i0], b = g.userData.k[Math.min(5, i0 + 1)];
+          g.position.lerpVectors(a.p, b.p, k); g.rotation.z = a.r + (b.r - a.r) * k;
+          g.scale.setScalar(0.25 + 0.75 * clamp01(p / 1.1));
+        }
+        cromatina.material.opacity = 1 - clamp01(p / 0.9);
+        carioteca.material.opacity = 0.32 * (1 - clamp01((p - 0.6) / 0.7));
+        filhas.forEach((f, j) => { f.position.x = (j ? 1 : -1) * 2.4; f.material.opacity = 0.32 * clamp01((p - 3.8) / 0.6); });
+        const sep = p < 3.6 ? 0 : p < 4.6 ? (p - 3.6) * 1.1 : 1.1 + (p - 4.6) * 3.1;
+        membMit.forEach((m, j) => { m.position.x = (j ? 1 : -1) * Math.min(sep, 2.4); m.scale.setScalar(1 - Math.min(sep, 2.4) * 0.1); });
+        const vis = clamp01((p - 0.7) / 0.6) * (1 - clamp01((p - 4.2) / 0.5));
+        fuso.material.opacity = 0.85 * vis; polos.forEach((po) => (po.material.opacity = 1));
+        const arr = fuso.geometry.attributes.position.array;
+        cromatides.forEach((g, j) => { const s = g.userData.s; arr.set([s * 2.9, 0, 0, g.position.x, g.position.y, g.position.z], j * 6); });
+        fuso.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // =============== DNA ===============
+      const dna = new T.Group(); dna.visible = false; c.scene.add(dna);
+      let fita = 'ATGCGTACCTAGGCTAACGT';
+      function montarDNA() {
+        S3D.limpar(dna);
+        const n = fita.length, passo = 0.42, giro = (Math.PI * 2) / 10;
+        const geoB = new T.SphereGeometry(0.2, 16, 10), matAc = mat(0xF4F7FF, { rugosidade: 0.4 }), matFo = mat(0x5D6B94);
+        for (let i = 0; i < n; i++) {
+          const y = (i - n / 2) * passo, a = i * giro, b = fita[i], b2 = PAR[b];
+          const p1 = new T.Vector3(Math.cos(a) * 1.4, y, Math.sin(a) * 1.4), p2 = new T.Vector3(Math.cos(a + Math.PI) * 1.4, y, Math.sin(a + Math.PI) * 1.4);
+          for (const [p, mm] of [[p1, matAc], [p2, matAc]]) { const s = new T.Mesh(geoB, mm); s.position.copy(p); dna.add(s); }
+          const meio = p1.clone().lerp(p2, 0.5);
+          for (const [de, base] of [[p1, b], [p2, b2]]) {
+            const L = de.distanceTo(meio), cil = new T.Mesh(new T.CylinderGeometry(0.12, 0.12, L, 10), mat(COR_BASE[base]));
+            cil.position.copy(de).lerp(meio, 0.5); cil.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), meio.clone().sub(de).normalize());
+            cil.userData = { par: `${b}–${b2}`, i, org: 'dna' }; alvos.push(cil); dna.add(cil);
+          }
+          if (i < n - 1) for (const desloc of [0, Math.PI]) {
+            const a2 = (i + 1) * giro + desloc, q1 = new T.Vector3(Math.cos(a + desloc) * 1.4, y, Math.sin(a + desloc) * 1.4), q2 = new T.Vector3(Math.cos(a2) * 1.4, y + passo, Math.sin(a2) * 1.4);
+            const L = q1.distanceTo(q2), cil = new T.Mesh(new T.CylinderGeometry(0.07, 0.07, L, 8), matFo);
+            cil.position.copy(q1).lerp(q2, 0.5); cil.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), q2.clone().sub(q1).normalize()); dna.add(cil);
+          }
+        }
+        S3D.contorno(dna, 0.025);
+        dna.rotation.z = 0.25;
+        pintarSeq();
+      }
+
+      // =============== painel ===============
+      const gModo = ui.grupo('Modo');
+      let modo = 'celula';
+      ui.segmentado({ opcoes: [{ valor: 'celula', rotulo: 'Célula' }, { valor: 'mitose', rotulo: 'Mitose' }, { valor: 'dna', rotulo: 'DNA' }], valor: modo, pai: gModo, aoMudar: (v) => trocarModo(v) });
+      const pCel = SQ.el('div'), pMit = SQ.el('div', { hidden: true }), pDna = SQ.el('div', { hidden: true });
+      gModo.append(pCel, pMit, pDna);
+      ui.alternar({ rotulo: 'Cortar a célula (ver por dentro)', valor: true, pai: pCel, aoMudar: (v) => { [matMemb, citoplasma.material].forEach((m) => { m.clippingPlanes = v ? [plano] : []; m.needsUpdate = true; }); borda.visible = v; } });
+      ui.alternar({ rotulo: 'Mostrar nomes', valor: false, pai: pCel, aoMudar: (v) => (rotulosCel.visible = v) });
+      const ficha = SQ.el('div', { class: 'leitura', style: { marginTop: '8px' } }, SQ.el('small', null, 'Estrutura'), SQ.el('b', null, 'Clique numa organela'));
+      pCel.append(ficha);
+
+      const fasesEl = SQ.el('div', { class: 'fases' }, ...FASES.map((f) => SQ.el('span', null, f.nome.slice(0, 5) + (f.nome.length > 5 ? '.' : ''))));
+      const sFase = ui.slider({ rotulo: 'Fase', min: 0, max: 5, passo: 0.01, valor: 0, pai: pMit, formatar: (v) => FASES[Math.min(5, Math.round(v))].nome, aoMudar: (v) => { tocandoMit = false; btMit.innerHTML = '▶ Animar'; fase = v; narrarFase(); } });
+      const btMit = ui.botao({ rotulo: '▶ Animar', classe: 'azul pequeno', aoClicar: () => { tocandoMit = !tocandoMit; if (tocandoMit && fase >= 5) fase = 0; btMit.innerHTML = tocandoMit ? '⏸ Pausar' : '▶ Animar'; } });
+      pMit.append(fasesEl, SQ.el('div', { style: { marginTop: '8px' } }, btMit), SQ.el('p', { class: 'miudo texto-suave', style: { margin: '8px 0 0' } }, 'Célula com 2n = 4 cromossomos (dois pares de homólogos, em tons de azul e de vermelho).'));
+
+      const seqEl = SQ.el('div', { class: 'seq' }), compEl = SQ.el('div', { class: 'seq', style: { marginTop: '4px' } }), rnaEl = SQ.el('div', { class: 'seq', style: { marginTop: '4px', background: '#FFF6D6' }, hidden: true });
+      pDna.append(SQ.el('h3', { style: { marginTop: '8px' } }, 'Fita molde e complementar'), seqEl, compEl, rnaEl);
+      ui.linha(pDna,
+        ui.botao({ rotulo: 'Nova sequência', classe: 'branco pequeno', aoClicar: () => { fita = Array.from({ length: 20 }, () => 'ATCG'[Math.floor(Math.random() * 4)]).join(''); rnaEl.hidden = true; montarDNA(); guia.diz('Sequência sorteada. Antes de olhar a fita de baixo, tente escrever a complementar!', { chave: 'dna' }); } }),
+        ui.botao({ rotulo: 'Transcrever (RNA)', classe: 'azul pequeno', aoClicar: () => { rnaEl.hidden = false; rnaEl.innerHTML = 'RNAm: ' + colorir(fita.split('').map((b) => ({ A: 'U', T: 'A', C: 'G', G: 'C' }[b])).join('')); guia.diz('Na <b>transcrição</b>, o RNA é montado a partir da fita molde: cada A vira <b>U</b> (uracila), T vira A, C vira G e G vira C.', { chave: 'dna' }); } }));
+      const colorir = (s) => s.split('').map((b) => `<b style="background:${b === 'U' ? '#FFE79A' : '#' + (COR_BASE[b] || 0xffffff).toString(16).padStart(6, '0') + '55'}">${b}</b>`).join('');
+      function pintarSeq() { seqEl.innerHTML = "5' " + colorir(fita) + " 3'"; compEl.innerHTML = "3' " + colorir(fita.split('').map((b) => PAR[b]).join('')) + " 5'"; }
+
+      function trocarModo(v) {
+        modo = v; cel.visible = v === 'celula'; mit.visible = v === 'mitose'; dna.visible = v === 'dna';
+        pCel.hidden = v !== 'celula'; pMit.hidden = v !== 'mitose'; pDna.hidden = v !== 'dna';
+        c.voarPara(v === 'celula' ? [0, 3.2, 11] : v === 'mitose' ? [0, 1.5, 9.5] : [0, 0.5, 14], [0, 0, 0], 0.8);
+        if (v === 'mitose') { aplicarFase(fase); narrarFase(true); }
+        if (v === 'dna') guia.diz('A dupla-hélice: o "corrimão" é feito de açúcar e fosfato; os "degraus" são pares de bases. <b>A</b> sempre com <b>T</b>, <b>C</b> sempre com <b>G</b>. Clique num degrau.', { chave: 'modo' });
+        if (v === 'celula') guia.diz('De volta à célula animal. Clique numa organela para saber o que ela faz.', { chave: 'modo' });
+      }
+      let faseNarrada = -1;
+      function narrarFase(forcar) {
+        const i = Math.min(5, Math.round(fase));
+        [...fasesEl.children].forEach((s, j) => s.classList.toggle('ativa', j === i));
+        if (i !== faseNarrada || forcar) { faseNarrada = i; guia.diz(`<b>${FASES[i].nome}</b>: ${FASES[i].d}`, { chave: 'fase' }); }
+      }
+
+      let selecionado = null;
+      c.escolher(() => alvos.filter((a) => (modo === 'celula' ? a.userData.org !== 'dna' : modo === 'dna' && a.userData.org === 'dna')), (obj) => {
+        if (!obj) return;
+        if (obj.userData.org === 'dna') {
+          const [b1, b2] = obj.userData.par.split('–');
+          guia.diz(`Par ${obj.userData.i + 1}: <b>${b1} (${NOME_BASE[b1]})</b> com <b>${b2} (${NOME_BASE[b2]})</b>, unidas por ${b1 === 'A' || b1 === 'T' ? '2' : '3'} ligações de hidrogênio.`, { chave: 'dna' });
+          return;
+        }
+        const o = ORGANELAS[obj.userData.org];
+        ficha.querySelector('b').textContent = o.nome;
+        guia.diz(`<b>${o.nome}</b>: ${o.f} Analogia: ${o.analogia}.`, { chave: 'org' });
+        if (selecionado && selecionado.material && selecionado.material.emissive) selecionado.material.emissive.set(0x000000);
+        selecionado = obj; if (obj.material && obj.material.emissive) { obj.material = obj.material.clone(); obj.material.emissive.set(0x554400); }
+      });
+
+      c.aoQuadro((dt) => {
+        if (modo === 'celula') cel.rotation.y += dt * 0.06;
+        if (modo === 'dna') dna.rotation.y += dt * 0.35;
+        if (modo === 'mitose') {
+          if (tocandoMit) { fase = Math.min(5, fase + dt * 0.35); sFase.valor = fase; narrarFase(); if (fase >= 5) { tocandoMit = false; btMit.innerHTML = '▶ Animar'; } }
+          aplicarFase(fase);
+        }
+      });
+      [matMemb, citoplasma.material].forEach((m) => (m.clippingPlanes = [plano]));
+      guia.contexto = () => ({ modo, fase: FASES[Math.min(5, Math.round(fase))].nome, selecionado: selecionado && ORGANELAS[selecionado.userData.org]?.nome, fita });
+      montarDNA(); aplicarFase(0);
+    },
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biblioteca de materiais — SQUEMA</title>
+  <meta name="description" content="Repositório dos materiais SQUEMA: demonstrações, esquemas, modelos 3D livres recoloridos, marca, ícones, dados e créditos.">
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="assets/icones/livros.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/squema.css">
+  <style>
+    .bib-cabeca { display: flex; gap: 22px; align-items: center; padding: 30px 0 6px; color: #fff; flex-wrap: wrap; }
+    .bib-cabeca img { width: 110px; }
+    .bib-cabeca h1 { color: #fff; margin: 0; text-shadow: 0 4px 0 var(--azul-escuro); }
+    .bib-cabeca p { color: #DCE8FF; margin: 6px 0 0; max-width: 680px; }
+    .abas { position: sticky; top: 62px; z-index: 20; display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 0; }
+    .abas a { text-decoration: none; }
+    .filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filtros input { max-width: 340px; } .filtros select { max-width: 240px; }
+    .card-demo { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .card-demo .capa { aspect-ratio: 16 / 9; background: linear-gradient(180deg, #DFF1FF, #F6FBFF); border-bottom: 3px solid var(--tinta); position: relative; overflow: hidden; }
+    .card-demo .capa img.foto { width: 100%; height: 100%; object-fit: cover; }
+    .card-demo .capa img.ic { position: absolute; inset: 0; margin: auto; width: 80px; height: 80px; object-fit: contain; }
+    .card-demo .corpo { padding: 12px 14px 14px; display: grid; gap: 6px; }
+    .card-demo h3 { margin: 0; font-size: 19px; }
+    .card-demo p { margin: 0; font-size: 13px; color: var(--texto-suave); }
+    .lista-esquemas { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
+    .item-esq { display: flex; gap: 12px; align-items: center; text-decoration: none; padding: 12px 14px; }
+    .item-esq img { width: 44px; height: 44px; object-fit: contain; flex: none; }
+    .item-esq b { display: block; color: var(--tinta); }
+    .item-esq small { color: var(--texto-suave); font-weight: 700; }
+    .item-esq .selo-status { margin-left: auto; }
+
+    .visor { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; }
+    .visor .palco { height: 460px; min-height: 0; }
+    .lista-modelos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; }
+    .lista-modelos button { text-align: left; border: 2px solid var(--tinta); background: #fff; border-radius: 14px; padding: 9px 11px; box-shadow: 0 3px 0 var(--linha); }
+    .lista-modelos button[aria-pressed="true"] { background: var(--amarelo); box-shadow: 0 3px 0 var(--amarelo-escuro); }
+    .lista-modelos b { display: block; font-size: 14px; color: var(--tinta); }
+    .lista-modelos small { font-size: 12px; color: var(--texto-suave); font-weight: 700; }
+    @media (max-width: 900px) { .visor { grid-template-columns: 1fr; } .visor .palco { height: 360px; } }
+
+    .grade-icones { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .icone-card { display: grid; justify-items: center; gap: 6px; padding: 12px 8px; text-decoration: none; background: var(--nevoa); border: 2px solid var(--linha); border-radius: 16px; }
+    .icone-card:hover { border-color: var(--tinta); background: #fff; }
+    .icone-card img { width: 72px; height: 72px; object-fit: contain; }
+    .icone-card span { font: 800 12px/1.2 var(--fonte-mono); color: var(--texto-suave); text-align: center; word-break: break-all; }
+    .logos { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .logos a { display: grid; place-items: center; gap: 8px; padding: 16px; border-radius: 18px; text-decoration: none; background: linear-gradient(180deg, #2A6BF2, #133AA6); border: 3px solid var(--tinta); color: #fff; font-weight: 800; font-size: 13px; }
+    .logos img { max-height: 150px; width: auto; }
+    @media (max-width: 760px) { .logos { grid-template-columns: 1fr; } }
+    .paleta { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    .cor { border: 2px solid var(--tinta); border-radius: 14px; overflow: hidden; background: #fff; text-align: left; padding: 0; }
+    .cor i { display: block; height: 56px; border-bottom: 2px solid var(--tinta); }
+    .cor span { display: block; padding: 6px 9px; font-size: 13px; font-weight: 800; color: var(--tinta); }
+    .cor small { display: block; font: 700 12px var(--fonte-mono); color: var(--texto-suave); }
+    .creditos td:nth-child(3) { white-space: nowrap; }
+  </style>
+</head>
+<body data-raiz="">
+  <noscript><p style="background:#fff;padding:16px;margin:0">Ative o JavaScript para navegar pela biblioteca.</p></noscript>
+  <script src="js/catalogo.js"></script>
+  <script src="js/squema.js"></script>
+  <script src="vendor/three.squema.js"></script>
+  <script src="js/squema3d.js"></script>
+  <script src="assets/modelos/catalogo.js"></script>
+  <script>
+  (function () {
+    const { el, esc, estrelas, iconeArea, dados } = SQ;
+    const pagina = SQ.moldura({ ativo: 'biblioteca', trilha: [{ rotulo: 'Biblioteca de materiais' }] });
+    const prontas = dados.SISTEMAS.filter((s) => s.demo);
+    const MODELOS = window.SQUEMA_CATALOGO_MODELOS || [];
+
+    pagina.insertAdjacentHTML('beforeend', `
+      <section class="conteudo bib-cabeca">
+        <img src="assets/icones/livros.webp" alt="">
+        <div><h1>Biblioteca de materiais</h1><p>O repositório de tudo o que forma os casos SQUEMA: demonstrações, esquemas, modelos 3D, marca, ícones e dados — com origem e licença de cada item.</p></div>
+      </section>
+      <nav class="conteudo abas" aria-label="Seções da biblioteca">
+        <a class="botao pequeno" href="#demos">Demonstrações (${prontas.length})</a>
+        <a class="botao branco pequeno" href="#esquemas">Esquemas (${dados.SISTEMAS.length})</a>
+        <a class="botao branco pequeno" href="#modelos">Modelos 3D (${MODELOS.length})</a>
+        <a class="botao branco pequeno" href="#marca">Marca e ícones</a>
+        <a class="botao branco pequeno" href="#dados">Dados</a>
+        <a class="botao branco pequeno" href="#creditos">Créditos</a>
+      </nav>`);
+
+    // ---------- demonstrações ----------
+    const busca = el('input', { type: 'text', placeholder: 'Buscar demonstração…', 'aria-label': 'Buscar demonstração' });
+    const fArea = el('select', { 'aria-label': 'Filtrar por área' }, el('option', { value: '' }, 'Todas as áreas'), ...dados.AREAS.map((a) => el('option', { value: a.id }, a.nome)));
+    const fTipo = el('select', { 'aria-label': 'Filtrar por tipo' }, ...[['', 'Todos os tipos'], ['3D', 'Só 3D'], ['2D', 'Só 2D'], ['modelos livres', 'Com modelos livres'], ['áudio', 'Com áudio']].map(([v, r]) => el('option', { value: v }, r)));
+    const gradeDemos = el('div', { class: 'grade grade-cards' });
+    function pintarDemos() {
+      const q = SQ.semAcento(busca.value);
+      gradeDemos.innerHTML = '';
+      const lista = prontas.filter((s) => (!fArea.value || s.area === fArea.value) && (!fTipo.value || (s.tags || []).includes(fTipo.value)) &&
+        (!q || SQ.semAcento(`${s.nome} ${s.resumo} ${dados.areaPorId[s.area].nome}`).includes(q)));
+      for (const s of lista) {
+        const a = dados.areaPorId[s.area];
+        gradeDemos.append(el('a', { class: 'bloco bloco-link card-demo', href: s.demo, style: { '--cor-area': a.cor }, html: `
+          <div class="capa"><img class="ic" src="${iconeArea(a)}" alt=""><img class="foto" src="assets/capturas/${s.id}.webp" alt="" loading="lazy" onerror="this.remove()"></div>
+          <div class="corpo"><div class="flex entre"><span class="chip">${esc(a.nome)}</span>${estrelas(s.potencial)}</div>
+          <h3>${esc(s.nome)}</h3><p>${esc(s.resumo)}</p><p><b>${esc((s.tags || []).join(' · '))}</b></p></div>` }));
+      }
+      if (!lista.length) gradeDemos.append(el('p', { class: 'bloco' }, 'Nenhuma demonstração com esses filtros.'));
+    }
+    [busca, fArea, fTipo].forEach((c) => c.addEventListener(c === busca ? 'input' : 'change', pintarDemos));
+    pagina.append(el('section', { class: 'secao conteudo', id: 'demos', style: { paddingTop: '20px' } },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Demonstrações</h2><p>Abra direto do disco ou de uma hospedagem estática. Cada demo traz o esquema do caso no fim da página.</p></div>' }),
+      el('div', { class: 'filtros' }, busca, fArea, fTipo), gradeDemos));
+    pintarDemos();
+
+    // ---------- esquemas ----------
+    pagina.append(el('section', { class: 'secao conteudo', id: 'esquemas' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Esquemas</h2><p>Todos os casos do mapa. Os marcados como roteiro têm esquema e plano da demonstração, prontos para construir.</p></div>' }),
+      el('div', { class: 'lista-esquemas' }, ...dados.SISTEMAS.map((s) => {
+        const a = dados.areaPorId[s.area];
+        return el('a', { class: 'bloco bloco-link item-esq', href: `area.html?a=${s.area}#${s.id}`, html: `
+          <img src="${iconeArea(a)}" alt=""><span><b>${esc(s.nome)}</b><small>${esc(a.nome)} · ${esc(s.visualizar)}</small></span>
+          <span class="selo-status ${s.demo ? 'pronta' : 'roteiro'}">${s.demo ? '● Demo' : '◐ Roteiro'}</span>` });
+      }))));
+
+    // ---------- modelos 3D ----------
+    const palco = el('div', { class: 'palco', 'aria-label': 'Visualizador de modelo 3D' }, el('div', { class: 'palco-dica' }, 'Arraste para girar · role para aproximar'));
+    const info = el('div', { class: 'bloco' });
+    const lista = el('div', { class: 'lista-modelos' });
+    pagina.append(el('section', { class: 'secao conteudo', id: 'modelos' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Modelos 3D livres</h2><p>Baixados de repositórios abertos no GitHub, recoloridos para a paleta SQUEMA e otimizados por <code>ferramentas/preparar-modelos.mjs</code>. Cada um pode ser baixado como .glb.</p></div>' }),
+      el('div', { class: 'visor' }, el('div', { class: 'bloco palco-bloco' }, palco), info), lista));
+
+    let cena = null, atual = null, mixer = null;
+    try {
+      cena = S3D.cena(palco, { camera: [3.2, 2.4, 4.2], alvo: [0, 0.8, 0], autoGirar: 1.4, distancia: [1.5, 14], sombraRaio: 4 });
+      cena.scene.add(S3D.chao(2.6));
+      cena.aoQuadro((dt) => mixer && mixer.update(dt));
+    } catch (e) { palco.append(el('div', { class: 'hud-caixa', style: { margin: '16px' } }, 'WebGL indisponível neste navegador.')); }
+
+    function baixarGLB(m) {
+      const b64 = window.SQUEMA_MODELOS[m.id].glb, bin = atob(b64), u = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      const url = URL.createObjectURL(new Blob([u], { type: 'model/gltf-binary' }));
+      const a = el('a', { href: url, download: `squema-${m.id}.glb` }); document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    async function mostrar(m) {
+      lista.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === m.id)));
+      info.innerHTML = `<h3>${esc(m.nome)}</h3><p class="mb0"><span class="chip claro">${esc(m.en)}</span> <span class="chip" style="background:var(--verde)">${esc(m.licenca)}</span></p>
+        <p class="miudo" style="margin-top:10px">${esc(m.credito)}</p>
+        <p class="miudo texto-suave">${(m.bytes / 1024).toFixed(0)} KB${m.animacoes.length ? ` · ${m.animacoes.length} animações` : ''} · <a href="${esc(m.pagina)}" target="_blank" rel="noopener">fonte original</a></p>
+        <div class="ctrl" id="anim-ctrl"></div><button class="botao azul pequeno" type="button" id="baixar">Baixar .glb recolorido</button>`;
+      info.querySelector('#baixar').addEventListener('click', async () => { await S3D.carregarModelo(m.id); baixarGLB(m); });
+      if (!cena) return;
+      if (atual) { cena.scene.remove(atual); atual = null; mixer = null; }
+      const r = await S3D.instancia(m.id, { tamanho: m.id === 'robo' || m.id === 'personagem' ? 2 : 2.2, porAltura: m.id === 'robo' });
+      atual = r.obj; cena.scene.add(atual); mixer = r.mixer;
+      if (r.animacoes.length) {
+        const nomes = r.animacoes.map((a) => a.name);
+        const pref = ['Idle', 'Survey', 'idle', 'Walking', 'Walk'].find((n) => nomes.includes(n)) || nomes[0];
+        let acao = r.acoes[pref]; acao.play();
+        SQ.ui.select({ rotulo: 'Animação', opcoes: nomes, valor: pref, pai: info.querySelector('#anim-ctrl'),
+          aoMudar: (v) => { acao.fadeOut(0.25); acao = r.acoes[v]; acao.reset().fadeIn(0.25).play(); } });
+      }
+    }
+    for (const m of MODELOS) {
+      const b = el('button', { type: 'button', 'data-id': m.id, 'aria-pressed': 'false' }, el('b', null, m.nome), el('small', null, `${m.en} · ${m.licenca}`));
+      b.addEventListener('click', () => mostrar(m)); lista.append(b);
+    }
+    if (MODELOS.length) mostrar(MODELOS[0]);
+
+    // ---------- marca e ícones ----------
+    const ICONES = ['ampulheta', 'atomo', 'calculadora', 'cerebro', 'codigo', 'coliseu', 'dna', 'engrenagem', 'esquadro', 'frasco-roxo', 'frasco-verde', 'galeria', 'globo', 'grafico', 'lampada', 'livro-aberto', 'livros', 'lupa', 'mapa', 'notebook', 'pergaminho', 'planeta', 'planta', 'triangulo'];
+    const PALETA = [['Amarelo', '#FFC21A'], ['Laranja', '#FF9416'], ['Azul', '#1F5BE0'], ['Azul escuro', '#1236A8'], ['Celeste', '#2BB4F5'], ['Verde', '#36C04A'], ['Roxo', '#8B3DFF'], ['Rosa', '#FF6B8A'], ['Vermelho', '#EE3B45'], ['Marrom', '#C98B4E'], ['Névoa', '#F4F7FF'], ['Tinta', '#0B1438']];
+    const marca = el('section', { class: 'secao conteudo', id: 'marca' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Marca e ícones</h2><p>Logotipos, mascote e ícones recortados das artes enviadas (fundo transparente, WebP). Clique para baixar.</p></div>' }));
+    marca.append(el('div', { class: 'bloco', html: `
+      <div class="logos">
+        <a href="assets/marca/logo-hero.webp" download><img src="assets/marca/logo-hero.webp" alt="Logotipo com mascote">logo-hero.webp</a>
+        <a href="assets/marca/logo-wordmark.webp" download><img src="assets/marca/logo-wordmark.webp" alt="Logotipo SQUEMA">logo-wordmark.webp</a>
+        <a href="assets/marca/mascote.webp" download><img src="assets/marca/mascote.webp" alt="Mascote">mascote.webp</a>
+      </div>
+      <h3>Ícones</h3>
+      <div class="grade-icones">
+        ${ICONES.map((n) => `<a class="icone-card" href="assets/icones/${n}.webp" download><img src="assets/icones/${n}.webp" alt="${n}" loading="lazy"><span>${n}.webp</span></a>`).join('')}
+        <a class="icone-card" href="assets/icones/musica.svg" download><img src="assets/icones/musica.svg" alt="musica"><span>musica.svg</span></a>
+        <a class="icone-card" href="assets/icones/sociedade.svg" download><img src="assets/icones/sociedade.svg" alt="sociedade"><span>sociedade.svg</span></a>
+        <a class="icone-card" href="assets/marca/avatar.webp" download><img src="assets/marca/avatar.webp" alt="avatar" style="border-radius:50%"><span>avatar.webp</span></a>
+        <a class="icone-card" href="assets/marca/logo-squema.webp" download><img src="assets/marca/logo-squema.webp" alt="logo-squema"><span>logo-squema.webp</span></a>
+      </div>
+      <h3 style="margin-top:22px">Paleta</h3>
+      <p class="miudo texto-suave">Extraída do logotipo e dos ícones. A mesma paleta recolore os modelos 3D. Clique para copiar o código.</p>
+      <div class="paleta">${PALETA.map(([n, h]) => `<button class="cor" type="button" data-hex="${h}"><i style="background:${h}"></i><span>${n}<small>${h}</small></span></button>`).join('')}</div>` }));
+    marca.querySelectorAll('.cor').forEach((b) => b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(b.dataset.hex); b.querySelector('small').textContent = 'copiado!'; setTimeout(() => (b.querySelector('small').textContent = b.dataset.hex), 1200); } catch (e) { /* sem área de transferência */ }
+    }));
+    pagina.append(marca);
+
+    // ---------- dados ----------
+    pagina.append(el('section', { class: 'secao conteudo', id: 'dados' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Dados</h2><p>Conjuntos embutidos como scripts — por isso as demos funcionam sem servidor.</p></div>' }),
+      el('div', { class: 'grade grade-cards', html: `
+        <div class="bloco"><img src="assets/icones/globo.webp" alt="" style="width:64px"><h3 style="margin-top:8px">assets/dados/mundo.js</h3><p class="miudo texto-suave">177 países do Natural Earth 1:110m (domínio público) com nome em português, continente, sub-região, população, PIB e faixa de renda. Usado em Terra Interativa.</p></div>
+        <div class="bloco"><img src="assets/icones/frasco-roxo.webp" alt="" style="width:64px"><h3 style="margin-top:8px">assets/dados/moleculas.js</h3><p class="miudo texto-suave">17 estruturas 3D: moléculas simples com geometria de referência e arquivos PDB dos exemplos do three.js (cafeína, glicose, fulereno, NaCl…).</p></div>
+        <div class="bloco"><img src="assets/icones/pergaminho.webp" alt="" style="width:64px"><h3 style="margin-top:8px">docs/mapa_sistemas_educacionais_IA.md</h3><p class="miudo texto-suave">O mapa original com os 35 sistemas. O catálogo em <code>js/catalogo.js</code> parte dele e acrescenta resumo, objetivos e roteiros.</p><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Abrir .md</a></div>` })));
+
+    // ---------- créditos ----------
+    const linhas = [
+      ...MODELOS.map((m) => [`Modelo 3D — ${m.nome}`, m.credito, m.licenca, m.pagina]),
+      ['Biblioteca 3D', 'three.js r180 e addons (OrbitControls, GLTFLoader, CSS2DRenderer, SkeletonUtils…)', 'MIT', 'https://github.com/mrdoob/three.js'],
+      ['Países', 'Natural Earth — 1:110m Cultural Vectors (Tom Patterson, Nathaniel Vaughn Kelso e colaboradores)', 'Domínio público', 'https://www.naturalearthdata.com/'],
+      ['Moléculas PDB', 'Arquivos dos exemplos do three.js, gerados pelo NCI/CADD Chemical Identifier Resolver', 'MIT (repositório)', 'https://github.com/mrdoob/three.js/tree/dev/examples/models/pdb'],
+      ['Fontes', 'Baloo 2 (Ek Type) e Nunito (Vernon Adams et al.) via Google Fonts', 'SIL OFL 1.1', 'https://fonts.google.com/'],
+      ['Marca', 'Logotipos, mascote e ícones SQUEMA enviados pelo projeto; recortes e o avatar gerados a partir deles', 'Projeto SQUEMA', ''],
+    ];
+    pagina.append(el('section', { class: 'secao conteudo', id: 'creditos' },
+      el('div', { class: 'secao-titulo', html: '<div><h2>Créditos e licenças</h2><p>Todo material de terceiros é livre: CC0 (domínio público), CC BY (com atribuição, listada aqui), MIT ou OFL.</p></div>' }),
+      el('div', { class: 'bloco' }, el('div', { class: 'tabela-wrap' }, el('table', { class: 'tabela creditos', html: `
+        <thead><tr><th>Item</th><th>Autoria</th><th>Licença</th><th>Fonte</th></tr></thead>
+        <tbody>${linhas.map(([i, a, l, f]) => `<tr><td><b>${esc(i)}</b></td><td>${esc(a)}</td><td>${esc(l)}</td><td>${f ? `<a href="${esc(f)}" target="_blank" rel="noopener">link</a>` : '—'}</td></tr>`).join('')}</tbody>` })))));
+    if (location.hash) setTimeout(() => document.getElementById(location.hash.slice(1))?.scrollIntoView(), 80);
+  })();
+  </script>
+</body>
+</html>
