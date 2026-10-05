@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Debate IA — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/cerebro.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .rodada { background: var(--nevoa); border: 2px solid var(--linha); border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .rodada .quem { font: 900 11px var(--fonte); text-transform: uppercase; letter-spacing: .05em; color: var(--vermelho); }
+    .opcoes { display: grid; gap: 6px; margin-top: 8px; }
+    .opcoes button { text-align: left; border: 2px solid var(--tinta); border-radius: 12px; background: #fff; padding: 6px 10px; font-size: 13px; font-weight: 800; color: var(--tinta); }
+    .opcoes button:hover { background: var(--celeste-claro); }
+    textarea.arg { min-height: 70px; font-size: 14px; margin-top: 8px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  // questão → posições { id, nome, autores, tese, razoes[], objecoes[[objeção, réplica]] }
+  const QUESTOES = {
+    livre: { titulo: 'Existe livre-arbítrio?', posicoes: [
+      { id: 'lib', nome: 'Liberdade radical', autores: 'Sartre (existencialismo)', tese: 'Somos livres: nossas escolhas não estão decididas de antemão.', razoes: ['Sentimos que poderíamos ter escolhido outra coisa — e nos arrependemos.', '“O homem está condenado a ser livre”: mesmo não escolher já é uma escolha (Sartre).'], objecoes: [['A sensação de liberdade pode ser ilusão: não percebemos as causas que nos movem.', 'Mesmo influenciados, ainda precisamos decidir o que fazer com essas influências.'], ['A neurociência mostra atividade cerebral antes de termos consciência da decisão.', 'Esses experimentos medem gestos simples; decisões importantes envolvem deliberação longa.']] },
+      { id: 'det', nome: 'Determinismo', autores: 'Espinosa, Laplace', tese: 'Tudo tem uma causa, inclusive nossas escolhas: a liberdade é ilusão.', razoes: ['Na natureza, todo evento tem causas anteriores; o cérebro também é natureza.', 'Espinosa: os homens se julgam livres porque conhecem seus desejos, mas ignoram as causas deles.'], objecoes: [['Se nada é livre, como responsabilizar alguém por um crime?', 'Ainda faz sentido punir para proteger a sociedade e mudar comportamentos futuros.'], ['A física quântica mostra eventos que não são totalmente determinados.', 'Acaso não é liberdade: um ato aleatório também não seria “meu”.']] },
+      { id: 'comp', nome: 'Compatibilismo', autores: 'Hume', tese: 'Liberdade é agir conforme a própria vontade, sem coação — e isso é compatível com causas.', razoes: ['Quem age sem ser forçado age livremente, mesmo que sua vontade tenha causas.', 'Responsabilizamos pessoas justamente porque seus atos vêm do seu caráter.'], objecoes: [['Se minha vontade foi causada por fatores que não escolhi, ela é mesmo minha?', 'É minha porque é parte de quem eu sou: ninguém escolhe ser quem é do zero.'], ['Parece só trocar a definição de liberdade para resolver o problema.', 'É esclarecer o conceito: no dia a dia, “livre” significa justamente não ser coagido.']] },
+    ] },
+    moral: { titulo: 'O que torna uma ação moralmente certa?', posicoes: [
+      { id: 'util', nome: 'Utilitarismo', autores: 'Bentham, Stuart Mill', tese: 'É certa a ação que produz a maior felicidade para o maior número de pessoas.', razoes: ['Todos buscam a felicidade e evitam o sofrimento: é um critério universal.', 'Permite comparar consequências de forma racional, como em políticas públicas.'], objecoes: [['E se sacrificar um inocente fizer muita gente feliz?', 'Mill distingue regras: uma sociedade que pune inocentes gera insegurança e mais sofrimento.'], ['Como medir e comparar a felicidade de pessoas diferentes?', 'Não é preciso exatidão: dá para estimar consequências prováveis, como fazemos sempre.']] },
+      { id: 'kant', nome: 'Deontologia', autores: 'Kant', tese: 'É certa a ação feita por dever, seguindo uma regra que poderia valer para todos.', razoes: ['Imperativo categórico: aja de modo que sua regra possa virar lei universal.', 'Pessoas são fins em si mesmas, nunca apenas meios.'], objecoes: [['Mentir para salvar alguém de um assassino seria errado?', 'Defensores atuais de Kant aceitam hierarquizar deveres: proteger a vida pesa mais.'], ['Seguir regras sem olhar consequências pode causar desastres.', 'Sem regras fixas, qualquer injustiça poderia ser justificada por “bons resultados”.']] },
+      { id: 'virt', nome: 'Ética das virtudes', autores: 'Aristóteles', tese: 'É certa a ação que uma pessoa virtuosa faria: a virtude é a justa medida.', razoes: ['A moral não é só cálculo nem regra: é formar o caráter (coragem, justiça, temperança).', 'Virtudes se aprendem pela prática, como tocar um instrumento.'], objecoes: [['“Faça o que o virtuoso faria” não diz o que fazer num dilema concreto.', 'A prudência (phronesis) é justamente a virtude de decidir bem em situações concretas.'], ['O que é virtude muda de uma cultura para outra.', 'Algumas virtudes, como justiça e coragem, aparecem em quase todas as culturas.']] },
+    ] },
+    conhecimento: { titulo: 'De onde vem o conhecimento?', posicoes: [
+      { id: 'rac', nome: 'Racionalismo', autores: 'Descartes', tese: 'O conhecimento seguro vem da razão, não dos sentidos.', razoes: ['Os sentidos enganam: um remo parece quebrado dentro da água.', '“Penso, logo existo”: uma certeza alcançada só pela razão.'], objecoes: [['Sem experiência, de onde viriam as ideias de cor, som ou sabor?', 'A razão não cria as sensações, mas é ela que as organiza e corrige.'], ['A matemática é racional, mas a ciência precisa de experimentos.', 'E os experimentos só fazem sentido dentro de teorias formuladas pela razão.']] },
+      { id: 'emp', nome: 'Empirismo', autores: 'Locke, Hume', tese: 'Todo conhecimento vem da experiência: a mente nasce como uma “tábula rasa”.', razoes: ['Um cego de nascença não tem a ideia de cor vermelha.', 'A ciência avança testando hipóteses na experiência.'], objecoes: [['A experiência mostra que o sol nasceu até hoje; nada garante que nasça amanhã (problema da indução).', 'Hume admite: é hábito, não certeza — mas é o melhor guia que temos.'], ['Como a experiência explica verdades necessárias, como 2 + 2 = 4?', 'Para empiristas, são relações entre ideias, que não dizem nada sobre o mundo.']] },
+      { id: 'crit', nome: 'Criticismo', autores: 'Kant', tese: 'O conhecimento começa com a experiência, mas a razão dá as formas que a organizam.', razoes: ['Espaço, tempo e causalidade não vêm da experiência: são condições para ter experiência.', 'Concilia o melhor do racionalismo e do empirismo.'], objecoes: [['Então nunca conhecemos as coisas como elas são em si mesmas?', 'Exato — mas o conhecimento dos fenômenos é universal e seguro, e isso basta à ciência.'], ['A física moderna mudou nossas ideias de espaço e tempo.', 'O ponto de Kant é que precisamos de alguma forma de organizar a experiência, não de uma geometria específica.']] },
+    ] },
+    lei: { titulo: 'Devemos obedecer a uma lei injusta?', posicoes: [
+      { id: 'socr', nome: 'Obediência às leis', autores: 'Sócrates (no diálogo Críton, de Platão)', tese: 'Devemos obedecer às leis da cidade, mesmo quando elas nos prejudicam.', razoes: ['Quem vive na cidade aceitou um “acordo” com suas leis.', 'Se cada um desobedece quando discorda, a ordem coletiva desaba.'], objecoes: [['E se a lei mandar discriminar ou perseguir pessoas?', 'Sócrates aceitaria tentar convencer a cidade a mudar a lei — mas sem fugir da punição.'], ['Ninguém escolheu de verdade nascer naquele “acordo”.', 'Ao permanecer e usufruir dos benefícios, a pessoa aceita tacitamente as regras.']] },
+      { id: 'desob', nome: 'Desobediência civil', autores: 'Thoreau, Martin Luther King Jr.', tese: 'Temos o dever moral de desobedecer, de forma pacífica e pública, a leis injustas.', razoes: ['Uma lei injusta não obriga a consciência (King, Carta da prisão de Birmingham).', 'Mudanças históricas — como o fim da segregação racial nos EUA — vieram dessa resistência.'], objecoes: [['Quem decide o que é injusto? Cada um terá sua opinião.', 'A desobediência é pública e aceita a punição justamente para ser avaliada por todos.'], ['Isso não abriria espaço para qualquer grupo ignorar leis de que não gosta?', 'Por isso ela deve ser pacífica, em nome de princípios universais e com os canais legais esgotados.']] },
+    ] },
+  };
+  const FALACIAS = [
+    [/\b(todo mundo|todos acham|a maioria acha|ninguém acha)\b/i, 'Apelo à popularidade', 'algo não é verdadeiro só porque muita gente acredita'],
+    [/\b(sempre foi assim|desde sempre|tradição)\b/i, 'Apelo à tradição', 'ser antigo não prova que é certo'],
+    [/\b(burro|idiota|ignorante|não entende nada|quem pensa assim é)\b/i, 'Ataque à pessoa (ad hominem)', 'critique o argumento, não quem o defende'],
+    [/\b(ou (você|a gente)|só existem duas)\b.*\bou\b/i, 'Falso dilema', 'pode haver mais de duas alternativas'],
+    [/\b(vai acabar|vai virar|logo depois virá|daqui a pouco)\b/i, 'Ladeira escorregadia', 'mostre por que uma coisa levaria à outra'],
+  ];
+  const MARCAS = { razao: /\b(porque|pois|já que|uma vez que|visto que|dado que)\b/i, exemplo: /\b(por exemplo|como no caso|imagine|como quando)\b/i, conclusao: /\b(portanto|logo|assim|por isso|então)\b/i, concessao: /\b(embora|apesar|mesmo que|é verdade que|concordo que)\b/i };
+
+  SQ.demo('debate-ia', {
+    fundo: 'papel',
+    dica: 'Clique numa posição para expandir razões, objeções e réplicas',
+    sala: ['Divida a turma em grupos, um por posição; cada grupo defende a tese e responde às objeções do mapa.', 'Peça que cada aluno escreva um argumento com tese, razão, exemplo e conclusão — e use o detector de falácias.', 'Depois do debate, cada um escreve qual objeção mais o fez repensar.'],
+    comoIA: 'O guia assume uma posição filosófica contrária à do aluno e apresenta objeções em sequência. Ele analisa a resposta escrita (há razão? exemplo? concessão? alguma falácia?) e contra-argumenta com base no mapa. Com uma IA conectada, o debate fica aberto, mantendo a estrutura de tese, razões e objeções.',
+    guia: {
+      ola: 'Escolha uma questão filosófica e explore o <b>mapa de argumentos</b>. Quando estiver pronto, escolha sua posição e clique em <b>⚔️ Debater</b>: eu defendo o outro lado!',
+      perguntas: [
+        { p: 'O que é um argumento?', chaves: ['argumento', 'premissa', 'conclusao'], r: 'Um conjunto de <b>premissas</b> (razões) que sustentam uma <b>conclusão</b> (tese). Um bom argumento tem premissas verdadeiras e uma ligação lógica entre elas e a conclusão.' },
+        { p: 'Objeção é o mesmo que ataque?', chaves: ['objecao', 'ataque', 'critica'], r: 'Não! A objeção critica uma <b>ideia</b>, mostrando um problema ou contraexemplo. Responder bem a objeções (réplica) fortalece um argumento. Atacar a pessoa é uma falácia.' },
+        { p: 'O que é falácia?', chaves: ['falacia', 'falacias'], r: 'Um raciocínio que <b>parece</b> válido, mas não é. Ex.: apelo à popularidade (“todo mundo acha”), ad hominem (atacar a pessoa), falso dilema (“ou isto ou aquilo”).' },
+        { p: 'Avalie meu argumento', chaves: ['avalie', 'meu argumento'], r: (c) => c.avaliacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let q = 'livre', aberta = null, nos = [], foco = null;
+      const D = { ativo: false, minha: null, ia: null, i: 0, pontos: 0, respostas: [] };
+      const Q = () => QUESTOES[q];
+
+      function quebrar(ctx, txt, larg, tam) { ctx.font = `800 ${tam}px Nunito, "Segoe UI", system-ui, sans-serif`; const ws = txt.split(' '), ls = []; let l = ''; for (const w of ws) { const t = l ? l + ' ' + w : w; if (ctx.measureText(t).width > larg && l) { ls.push(l); l = w; } else l = t; } if (l) ls.push(l); return ls; }
+      function no(ctx, x, y, w, tipo, txt, cor, extra = {}) {
+        const tam = extra.tam || 12, ls = quebrar(ctx, txt, w - 20, tam), h = 26 + ls.length * (tam + 4);
+        const destaque = foco && foco === extra.id;
+        d.bloco(ctx, x, y, w, h, { cor: destaque ? '#FFF6D6' : '#fff', r: 12, alt: 3, esp: destaque ? 3.5 : 2.2, sombra: cor });
+        ctx.fillStyle = cor; d.rr(ctx, x + 8, y + 7, ctx.measureText(tipo).width * 0.85 + 14, 15, 5); ctx.fill();
+        d.texto(ctx, tipo, x + 15, y + 15, { tam: 9, base: 'middle', cor: '#fff', peso: 900 });
+        ls.forEach((l, k) => d.texto(ctx, l, x + 10, y + 34 + k * (tam + 4), { tam, cor: C.tinta }));
+        nos.push({ x, y, w, h, ...extra });
+        return h;
+      }
+      function desenhar() {
+        const { ctx, w } = tela; ctx.clearRect(0, 0, w, tela.h); nos = [];
+        const ps = Q().posicoes, colW = Math.min(260, (w - 40 - (ps.length - 1) * 14) / ps.length);
+        const hQ = no(ctx, w / 2 - 190, 14, 380, 'QUESTÃO', Q().titulo, C.tinta, { tam: 16, id: 'q' });
+        const y1 = 14 + hQ + 34, xs = ps.map((_, i) => w / 2 - (ps.length * colW + (ps.length - 1) * 14) / 2 + i * (colW + 14));
+        let maxH = 0;
+        ps.forEach((p, i) => {
+          ctx.strokeStyle = C.tinta; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(w / 2, 14 + hQ); ctx.bezierCurveTo(w / 2, y1 - 14, xs[i] + colW / 2, 14 + hQ + 10, xs[i] + colW / 2, y1); ctx.stroke();
+          const minha = D.ativo && D.minha === p.id, ia = D.ativo && D.ia === p.id;
+          const h = no(ctx, xs[i], y1, colW, `TESE · ${p.nome.toUpperCase()}${minha ? ' · VOCÊ' : ia ? ' · GUIA' : ''}`, p.tese, minha ? C.azul : ia ? C.vermelho : C.roxo, { id: 'p:' + p.id, pos: p.id });
+          d.texto(ctx, p.autores, xs[i] + colW / 2, y1 + h + 14, { tam: 11, alinhar: 'center', cor: C.suave });
+          maxH = Math.max(maxH, h);
+          if (aberta === p.id) d.texto(ctx, '▼', xs[i] + colW / 2, y1 + h + 30, { tam: 13, alinhar: 'center', cor: C.roxo });
+        });
+        const p = ps.find((x) => x.id === aberta); if (!p) { d.texto(ctx, 'Clique numa tese para ver razões, objeções e réplicas.', w / 2, y1 + maxH + 70, { tam: 13, alinhar: 'center', cor: C.suave }); return; }
+        const y2 = y1 + maxH + 46, iP = ps.indexOf(p), cx = xs[iP] + colW / 2, half = (w - 50) / 2;
+        let yy = y2;
+        d.texto(ctx, 'RAZÕES', 20, yy - 6, { tam: 11, cor: C.verdeEscuro, peso: 900 }); d.texto(ctx, 'OBJEÇÕES  →  RÉPLICAS', 30 + half, yy - 6, { tam: 11, cor: C.vermelho, peso: 900 });
+        p.razoes.forEach((r, k) => { ctx.globalCompositeOperation = 'destination-over'; ctx.strokeStyle = C.verde; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx, y1 + maxH); ctx.lineTo(20 + half / 2, yy); ctx.stroke(); ctx.globalCompositeOperation = 'source-over'; yy += no(ctx, 20, yy, half, `RAZÃO ${k + 1}`, r, C.verde, { id: `r:${p.id}:${k}` }) + 10; });
+        yy = y2;
+        p.objecoes.forEach(([o, rep], k) => {
+          ctx.globalCompositeOperation = 'destination-over'; ctx.strokeStyle = C.vermelho; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(cx, y1 + maxH); ctx.lineTo(30 + half + half * 0.3, yy); ctx.stroke(); ctx.setLineDash([]); ctx.globalCompositeOperation = 'source-over';
+          const h1 = no(ctx, 30 + half, yy, half * 0.58, `OBJEÇÃO ${k + 1}`, o, C.vermelho, { id: `o:${p.id}:${k}` });
+          const h2 = no(ctx, 30 + half + half * 0.6 + 8, yy + 12, half * 0.4 - 8, 'RÉPLICA', rep, C.azul, { id: `rp:${p.id}:${k}`, tam: 11 });
+          d.seta(ctx, 30 + half + half * 0.58 + 1, yy + 24, 30 + half + half * 0.6 + 7, yy + 24, C.azul, 2, 6);
+          yy += Math.max(h1, h2 + 12) + 10;
+        });
+      }
+
+      // ---------- painel ----------
+      const gQ = ui.grupo('Questão');
+      ui.select({ opcoes: Object.entries(QUESTOES).map(([k, v]) => ({ valor: k, rotulo: v.titulo })), valor: q, pai: gQ, aoMudar: (v) => { q = v; aberta = null; encerrar(); preencherPosicoes(); tela.redesenhar(); guia.diz(`<b>${Q().titulo}</b> ${Q().posicoes.map((p) => `<b>${p.nome}</b> (${p.autores})`).join(', ')}. Clique numa tese para abrir os argumentos.`, { chave: 'q' }); } });
+      const selMinha = ui.select({ rotulo: 'Minha posição', opcoes: [], valor: '', pai: gQ });
+      ui.linha(gQ, ui.botao({ rotulo: '⚔️ Debater com o guia', classe: 'pequeno', aoClicar: comecar }), ui.botao({ rotulo: 'Encerrar', classe: 'branco pequeno', aoClicar: () => { encerrar(true); } }));
+      function preencherPosicoes() { selMinha.select.innerHTML = Q().posicoes.map((p) => `<option value="${p.id}">${p.nome}</option>`).join(''); }
+      const gD = ui.grupo('Debate'); gD.hidden = true;
+      const rod = SQ.el('div', { class: 'rodada' }); gD.append(rod);
+      const ops = SQ.el('div', { class: 'opcoes' }); gD.append(ops);
+      const area = SQ.el('textarea', { class: 'arg', placeholder: 'Ou escreva sua própria resposta (use “porque”, um exemplo…)', 'aria-label': 'Sua resposta' }); gD.append(area);
+      ui.linha(gD, ui.botao({ rotulo: 'Responder', classe: 'azul pequeno', aoClicar: () => { if (area.value.trim()) { responder(area.value.trim(), null); area.value = ''; } } }));
+      const placar = ui.leituras([{ id: 'r', rotulo: 'Rodada' }, { id: 'p', rotulo: 'Pontos de argumento', destaque: true }], gD);
+      const gA = ui.grupo('Detector de argumento');
+      const areaA = SQ.el('textarea', { class: 'arg', placeholder: 'Escreva um argumento para eu analisar…', 'aria-label': 'Argumento para analisar' }); gA.append(areaA);
+      ui.botao({ rotulo: '🔍 Analisar argumento', classe: 'branco pequeno', pai: ui.linha(gA), aoClicar: () => guia.diz(analisar(areaA.value).texto, { tipo: 'dica', chave: 'arg' }) });
+
+      function analisar(txt) {
+        if (!txt.trim()) return { texto: 'Escreva um argumento primeiro.', pontos: 0 };
+        const tem = Object.fromEntries(Object.entries(MARCAS).map(([k, re]) => [k, re.test(txt)])), fal = FALACIAS.filter(([re]) => re.test(txt));
+        let pts = 1 + (tem.razao ? 1 : 0) + (tem.exemplo ? 1 : 0) + (tem.concessao ? 1 : 0) + (tem.conclusao ? 0.5 : 0) - fal.length;
+        pts = Math.max(0, pts);
+        const bom = [tem.razao && 'apresenta uma <b>razão</b>', tem.exemplo && 'traz um <b>exemplo</b>', tem.concessao && 'reconhece um ponto do outro lado (<b>concessão</b>)', tem.conclusao && 'tem uma <b>conclusão</b> explícita'].filter(Boolean);
+        const falta = [!tem.razao && 'uma razão (“porque…”)', !tem.exemplo && 'um exemplo', !tem.concessao && 'uma concessão (“embora…”)'].filter(Boolean);
+        let t = bom.length ? `Seu argumento ${bom.join(', ')}. ` : 'Não encontrei marcas de raciocínio. ';
+        if (falta.length) t += `Para fortalecer, acrescente ${falta.join(', ')}. `;
+        if (fal.length) t += fal.map(([, n, dica]) => `⚠️ Possível <b>${n}</b>: ${dica}.`).join(' ');
+        return { texto: t, pontos: pts, fal };
+      }
+      function comecar() {
+        const ps = Q().posicoes; D.minha = selMinha.valor || ps[0].id; D.ia = ps.find((p) => p.id !== D.minha).id; D.ativo = true; D.i = 0; D.pontos = 0; D.respostas = [];
+        aberta = D.minha; gD.hidden = false; tela.redesenhar();
+        const ia = ps.find((p) => p.id === D.ia);
+        guia.diz(`⚔️ Debate aberto! Você defende <b>${ps.find((p) => p.id === D.minha).nome}</b>. Eu fico com <b>${ia.nome}</b> (${ia.autores}): “${ia.tese}”`, { chave: 'deb' });
+        rodada();
+      }
+      function rodada() {
+        const minha = Q().posicoes.find((p) => p.id === D.minha);
+        if (D.i >= minha.objecoes.length) { finalizar(); return; }
+        const [obj, rep] = minha.objecoes[D.i]; foco = `o:${D.minha}:${D.i}`; tela.redesenhar();
+        rod.innerHTML = `<span class="quem">Objeção do guia · rodada ${D.i + 1}</span><p class="mb0">“${obj}”</p>`;
+        ops.innerHTML = '';
+        const outra = Q().posicoes.find((p) => p.id === D.ia).razoes[D.i % 2];
+        for (const [txt, val] of [[rep, 2], ['Concordo, não tenho como responder.', 0], [`Mas ${outra.charAt(0).toLowerCase() + outra.slice(1)}`, -1]]) ops.append(SQ.el('button', { type: 'button', onclick: () => responder(txt, val) }, txt));
+        [...ops.children].sort(() => Math.random() - 0.5).forEach((b) => ops.append(b));
+        placar.set('r', `${D.i + 1} de ${minha.objecoes.length}`); placar.set('p', SQ.num(D.pontos, 1));
+        guia.diz(`🗣️ <b>Objeção:</b> ${obj}`, { tipo: 'alerta', chave: 'obj' });
+      }
+      function responder(txt, val) {
+        const minha = Q().posicoes.find((p) => p.id === D.minha), [, rep] = minha.objecoes[D.i];
+        let t;
+        if (val === 2) { D.pontos += 2; t = '✅ Boa réplica: você respondeu diretamente à objeção, sem fugir do ponto.'; foco = `rp:${D.minha}:${D.i}`; }
+        else if (val === 0) { t = 'Honesto! Reconhecer uma boa objeção faz parte da filosofia. Uma réplica possível seria: ' + rep; }
+        else if (val === -1) { D.pontos -= 0.5; t = 'Hmm, isso é um argumento da <b>minha</b> posição — você mudou de lado sem perceber! Releia sua tese.'; }
+        else { const a = analisar(txt); D.pontos += a.pontos; t = `${a.texto} Uma réplica clássica seria: “${rep}”`; }
+        D.respostas.push(txt); guia.diz(t, { tipo: val === 2 ? 'sucesso' : val === -1 ? 'alerta' : 'dica', chave: 'resp' });
+        D.i++; tela.redesenhar(); setTimeout(rodada, 900);
+      }
+      function finalizar() {
+        const nota = D.pontos >= 4 ? 'Excelente defesa!' : D.pontos >= 2 ? 'Boa defesa, com pontos a fortalecer.' : 'Debate difícil — vale reler as réplicas no mapa.';
+        rod.innerHTML = `<span class="quem" style="color:var(--verde-escuro)">Fim do debate</span><p class="mb0">${nota} Pontos de argumento: <b>${SQ.num(D.pontos, 1)}</b>.</p>`; ops.innerHTML = ''; foco = null; tela.redesenhar();
+        guia.diz(`🏁 ${nota} Na filosofia ninguém “vence” de vez: o objetivo é entender melhor a questão. Que tal trocar de lado e debater de novo?`, { tipo: 'sucesso', chave: 'deb' });
+      }
+      function encerrar(avisar) { D.ativo = false; foco = null; gD.hidden = true; if (avisar) guia.diz('Debate encerrado.', { chave: 'deb' }); tela && tela.redesenhar(); }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 700 });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          const n = nos.find((k) => p.x >= k.x && p.x <= k.x + k.w && p.y >= k.y && p.y <= k.y + k.h); if (!n) return false;
+          if (n.pos) { aberta = aberta === n.pos ? null : n.pos; const ps = Q().posicoes.find((x) => x.id === n.pos); if (aberta) guia.diz(`<b>${ps.nome}</b> (${ps.autores}): ${ps.tese} Veja as razões (verde) e as objeções com réplicas (vermelho → azul).`, { chave: 'no' }); SQ.som(560, 0.05); }
+          else if (n.id.startsWith('o:')) { const [, pid, k] = n.id.split(':'), ps = Q().posicoes.find((x) => x.id === pid); guia.diz(`<b>Objeção</b> a ${ps.nome}: ${ps.objecoes[k][0]} <br><b>Réplica:</b> ${ps.objecoes[k][1]}`, { chave: 'no' }); }
+          tela.redesenhar(); return false;
+        },
+        hover(p) { tela.canvas.style.cursor = nos.some((k) => (k.pos || k.id.startsWith('o:')) && p.x >= k.x && p.x <= k.x + k.w && p.y >= k.y && p.y <= k.y + k.h) ? 'pointer' : ''; },
+      });
+      guia.contexto = () => ({ questao: Q().titulo, posicaoAberta: aberta, debate: D.ativo ? { minha: D.minha, guia: D.ia, rodada: D.i, pontos: D.pontos } : null, avaliacao: analisar(areaA.value || area.value || D.respostas[D.respostas.length - 1] || '').texto });
+      preencherPosicoes(); aberta = 'lib'; tela.redesenhar();
+    },
+  });
+  </script>
+</body>
+</html>

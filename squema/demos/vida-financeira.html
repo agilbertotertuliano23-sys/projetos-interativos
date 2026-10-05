@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vida Financeira — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/calculadora.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>.aviso-ed { font-size: 12px; color: var(--texto-suave); margin: 6px 0 0; }</style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const CATEGORIAS = [
+    { id: 'moradia', nome: 'Moradia', grupo: 'nec', cor: '#1236A8', pct: 30 },
+    { id: 'alimentacao', nome: 'Alimentação', grupo: 'nec', cor: '#1F5BE0', pct: 17 },
+    { id: 'transporte', nome: 'Transporte', grupo: 'nec', cor: '#2BB4F5', pct: 8 },
+    { id: 'saude', nome: 'Saúde e educação', grupo: 'nec', cor: '#7FCBF7', pct: 5 },
+    { id: 'lazer', nome: 'Lazer', grupo: 'des', cor: '#FF9416', pct: 12 },
+    { id: 'compras', nome: 'Compras e assinaturas', grupo: 'des', cor: '#FFC21A', pct: 13 },
+    { id: 'poupanca', nome: 'Poupar e investir', grupo: 'pou', cor: '#36C04A', pct: 10 },
+    { id: 'dividas', nome: 'Pagar dívidas', grupo: 'pou', cor: '#1E8A30', pct: 5 },
+  ];
+  const GRUPOS = { nec: { nome: 'Necessidades', alvo: 50, cor: '#1F5BE0' }, des: { nome: 'Desejos', alvo: 30, cor: '#FF9416' }, pou: { nome: 'Poupar e dívidas', alvo: 20, cor: '#36C04A' } };
+  const METAS = [{ nome: 'Celular novo', valor: 2000 }, { nome: 'Curso profissionalizante', valor: 3500 }, { nome: 'Viagem de férias', valor: 6000 }, { nome: 'Reserva de emergência (6 meses de gastos)', valor: null }];
+  const IMPREVISTOS = [['A geladeira quebrou: conserto de', 650], ['O celular caiu e a tela trincou:', 480], ['Consulta e remédios inesperados:', 320], ['O pneu da moto furou:', 250], ['Material escolar extra:', 380]];
+  const br = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const br0 = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+
+  SQ.demo('vida-financeira', {
+    fundo: 'papel',
+    dica: 'Distribua a renda nos controles e acompanhe a regra 50-30-20',
+    sala: ['Monte com a turma o orçamento de uma família fictícia e discutam onde cortar se a renda cair 20%.', 'Calcule em quantos meses dá para comprar algo à vista guardando dinheiro — e compare com o parcelamento.', 'No modo Juros, mostre o que acontece com uma dívida de cartão não paga em 12 meses.'],
+    comoIA: 'O guia recebe a renda, a distribuição por categoria, as metas e as taxas simuladas. Ele compara com a regra 50-30-20, calcula prazos e juros compostos e dá conselhos educativos (não é aconselhamento financeiro profissional). Uma IA conectada pode montar cenários a partir de situações reais trazidas pelos alunos, sem coletar dados pessoais.',
+    guia: {
+      ola: 'Vamos planejar! A <b>regra 50-30-20</b> sugere: 50% da renda para <b>necessidades</b>, 30% para <b>desejos</b> e 20% para <b>poupar ou pagar dívidas</b>. É um ponto de partida, não uma lei. Ajuste as categorias!',
+      perguntas: [
+        { p: 'O que são juros compostos?', chaves: ['juros', 'compostos', 'sobre juros'], r: 'São <b>juros sobre juros</b>: cada mês, a taxa incide sobre o valor já acumulado. A favor (investindo), o dinheiro cresce cada vez mais rápido; contra (numa dívida), ela também cresce cada vez mais rápido.' },
+        { p: 'O que é reserva de emergência?', chaves: ['reserva', 'emergencia'], r: 'Um dinheiro guardado para imprevistos (saúde, conserto, perda de renda), em geral de 3 a 6 meses de gastos, num lugar seguro e fácil de sacar. Ela evita recorrer a empréstimos caros.' },
+        { p: 'Desejo ou necessidade?', chaves: ['desejo', 'necessidade', 'diferenca'], r: '<b>Necessidade</b> é o essencial para viver e trabalhar (moradia, comida, transporte, saúde). <b>Desejo</b> é o que traz prazer, mas dá para adiar ou reduzir (lazer, roupas novas, assinaturas). A mesma coisa pode ser um ou outro conforme o caso!' },
+        { p: 'Parcelar ou pagar à vista?', chaves: ['parcelar', 'parcela', 'vista'], r: 'Compare o <b>preço total</b>: “sem juros” muitas vezes já embute juros no preço. Se houver desconto à vista e você tiver o dinheiro guardado, costuma valer a pena. E some as parcelas de todas as compras antes de assumir uma nova!' },
+        { p: 'Como está meu orçamento?', chaves: ['meu', 'orcamento', 'como esta'], r: (c) => c.conselho },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let modo = 'orcamento', renda = 2800;
+      const pct = Object.fromEntries(CATEGORIAS.map((c) => [c.id, c.pct]));
+      const M = { meta: 0, aporte: 250, taxa: 0.8, valorLivre: 2000 }, J = { valor: 1000, tDivida: 12, tInv: 0.8, meses: 12 };
+      const vM = SQ.vista({ x0: 0, x1: 24, y0: 0, y1: 1 }, { x: 0, y: 0, w: 1, h: 1 });
+
+      const somaGrupo = (g) => CATEGORIAS.filter((c) => c.grupo === g).reduce((s, c) => s + pct[c.id], 0);
+      const total = () => CATEGORIAS.reduce((s, c) => s + pct[c.id], 0);
+      const gastosMensais = () => (renda * (somaGrupo('nec') + somaGrupo('des'))) / 100;
+      function valorMeta() { const m = METAS[M.meta]; return m.valor ?? Math.round(gastosMensais() * 6); }
+      function simMeta() { const alvo = valorMeta(), r = M.taxa / 100; let s = 0, ap = 0, n = 0; const pts = [[0, 0, 0]]; while (s < alvo && n < 240) { s = s * (1 + r) + M.aporte; ap += M.aporte; n++; pts.push([n, s, ap]); } return { alvo, n: s >= alvo ? n : null, pts, juros: s - ap }; }
+
+      function desenharOrcamento(ctx, w, h) {
+        const R = Math.min(h * 0.4, w * 0.24), cx = 30 + R, cy = h / 2;
+        // anel externo: categorias
+        let a = -Math.PI / 2; const t = Math.max(100, total());
+        for (const c of CATEGORIAS) { const da = (pct[c.id] / t) * Math.PI * 2; ctx.beginPath(); ctx.arc(cx, cy, R, a, a + da); ctx.arc(cx, cy, R * 0.68, a + da, a, true); ctx.closePath(); ctx.fillStyle = c.cor; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); if (pct[c.id] >= 5) { const am = a + da / 2; d.texto(ctx, `${pct[c.id]}%`, cx + Math.cos(am) * R * 0.84, cy + Math.sin(am) * R * 0.84 + 4, { tam: 11, alinhar: 'center', cor: '#fff', contorno: C.tinta, esp: 3 }); } a += da; }
+        if (total() < 100) { ctx.beginPath(); ctx.arc(cx, cy, R, a, Math.PI * 1.5); ctx.arc(cx, cy, R * 0.68, Math.PI * 1.5, a, true); ctx.closePath(); ctx.fillStyle = '#E6EEFF'; ctx.fill(); }
+        // anel interno: regra 50-30-20
+        a = -Math.PI / 2;
+        for (const [g, G] of Object.entries(GRUPOS)) { const da = (G.alvo / 100) * Math.PI * 2; ctx.beginPath(); ctx.arc(cx, cy, R * 0.62, a, a + da); ctx.arc(cx, cy, R * 0.5, a + da, a, true); ctx.closePath(); ctx.fillStyle = d.clarear(G.cor, 0.45); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); void g; a += da; }
+        ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; for (const r of [R, R * 0.68]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke(); }
+        const saldo = renda * (1 - total() / 100);
+        d.texto(ctx, br0(renda), cx, cy - 6, { tam: Math.min(22, R * 0.2), alinhar: 'center', fonte: 'titulo' });
+        d.texto(ctx, saldo >= 0 ? `sobra ${br0(saldo)}` : `falta ${br0(-saldo)}!`, cx, cy + 16, { tam: 12, alinhar: 'center', cor: saldo >= 0 ? C.verdeEscuro : C.vermelho });
+        d.texto(ctx, 'anel interno: meta 50-30-20', cx, cy + R + 22, { tam: 11, alinhar: 'center', cor: C.suave });
+        // barras por grupo
+        const bx = cx + R + 40, bw = w - bx - 30; let by = 40;
+        d.texto(ctx, 'Comparação com a regra', bx, by, { tam: 15, fonte: 'titulo' }); by += 22;
+        for (const [g, G] of Object.entries(GRUPOS)) {
+          const v = somaGrupo(g), ok = g === 'pou' ? v >= G.alvo : v <= G.alvo;
+          d.texto(ctx, `${G.nome}: ${v}% (${br0((renda * v) / 100)})`, bx, by + 12, { tam: 13 });
+          d.texto(ctx, ok ? '✓' : g === 'pou' ? 'abaixo' : 'acima', bx + bw, by + 12, { tam: 12, alinhar: 'right', cor: ok ? C.verdeEscuro : C.vermelho });
+          by += 20; d.bloco(ctx, bx, by, bw, 22, { cor: '#F4F7FF', r: 8, alt: 0, esp: 2 });
+          d.bloco(ctx, bx, by, Math.max(6, Math.min(1, v / 100) * bw), 22, { cor: G.cor, r: 8, alt: 0, esp: 2 });
+          const xa = bx + (G.alvo / 100) * bw; ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(xa, by - 5); ctx.lineTo(xa, by + 27); ctx.stroke(); d.texto(ctx, `${G.alvo}%`, xa, by + 40, { tam: 10, alinhar: 'center', cor: C.suave });
+          by += 58;
+        }
+        // legenda
+        CATEGORIAS.forEach((c, k) => { const lx = bx + (k % 2) * (bw / 2), ly = by + 6 + Math.floor(k / 2) * 20; ctx.fillStyle = c.cor; ctx.fillRect(lx, ly - 9, 12, 12); ctx.strokeStyle = C.tinta; ctx.lineWidth = 1.5; ctx.strokeRect(lx, ly - 9, 12, 12); d.texto(ctx, `${c.nome} ${pct[c.id]}%`, lx + 18, ly + 1, { tam: 11, cor: C.texto }); });
+        if (total() > 100) d.etiqueta(ctx, `⚠ O orçamento passa da renda em ${total() - 100}%`, w / 2, h - 30, { cor: '#FFE1E3', tam: 13 });
+      }
+      function desenharMeta(ctx, w, h) {
+        const s = simMeta(), N = Math.max(12, Math.min(s.n ?? 240, 240) + 2), ymax = Math.max(s.alvo * 1.15, s.pts[s.pts.length - 1][1] * 1.05);
+        vM.area = { x: 70, y: 18, w: w - 90, h: h - 62 }; vM.dom = { x0: 0, x1: N, y0: 0, y1: ymax };
+        d.eixos(ctx, vM, { fundo: '#FBFCFF', nomeX: 'meses', nomeY: 'saldo guardado (R$)', eixoNaBorda: true, fmtY: (t) => (t >= 1000 ? `${SQ.num(t / 1000, 1)} mil` : SQ.num(t, 0)), fmtX: (t) => String(Math.round(t)) });
+        ctx.fillStyle = 'rgba(43,180,245,.35)'; ctx.beginPath(); ctx.moveTo(vM.X(0), vM.Y(0)); s.pts.forEach(([m, , ap]) => ctx.lineTo(vM.X(m), vM.Y(ap))); ctx.lineTo(vM.X(s.pts[s.pts.length - 1][0]), vM.Y(0)); ctx.fill();
+        ctx.fillStyle = 'rgba(54,192,74,.4)'; ctx.beginPath(); s.pts.forEach(([m, sv], i) => (i ? ctx.lineTo(vM.X(m), vM.Y(sv)) : ctx.moveTo(vM.X(m), vM.Y(sv)))); for (let i = s.pts.length - 1; i >= 0; i--) ctx.lineTo(vM.X(s.pts[i][0]), vM.Y(s.pts[i][2])); ctx.fill();
+        ctx.strokeStyle = C.verdeEscuro; ctx.lineWidth = 3.5; ctx.beginPath(); s.pts.forEach(([m, sv], i) => (i ? ctx.lineTo(vM.X(m), vM.Y(sv)) : ctx.moveTo(vM.X(m), vM.Y(sv)))); ctx.stroke();
+        ctx.setLineDash([8, 6]); ctx.strokeStyle = C.vermelho; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(vM.area.x, vM.Y(s.alvo)); ctx.lineTo(vM.area.x + vM.area.w, vM.Y(s.alvo)); ctx.stroke(); ctx.setLineDash([]);
+        d.etiqueta(ctx, `meta: ${METAS[M.meta].nome} · ${br0(s.alvo)}`, vM.area.x + 130, vM.Y(s.alvo) - 16, { cor: '#FFE1E3', tam: 12 });
+        if (s.n) { d.bola(ctx, vM.X(s.n), vM.Y(s.pts[s.n][1]), 9, C.amarelo); d.etiqueta(ctx, `🎯 ${s.n} meses (${s.n >= 12 ? `${Math.floor(s.n / 12)} ano${s.n >= 24 ? 's' : ''}${s.n % 12 ? ` e ${s.n % 12} meses` : ''}` : 'menos de 1 ano'})`, Math.min(vM.X(s.n), vM.area.x + vM.area.w - 90), vM.Y(s.pts[s.n][1]) - 24, { cor: C.amarelo, tam: 12 }); }
+        else d.etiqueta(ctx, 'Com esse valor, a meta leva mais de 20 anos!', w / 2, vM.area.y + 40, { cor: '#FFE1E3', tam: 13 });
+        d.texto(ctx, 'azul: o que você depositou · verde: o que os juros renderam', vM.area.x + 10, vM.area.y + vM.area.h - 10, { tam: 11, cor: C.suave });
+      }
+      function desenharJuros(ctx, w, h) {
+        const rd = J.tDivida / 100, ri = J.tInv / 100, N = J.meses, div = J.valor * (1 + rd) ** N, inv = J.valor * (1 + ri) ** N;
+        vM.area = { x: 76, y: 18, w: w - 96, h: h - 62 }; vM.dom = { x0: 0, x1: N, y0: 0, y1: Math.max(div, inv) * 1.12 };
+        d.eixos(ctx, vM, { fundo: '#FBFCFF', nomeX: 'meses', nomeY: 'valor (R$)', eixoNaBorda: true, fmtY: (t) => (t >= 1000 ? `${SQ.num(t / 1000, 1)} mil` : SQ.num(t, 0)), fmtX: (t) => String(Math.round(t)) });
+        vM.curva(ctx, (m) => J.valor * (1 + rd) ** m, { cor: C.vermelho, esp: 4, x0: 0, x1: N });
+        vM.curva(ctx, (m) => J.valor * (1 + ri) ** m, { cor: C.verdeEscuro, esp: 4, x0: 0, x1: N });
+        vM.curva(ctx, (m) => J.valor * (1 + rd * m), { cor: '#F7A8AE', esp: 2, tracejado: [7, 6], x0: 0, x1: N });
+        d.bola(ctx, vM.X(N), vM.Y(div), 8, C.vermelho); d.bola(ctx, vM.X(N), vM.Y(inv), 8, C.verde);
+        d.etiqueta(ctx, `dívida: ${br0(div)} (${SQ.num(div / J.valor, 1)}× o valor)`, Math.max(vM.area.x + 120, vM.X(N) - 120), vM.Y(div) + 22, { cor: '#FFE1E3', tam: 12 });
+        d.etiqueta(ctx, `investimento: ${br0(inv)} (+${br0(inv - J.valor)})`, Math.max(vM.area.x + 120, vM.X(N) - 120), vM.Y(inv) - 20, { cor: '#DDF7E1', tam: 12 });
+        d.texto(ctx, 'tracejado: como seria com juros simples (sem “juros sobre juros”)', vM.area.x + 10, vM.area.y + 18, { tam: 11, cor: C.suave });
+      }
+      function desenhar() { const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h); ({ orcamento: desenharOrcamento, meta: desenharMeta, juros: desenharJuros })[modo](ctx, w, h); }
+
+      // ---------- painel ----------
+      const gM = ui.grupo('Simulação');
+      ui.segmentado({ opcoes: [{ valor: 'orcamento', rotulo: '🧾 Orçamento' }, { valor: 'meta', rotulo: '🎯 Meta' }, { valor: 'juros', rotulo: '📈 Juros' }], valor: modo, pai: gM, aoMudar: (x) => { modo = x; gO.hidden = x !== 'orcamento'; gMeta.hidden = x !== 'meta'; gJ.hidden = x !== 'juros'; const dc = palco.querySelector('.palco-dica'); dc.classList.remove('sumida'); dc.textContent = { orcamento: 'Distribua a renda nos controles e acompanhe a regra 50-30-20', meta: 'Mude o valor guardado por mês e a taxa', juros: 'Compare a dívida e o investimento mês a mês' }[x]; atualizar(); guia.diz(conselho(), { chave: 'cons' }); } });
+      ui.slider({ rotulo: 'Renda mensal da família', min: 1000, max: 12000, passo: 100, valor: renda, pai: gM, formatar: br0, aoMudar: (x) => { renda = x; atualizar(); narrar(); } });
+      gM.append(SQ.el('p', { class: 'aviso-ed' }, 'Simulação educativa com valores fictícios — não é recomendação de investimento.'));
+      const gO = ui.grupo('Orçamento (% da renda)');
+      for (const c of CATEGORIAS) ui.slider({ rotulo: c.nome, min: 0, max: 60, passo: 1, valor: pct[c.id], unidade: '%', pai: gO, formatar: (x) => `${x}% · ${br0((renda * x) / 100)}`, aoMudar: (x) => { pct[c.id] = x; atualizar(); narrar(); } }).el.style.setProperty('--p-cor', c.cor);
+      const leiO = ui.leituras([{ id: 't', rotulo: 'Total planejado', destaque: true }, { id: 's', rotulo: 'Sobra / falta' }], gO);
+      ui.linha(gO, ui.botao({ rotulo: '🎲 Imprevisto!', classe: 'pequeno', aoClicar: imprevisto }), ui.botao({ rotulo: '💡 Conselho', classe: 'azul pequeno', aoClicar: () => guia.diz(conselho(), { tipo: 'dica', chave: 'cons' }) }));
+      const gMeta = ui.grupo('Meta de poupança'); gMeta.hidden = true;
+      ui.select({ rotulo: 'Objetivo', opcoes: METAS.map((m, k) => ({ valor: String(k), rotulo: m.nome })), valor: '0', pai: gMeta, aoMudar: (x) => { M.meta = +x; atualizar(); narrar(); } });
+      ui.slider({ rotulo: 'Guardar por mês', min: 50, max: 2000, passo: 10, valor: M.aporte, pai: gMeta, formatar: br0, aoMudar: (x) => { M.aporte = x; atualizar(); narrar(); } });
+      ui.slider({ rotulo: 'Rendimento (exemplo)', min: 0, max: 1.5, passo: 0.05, valor: M.taxa, unidade: '% ao mês', pai: gMeta, aoMudar: (x) => { M.taxa = x; atualizar(); narrar(); } });
+      const leiM = ui.leituras([{ id: 'n', rotulo: 'Tempo até a meta', destaque: true }, { id: 'j', rotulo: 'Juros ganhos' }, { id: 'p', rotulo: '% da renda guardada' }, { id: 'v', rotulo: 'Valor da meta' }], gMeta);
+      const gJ = ui.grupo('Juros a favor × contra'); gJ.hidden = true;
+      ui.slider({ rotulo: 'Valor inicial', min: 100, max: 5000, passo: 100, valor: J.valor, pai: gJ, formatar: br0, aoMudar: (x) => { J.valor = x; atualizar(); narrar(); } });
+      ui.slider({ rotulo: 'Juros da dívida (ex.: rotativo do cartão)', min: 1, max: 15, passo: 0.5, valor: J.tDivida, unidade: '% ao mês', pai: gJ, aoMudar: (x) => { J.tDivida = x; atualizar(); narrar(); } });
+      ui.slider({ rotulo: 'Rendimento do investimento', min: 0.2, max: 1.5, passo: 0.05, valor: J.tInv, unidade: '% ao mês', pai: gJ, aoMudar: (x) => { J.tInv = x; atualizar(); narrar(); } });
+      ui.slider({ rotulo: 'Prazo', min: 1, max: 36, passo: 1, valor: J.meses, unidade: 'meses', pai: gJ, aoMudar: (x) => { J.meses = x; atualizar(); narrar(); } });
+      const leiJ = ui.leituras([{ id: 'd', rotulo: 'Dívida vira', destaque: true }, { id: 'i', rotulo: 'Investimento vira' }, { id: 'da', rotulo: 'Taxa da dívida ao ano' }, { id: 'ia', rotulo: 'Rendimento ao ano' }], gJ);
+
+      function conselho() {
+        if (modo === 'meta') { const s = simMeta(), p = (M.aporte / renda) * 100; return s.n ? `Guardando ${br0(M.aporte)} por mês (${SQ.num(p, 1)}% da renda), você chega a ${br0(s.alvo)} em <b>${s.n} meses</b>. Os juros contribuem com ${br0(s.juros)}. ${M.taxa === 0 ? 'Sem rendimento, todo o trabalho é dos seus depósitos.' : 'Quanto maior o prazo, mais os juros pesam a seu favor.'} ${p > 25 ? 'Atenção: é uma parcela alta da renda — confira se cabe no orçamento.' : ''}` : 'Com esse valor por mês, a meta fica muito distante. Tente guardar um pouco mais ou escolher uma meta intermediária.'; }
+        if (modo === 'juros') { const div = J.valor * (1 + J.tDivida / 100) ** J.meses, inv = J.valor * (1 + J.tInv / 100) ** J.meses; return `Em ${J.meses} meses, uma dívida de ${br0(J.valor)} a ${SQ.num(J.tDivida, 1)}% ao mês vira <b>${br0(div)}</b> — enquanto o mesmo valor investido a ${SQ.num(J.tInv, 2)}% ao mês vira ${br0(inv)}. Os juros compostos trabalham <b>contra</b> quem deve e <b>a favor</b> de quem poupa. Por isso, pagar dívidas caras costuma ser a primeira prioridade.`; }
+        const n = somaGrupo('nec'), de = somaGrupo('des'), p = somaGrupo('pou'), t = total(), dicas = [];
+        if (t > 100) dicas.push(`⚠️ O planejado passa da renda em ${br0((renda * (t - 100)) / 100)}: isso vira dívida. Corte primeiro nos desejos.`);
+        if (n > 55) dicas.push(`As necessidades estão em ${n}% (meta ~50%). Moradia e transporte costumam ser os itens que mais pesam — vale pesquisar alternativas.`);
+        if (de > 30) dicas.push(`Os desejos estão em ${de}%: reduzir alguns pontos já libera dinheiro para guardar.`);
+        if (p < 20) dicas.push(`Você está poupando ou pagando dívidas com ${p}% da renda. Tente chegar a 20%, mesmo que aos poucos.`);
+        if (t < 100) dicas.push(`Sobram ${br0((renda * (100 - t)) / 100)} sem destino: dinheiro sem plano costuma “sumir”. Que tal direcioná-lo para a poupança?`);
+        return dicas.length ? dicas.join(' ') : '✅ Orçamento equilibrado e próximo da regra 50-30-20. Lembre: o mais importante é gastar menos do que se ganha e ter uma reserva.';
+      }
+      function imprevisto() {
+        const [txt, val] = IMPREVISTOS[Math.floor(Math.random() * IMPREVISTOS.length)], poup = (renda * pct.poupanca) / 100;
+        const meses = poup > 0 ? Math.ceil(val / poup) : Infinity;
+        guia.diz(`🎲 <b>${txt} ${br0(val)}</b>. ${poup > 0 ? (meses <= 1 ? 'Com o que você guarda por mês, dá para cobrir sem se endividar. 👏' : `Com o que você guarda por mês (${br0(poup)}), levaria ${meses} meses para juntar esse valor. Uma <b>reserva de emergência</b> resolveria na hora.`) : 'Sem poupança, a saída costuma ser o cartão ou um empréstimo — veja no modo 📈 Juros quanto isso pode custar.'}`, { tipo: 'alerta', chave: 'cons' });
+      }
+      let tN = 0;
+      function narrar() { clearTimeout(tN); tN = setTimeout(() => guia.diz(conselho(), { chave: 'cons' }), 400); }
+      function atualizar() {
+        const t = total(), sobra = renda * (1 - t / 100);
+        leiO.set('t', `${t}%`); leiO.set('s', sobra >= 0 ? `sobra ${br0(sobra)}` : `falta ${br0(-sobra)}`);
+        const s = simMeta(); leiM.set('n', s.n ? `${s.n} meses` : '> 20 anos'); leiM.set('j', br(s.juros)); leiM.set('p', `${SQ.num((M.aporte / renda) * 100, 1)}%`); leiM.set('v', br0(s.alvo));
+        leiJ.set('d', br0(J.valor * (1 + J.tDivida / 100) ** J.meses)); leiJ.set('i', br0(J.valor * (1 + J.tInv / 100) ** J.meses)); leiJ.set('da', `${SQ.num(((1 + J.tDivida / 100) ** 12 - 1) * 100, 0)}%`); leiJ.set('ia', `${SQ.num(((1 + J.tInv / 100) ** 12 - 1) * 100, 1)}%`);
+        tela && tela.redesenhar();
+      }
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 660 });
+      guia.contexto = () => ({ modo, renda, orcamento: Object.fromEntries(CATEGORIAS.map((c) => [c.nome, pct[c.id]])), grupos: { necessidades: somaGrupo('nec'), desejos: somaGrupo('des'), poupar: somaGrupo('pou') }, meta: { ...M, valor: valorMeta() }, juros: J, conselho: conselho() });
+      atualizar(); guia.diz(conselho(), { chave: 'cons' });
+    },
+  });
+  </script>
+</body>
+</html>

@@ -239,7 +239,7 @@
       }
 
       res = resolver();
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 560 });
       SQ.ponteiro(tela.canvas, {
         inicio(p) {
           const a = alvos.find((o) => Math.hypot(o.x - p.x, o.y - p.y) < o.r);

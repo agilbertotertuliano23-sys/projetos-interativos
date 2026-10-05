@@ -251,13 +251,16 @@
   }
 
   // ---------- canvas 2D ----------
-  function canvas2d(palco, desenhar) {
+  // larguraMin: em telas estreitas a cena é desenhada nessa largura "virtual" e reduzida
+  // para caber; api.w/api.h ficam em unidades virtuais e SQ.ponteiro converte o toque.
+  function canvas2d(palco, desenhar, { larguraMin = 0 } = {}) {
     const c = el('canvas'); palco.prepend(c);
     const ctx = c.getContext('2d');
-    const api = { canvas: c, ctx, w: 0, h: 0, dpr: 1, redesenhar() { ctx.setTransform(api.dpr, 0, 0, api.dpr, 0, 0); desenhar && desenhar(api); } };
+    const api = { canvas: c, ctx, w: 0, h: 0, dpr: 1, k: 1, redesenhar() { const s = api.dpr * api.k; ctx.setTransform(s, 0, 0, s, 0, 0); desenhar && desenhar(api); } };
     function ajustar() {
       const r = palco.getBoundingClientRect();
-      api.dpr = Math.min(devicePixelRatio || 1, 2); api.w = r.width; api.h = r.height;
+      api.dpr = Math.min(devicePixelRatio || 1, 2); api.k = larguraMin && r.width < larguraMin ? r.width / larguraMin : 1;
+      api.w = r.width / api.k; api.h = r.height / api.k; c._escala = api.k;
       c.width = Math.max(1, Math.round(r.width * api.dpr)); c.height = Math.max(1, Math.round(r.height * api.dpr));
       api.redesenhar();
     }
@@ -267,7 +270,7 @@
 
   function ponteiro(alvo, { inicio, mover, fim, hover }) {
     let ativo = false;
-    const pos = (e) => { const r = alvo.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    const pos = (e) => { const r = alvo.getBoundingClientRect(), k = alvo._escala || 1; return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k }; };
     alvo.addEventListener('pointerdown', (e) => { ativo = inicio ? inicio(pos(e), e) !== false : true; if (ativo) alvo.setPointerCapture(e.pointerId); });
     alvo.addEventListener('pointermove', (e) => { if (ativo) mover && mover(pos(e), e); else hover && hover(pos(e), e); });
     const acabar = (e) => { if (ativo) { ativo = false; fim && fim(pos(e), e); } };

@@ -35,7 +35,7 @@
 
     .destaque { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
     .destaque .capa { aspect-ratio: 16 / 10; background: linear-gradient(180deg, #DFF1FF, #F6FBFF); border-bottom: 3px solid var(--tinta); position: relative; overflow: hidden; }
-    .destaque .capa img.foto { width: 100%; height: 100%; object-fit: cover; }
+    .destaque .capa img.foto { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
     .destaque .capa img.ic { position: absolute; inset: 0; margin: auto; width: 96px; height: 96px; object-fit: contain; }
     .destaque .corpo { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
     .destaque .corpo p { color: var(--texto-suave); font-size: 14px; margin: 0; }
@@ -50,6 +50,8 @@
     .filtro-mapa input { max-width: 320px; }
     .filtro-mapa select { max-width: 240px; }
     .tabela td:first-child { white-space: nowrap; }
+    .estrutura > * { min-width: 0; }
+    @media (max-width: 560px) { .estrutura .grade { grid-template-columns: 1fr !important; } }
   </style>
 </head>
 <body data-raiz="">
@@ -122,9 +124,9 @@
     secAreas.append(grade); pagina.append(secAreas);
 
     // ---------- destaques 3D ----------
-    const destaques = ['universo-3d', 'terra-interativa', 'robo-virtual', 'ecossistema-vivo', 'atomo-3d', 'mundo-interativo'].map((id) => dados.sistemaPorId[id]);
+    const destaques = ['corpo-humano', 'universo-3d', 'relevo-3d', 'maquina-do-tempo', 'museu-virtual', 'terra-interativa', 'conversacao-ia', 'robo-virtual', 'ecossistema-vivo'].map((id) => dados.sistemaPorId[id]);
     const secDest = el('section', { class: 'secao conteudo', id: 'destaques' },
-      el('div', { class: 'secao-titulo', html: '<div><h2>Destaques em 3D</h2><p>Cenas tridimensionais com modelos livres recoloridos para a identidade SQUEMA.</p></div><a class="botao branco pequeno" href="biblioteca.html#demos">Ver todas as demos</a>' }));
+      el('div', { class: 'secao-titulo', html: '<div><h2>Destaques em 3D</h2><p>Cenas tridimensionais — procedurais ou com modelos livres recoloridos para a identidade SQUEMA.</p></div><a class="botao branco pequeno" href="biblioteca.html#demos">Ver todas as demos</a>' }));
     const gDest = el('div', { class: 'grade grade-cards' });
     for (const s of destaques) {
       const a = dados.areaPorId[s.area];
@@ -158,14 +160,14 @@
             <a class="bloco bloco-link" href="biblioteca.html#demos"><img src="assets/icones/notebook.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Demonstrações</h3><p class="miudo texto-suave mb0">Todas as demos com filtro por área e busca.</p></a>
             <a class="bloco bloco-link" href="biblioteca.html#modelos"><img src="assets/icones/engrenagem.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Modelos 3D</h3><p class="miudo texto-suave mb0">Visualize e baixe os GLB recoloridos.</p></a>
             <a class="bloco bloco-link" href="biblioteca.html#marca"><img src="assets/icones/galeria.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Marca e ícones</h3><p class="miudo texto-suave mb0">Logotipos, mascote, ícones e paleta.</p></a>
-            <a class="bloco bloco-link" href="biblioteca.html#esquemas"><img src="assets/icones/pergaminho.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Esquemas</h3><p class="miudo texto-suave mb0">Os ${dados.SISTEMAS.length} casos, inclusive os roteiros a construir.</p></a>
+            <a class="bloco bloco-link" href="biblioteca.html#esquemas"><img src="assets/icones/pergaminho.webp" alt="" style="width:56px"><h3 style="margin-top:8px">Esquemas</h3><p class="miudo texto-suave mb0">Os ${dados.SISTEMAS.length} casos, cada um com esquema e demonstração.</p></a>
           </div>
         </div>
       </section>`);
 
     // ---------- mapa completo ----------
     const secMapa = el('section', { class: 'secao conteudo', id: 'mapa' },
-      el('div', { class: 'secao-titulo', html: '<div><h2>Mapa completo</h2><p>Os 35 sistemas do documento original, com o status de cada demonstração.</p></div><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Documento original (.md)</a>' }));
+      el('div', { class: 'secao-titulo', html: '<div><h2>Mapa completo</h2><p>Os 35 sistemas do documento original, cada um com sua demonstração.</p></div><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Documento original (.md)</a>' }));
     const busca = el('input', { type: 'text', placeholder: 'Buscar sistema, visualização ou papel da IA…', 'aria-label': 'Buscar no mapa' });
     const filtroArea = el('select', { 'aria-label': 'Filtrar por área' }, el('option', { value: '' }, 'Todas as áreas'), ...dados.AREAS.map((a) => el('option', { value: a.id }, a.nome)));
     const corpo = el('tbody');

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sociedade Simulator — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/sociedade.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .cenarios { display: grid; gap: 6px; }
+    .cenarios button { text-align: left; border: 2px solid var(--tinta); border-radius: 12px; background: #fff; padding: 6px 10px; font-size: 13px; font-weight: 800; color: var(--tinta); }
+    .cenarios button:hover { background: var(--celeste-claro); }
+    .pergunta { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 8px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const GRUPOS = ['#FF9416', '#1F5BE0', '#36C04A'];
+  const CENARIOS = [
+    { nome: 'Preferência leve', txt: 'Cada pessoa só quer que 1/3 dos vizinhos sejam do seu grupo — e aceita ser minoria no bairro.', p: { tol: 34, dens: 90, prop: 50, div: 100, g3: false } },
+    { nome: 'Tolerância alta', txt: 'Basta 1 vizinho em cada 8 parecido para ficar satisfeito.', p: { tol: 12, dens: 90, prop: 50, div: 100, g3: false } },
+    { nome: 'Exigência alta', txt: 'Todos querem 75% de vizinhos iguais.', p: { tol: 75, dens: 90, prop: 50, div: 100, g3: false } },
+    { nome: 'Minoria de 20%', txt: 'Um grupo é minoria (20%), com a mesma preferência leve.', p: { tol: 34, dens: 90, prop: 80, div: 100, g3: false } },
+    { nome: 'Quem gosta de diversidade', txt: 'Além de querer 1/3 de iguais, as pessoas também não querem mais de 70% de iguais.', p: { tol: 34, dens: 90, prop: 50, div: 70, g3: false } },
+    { nome: 'Três grupos', txt: 'Três grupos com preferência leve de 1/3.', p: { tol: 34, dens: 90, prop: 50, div: 100, g3: true } },
+  ];
+  const PERGUNTAS = [
+    'Se ninguém no modelo quer segregação, por que ela acontece? Quem é o “culpado”?',
+    'Que diferenças existem entre este modelo e uma cidade real (renda, preço do aluguel, discriminação, políticas públicas)?',
+    'O que acontece quando as pessoas também valorizam a diversidade? Que políticas poderiam incentivar isso?',
+    'Por que a minoria acaba mais concentrada do que a maioria?',
+    'Pense em outros “efeitos emergentes”: filas, engarrafamentos, bolhas nas redes sociais. Como escolhas individuais criam padrões coletivos?',
+    'O modelo de Schelling é de 1971. Que limites ele tem para explicar a segregação racial ou social no Brasil?',
+  ];
+
+  SQ.demo('sociedade-simulator', {
+    fundo: 'papel',
+    dica: 'Clique numa casinha para ver se a pessoa está satisfeita',
+    sala: ['Antes de rodar, peça que a turma preveja: com preferência de só 34%, a cidade fica misturada ou separada?', 'Rode o cenário “Quem gosta de diversidade” e discuta o efeito de políticas públicas de moradia.', 'Use as perguntas geradas como roteiro de debate em grupos.'],
+    comoIA: 'O guia recebe a tolerância, a densidade, as proporções e a evolução do índice de segregação. Ele explica o fenômeno emergente, compara cenários e gera perguntas para debate. Uma IA conectada pode criar cenários novos a pedido da turma e relacionar o modelo a dados reais de cidades brasileiras.',
+    guia: {
+      ola: 'Este é o <b>modelo de Schelling</b>: cada casinha é uma família de um grupo. Quem tem poucos vizinhos parecidos se muda. Ajuste a <b>tolerância</b> e clique em <b>▶ Rodar</b> — o resultado surpreende!',
+      perguntas: [
+        { p: 'O que é um fenômeno emergente?', chaves: ['emergente', 'emergencia'], r: 'É um padrão coletivo que surge das interações de muitos indivíduos, sem que ninguém o planeje. Aqui, preferências <b>moderadas</b> de cada um geram uma cidade <b>muito</b> segregada.' },
+        { p: 'Esse modelo explica a segregação real?', chaves: ['real', 'explica', 'cidade', 'brasil'], r: 'Em parte. Ele mostra um mecanismo possível, mas cidades reais também têm desigualdade de renda, preço da terra, discriminação e decisões do poder público. Modelos simplificam para isolar um efeito.' },
+        { p: 'Como se calcula o índice de segregação?', chaves: ['indice', 'calcula', 'segregacao'], r: 'Para cada pessoa, conto a fração de vizinhos ocupados que são do mesmo grupo e faço a média. Numa cidade misturada ao acaso (2 grupos iguais), ele fica perto de <b>50%</b>.' },
+        { p: 'Gere uma pergunta para debate', chaves: ['debate', 'gere', 'pergunta'], r: () => PERGUNTAS[Math.floor(Math.random() * PERGUNTAS.length)] },
+        { p: 'O que aconteceu na simulação?', chaves: ['aconteceu', 'simulacao', 'resultado'], r: (c) => c.resumo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const E = { N: 42, tol: 34, dens: 90, prop: 50, div: 100, g3: false, rodando: false, passos: 0, mov: 0, hist: [], insatisf: true, vel: 6 };
+      let grade = null, sel = null, inicio = null;
+      const R = () => Math.random();
+
+      function reiniciar() {
+        const N = E.N; grade = new Int8Array(N * N).fill(-1);
+        for (let i = 0; i < N * N; i++) if (R() * 100 < E.dens) { if (E.g3) grade[i] = Math.floor(R() * 3); else grade[i] = R() * 100 < E.prop ? 0 : 1; }
+        E.passos = 0; E.mov = 0; E.hist = []; sel = null; registrar(); inicio = medir(); tela && tela.redesenhar(); pintar();
+      }
+      function vizinhos(i) {
+        const N = E.N, x = i % N, y = (i / N) | 0; let ig = 0, oc = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (!dx && !dy) continue; const xx = (x + dx + N) % N, yy = (y + dy + N) % N, g = grade[yy * N + xx]; if (g >= 0) { oc++; if (g === grade[i]) ig++; } }
+        return [ig, oc];
+      }
+      function satisfeito(i) { const [ig, oc] = vizinhos(i); if (!oc) return true; const f = (ig / oc) * 100; return f >= E.tol && f <= E.div; }
+      function medir() {
+        let n = 0, sat = 0, soma = 0;
+        for (let i = 0; i < grade.length; i++) { if (grade[i] < 0) continue; n++; if (satisfeito(i)) sat++; const [ig, oc] = vizinhos(i); if (oc) soma += ig / oc; }
+        return { sat: n ? sat / n : 1, seg: n ? soma / n : 0 };
+      }
+      function passo() {
+        const vazios = [], infelizes = [];
+        for (let i = 0; i < grade.length; i++) { if (grade[i] < 0) vazios.push(i); else if (!satisfeito(i)) infelizes.push(i); }
+        for (let k = infelizes.length - 1; k > 0; k--) { const j = Math.floor(R() * (k + 1)); [infelizes[k], infelizes[j]] = [infelizes[j], infelizes[k]]; }
+        let m = 0;
+        for (const i of infelizes) { if (!vazios.length) break; const vi = Math.floor(R() * vazios.length), v = vazios[vi]; grade[v] = grade[i]; grade[i] = -1; vazios[vi] = i; m++; }
+        E.passos++; E.mov += m; registrar();
+        if (!m) { E.rodando = false; btRodar.innerHTML = '▶ Rodar'; concluir(true); }
+        return m;
+      }
+      function registrar() { const r = medir(); E.hist.push([r.seg, r.sat]); if (E.hist.length > 300) E.hist.shift(); E.ult = r; }
+      function concluir(estavel) {
+        const r = E.ult, i0 = inicio;
+        let t = estavel ? `🏁 A cidade <b>estabilizou</b> em ${E.passos} rodadas: todos estão satisfeitos. ` : '';
+        t += `O índice de segregação foi de <b>${SQ.num(i0.seg * 100, 0)}%</b> para <b>${SQ.num(r.seg * 100, 0)}%</b>`;
+        if (E.tol <= 40 && r.seg > 0.7) t += ` — embora cada pessoa só exija ${E.tol}% de vizinhos iguais! Preferências individuais moderadas geraram um padrão coletivo extremo.`;
+        else if (E.tol >= 65 && !estavel) t += '. Com exigência tão alta, muita gente nunca fica satisfeita: a cidade não para de se mexer.';
+        else t += '.';
+        if (E.div < 100) t += ` O desejo de diversidade (no máximo ${E.div}% de iguais) segurou a separação.`;
+        guia.diz(t, { tipo: estavel ? 'sucesso' : '', chave: 'res' });
+      }
+
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const hG = h * 0.26, lado = Math.min(w - 24, h - hG - 28), cel = lado / E.N, x0 = (w - lado) / 2, y0 = 12;
+        d.bloco(ctx, x0 - 6, y0 - 6, lado + 12, lado + 12, { cor: '#E6EEFF', r: 12, alt: 3 });
+        for (let i = 0; i < grade.length; i++) {
+          const g = grade[i]; if (g < 0) continue;
+          const x = x0 + (i % E.N) * cel, y = y0 + ((i / E.N) | 0) * cel;
+          ctx.fillStyle = GRUPOS[g]; ctx.beginPath(); ctx.moveTo(x + cel * 0.5, y + cel * 0.08); ctx.lineTo(x + cel * 0.92, y + cel * 0.45); ctx.lineTo(x + cel * 0.92, y + cel * 0.92); ctx.lineTo(x + cel * 0.08, y + cel * 0.92); ctx.lineTo(x + cel * 0.08, y + cel * 0.45); ctx.closePath(); ctx.fill();
+          if (E.insatisf && !satisfeito(i)) { ctx.strokeStyle = '#fff'; ctx.lineWidth = Math.max(1, cel * 0.12); ctx.beginPath(); ctx.moveTo(x + cel * 0.3, y + cel * 0.5); ctx.lineTo(x + cel * 0.7, y + cel * 0.85); ctx.moveTo(x + cel * 0.7, y + cel * 0.5); ctx.lineTo(x + cel * 0.3, y + cel * 0.85); ctx.stroke(); }
+        }
+        if (sel != null) { const x = x0 + (sel % E.N) * cel, y = y0 + ((sel / E.N) | 0) * cel; ctx.strokeStyle = C.tinta; ctx.lineWidth = 3; ctx.strokeRect(x - cel, y - cel, cel * 3, cel * 3); ctx.strokeStyle = C.amarelo; ctx.lineWidth = 2; ctx.strokeRect(x, y, cel, cel); }
+        geo = { x0, y0, cel };
+        // gráfico
+        const gy = y0 + lado + 16, gh = h - gy - 10, gx = 16, gw = w - 32;
+        d.bloco(ctx, gx, gy, gw, gh, { cor: '#fff', r: 12, alt: 0, esp: 2 });
+        ctx.strokeStyle = '#E3EAFA'; ctx.lineWidth = 1; for (const v of [0.25, 0.5, 0.75]) { ctx.beginPath(); ctx.moveTo(gx + 40, gy + gh - 12 - v * (gh - 30)); ctx.lineTo(gx + gw - 10, gy + gh - 12 - v * (gh - 30)); ctx.stroke(); d.texto(ctx, `${v * 100}%`, gx + 34, gy + gh - 8 - v * (gh - 30), { tam: 10, alinhar: 'right', cor: C.suave }); }
+        const H = E.hist, n = Math.max(30, H.length), X = (i) => gx + 44 + (i / (n - 1)) * (gw - 58), Y = (v) => gy + gh - 12 - v * (gh - 30);
+        for (const [k, cor, rot] of [[0, C.vermelho, 'segregação'], [1, C.verde, 'satisfeitos']]) { ctx.strokeStyle = cor; ctx.lineWidth = 3; ctx.beginPath(); H.forEach((p, i) => (i ? ctx.lineTo(X(i), Y(p[k])) : ctx.moveTo(X(i), Y(p[k])))); ctx.stroke(); if (H.length) d.texto(ctx, `${rot} ${SQ.num(H[H.length - 1][k] * 100, 0)}%`, gx + gw - 12, Y(H[H.length - 1][k]) - 6, { tam: 11, alinhar: 'right', cor, contorno: '#fff' }); }
+        d.texto(ctx, `rodadas: ${E.passos}`, gx + 50, gy + 16, { tam: 11, cor: C.suave });
+      }
+      let geo = null;
+
+      // ---------- painel ----------
+      const gP = ui.grupo('Preferências e cidade');
+      const sT = ui.slider({ rotulo: 'Quero pelo menos … de vizinhos iguais', min: 0, max: 90, passo: 1, valor: E.tol, unidade: '%', pai: gP, aoMudar: (v) => { E.tol = v; registrar(); tela.redesenhar(); pintar(); narrarTol(); } });
+      const sDv = ui.slider({ rotulo: 'Desejo de diversidade (no máximo … iguais)', min: 50, max: 100, passo: 5, valor: E.div, unidade: '%', pai: gP, formatar: (v) => (v >= 100 ? 'desligado' : `${v}%`), aoMudar: (v) => { E.div = v; registrar(); tela.redesenhar(); pintar(); } });
+      const sD = ui.slider({ rotulo: 'Ocupação da cidade', min: 50, max: 98, passo: 1, valor: E.dens, unidade: '%', pai: gP, aoMudar: (v) => { E.dens = v; reiniciar(); } });
+      const sPr = ui.slider({ rotulo: 'Tamanho do grupo laranja', min: 50, max: 85, passo: 1, valor: E.prop, unidade: '%', pai: gP, aoMudar: (v) => { E.prop = v; reiniciar(); } });
+      const tG3 = ui.alternar({ rotulo: 'Três grupos', valor: false, pai: gP, aoMudar: (v) => { E.g3 = v; reiniciar(); } });
+      ui.alternar({ rotulo: 'Marcar insatisfeitos (✕)', valor: true, pai: gP, aoMudar: (v) => { E.insatisf = v; tela.redesenhar(); } });
+      ui.slider({ rotulo: 'Velocidade', min: 1, max: 20, passo: 1, valor: E.vel, pai: gP, formatar: (v) => `${v} rodadas/s`, aoMudar: (v) => { E.vel = v; } });
+      const btRodar = ui.botao({ rotulo: '▶ Rodar', classe: 'pequeno', aoClicar: () => { E.rodando = !E.rodando; btRodar.innerHTML = E.rodando ? '⏸ Pausar' : '▶ Rodar'; if (E.rodando) { inicio = inicio || medir(); laco.iniciar(); } else concluir(false); } });
+      ui.linha(gP, btRodar, ui.botao({ rotulo: 'Uma rodada', classe: 'branco pequeno', aoClicar: () => { passo(); tela.redesenhar(); pintar(); } }), ui.botao({ rotulo: '↺ Nova cidade', classe: 'branco pequeno', aoClicar: reiniciar }));
+      const lei = ui.leituras([{ id: 'seg', rotulo: 'Índice de segregação', destaque: true }, { id: 'sat', rotulo: 'Satisfeitos' }, { id: 'r', rotulo: 'Rodadas' }, { id: 'm', rotulo: 'Mudanças' }], gP);
+      const gC = ui.grupo('Cenários gerados pelo guia');
+      const cen = SQ.el('div', { class: 'cenarios' }); gC.append(cen);
+      for (const c of CENARIOS) cen.append(SQ.el('button', { type: 'button', onclick: () => aplicarCenario(c) }, `${c.nome} — ${c.txt}`));
+      const gD = ui.grupo('Para debater');
+      const perg = SQ.el('div', { class: 'pergunta' }, PERGUNTAS[0]); gD.append(perg);
+      let ip = 0; ui.botao({ rotulo: '💬 Outra pergunta', classe: 'branco pequeno', pai: ui.linha(gD), aoClicar: () => { ip = (ip + 1) % PERGUNTAS.length; perg.textContent = PERGUNTAS[ip]; } });
+
+      function aplicarCenario(c) {
+        Object.assign(E, c.p); sT.valor = E.tol; sD.valor = E.dens; sPr.valor = E.prop; sDv.valor = E.div; tG3.valor = E.g3;
+        reiniciar(); E.rodando = true; btRodar.innerHTML = '⏸ Pausar'; laco.iniciar();
+        guia.diz(`🧪 Cenário <b>${c.nome}</b>: ${c.txt} Antes de olhar: você acha que a cidade vai ficar misturada ou separada?`, { tipo: 'dica', chave: 'res' });
+      }
+      let tT = 0;
+      function narrarTol() { clearTimeout(tT); tT = setTimeout(() => guia.diz(E.tol < 20 ? `Com só ${E.tol}% de exigência, quase todo mundo fica satisfeito onde está.` : E.tol <= 40 ? `${E.tol}% é uma preferência <b>leve</b>: cada um aceita ser minoria no próprio bairro. Rode e veja o que acontece com a cidade inteira.` : E.tol <= 60 ? `${E.tol}%: as pessoas querem ser maioria entre os vizinhos.` : `${E.tol}% é uma exigência muito alta: pode ser impossível satisfazer a todos.`, { chave: 'tol' }), 300); }
+      function pintar() { const r = E.ult || medir(); lei.set('seg', `${SQ.num(r.seg * 100, 0)}%`); lei.set('sat', `${SQ.num(r.sat * 100, 0)}%`); lei.set('r', String(E.passos)); lei.set('m', String(E.mov)); }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; if (grade) desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) {
+          if (!geo) return false; const cx = Math.floor((p.x - geo.x0) / geo.cel), cy = Math.floor((p.y - geo.y0) / geo.cel);
+          if (cx < 0 || cy < 0 || cx >= E.N || cy >= E.N) return false;
+          const i = cy * E.N + cx; sel = i; tela.redesenhar();
+          if (grade[i] < 0) { guia.diz('Casa vazia: está disponível para quem quiser se mudar.', { chave: 'cel' }); return false; }
+          const [ig, oc] = vizinhos(i), f = oc ? (ig / oc) * 100 : 100;
+          guia.diz(`Esta família (grupo ${['laranja', 'azul', 'verde'][grade[i]]}) tem ${oc} vizinhos, ${ig} do mesmo grupo (<b>${SQ.num(f, 0)}%</b>). Ela quer pelo menos ${E.tol}%${E.div < 100 ? ` e no máximo ${E.div}%` : ''}: está <b>${satisfeito(i) ? 'satisfeita' : 'insatisfeita e vai se mudar'}</b>.`, { tipo: satisfeito(i) ? '' : 'alerta', chave: 'cel' });
+          return false;
+        },
+      });
+      let acum = 0;
+      const laco = SQ.loop((dt) => { if (!E.rodando) { laco.parar(); return; } acum += dt * E.vel; while (acum >= 1 && E.rodando) { acum -= 1; passo(); if (E.passos > 400) { E.rodando = false; btRodar.innerHTML = '▶ Rodar'; concluir(false); } } tela.redesenhar(); pintar(); });
+      guia.contexto = () => { const r = E.ult || medir(); return { tolerancia: E.tol, diversidade: E.div, ocupacao: E.dens, proporcao: E.prop, tresGrupos: E.g3, rodadas: E.passos, segregacao: r.seg, satisfeitos: r.sat, resumo: `Depois de ${E.passos} rodadas, o índice de segregação está em ${SQ.num(r.seg * 100, 0)}% (começou em ${SQ.num((inicio || r).seg * 100, 0)}%) e ${SQ.num(r.sat * 100, 0)}% das famílias estão satisfeitas, com exigência de ${E.tol}% de vizinhos iguais.` }; };
+      reiniciar();
+    },
+  });
+  </script>
+</body>
+</html>

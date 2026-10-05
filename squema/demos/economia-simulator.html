@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Economia Simulator — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/grafico.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>.choques { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .choques .botao { font-size: 12px; min-height: 40px; line-height: 1.15; }</style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  // demanda: Qd = a − b·P · oferta: Qs = c + d·P (P em R$, Q em mil unidades)
+  const PRODUTOS = {
+    cafe: { nome: 'Café (kg)', a: 62, b: 2.2, c: 8, d: 3.2, sub: 'chá', txt: 'Bem com demanda pouco elástica: as pessoas continuam comprando café mesmo quando ele encarece.' },
+    tomate: { nome: 'Tomate (kg)', a: 90, b: 5, c: 10, d: 3, sub: 'outros legumes', txt: 'Produto perecível, muito sensível ao clima e à safra.' },
+    ingresso: { nome: 'Ingresso de cinema', a: 130, b: 8, c: 20, d: 3, sub: 'streaming', txt: 'Demanda elástica: há muitos substitutos (streaming, outros lazeres).' },
+  };
+  const PRONTOS = [
+    { nome: '❄️ Geada na safra', s: { clima: -40 }, txt: 'Uma geada destrói parte da plantação: a <b>oferta cai</b> (curva laranja vai para a esquerda).' },
+    { nome: '💰 Renda sobe 20%', s: { renda: 20 }, txt: 'Com mais renda, as famílias compram mais: a <b>demanda sobe</b> (curva azul vai para a direita).' },
+    { nome: '🧾 Imposto de R$ 2', s: { imposto: 2 }, txt: 'Um imposto por unidade aumenta o custo de vender: a oferta sobe R$ 2 na vertical (vai para a esquerda).' },
+    { nome: '🤖 Nova tecnologia', s: { tecnologia: 30 }, txt: 'Máquinas novas reduzem o custo de produzir: a <b>oferta aumenta</b>.' },
+    { nome: '⛽ Diesel mais caro', s: { custo: 30 }, txt: 'O frete e os insumos encarecem: a oferta diminui — é um exemplo de <b>inflação de custos</b>.' },
+    { nome: '📉 Substituto barateia', s: { substituto: -30 }, txt: 'O produto substituto fica mais barato e parte dos consumidores migra: a demanda cai.' },
+  ];
+  // IPCA anual (IBGE), em %
+  const IPCA = [[2015, 10.67], [2016, 6.29], [2017, 2.95], [2018, 3.75], [2019, 4.31], [2020, 4.52], [2021, 10.06], [2022, 5.79], [2023, 4.62], [2024, 4.83]];
+  const br = (v, k = 2) => 'R$ ' + SQ.numFixo(v, k);
+
+  SQ.demo('economia-simulator', {
+    fundo: 'papel',
+    dica: 'Arraste a linha de preço para ver sobra ou falta no mercado',
+    sala: ['Peça que a turma preveja, antes de aplicar o choque, se o preço e a quantidade vão subir ou cair.', 'Discuta o tabelamento de preços: por que ele pode gerar filas e escassez?', 'No modo Inflação, compare a soma simples com a acumulação mês a mês: por que a diferença cresce?'],
+    comoIA: 'O guia recebe as curvas, os choques aplicados, o novo equilíbrio e as intervenções (como o preço máximo). Ele diferencia deslocamento da curva de movimento ao longo dela e explica cada cenário. No modo inflação, mostra a acumulação composta e compara com o IPCA real. Uma IA conectada pode relacionar os cenários a notícias econômicas trazidas pela turma.',
+    guia: {
+      ola: 'Este é um <b>mercado</b>: a curva azul é a <b>demanda</b> e a laranja, a <b>oferta</b>. Onde elas se cruzam fica o <b>equilíbrio</b>. Aplique choques e veja preço e quantidade mudarem!',
+      perguntas: [
+        { p: 'Deslocar a curva × andar sobre ela?', chaves: ['deslocar', 'deslocamento', 'movimento', 'ao longo'], r: 'Mudança no <b>preço do próprio produto</b> = movimento <b>ao longo</b> da curva (muda a quantidade). Mudança em <b>outra coisa</b> (renda, custo, clima, gosto) = <b>deslocamento</b> da curva inteira.' },
+        { p: 'Por que o tabelamento gera escassez?', chaves: ['tabelamento', 'preco maximo', 'escassez', 'falta'], r: 'Com o preço máximo abaixo do equilíbrio, os consumidores querem comprar <b>mais</b> e os produtores querem vender <b>menos</b>. A diferença vira fila, mercado paralelo ou prateleira vazia.' },
+        { p: 'O que é inflação?', chaves: ['inflacao', 'ipca', 'precos'], r: 'É o aumento <b>generalizado e contínuo</b> dos preços, que reduz o poder de compra do dinheiro. No Brasil, o índice oficial é o <b>IPCA</b>, calculado pelo IBGE.' },
+        { p: 'O que causa inflação?', chaves: ['causa', 'causas'], r: '<b>Demanda</b> crescendo mais rápido que a produção (inflação de demanda), <b>custos</b> subindo (energia, combustível, câmbio — inflação de custos) e <b>expectativas</b>: se todos esperam alta, reajustam antes.' },
+        { p: 'Explique o cenário atual', chaves: ['explique', 'cenario', 'atual'], r: (c) => c.explicacao },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      const S = { renda: 0, substituto: 0, gosto: 0, custo: 0, tecnologia: 0, clima: 0, imposto: 0 };
+      let prod = 'cafe', modo = 'mercado', teto = null, precoArr = null, mostrarExc = true;
+      const I = { taxa: 0.8, meses: 24, simples: true, real: false };
+      const v = SQ.vista({ x0: 0, x1: 100, y0: 0, y1: 25 }, { x: 0, y: 0, w: 1, h: 1 }), vi = SQ.vista({ x0: 0, x1: 24, y0: 0, y1: 1 }, { x: 0, y: 0, w: 1, h: 1 });
+
+      function curvas(choques = S) {
+        const p = PRODUTOS[prod];
+        const a = p.a * (1 + choques.renda * 0.008 + choques.substituto * 0.006 + choques.gosto * 0.007);
+        const c = p.c * (1 - choques.custo * 0.012 + choques.tecnologia * 0.014 + choques.clima * 0.013) - p.d * choques.imposto;
+        return { a, b: p.b, c, d: p.d };
+      }
+      const Qd = (k, P) => k.a - k.b * P, Qs = (k, P) => k.c + k.d * P;
+      const eq = (k) => { const P = (k.a - k.c) / (k.b + k.d); return { P, Q: Qd(k, P) }; };
+      function excedentes(k, e) {
+        const cons = 0.5 * (k.a / k.b - e.P) * e.Q;
+        let prodE = 0; const n = 200; for (let i = 0; i < n; i++) { const q = ((i + 0.5) / n) * e.Q, ps = Math.max(0, (q - k.c) / k.d); prodE += Math.max(0, e.P - ps) * (e.Q / n); }
+        return { cons, prod: prodE };
+      }
+
+      function desenharMercado(ctx, w, h) {
+        v.area = { x: 56, y: 16, w: w - 76, h: h - 56 };
+        d.eixos(ctx, v, { fundo: '#FBFCFF', nomeX: 'Quantidade (mil)', nomeY: 'Preço (R$)', eixoNaBorda: true, alvoX: 10, alvoY: 6 });
+        const k0 = curvas({ renda: 0, substituto: 0, gosto: 0, custo: 0, tecnologia: 0, clima: 0, imposto: 0 }), k = curvas(), e0 = eq(k0), e = eq(k);
+        const linhaD = (kk) => (P) => Qd(kk, P), linhaS = (kk) => (P) => Qs(kk, P);
+        const tracar = (f, cor, esp, tr) => { ctx.save(); ctx.beginPath(); ctx.rect(v.area.x, v.area.y, v.area.w, v.area.h); ctx.clip(); ctx.strokeStyle = cor; ctx.lineWidth = esp; if (tr) ctx.setLineDash(tr); ctx.beginPath(); let ini = true; for (let P = 0; P <= 25.01; P += 0.25) { const Q = f(P); if (Q < 0) { ini = true; continue; } const x = v.X(Q), y = v.Y(P); ini ? ctx.moveTo(x, y) : ctx.lineTo(x, y); ini = false; } ctx.stroke(); ctx.restore(); };
+        // excedentes
+        if (mostrarExc && !teto && !precoArr) {
+          ctx.fillStyle = 'rgba(43,180,245,.18)'; ctx.beginPath(); ctx.moveTo(v.X(0), v.Y(e.P)); ctx.lineTo(v.X(0), v.Y(Math.min(25, k.a / k.b))); ctx.lineTo(v.X(Qd(k, Math.min(25, k.a / k.b))), v.Y(Math.min(25, k.a / k.b))); ctx.lineTo(v.X(e.Q), v.Y(e.P)); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgba(255,148,22,.18)'; ctx.beginPath(); ctx.moveTo(v.X(0), v.Y(e.P)); ctx.lineTo(v.X(e.Q), v.Y(e.P)); const pIni = Math.max(0, -k.c / k.d); ctx.lineTo(v.X(Qs(k, pIni)), v.Y(pIni)); if (k.c > 0) ctx.lineTo(v.X(0), v.Y(0)); ctx.closePath(); ctx.fill();
+        }
+        const mudou = Object.values(S).some((x) => x);
+        if (mudou) { tracar(linhaD(k0), '#9AB8F0', 2.5, [8, 6]); tracar(linhaS(k0), '#F7C38A', 2.5, [8, 6]); }
+        tracar(linhaD(k), C.azul, 4); tracar(linhaS(k), C.laranja, 4);
+        d.etiqueta(ctx, 'Demanda', v.X(Math.max(2, Qd(k, 22))), v.Y(22), { cor: '#DDEBFF', tam: 11 }); d.etiqueta(ctx, 'Oferta', v.X(Math.min(96, Qs(k, 21))), v.Y(21), { cor: '#FFE9C7', tam: 11 });
+        // setas do deslocamento
+        if (k.a !== k0.a) d.seta(ctx, v.X(Qd(k0, 4)), v.Y(4), v.X(Qd(k, 4)), v.Y(4), C.azul, 3, 10);
+        if (k.c !== k0.c) d.seta(ctx, v.X(Qs(k0, 16)), v.Y(16), v.X(Qs(k, 16)), v.Y(16), C.laranja, 3, 10);
+        // preço arrastado ou teto
+        const Pl = precoArr ?? teto;
+        if (Pl != null) {
+          const qd = Math.max(0, Qd(k, Pl)), qs = Math.max(0, Qs(k, Pl));
+          ctx.strokeStyle = teto != null && precoArr == null ? C.vermelho : C.roxo; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(v.area.x, v.Y(Pl)); ctx.lineTo(v.area.x + v.area.w, v.Y(Pl)); ctx.stroke();
+          ctx.fillStyle = qd > qs ? 'rgba(238,59,69,.25)' : 'rgba(54,192,74,.25)'; ctx.fillRect(v.X(Math.min(qd, qs)), v.Y(Pl) - 9, Math.abs(v.X(qd) - v.X(qs)), 18);
+          d.etiqueta(ctx, qd > qs ? `falta ${SQ.num(qd - qs, 1)} mil` : `sobra ${SQ.num(qs - qd, 1)} mil`, (v.X(qd) + v.X(qs)) / 2, v.Y(Pl) - 22, { cor: qd > qs ? '#FFE1E3' : '#DDF7E1', tam: 11 });
+          d.etiqueta(ctx, `${teto != null && precoArr == null ? 'preço máximo' : 'preço'} ${br(Pl)}`, v.area.x + 70, v.Y(Pl) + 18, { tam: 11, cor: '#fff' });
+        }
+        // equilíbrios
+        if (mudou) d.bola(ctx, v.X(e0.Q), v.Y(e0.P), 6, '#CBD7F5', { esp: 2 });
+        ctx.setLineDash([4, 5]); ctx.strokeStyle = C.tinta; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(v.area.x, v.Y(e.P)); ctx.lineTo(v.X(e.Q), v.Y(e.P)); ctx.lineTo(v.X(e.Q), v.area.y + v.area.h); ctx.stroke(); ctx.setLineDash([]);
+        d.bola(ctx, v.X(e.Q), v.Y(e.P), 9, C.amarelo);
+        d.etiqueta(ctx, `equilíbrio: ${br(e.P)} · ${SQ.num(e.Q, 1)} mil`, Math.min(v.area.x + v.area.w - 110, v.X(e.Q) + 100), v.Y(e.P) - 20, { tam: 12, cor: C.amarelo });
+      }
+      function desenharInflacao(ctx, w, h) {
+        if (I.real) {
+          vi.area = { x: 60, y: 16, w: w - 80, h: h - 60 };
+          let acc = 100; const pts = [[2014, 100]]; for (const [a, t] of IPCA) { acc *= 1 + t / 100; pts.push([a, acc]); }
+          vi.dom = { x0: 2013.5, x1: 2024.6, y0: 0, y1: Math.ceil(acc / 20) * 20 + 10 };
+          d.eixos(ctx, vi, { fundo: '#FBFCFF', nomeX: 'ano', nomeY: 'preços (2014 = 100)', eixoNaBorda: true, alvoX: 11, fmtX: (t) => String(Math.round(t)) });
+          IPCA.forEach(([a, t]) => { const x = vi.X(a), bw = (vi.area.w / 12) * 0.6; ctx.fillStyle = t > 6 ? 'rgba(238,59,69,.35)' : 'rgba(43,180,245,.35)'; const y = vi.Y(t * 4); ctx.fillRect(x - bw / 2, y, bw, vi.Y(0) - y); d.texto(ctx, `${SQ.num(t, 1)}%`, x, y - 4, { tam: 10, alinhar: 'center', cor: C.suave }); });
+          ctx.strokeStyle = C.vermelho; ctx.lineWidth = 3.5; ctx.beginPath(); pts.forEach(([a, p], i) => (i ? ctx.lineTo(vi.X(a), vi.Y(p)) : ctx.moveTo(vi.X(a), vi.Y(p)))); ctx.stroke();
+          pts.forEach(([a, p]) => d.bola(ctx, vi.X(a), vi.Y(p), 4, C.vermelho, { esp: 1.5, brilho: false }));
+          d.etiqueta(ctx, `R$ 100 de 2014 → ${br(acc)} em 2024 (+${SQ.num(acc - 100, 1)}%)`, vi.area.x + vi.area.w / 2, vi.area.y + 18, { tam: 12, cor: C.amarelo });
+          d.texto(ctx, 'barras: IPCA de cada ano (escala ×4) · linha: preços acumulados', vi.area.x + 8, vi.area.y + vi.area.h - 8, { tam: 10, cor: C.suave });
+          return;
+        }
+        vi.area = { x: 60, y: 16, w: w - 80, h: h - 60 };
+        const r = I.taxa / 100, N = I.meses, fim = 100 * (1 + r) ** N, simples = 100 * (1 + r * N);
+        vi.dom = { x0: 0, x1: N, y0: 0, y1: Math.max(120, fim * 1.15) };
+        d.eixos(ctx, vi, { fundo: '#FBFCFF', nomeX: 'meses', nomeY: 'preço da cesta (R$)', eixoNaBorda: true, fmtX: (t) => String(Math.round(t)) });
+        // poder de compra (barras)
+        for (let m = 0; m <= N; m += Math.max(1, Math.round(N / 24))) { const pod = 100 / (1 + r) ** m, x = vi.X(m), bw = Math.max(3, (vi.area.w / (N + 1)) * 0.6 * Math.max(1, Math.round(N / 24))); ctx.fillStyle = 'rgba(54,192,74,.28)'; ctx.fillRect(x - bw / 2, vi.Y(pod), bw, vi.Y(0) - vi.Y(pod)); }
+        if (I.simples) vi.curva(ctx, (m) => 100 * (1 + r * m), { cor: '#9AA8D6', esp: 2.5, tracejado: [7, 6], x0: 0, x1: N });
+        vi.curva(ctx, (m) => 100 * (1 + r) ** m, { cor: C.vermelho, esp: 4, x0: 0, x1: N });
+        d.bola(ctx, vi.X(N), vi.Y(fim), 8, C.vermelho);
+        d.etiqueta(ctx, `cesta: ${br(fim)} (+${SQ.num((fim / 100 - 1) * 100, 1)}%)`, Math.max(vi.area.x + 90, vi.X(N) - 90), vi.Y(fim) - 20, { tam: 12, cor: '#FFE1E3' });
+        if (I.simples) d.etiqueta(ctx, `soma simples: +${SQ.num(r * N * 100, 1)}%`, Math.max(vi.area.x + 90, vi.X(N) - 90), vi.Y(simples) + 22, { tam: 11, cor: '#fff' });
+        d.etiqueta(ctx, `barras verdes: o que R$ 100 compram (no fim: R$ ${SQ.num(100 / (1 + r) ** N, 2)} em preços iniciais)`, vi.area.x + 10, vi.area.y + 20, { tam: 11, cor: '#DDF7E1', alinhar: 'left' });
+      }
+      function desenhar() { const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h); modo === 'mercado' ? desenharMercado(ctx, w, h) : desenharInflacao(ctx, w, h); }
+
+      // ---------- painel ----------
+      const gM = ui.grupo('Simulador');
+      ui.segmentado({ opcoes: [{ valor: 'mercado', rotulo: '📈 Oferta e demanda' }, { valor: 'inflacao', rotulo: '🛒 Inflação' }], valor: modo, pai: gM, aoMudar: (x) => { modo = x; gD.hidden = gO.hidden = gT.hidden = gP.hidden = sProd.el.hidden = lei.el.hidden = x !== 'mercado'; gI.hidden = x !== 'inflacao'; const dc = palco.querySelector('.palco-dica'); dc.classList.remove('sumida'); dc.textContent = x === 'mercado' ? 'Arraste a linha de preço para ver sobra ou falta no mercado' : 'Mude a taxa e o prazo para ver a inflação acumular'; atualizar(); narrar(); } });
+      const sProd = ui.select({ rotulo: 'Produto', opcoes: Object.entries(PRODUTOS).map(([k, p]) => ({ valor: k, rotulo: p.nome })), valor: prod, pai: gM, aoMudar: (x) => { prod = x; atualizar(); guia.diz(`<b>${PRODUTOS[x].nome}</b>: ${PRODUTOS[x].txt}`, { chave: 'cen' }); } });
+      const lei = ui.leituras([{ id: 'P', rotulo: 'Preço de equilíbrio', destaque: true }, { id: 'Q', rotulo: 'Quantidade' }, { id: 'dP', rotulo: 'Variação do preço' }, { id: 'dQ', rotulo: 'Variação da quantidade' }], gM);
+      const sl = {};
+      const ctrl = (pai, k, rot, min, max, fmt) => { sl[k] = ui.slider({ rotulo: rot, min, max, passo: k === 'imposto' ? 0.5 : 5, valor: 0, pai, formatar: fmt, aoMudar: (x) => { S[k] = x; precoArr = null; atualizar(); narrarT(); } }); };
+      const pct = (x) => `${x > 0 ? '+' : ''}${x}%`;
+      const gP = ui.grupo('Choques prontos');
+      const ch = SQ.el('div', { class: 'choques' }); gP.append(ch);
+      for (const c of PRONTOS) ch.append(ui.botao({ rotulo: c.nome, classe: 'branco pequeno', aoClicar: () => aplicar(c) }));
+      ui.botao({ rotulo: '↺ Zerar choques', classe: 'pequeno', pai: ui.linha(gP), aoClicar: () => { for (const k of Object.keys(S)) { S[k] = 0; sl[k].valor = 0; } precoArr = null; atualizar(); guia.diz('Mercado de volta ao equilíbrio inicial.', { chave: 'cen' }); } });
+      const gD = ui.grupo('Choques de demanda');
+      ctrl(gD, 'renda', 'Renda das famílias', -40, 40, pct); ctrl(gD, 'substituto', 'Preço do substituto', -40, 40, pct); ctrl(gD, 'gosto', 'Preferência / moda', -40, 40, pct);
+      const gO = ui.grupo('Choques de oferta');
+      ctrl(gO, 'custo', 'Custo dos insumos', -40, 40, pct); ctrl(gO, 'tecnologia', 'Tecnologia', 0, 40, pct); ctrl(gO, 'clima', 'Clima / safra', -50, 30, pct); ctrl(gO, 'imposto', 'Imposto por unidade', 0, 5, (x) => br(x));
+      const gT = ui.grupo('Intervenção do governo');
+      const sTeto = ui.slider({ rotulo: 'Preço máximo (tabelamento)', min: 2, max: 20, passo: 0.5, valor: 6, pai: gT, formatar: (x) => br(x), aoMudar: (x) => { if (teto != null) { teto = x; atualizar(); narrarT(); } } });
+      ui.alternar({ rotulo: 'Aplicar preço máximo', valor: false, pai: gT, aoMudar: (x) => { teto = x ? sTeto.valor : null; precoArr = null; atualizar(); narrar(); } });
+      ui.alternar({ rotulo: 'Mostrar excedentes (consumidor/produtor)', valor: true, pai: gT, aoMudar: (x) => { mostrarExc = x; tela.redesenhar(); } });
+      const gI = ui.grupo('Inflação acumulada'); gI.hidden = true;
+      ui.slider({ rotulo: 'Inflação mensal', min: 0, max: 5, passo: 0.1, valor: I.taxa, unidade: '% ao mês', pai: gI, aoMudar: (x) => { I.taxa = x; atualizar(); narrarT(); } });
+      ui.slider({ rotulo: 'Período', min: 1, max: 60, passo: 1, valor: I.meses, unidade: 'meses', pai: gI, aoMudar: (x) => { I.meses = x; atualizar(); narrarT(); } });
+      ui.alternar({ rotulo: 'Comparar com a soma simples', valor: true, pai: gI, aoMudar: (x) => { I.simples = x; tela.redesenhar(); } });
+      ui.alternar({ rotulo: 'IPCA real do Brasil (2015–2024)', valor: false, pai: gI, aoMudar: (x) => { I.real = x; atualizar(); narrar(); } });
+      const leiI = ui.leituras([{ id: 'ac', rotulo: 'Inflação acumulada', destaque: true }, { id: 'pc', rotulo: 'Poder de compra de R$ 100' }, { id: 'an', rotulo: 'Equivale ao ano' }, { id: 'si', rotulo: 'Soma simples (errada)' }], gI);
+
+      function aplicar(c) { for (const k of Object.keys(S)) { S[k] = c.s[k] ?? 0; sl[k].valor = S[k]; } precoArr = null; atualizar(); const e0 = eq(curvas({ renda: 0, substituto: 0, gosto: 0, custo: 0, tecnologia: 0, clima: 0, imposto: 0 })), e = eq(curvas()); guia.diz(`${c.txt} Resultado: preço ${e.P > e0.P ? 'sobe' : 'cai'} de ${br(e0.P)} para <b>${br(e.P)}</b> e a quantidade ${e.Q > e0.Q ? 'aumenta' : 'diminui'} de ${SQ.num(e0.Q, 1)} para <b>${SQ.num(e.Q, 1)} mil</b>.`, { tipo: 'dica', chave: 'cen' }); }
+      function explicacao() {
+        if (modo === 'inflacao') { const r = I.taxa / 100, ac = ((1 + r) ** I.meses - 1) * 100; return I.real ? 'Entre 2015 e 2024, o IPCA acumulado foi de cerca de 75%: o que custava R$ 100 no fim de 2014 passou a custar cerca de R$ 175. Os anos de 2015 e 2021 tiveram inflação acima de 10%.' : `Com ${SQ.num(I.taxa, 1)}% ao mês por ${I.meses} meses, a inflação acumulada é de <b>${SQ.num(ac, 1)}%</b> — e não ${SQ.num(I.taxa * I.meses, 1)}% (soma simples), porque cada mês incide sobre preços que já subiram: é a <b>composição</b>.`; }
+        const k0 = curvas({ renda: 0, substituto: 0, gosto: 0, custo: 0, tecnologia: 0, clima: 0, imposto: 0 }), k = curvas(), e0 = eq(k0), e = eq(k);
+        const dDem = k.a - k0.a, dOf = k.c - k0.c; const partes = [];
+        if (Math.abs(dDem) > 0.01) partes.push(`a <b>demanda ${dDem > 0 ? 'aumentou' : 'diminuiu'}</b> (a curva azul se deslocou para a ${dDem > 0 ? 'direita' : 'esquerda'})`);
+        if (Math.abs(dOf) > 0.01) partes.push(`a <b>oferta ${dOf > 0 ? 'aumentou' : 'diminuiu'}</b> (a curva laranja se deslocou para a ${dOf > 0 ? 'direita' : 'esquerda'})`);
+        let t = partes.length ? `No mercado de ${PRODUTOS[prod].nome.toLowerCase()}, ${partes.join(' e ')}. O novo equilíbrio é ${br(e.P)} e ${SQ.num(e.Q, 1)} mil unidades (antes: ${br(e0.P)} e ${SQ.num(e0.Q, 1)} mil).` : `Mercado em equilíbrio: ${br(e.P)} e ${SQ.num(e.Q, 1)} mil unidades. Aplique um choque!`;
+        if (teto != null) { const qd = Qd(k, teto), qs = Qs(k, teto); t += teto < e.P ? ` Com o preço máximo de ${br(teto)}, abaixo do equilíbrio, falta produto: querem comprar ${SQ.num(qd, 1)} mil, mas só ${SQ.num(Math.max(0, qs), 1)} mil são oferecidos.` : ` O preço máximo (${br(teto)}) está acima do equilíbrio, então não tem efeito.`; }
+        return t;
+      }
+      let tN = 0;
+      function narrarT() { clearTimeout(tN); tN = setTimeout(narrar, 350); }
+      function narrar() { guia.diz(explicacao(), { chave: 'cen' }); }
+      function atualizar() {
+        const k0 = curvas({ renda: 0, substituto: 0, gosto: 0, custo: 0, tecnologia: 0, clima: 0, imposto: 0 }), k = curvas(), e0 = eq(k0), e = eq(k);
+        lei.set('P', br(e.P)); lei.set('Q', `${SQ.num(e.Q, 1)} mil`); lei.set('dP', `${e.P >= e0.P ? '+' : ''}${SQ.num(((e.P - e0.P) / e0.P) * 100, 1)}%`); lei.set('dQ', `${e.Q >= e0.Q ? '+' : ''}${SQ.num(((e.Q - e0.Q) / e0.Q) * 100, 1)}%`);
+        const r = I.taxa / 100, ac = (1 + r) ** I.meses - 1;
+        leiI.set('ac', `${SQ.num(ac * 100, 1)}%`); leiI.set('pc', br(100 / (1 + ac))); leiI.set('an', `${SQ.num(((1 + r) ** 12 - 1) * 100, 1)}% ao ano`); leiI.set('si', `${SQ.num(I.taxa * I.meses, 1)}%`);
+        tela && tela.redesenhar();
+      }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      SQ.ponteiro(tela.canvas, {
+        inicio(p) { if (modo !== 'mercado' || !v.dentro(p.x, p.y)) return false; precoArr = Math.max(0.5, Math.min(24, v.iy(p.y))); tela.redesenhar(); return true; },
+        mover(p) { precoArr = Math.max(0.5, Math.min(24, v.iy(p.y))); tela.redesenhar(); },
+        fim() {
+          const k = curvas(), e = eq(k), P = precoArr, qd = Qd(k, P), qs = Qs(k, P);
+          guia.diz(Math.abs(P - e.P) < 0.3 ? 'Nesse preço, quanto se quer comprar é igual a quanto se quer vender: é o <b>equilíbrio</b>.' : P > e.P ? `A ${br(P)}, sobra produto (${SQ.num(qs - qd, 1)} mil): para vender, os produtores <b>baixam o preço</b> — e o mercado volta ao equilíbrio.` : `A ${br(P)}, falta produto (${SQ.num(qd - qs, 1)} mil): os consumidores disputam e o <b>preço sobe</b> até o equilíbrio.`, { chave: 'arr' });
+          const alvo = e.P, ini = P; let t = 0;
+          const an = SQ.loop((dt) => { t = Math.min(1, t + dt * 0.8); precoArr = ini + (alvo - ini) * (t * t * (3 - 2 * t)); tela.redesenhar(); if (t >= 1) { an.parar(); precoArr = null; tela.redesenhar(); } }).iniciar();
+        },
+        hover(p) { tela.canvas.style.cursor = modo === 'mercado' && v.dentro(p.x, p.y) ? 'ns-resize' : ''; },
+      });
+      guia.contexto = () => { const k = curvas(), e = eq(k), ex = excedentes(k, e); return { modo, produto: PRODUTOS[prod].nome, choques: S, equilibrio: e, excedentes: ex, precoMaximo: teto, inflacao: I, explicacao: explicacao() }; };
+      atualizar(); narrar();
+    },
+  });
+  </script>
+</body>
+</html>

@@ -213,7 +213,7 @@
         guia.diz(`Você acertou ${certos} de ${n}. Olhe de novo para “<b>${txt}</b>”: ${marcados[erro] ? `não é ${FUNCOES[marcados[erro]][0].toLowerCase()}. ` : 'ainda não foi marcado. '}Dica: ${FUNCOES[fn][2]}`, { tipo: 'alerta', chave: 'des' });
       }
 
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 600 });
       SQ.ponteiro(tela.canvas, {
         inicio(p) {
           const bt = blocosTermo.find((b) => p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h);

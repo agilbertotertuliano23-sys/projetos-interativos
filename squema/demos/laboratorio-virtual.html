@@ -199,7 +199,7 @@
         tela && tela.redesenhar();
       }
 
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 660 });
       let acum = 0;
       SQ.loop((dt) => {
         E.t += dt;

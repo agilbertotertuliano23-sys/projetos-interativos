@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Código Visual — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/codigo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    textarea.codigo { min-height: 200px; font: 600 13px/1.5 var(--fonte-mono); tab-size: 4; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+    .erro { background: #FFE1E3; border: 2px solid var(--vermelho); border-radius: 12px; padding: 8px 10px; font-size: 13px; font-weight: 800; color: #8A1520; margin-top: 8px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script>
+  const PROGRAMAS = {
+    soma: ['Soma de 1 a N (while)', 'n = 5\nsoma = 0\ni = 1\nwhile i <= n:\n    soma = soma + i\n    i = i + 1\nprint("A soma é", soma)'],
+    tabuada: ['Tabuada (for e range)', 'numero = 7\nfor i in range(1, 6):\n    resultado = numero * i\n    print(numero, "x", i, "=", resultado)'],
+    par: ['Par ou ímpar (if/else)', 'numeros = [4, 7, 10, 13]\nfor x in numeros:\n    if x % 2 == 0:\n        print(x, "é par")\n    else:\n        print(x, "é ímpar")'],
+    maior: ['Maior nota da lista', 'notas = [6.5, 8, 9.5, 7]\nmaior = notas[0]\nfor nota in notas:\n    if nota > maior:\n        maior = nota\nprint("Maior nota:", maior)'],
+    fatorial: ['Fatorial recursivo (funções)', 'def fatorial(n):\n    if n <= 1:\n        return 1\n    return n * fatorial(n - 1)\n\nresultado = fatorial(4)\nprint("4! =", resultado)'],
+    fib: ['Fibonacci com lista', 'fib = [0, 1]\nwhile len(fib) < 8:\n    proximo = fib[-1] + fib[-2]\n    fib.append(proximo)\nprint(fib)'],
+    vogais: ['Contar vogais (strings)', 'palavra = "programação"\nvogais = 0\nfor letra in palavra:\n    if letra in "aeiouáéíóúãõâêô":\n        vogais += 1\nprint("Vogais:", vogais)'],
+    alias: ['Duas variáveis, uma lista', 'a = [1, 2, 3]\nb = a\nb.append(4)\nc = a + [5]\nprint(a)\nprint(c)'],
+  };
+
+  // ================= mini-interpretador (subconjunto de Python) =================
+  class ErroPy extends Error { constructor(msg, linha) { super(msg); this.linha = linha; } }
+  class Sinal { constructor(tipo, valor) { this.tipo = tipo; this.valor = valor; } }
+  const TOK = /\s*(?:(\d+\.\d*|\.\d+|\d+)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|([A-Za-z_À-ÿ][\wÀ-ÿ]*)|(\*\*|\/\/|==|!=|<=|>=|\+=|-=|\*=|\/=|[-+*\/%<>=()[\],:.]))/y;
+  const PALAVRAS = new Set(['def', 'if', 'elif', 'else', 'while', 'for', 'in', 'return', 'break', 'continue', 'pass', 'and', 'or', 'not', 'True', 'False', 'None']);
+  function semComentario(l) { let q = null; for (let i = 0; i < l.length; i++) { const c = l[i]; if (q) { if (c === '\\') i++; else if (c === q) q = null; } else if (c === '"' || c === "'") q = c; else if (c === '#') return l.slice(0, i); } return l; }
+  function tokenizar(linha, n) {
+    const out = []; TOK.lastIndex = 0; let m;
+    while (TOK.lastIndex < linha.length) {
+      if (/^\s*$/.test(linha.slice(TOK.lastIndex))) break;
+      const ini = TOK.lastIndex; m = TOK.exec(linha);
+      if (!m) throw new ErroPy(`Erro de sintaxe: caractere inesperado “${linha.slice(ini).trim()[0]}”`, n);
+      const p0 = ini + m[0].length - (m[1] ?? m[2] ?? m[3] ?? m[4]).length;
+      if (m[1]) out.push({ t: 'num', v: parseFloat(m[1]), s: m[1], p: p0 });
+      else if (m[2]) out.push({ t: 'str', v: m[2].slice(1, -1).replace(/\\n/g, '\n').replace(/\\(.)/g, '$1'), s: m[2], p: p0 });
+      else if (m[3]) out.push({ t: PALAVRAS.has(m[3]) ? 'kw' : 'nome', v: m[3], s: m[3], p: p0 });
+      else out.push({ t: 'op', v: m[4], s: m[4], p: p0 });
+    }
+    return out;
+  }
+  function analisar(fonte) {
+    const linhas = [];
+    fonte.replace(/\t/g, '    ').split('\n').forEach((bruta, i) => { const l = semComentario(bruta); if (!l.trim()) return; linhas.push({ ind: l.match(/^ */)[0].length, toks: tokenizar(l, i + 1), n: i + 1, txt: l }); });
+    let k = 0;
+    function bloco(ind) {
+      const out = [];
+      while (k < linhas.length && linhas[k].ind === ind) out.push(stmt(ind));
+      if (k < linhas.length && linhas[k].ind > ind) throw new ErroPy('Erro de indentação: recuo inesperado', linhas[k].n);
+      return out;
+    }
+    function corpo(L, ind) { if (k >= linhas.length || linhas[k].ind <= ind) throw new ErroPy('Erro de indentação: o bloco depois de “:” precisa estar recuado', L.n); return bloco(linhas[k].ind); }
+    function stmt(ind) {
+      const L = linhas[k++], P = parserExpr(L), t0 = L.toks[0];
+      const fimDois = () => { if (!P.eh('op', ':')) throw new ErroPy('Erro de sintaxe: faltou “:” no fim da linha', L.n); P.prox(); if (!P.fim()) throw new ErroPy('Erro de sintaxe: algo sobrando depois de “:”', L.n); };
+      if (t0.t === 'kw') {
+        if (t0.v === 'def') { P.prox(); const nome = P.prox(); if (nome.t !== 'nome') throw new ErroPy('Erro de sintaxe: nome da função', L.n); P.espera('('); const params = []; while (!P.eh('op', ')')) { params.push(P.prox().v); if (P.eh('op', ',')) P.prox(); } P.espera(')'); fimDois(); return { t: 'def', nome: nome.v, params, corpo: corpo(L, ind), linha: L.n }; }
+        if (t0.v === 'if') { P.prox(); const cond = P.expr(); fimDois(); const ramos = [{ cond, corpo: corpo(L, ind), linha: L.n }]; let senao = null, linhaSenao = null;
+          while (k < linhas.length && linhas[k].ind === ind && linhas[k].toks[0].t === 'kw' && (linhas[k].toks[0].v === 'elif' || linhas[k].toks[0].v === 'else')) { const L2 = linhas[k++], P2 = parserExpr(L2); P2.prox(); if (L2.toks[0].v === 'elif') { const c2 = P2.expr(); if (!P2.eh('op', ':')) throw new ErroPy('faltou “:”', L2.n); ramos.push({ cond: c2, corpo: corpo(L2, ind), linha: L2.n }); } else { if (!P2.eh('op', ':')) throw new ErroPy('faltou “:”', L2.n); senao = corpo(L2, ind); linhaSenao = L2.n; break; } }
+          return { t: 'if', ramos, senao, linhaSenao, linha: L.n }; }
+        if (t0.v === 'while') { P.prox(); const cond = P.expr(); fimDois(); return { t: 'while', cond, corpo: corpo(L, ind), linha: L.n }; }
+        if (t0.v === 'for') { P.prox(); const v = P.prox(); if (v.t !== 'nome') throw new ErroPy('Erro de sintaxe no for', L.n); if (!(P.eh('kw', 'in'))) throw new ErroPy('Erro de sintaxe: esperado “in” no for', L.n); P.prox(); const it = P.expr(); fimDois(); return { t: 'for', var: v.v, iter: it, corpo: corpo(L, ind), linha: L.n }; }
+        if (t0.v === 'return') { P.prox(); const e = P.fim() ? null : P.expr(); return { t: 'return', expr: e, linha: L.n }; }
+        if (t0.v === 'break' || t0.v === 'continue' || t0.v === 'pass') return { t: t0.v, linha: L.n };
+        if (t0.v === 'elif' || t0.v === 'else') throw new ErroPy(`“${t0.v}” sem um “if” antes`, L.n);
+      }
+      const e = P.expr();
+      if (P.eh('op', '=') || P.eh('op', '+=') || P.eh('op', '-=') || P.eh('op', '*=') || P.eh('op', '/=')) { const op = P.prox().v; if (e.t !== 'nome' && e.t !== 'idx') throw new ErroPy('Não dá para atribuir a essa expressão', L.n); const v = P.expr(); if (!P.fim()) throw new ErroPy('Erro de sintaxe', L.n); return { t: 'atrib', alvo: e, op, expr: v, linha: L.n }; }
+      if (!P.fim()) throw new ErroPy(`Erro de sintaxe perto de “${P.olha().s}”`, L.n);
+      return { t: 'expr', expr: e, linha: L.n };
+    }
+    const prog = bloco(0);
+    if (k < linhas.length) throw new ErroPy('Erro de indentação', linhas[k].n);
+    return prog;
+  }
+  function parserExpr(L) {
+    const T = L.toks; let i = 0;
+    const P = {
+      olha: () => T[i], fim: () => i >= T.length, prox: () => { if (i >= T.length) throw new ErroPy('Erro de sintaxe: linha incompleta', L.n); return T[i++]; },
+      eh: (t, v) => i < T.length && T[i].t === t && T[i].v === v,
+      espera: (v) => { if (!P.eh('op', v)) throw new ErroPy(`Erro de sintaxe: esperado “${v}”`, L.n); i++; },
+      src: (a, b) => L.txt.slice(T[a].p, T[b - 1].p + T[b - 1].s.length),
+      expr() { return ou(); },
+    };
+    const no = (o, a) => ((o.src = P.src(a, i)), o);
+    function ou() { const a = i; let e = e_(); while (P.eh('kw', 'or')) { P.prox(); e = no({ t: 'bin', op: 'or', a: e, b: e_() }, a); } return e; }
+    function e_() { const a = i; let e = nao(); while (P.eh('kw', 'and')) { P.prox(); e = no({ t: 'bin', op: 'and', a: e, b: nao() }, a); } return e; }
+    function nao() { const a = i; if (P.eh('kw', 'not')) { P.prox(); return no({ t: 'un', op: 'not', a: nao() }, a); } return comp(); }
+    function comp() { const a = i; let e = soma(); for (;;) { let op = null; if (i < T.length && T[i].t === 'op' && ['==', '!=', '<', '>', '<=', '>='].includes(T[i].v)) op = P.prox().v; else if (P.eh('kw', 'in')) { P.prox(); op = 'in'; } else if (P.eh('kw', 'not') && T[i + 1] && T[i + 1].v === 'in') { i += 2; op = 'not in'; } if (!op) break; e = no({ t: 'bin', op, a: e, b: soma() }, a); } return e; }
+    function soma() { const a = i; let e = mult(); while (i < T.length && T[i].t === 'op' && (T[i].v === '+' || T[i].v === '-')) { const op = P.prox().v; e = no({ t: 'bin', op, a: e, b: mult() }, a); } return e; }
+    function mult() { const a = i; let e = unario(); while (i < T.length && T[i].t === 'op' && ['*', '/', '//', '%'].includes(T[i].v)) { const op = P.prox().v; e = no({ t: 'bin', op, a: e, b: unario() }, a); } return e; }
+    function unario() { const a = i; if (P.eh('op', '-')) { P.prox(); return no({ t: 'un', op: '-', a: unario() }, a); } if (P.eh('op', '+')) { P.prox(); return unario(); } return pot(); }
+    function pot() { const a = i; const b = posfixo(); if (P.eh('op', '**')) { P.prox(); return no({ t: 'bin', op: '**', a: b, b: unario() }, a); } return b; }
+    function posfixo() {
+      const a = i; let e = atomo();
+      for (;;) {
+        if (P.eh('op', '(')) { P.prox(); const args = []; while (!P.eh('op', ')')) { args.push(P.expr()); if (P.eh('op', ',')) P.prox(); else if (!P.eh('op', ')')) throw new ErroPy('Erro de sintaxe: esperado “,” ou “)”', L.n); } P.prox(); e = no({ t: 'call', f: e, args }, a); }
+        else if (P.eh('op', '[')) { P.prox(); const ix = P.expr(); P.espera(']'); e = no({ t: 'idx', a: e, i: ix }, a); }
+        else if (P.eh('op', '.')) { P.prox(); const n = P.prox(); if (n.t !== 'nome') throw new ErroPy('Erro de sintaxe depois de “.”', L.n); e = no({ t: 'attr', a: e, nome: n.v }, a); }
+        else break;
+      }
+      return e;
+    }
+    function atomo() {
+      const a = i, t = P.prox();
+      if (t.t === 'num') return no({ t: 'num', v: t.v }, a);
+      if (t.t === 'str') return no({ t: 'str', v: t.v }, a);
+      if (t.t === 'nome') return no({ t: 'nome', n: t.v }, a);
+      if (t.t === 'kw' && ['True', 'False', 'None'].includes(t.v)) return no({ t: 'const', v: t.v === 'True' ? true : t.v === 'False' ? false : null }, a);
+      if (t.t === 'op' && t.v === '(') { const e = P.expr(); P.espera(')'); return e; }
+      if (t.t === 'op' && t.v === '[') { const itens = []; while (!P.eh('op', ']')) { itens.push(P.expr()); if (P.eh('op', ',')) P.prox(); else if (!P.eh('op', ']')) throw new ErroPy('Erro de sintaxe na lista', L.n); } P.prox(); return no({ t: 'lista', itens }, a); }
+      throw new ErroPy(`Erro de sintaxe perto de “${t.s}”`, L.n);
+    }
+    return P;
+  }
+  const repr = (v) => (v === null ? 'None' : v === true ? 'True' : v === false ? 'False' : typeof v === 'string' ? `'${v}'` : Array.isArray(v) ? `[${v.map(repr).join(', ')}]` : typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(+v.toFixed(6))) : v && v.func ? `<função ${v.func.nome}>` : v && v.builtin ? `<função ${v.builtin}>` : String(v));
+  const strPy = (v) => (typeof v === 'string' ? v : repr(v));
+  const verdade = (v) => !(v === null || v === false || v === 0 || v === '' || (Array.isArray(v) && !v.length));
+  const igual = (a, b) => (Array.isArray(a) && Array.isArray(b) ? a.length === b.length && a.every((x, k) => igual(x, b[k])) : a === b);
+
+  function criarMaquina(prog) {
+    const M = { pilha: [{ nome: 'Global', vars: new Map() }], saida: [], passos: 0, conds: {}, voltas: {}, notas: new Set() };
+    const atual = () => M.pilha[M.pilha.length - 1];
+    const BUILTINS = {
+      print: (args) => { M.saida.push(args.map(strPy).join(' ')); return null; },
+      len: ([x], l) => { if (typeof x !== 'string' && !Array.isArray(x)) throw new ErroPy(`TypeError: len() não funciona com ${repr(x)}`, l); return x.length; },
+      range: (a, l) => { const [i0, i1, p] = a.length === 1 ? [0, a[0], 1] : [a[0], a[1], a[2] ?? 1]; if (!p) throw new ErroPy('range() com passo 0', l); const out = []; for (let k = i0; p > 0 ? k < i1 : k > i1; k += p) { out.push(k); if (out.length > 5000) throw new ErroPy('range grande demais para visualizar', l); } return out; },
+      str: ([x]) => strPy(x), int: ([x], l) => { const v = typeof x === 'string' ? parseInt(x, 10) : Math.trunc(x); if (Number.isNaN(v)) throw new ErroPy(`ValueError: não dá para converter ${repr(x)} em int`, l); return v; },
+      float: ([x]) => parseFloat(x), abs: ([x]) => Math.abs(x), round: ([x, n]) => (n ? +x.toFixed(n) : Math.round(x)),
+      max: (a) => (a.length === 1 && Array.isArray(a[0]) ? Math.max(...a[0]) : Math.max(...a)), min: (a) => (a.length === 1 && Array.isArray(a[0]) ? Math.min(...a[0]) : Math.min(...a)), sum: ([x]) => x.reduce((s, v) => s + v, 0),
+    };
+    function busca(n, l) { const f = atual(); if (f.vars.has(n)) return f.vars.get(n); const g = M.pilha[0].vars; if (g.has(n)) return g.get(n); if (BUILTINS[n]) return { builtin: n }; throw new ErroPy(`NameError: a variável “${n}” não foi definida`, l); }
+    function opBin(op, a, b, l) {
+      const num = (x) => typeof x === 'number' || typeof x === 'boolean';
+      switch (op) {
+        case '+': if (num(a) && num(b)) return a + b; if (typeof a === 'string' && typeof b === 'string') return a + b; if (Array.isArray(a) && Array.isArray(b)) return [...a, ...b]; break;
+        case '-': if (num(a) && num(b)) return a - b; break;
+        case '*': if (num(a) && num(b)) return a * b; if (typeof a === 'string' && Number.isInteger(b)) return a.repeat(Math.max(0, b)); if (Array.isArray(a) && Number.isInteger(b)) return Array.from({ length: Math.max(0, b) }, () => a).flat(); break;
+        case '/': if (num(a) && num(b)) { if (!b) throw new ErroPy('ZeroDivisionError: divisão por zero', l); return a / b; } break;
+        case '//': if (num(a) && num(b)) { if (!b) throw new ErroPy('ZeroDivisionError: divisão por zero', l); return Math.floor(a / b); } break;
+        case '%': if (num(a) && num(b)) { if (!b) throw new ErroPy('ZeroDivisionError: divisão por zero', l); return ((a % b) + b) % b; } break;
+        case '**': if (num(a) && num(b)) return a ** b; break;
+        case '==': return igual(a, b); case '!=': return !igual(a, b);
+        case '<': return a < b; case '>': return a > b; case '<=': return a <= b; case '>=': return a >= b;
+        case 'in': if (typeof b === 'string') return b.includes(a); if (Array.isArray(b)) return b.some((x) => igual(x, a)); break;
+        case 'not in': if (typeof b === 'string') return !b.includes(a); if (Array.isArray(b)) return !b.some((x) => igual(x, a)); break;
+      }
+      throw new ErroPy(`TypeError: não dá para usar “${op}” com ${repr(a)} e ${repr(b)}`, l);
+    }
+    function* ev(n, l) {
+      switch (n.t) {
+        case 'num': case 'str': return n.v;
+        case 'const': return n.v;
+        case 'nome': return busca(n.n, l);
+        case 'lista': { const r = []; for (const it of n.itens) r.push(yield* ev(it, l)); return r; }
+        case 'un': { const v = yield* ev(n.a, l); return n.op === 'not' ? !verdade(v) : -v; }
+        case 'bin': { if (n.op === 'and') { const a = yield* ev(n.a, l); return verdade(a) ? yield* ev(n.b, l) : a; } if (n.op === 'or') { const a = yield* ev(n.a, l); return verdade(a) ? a : yield* ev(n.b, l); } const a = yield* ev(n.a, l), b = yield* ev(n.b, l); return opBin(n.op, a, b, l); }
+        case 'idx': { const a = yield* ev(n.a, l); let k = yield* ev(n.i, l); if (typeof a !== 'string' && !Array.isArray(a)) throw new ErroPy(`TypeError: ${repr(a)} não tem índices`, l); if (k < 0) k += a.length; if (k < 0 || k >= a.length || !Number.isInteger(k)) throw new ErroPy(`IndexError: índice ${k} fora da lista (tamanho ${a.length})`, l); return a[k]; }
+        case 'attr': throw new ErroPy(`Use ${n.src}(…) como método`, l);
+        case 'call': {
+          if (n.f.t === 'attr') {
+            const obj = yield* ev(n.f.a, l), args = []; for (const a of n.args) args.push(yield* ev(a, l));
+            const m = n.f.nome;
+            if (Array.isArray(obj)) { if (m === 'append') { obj.push(args[0]); return null; } if (m === 'pop') { if (!obj.length) throw new ErroPy('IndexError: pop de lista vazia', l); return args.length ? obj.splice(args[0], 1)[0] : obj.pop(); } if (m === 'insert') { obj.splice(args[0], 0, args[1]); return null; } if (m === 'count') return obj.filter((x) => igual(x, args[0])).length; if (m === 'index') { const k = obj.findIndex((x) => igual(x, args[0])); if (k < 0) throw new ErroPy('ValueError: valor não está na lista', l); return k; } if (m === 'sort') { obj.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)); return null; } if (m === 'reverse') { obj.reverse(); return null; } }
+            if (typeof obj === 'string') { if (m === 'upper') return obj.toUpperCase(); if (m === 'lower') return obj.toLowerCase(); if (m === 'count') return obj.split(args[0]).length - 1; if (m === 'replace') return obj.split(args[0]).join(args[1]); if (m === 'split') return args.length ? obj.split(args[0]) : obj.trim().split(/\s+/); if (m === 'strip') return obj.trim(); }
+            throw new ErroPy(`AttributeError: ${repr(obj)} não tem o método “${m}”`, l);
+          }
+          const f = yield* ev(n.f, l), args = []; for (const a of n.args) args.push(yield* ev(a, l));
+          if (f && f.builtin) return BUILTINS[f.builtin](args, l);
+          if (f && f.func) return yield* chamar(f.func, args, l);
+          throw new ErroPy(`TypeError: ${repr(f)} não é uma função`, l);
+        }
+      }
+    }
+    function* chamar(def, args, l) {
+      if (args.length !== def.params.length) throw new ErroPy(`TypeError: ${def.nome}() espera ${def.params.length} argumento(s), recebeu ${args.length}`, l);
+      if (M.pilha.length > 60) throw new ErroPy('RecursionError: chamadas demais (recursão sem fim?)', l);
+      const fr = { nome: def.nome, vars: new Map(def.params.map((p, k) => [p, args[k]])), chamada: l };
+      M.pilha.push(fr);
+      const rec = M.pilha.filter((q) => q.nome === def.nome).length > 1;
+      yield { linha: def.linha, msg: `📞 Chamada <b>${def.nome}(${args.map(repr).join(', ')})</b>: uma nova moldura entra na pilha${rec ? ' — <b>recursão</b>: a função chamou a si mesma!' : ''}.`, nota: rec ? 'rec' : 'call' };
+      let v = null;
+      try { yield* exec(def.corpo); } catch (s) { if (s instanceof Sinal && s.tipo === 'return') v = s.valor; else throw s; }
+      M.pilha.pop();
+      yield { linha: l, msg: `↩️ <b>${def.nome}</b> devolveu <b>${repr(v)}</b> e sua moldura saiu da pilha.` };
+      return v;
+    }
+    function* exec(stmts) { for (const s of stmts) yield* executar(s); }
+    function* executar(s) {
+      const l = s.linha;
+      if (++M.passos > 3000) throw new ErroPy('Passos demais: será um laço infinito?', l);
+      switch (s.t) {
+        case 'def': atual().vars.set(s.nome, { func: s }); yield { linha: l, msg: `Define a função <b>${s.nome}(${s.params.join(', ')})</b>. O corpo só roda quando ela for chamada.`, nota: 'def' }; return;
+        case 'expr': { const ehPrint = s.expr.t === 'call' && s.expr.f.t === 'nome' && s.expr.f.n === 'print'; const n0 = M.saida.length; const v = yield* ev(s.expr, l); yield { linha: l, msg: ehPrint ? `🖨️ print mostra: <b>${SQ.esc(M.saida.slice(n0).join(' '))}</b>` : `Executa <code>${SQ.esc(s.expr.src)}</code>${v !== null ? ` → ${repr(v)}` : ''}.` }; return; }
+        case 'atrib': {
+          let v = yield* ev(s.expr, l);
+          if (s.op !== '=') { const ant = yield* ev(s.alvo, l); v = opBin(s.op[0], ant, v, l); }
+          if (s.alvo.t === 'nome') {
+            const aliasDe = Array.isArray(v) && s.expr.t === 'nome' ? s.expr.n : null;
+            atual().vars.set(s.alvo.n, v);
+            yield { linha: l, msg: `<b>${s.alvo.n}</b> ← <b>${SQ.esc(repr(v))}</b>${s.op !== '=' ? ` (${s.op} aplicado)` : s.expr.t !== 'num' && s.expr.t !== 'str' && s.expr.t !== 'lista' ? ` (calculado de <code>${SQ.esc(s.expr.src)}</code>)` : ''}.${aliasDe ? ` Atenção: <b>${s.alvo.n}</b> e <b>${aliasDe}</b> agora apontam para a <b>mesma lista</b> — não é uma cópia!` : ''}`, nota: aliasDe ? 'alias' : null };
+          } else { const a = yield* ev(s.alvo.a, l); let k = yield* ev(s.alvo.i, l); if (!Array.isArray(a)) throw new ErroPy('Só listas aceitam atribuição por índice', l); if (k < 0) k += a.length; if (k < 0 || k >= a.length) throw new ErroPy(`IndexError: índice ${k} fora da lista`, l); a[k] = v; yield { linha: l, msg: `Posição ${k} de <b>${s.alvo.a.src}</b> ← ${repr(v)}.` }; }
+          return;
+        }
+        case 'if': {
+          for (const r of s.ramos) { const c = verdade(yield* ev(r.cond, l)); M.conds[r.linha] = c; yield { linha: r.linha, msg: `❓ Condição <code>${SQ.esc(r.cond.src)}</code> é <b>${c ? 'verdadeira ✓' : 'falsa ✗'}</b>${c ? ': executa este bloco.' : '.'}`, nota: 'if' }; if (c) { yield* exec(r.corpo); return; } }
+          if (s.senao) { yield { linha: s.linhaSenao, msg: 'Nenhuma condição foi verdadeira: executa o bloco do <b>else</b>.' }; yield* exec(s.senao); }
+          return;
+        }
+        case 'while': {
+          let volta = 0;
+          for (;;) {
+            if (++M.passos > 3000) throw new ErroPy('Passos demais: será um laço infinito?', l);
+            const c = verdade(yield* ev(s.cond, l)); M.conds[l] = c;
+            yield { linha: l, msg: `🔁 while: <code>${SQ.esc(s.cond.src)}</code> é <b>${c ? 'verdadeira' : 'falsa'}</b>${c ? ` → volta ${volta + 1} do laço.` : ' → sai do laço.'}`, nota: 'while' };
+            if (!c) break; volta++; M.voltas[l] = volta;
+            try { yield* exec(s.corpo); } catch (e) { if (e instanceof Sinal && e.tipo === 'break') break; if (!(e instanceof Sinal && e.tipo === 'continue')) throw e; }
+          }
+          return;
+        }
+        case 'for': {
+          const seq = yield* ev(s.iter, l);
+          if (typeof seq !== 'string' && !Array.isArray(seq)) throw new ErroPy(`TypeError: não dá para percorrer ${repr(seq)}`, l);
+          const itens = [...seq];
+          for (let k = 0; k < itens.length; k++) {
+            if (++M.passos > 3000) throw new ErroPy('Passos demais', l);
+            atual().vars.set(s.var, itens[k]); M.voltas[l] = k + 1;
+            yield { linha: l, msg: `🔁 for: <b>${s.var}</b> = ${SQ.esc(repr(itens[k]))} (volta ${k + 1} de ${itens.length}).`, nota: 'for' };
+            try { yield* exec(s.corpo); } catch (e) { if (e instanceof Sinal && e.tipo === 'break') break; if (!(e instanceof Sinal && e.tipo === 'continue')) throw e; }
+          }
+          yield { linha: l, msg: `O for terminou: percorreu os ${itens.length} itens.` };
+          return;
+        }
+        case 'return': { const v = s.expr ? yield* ev(s.expr, l) : null; if (M.pilha.length === 1) throw new ErroPy('“return” fora de função', l); yield { linha: l, msg: `return <b>${SQ.esc(repr(v))}</b>${s.expr && s.expr.t !== 'num' ? ` (de <code>${SQ.esc(s.expr.src)}</code>)` : ''}.` }; throw new Sinal('return', v); }
+        case 'break': yield { linha: l, msg: '⛔ break: sai do laço agora.' }; throw new Sinal('break');
+        case 'continue': yield { linha: l, msg: '⏭ continue: pula para a próxima volta.' }; throw new Sinal('continue');
+        case 'pass': yield { linha: l, msg: 'pass: não faz nada.' }; return;
+      }
+    }
+    M.gen = (function* () { yield* exec(prog); })();
+    return M;
+  }
+
+  SQ.demo('codigo-visual', {
+    fundo: 'papel',
+    dica: 'Use ▶ Passo para executar uma linha de cada vez',
+    sala: ['Antes de cada passo, peça que a turma preveja o valor das variáveis; depois confiram.', 'No exemplo “Duas variáveis, uma lista”, discuta por que mudar b também muda a.', 'Peça que os alunos alterem o código (por exemplo, a condição do while) e expliquem o novo comportamento.'],
+    comoIA: 'O programa roda num pequeno interpretador de Python feito para a aula, que registra cada passo: linha executada, condição avaliada, valores das variáveis, molduras da pilha e saída. O guia transforma isso em explicações de tutor. Com uma IA conectada, o aluno pode perguntar “por que deu erro?” e receber uma explicação sobre o próprio código.',
+    guia: {
+      ola: 'Escolha um programa e clique em <b>▶ Passo</b>. A linha amarela é a que acabou de rodar; à direita você vê a <b>memória</b> (variáveis, pilha de chamadas e listas) e embaixo, a <b>saída</b>. Você também pode editar o código!',
+      perguntas: [
+        { p: 'O que é uma variável?', chaves: ['variavel', 'variaveis'], r: 'Um <b>nome</b> que guarda um valor na memória. Em Python, <code>x = 5</code> faz o nome x apontar para o valor 5. Mudar o valor é só apontar o nome para outra coisa.' },
+        { p: 'Qual a diferença entre while e for?', chaves: ['while', 'for', 'laco', 'repeticao'], r: 'O <b>while</b> repete <b>enquanto</b> uma condição for verdadeira — você controla quando parar. O <b>for</b> percorre <b>cada item</b> de uma sequência (lista, texto, range) e para sozinho no fim.' },
+        { p: 'O que é a pilha de chamadas?', chaves: ['pilha', 'moldura', 'frame', 'chamada'], r: 'Cada vez que uma função é chamada, ganha uma <b>moldura</b> com suas próprias variáveis, empilhada sobre a anterior. Quando ela retorna, a moldura sai. Na recursão, várias molduras da mesma função ficam empilhadas.' },
+        { p: 'Por que b mudou junto com a?', chaves: ['mudou', 'junto', 'referencia', 'copia'], r: 'Porque <code>b = a</code> não copia a lista: os dois nomes apontam para o <b>mesmo objeto</b> (veja as setas). Para copiar, use <code>b = a + []</code> ou <code>b = list(a)</code> no Python completo.' },
+        { p: 'Explique o passo atual', chaves: ['explique', 'passo', 'atual', 'agora'], r: (c) => c.passo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const { d, CORES: C } = SQ;
+      let fonte = PROGRAMAS.soma[1], prog = null, M = null, passoAtual = 0, ev = null, erro = null, fimProg = false, animando = false, vistas = new Set();
+
+      function carregar(txt) {
+        fonte = txt; erro = null; erroEl.hidden = true;
+        try { prog = analisar(fonte); } catch (e) { if (!(e instanceof ErroPy)) throw e; prog = null; erro = e; mostrarErro(e); }
+        reiniciar();
+      }
+      function reiniciar() { M = prog ? criarMaquina(prog) : null; passoAtual = 0; ev = null; fimProg = false; erro = erro && !prog ? erro : null; if (prog) erroEl.hidden = true; vistas = new Set(); pintar(); tela && tela.redesenhar(); }
+      function avancar(silencioso) {
+        if (!M || fimProg || erro) return false;
+        try {
+          const r = M.gen.next();
+          if (r.done) { fimProg = true; ev = { linha: null, msg: '🏁 Fim do programa.' }; if (!silencioso) { guia.diz(`🏁 Fim do programa em ${passoAtual} passos.${M.saida.length ? ' Confira a saída embaixo.' : ''}`, { tipo: 'sucesso', chave: 'passo' }); } return false; }
+          ev = r.value; passoAtual++;
+          if (!silencioso) { let t = `<b>Linha ${ev.linha}:</b> ${ev.msg}`; const extra = { while: 'Um <b>laço while</b> repete o bloco recuado enquanto a condição for verdadeira.', for: 'O <b>for</b> pega um item de cada vez da sequência e guarda na variável do laço.', call: 'Cada chamada de função ganha uma <b>moldura</b> própria na pilha, com suas variáveis locais.', rec: 'Na <b>recursão</b>, cada chamada espera a próxima terminar: repare na pilha crescendo.', alias: 'Veja as setas na memória: dois nomes, um só objeto.' }[ev.nota]; if (extra && !vistas.has(ev.nota)) { vistas.add(ev.nota); t += `<br><small>💡 ${extra}</small>`; } guia.diz(t, { chave: 'passo' }); }
+          return true;
+        } catch (e) {
+          if (e instanceof ErroPy) { erro = e; fimProg = true; if (!silencioso) mostrarErro(e); return false; }
+          throw e;
+        } finally { if (!silencioso) { pintar(); tela.redesenhar(); } }
+      }
+      function irPara(n) { reiniciar(); for (let k = 0; k < n; k++) if (!avancar(true)) break; pintar(); tela.redesenhar(); if (ev) guia.diz(`<b>Linha ${ev.linha ?? '—'}:</b> ${ev.msg}`, { chave: 'passo' }); }
+      function mostrarErro(e) { erroEl.hidden = false; erroEl.innerHTML = `⚠️ Linha ${e.linha ?? '?'}: ${SQ.esc(e.message)}`; guia.diz(`⚠️ Erro na linha ${e.linha ?? '?'}: <b>${SQ.esc(e.message)}</b>. ${/NameError/.test(e.message) ? 'Confira se a variável foi criada antes de ser usada e se o nome está escrito igual.' : /indenta/.test(e.message) ? 'Em Python, o recuo (4 espaços) mostra o que está dentro de um bloco.' : /“:”/.test(e.message) ? 'Linhas com if, for, while e def terminam com dois-pontos.' : /infinito/.test(e.message) ? 'Verifique se a condição do while chega a ficar falsa.' : 'Leia a mensagem com calma e compare com os exemplos.'}`, { tipo: 'alerta', chave: 'passo' }); }
+
+      // ---------- desenho ----------
+      const MONO = 'ui-monospace, "JetBrains Mono", Consolas, monospace';
+      function desenhar() {
+        const { ctx, w, h } = tela; ctx.clearRect(0, 0, w, h);
+        const estreito = w < 560, linhas = fonte.replace(/\t/g, '    ').split('\n'), hSaida = Math.min(150, h * (estreito ? 0.17 : 0.24));
+        const wc = estreito ? w - 24 : Math.max(300, w * 0.5), hc = estreito ? Math.min(h * 0.42, 24 * Math.max(linhas.length, 6) + 24) : h - hSaida - 26;
+        const lh = Math.min(24, (hc - 20) / Math.max(linhas.length, estreito ? 6 : 8)), tam = Math.min(15, lh * 0.66);
+        d.bloco(ctx, 12, 12, wc, hc, { cor: '#FFFFFF', r: 12, alt: 0, esp: 2 });
+        linhas.forEach((ln, k) => {
+          ctx.font = `700 ${tam}px ${MONO}`; ctx.textBaseline = 'middle';
+          const y = 22 + k * lh + lh / 2, n = k + 1, at = ev && ev.linha === n, err = erro && erro.linha === n;
+          if (at || err) { ctx.fillStyle = err ? '#FFE1E3' : '#FFE48A'; ctx.fillRect(14, y - lh / 2, wc - 4, lh); if (at) { ctx.fillStyle = C.laranja; ctx.beginPath(); ctx.moveTo(18, y - 6); ctx.lineTo(28, y); ctx.lineTo(18, y + 6); ctx.fill(); } }
+          ctx.fillStyle = '#9AA8D6'; ctx.textAlign = 'right'; ctx.fillText(String(n), 52, y); ctx.textAlign = 'left';
+          let x = 62; const partes = ln.split(/(\s+|"[^"]*"|'[^']*'|#.*$|\b\w+\b|[^\w\s])/).filter(Boolean);
+          for (const p of partes) { ctx.fillStyle = /^["']/.test(p) ? '#1E8A30' : /^#/.test(p) ? '#9AA8D6' : PALAVRAS.has(p) ? '#8B3DFF' : /^\d/.test(p) ? '#D96A00' : ['print', 'len', 'range', 'str', 'int', 'append'].includes(p) ? '#1F5BE0' : C.tinta; ctx.fillText(p, x, y); x += ctx.measureText(p).width; }
+          if (M && M.conds[n] != null && /^\s*(if|elif|while)\b/.test(ln)) d.etiqueta(ctx, M.conds[n] ? '✓ verdadeira' : '✗ falsa', wc - 50, y, { tam: 10, cor: M.conds[n] ? '#DDF7E1' : '#FFE1E3' });
+          if (M && M.voltas[n] && /^\s*(for|while)\b/.test(ln)) d.etiqueta(ctx, `volta ${M.voltas[n]}`, wc - (M.conds[n] != null ? 130 : 50), y, { tam: 10, cor: C.celesteClaro });
+        });
+        // memória
+        const xm = estreito ? 12 : wc + 26, wm = w - xm - 12, ym0 = estreito ? hc + 30 : 22;
+        d.texto(ctx, 'MEMÓRIA', xm, ym0, { tam: 11, cor: C.suave, peso: 900 });
+        const objetos = []; const idDe = (a) => { let k = objetos.indexOf(a); if (k < 0) { objetos.push(a); k = objetos.length - 1; } return k; };
+        const setas = []; let y = ym0 + 10;
+        const wv = Math.min(wm * 0.52, 230);
+        (M ? M.pilha : [{ nome: 'Global', vars: new Map() }]).forEach((fr, k, arr) => {
+          const vars = [...fr.vars.entries()].filter(([, v]) => !(v && v.builtin)), alt = 28 + Math.max(1, vars.length) * 22, topo = k === arr.length - 1;
+          d.bloco(ctx, xm, y, wv, alt, { cor: topo ? '#FFF6D6' : '#F4F7FF', r: 10, alt: 2, esp: topo ? 3 : 2 });
+          d.texto(ctx, fr.nome === 'Global' ? 'Global' : `${fr.nome}()`, xm + 10, y + 16, { tam: 12, fonte: 'titulo' });
+          if (k) d.texto(ctx, `chamada na linha ${fr.chamada}`, xm + wv - 8, y + 16, { tam: 9, alinhar: 'right', cor: C.suave });
+          vars.forEach(([nome, v], j) => {
+            const yy = y + 36 + j * 22;
+            d.texto(ctx, nome, xm + 10, yy, { tam: 12, cor: C.tinta, fonte: 'mono' });
+            ctx.strokeStyle = C.linha; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xm + 8, yy + 9); ctx.lineTo(xm + wv - 8, yy + 9); ctx.stroke();
+            if (Array.isArray(v)) { const bx = xm + wv - 22; d.bola(ctx, bx, yy - 2, 5, C.azul, { esp: 1.5, brilho: false }); setas.push([bx, yy - 2, idDe(v)]); }
+            else { const txt = v && v.func ? `função ${v.func.nome}` : repr(v); d.texto(ctx, txt.length > 22 ? txt.slice(0, 21) + '…' : txt, xm + wv - 10, yy, { tam: 12, alinhar: 'right', cor: typeof v === 'string' ? '#1E8A30' : C.azul, fonte: 'mono' }); }
+          });
+          y += alt + 10;
+        });
+        if (M && M.pilha.length > 1) d.texto(ctx, `pilha de chamadas: ${M.pilha.length} molduras ↓ (a de baixo é a atual)`, xm, Math.min(h - hSaida - 14, y + 2), { tam: 10, cor: C.suave });
+        // objetos (listas)
+        const xo = xm + wv + 30, posObj = [];
+        let yo = ym0 + 18;
+        for (const [k, arr] of objetos.entries()) {
+          const cw = Math.min(30, (w - xo - 20) / Math.max(arr.length, 1)), larg = Math.max(cw * arr.length, 40);
+          d.texto(ctx, `lista #${k + 1}`, xo, yo - 6, { tam: 10, cor: C.suave });
+          arr.forEach((v, j) => { const x = xo + j * cw; d.bloco(ctx, x, yo, cw, 26, { cor: '#fff', r: 3, alt: 0, esp: 1.8 }); const t = Array.isArray(v) ? '[…]' : repr(v); ctx.font = `700 ${Math.min(12, cw / Math.max(2, t.length * 0.6))}px ${MONO}`; ctx.fillStyle = typeof v === 'string' ? '#1E8A30' : C.azul; ctx.textAlign = 'center'; ctx.fillText(t, x + cw / 2, yo + 13); d.texto(ctx, String(j), x + cw / 2, yo + 37, { tam: 9, alinhar: 'center', cor: '#9AA8D6' }); });
+          if (!arr.length) { d.bloco(ctx, xo, yo, 40, 26, { cor: '#fff', r: 3, alt: 0, esp: 1.8 }); d.texto(ctx, 'vazia', xo + 20, yo + 17, { tam: 9, alinhar: 'center', cor: C.suave }); }
+          posObj[k] = [xo, yo + 13]; yo += 58; void larg;
+        }
+        for (const [x, yy, k] of setas) { const [ox, oy] = posObj[k]; ctx.strokeStyle = C.azul; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, yy); ctx.bezierCurveTo(x + 20, yy, ox - 24, oy, ox - 3, oy); ctx.stroke(); d.seta(ctx, ox - 12, oy, ox - 1, oy, C.azul, 2, 7); }
+        // saída
+        const ys = h - hSaida - 8;
+        d.bloco(ctx, 12, ys, w - 24, hSaida, { cor: '#0B1438', r: 12, alt: 0, esp: 2 });
+        d.texto(ctx, 'SAÍDA', 24, ys + 16, { tam: 10, cor: '#8FC8FF', peso: 900 });
+        const saida = M ? M.saida : [], ult = saida.slice(-Math.floor((hSaida - 28) / 18));
+        ult.forEach((s, k) => d.texto(ctx, '> ' + s, 24, ys + 36 + k * 18, { tam: 13, cor: '#7CFF9B', fonte: 'mono' }));
+        if (erro) d.texto(ctx, `⚠ Linha ${erro.linha ?? '?'}: ${erro.message}`, 24, ys + 36 + ult.length * 18, { tam: 12, cor: '#FF9AA2', fonte: 'mono' });
+      }
+
+      // ---------- painel ----------
+      const gP = ui.grupo('Programa');
+      ui.select({ opcoes: Object.entries(PROGRAMAS).map(([k, [n]]) => ({ valor: k, rotulo: n })), valor: 'soma', pai: gP, aoMudar: (v) => { area.value = PROGRAMAS[v][1]; carregar(area.value); guia.diz(`Programa <b>${PROGRAMAS[v][0]}</b> carregado. Clique em ▶ Passo.`, { chave: 'passo' }); } });
+      ui.linha(gP, ui.botao({ rotulo: '⏮', classe: 'branco pequeno', titulo: 'Reiniciar', aoClicar: () => { reiniciar(); guia.diz('Programa reiniciado.', { chave: 'passo' }); } }), ui.botao({ rotulo: '◀ Voltar', classe: 'branco pequeno', aoClicar: () => irPara(Math.max(0, passoAtual - 1)) }), ui.botao({ rotulo: '▶ Passo', classe: 'pequeno', aoClicar: () => avancar() }), ui.botao({ rotulo: '⏩ Animar', classe: 'azul pequeno', aoClicar: (e) => { animando = !animando; e.currentTarget.innerHTML = animando ? '⏸ Pausar' : '⏩ Animar'; } }));
+      ui.slider({ rotulo: 'Velocidade da animação', min: 1, max: 10, valor: 3, pai: gP, formatar: (v) => `${v} passos/s`, aoMudar: (v) => { vel = v; } });
+      const lei = ui.leituras([{ id: 'p', rotulo: 'Passo' }, { id: 'l', rotulo: 'Linha', destaque: true }, { id: 'f', rotulo: 'Molduras na pilha' }, { id: 's', rotulo: 'Linhas de saída' }], gP);
+      const gE = ui.grupo('Editar código');
+      const area = SQ.el('textarea', { class: 'codigo', spellcheck: 'false', 'aria-label': 'Código em Python' }); area.value = fonte; gE.append(area);
+      ui.botao({ rotulo: '✔ Usar este código', classe: 'verde pequeno', pai: ui.linha(gE), aoClicar: () => { carregar(area.value); if (prog) guia.diz('Código carregado! Clique em ▶ Passo para executar.', { tipo: 'sucesso', chave: 'passo' }); } });
+      area.addEventListener('keydown', (e) => { if (e.key === 'Tab') { e.preventDefault(); const s = area.selectionStart; area.setRangeText('    ', s, area.selectionEnd, 'end'); } });
+      const erroEl = SQ.el('div', { class: 'erro', hidden: true }); gE.append(erroEl);
+      gE.append(SQ.el('p', { class: 'miudo texto-suave', style: { margin: '8px 0 0' } }, 'Subconjunto de Python: variáveis, listas, strings, if/elif/else, while, for, def/return, print, len, range e métodos comuns.'));
+      let vel = 3;
+      function pintar() { lei.set('p', String(passoAtual)); lei.set('l', ev && ev.linha ? String(ev.linha) : '—'); lei.set('f', M ? String(M.pilha.length) : '—'); lei.set('s', M ? String(M.saida.length) : '0'); }
+
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let acum = 0;
+      SQ.loop((dt) => { if (!animando) return; acum += dt * vel; if (acum >= 1) { acum = 0; if (!avancar()) { animando = false; gP.querySelector('.botao.azul').innerHTML = '⏩ Animar'; } } }).iniciar();
+      guia.contexto = () => ({ codigo: fonte, passo: ev ? `Passo ${passoAtual}, linha ${ev.linha ?? '—'}: ${ev.msg}` : 'O programa ainda não começou: clique em ▶ Passo.', variaveis: M ? Object.fromEntries([...M.pilha[M.pilha.length - 1].vars].filter(([, v]) => !(v && (v.func || v.builtin))).map(([k, v]) => [k, repr(v)])) : {}, saida: M ? M.saida : [], erro: erro && erro.message });
+      carregar(fonte);
+    },
+  });
+  </script>
+</body>
+</html>

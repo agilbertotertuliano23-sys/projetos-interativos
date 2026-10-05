@@ -214,7 +214,7 @@
       }
       function pintar() { lei.set('n', String(E.filhos.length)); lei.set('chi', E.filhos.length ? SQ.num(qui(), 2) : '—'); tela && tela.redesenhar(); }
 
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 640 });
       SQ.ponteiro(tela.canvas, {
         inicio(p) {
           const ce = celulas.find((q) => p.x > q.x && p.x < q.x + q.c && p.y > q.y && p.y < q.y + q.c);

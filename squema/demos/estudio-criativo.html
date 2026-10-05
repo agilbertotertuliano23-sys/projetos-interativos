@@ -164,7 +164,7 @@
         tela && tela.redesenhar(); conferir();
       }
 
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 620 });
       const pegar = (p) => {
         if (roda && Math.hypot(p.x - roda.x, p.y - roda.y) < roda.R + 6 && Math.hypot(p.x - roda.x, p.y - roda.y) > roda.r - 10) return 'roda';
         if (!cena) return null;

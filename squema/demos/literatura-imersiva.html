@@ -228,7 +228,7 @@
         setTimeout(() => { pulsar.clear(); }, 2600);
       }
 
-      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); });
+      let tela; tela = SQ.canvas2d(palco, (api) => { tela = api; desenhar(); }, { larguraMin: 640 });
       SQ.ponteiro(tela.canvas, {
         inicio(p) {
           const no = Object.entries(nosPos).find(([, [x, y, R]]) => Math.hypot(p.x - x, p.y - y) < R + 4);

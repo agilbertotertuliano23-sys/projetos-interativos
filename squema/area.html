@@ -113,9 +113,9 @@
         ${SQ.fluxoHTML(s, s.interacao)}
         <div class="base">
           <div><h3>Objetivos de aprendizagem</h3><ul>${(s.objetivos || []).map((o) => `<li>${esc(o)}</li>`).join('')}</ul></div>
-          <div>${s.demo
-            ? `<h3>O que dá para fazer na demo</h3><p class="mb0">${esc(maiuscula(s.visualizar))} — com o guia ${esc(s.ia)}.</p>`
-            : `<h3>Roteiro da demonstração</h3><ol>${(s.roteiro || []).map((o) => `<li>${esc(o)}</li>`).join('')}</ol>`}</div>
+          <div>${s.roteiro
+            ? `<h3>${s.demo ? 'Etapas da demonstração' : 'Roteiro da demonstração'}</h3><ol>${s.roteiro.map((o) => `<li>${esc(o)}</li>`).join('')}</ol>`
+            : `<h3>O que dá para fazer na demo</h3><p class="mb0">${esc(maiuscula(s.visualizar))} — com o guia ${esc(s.ia)}.</p>`}</div>
           <div class="acao">${s.demo
             ? `<a class="botao" href="${s.demo}">Abrir demonstração</a>`
             : `<span class="botao branco" aria-disabled="true" style="cursor:default">Em roteiro</span><span class="miudo texto-suave">Esquema pronto; a demo segue o roteiro ao lado.</span>`}</div>

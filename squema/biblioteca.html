@@ -22,7 +22,7 @@
     .filtros input { max-width: 340px; } .filtros select { max-width: 240px; }
     .card-demo { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
     .card-demo .capa { aspect-ratio: 16 / 9; background: linear-gradient(180deg, #DFF1FF, #F6FBFF); border-bottom: 3px solid var(--tinta); position: relative; overflow: hidden; }
-    .card-demo .capa img.foto { width: 100%; height: 100%; object-fit: cover; }
+    .card-demo .capa img.foto { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
     .card-demo .capa img.ic { position: absolute; inset: 0; margin: auto; width: 80px; height: 80px; object-fit: contain; }
     .card-demo .corpo { padding: 12px 14px 14px; display: grid; gap: 6px; }
     .card-demo h3 { margin: 0; font-size: 19px; }
@@ -58,6 +58,7 @@
     .cor span { display: block; padding: 6px 9px; font-size: 13px; font-weight: 800; color: var(--tinta); }
     .cor small { display: block; font: 700 12px var(--fonte-mono); color: var(--texto-suave); }
     .creditos td:nth-child(3) { white-space: nowrap; }
+    #dados h3 { overflow-wrap: anywhere; }
   </style>
 </head>
 <body data-raiz="">
@@ -91,7 +92,7 @@
     // ---------- demonstrações ----------
     const busca = el('input', { type: 'text', placeholder: 'Buscar demonstração…', 'aria-label': 'Buscar demonstração' });
     const fArea = el('select', { 'aria-label': 'Filtrar por área' }, el('option', { value: '' }, 'Todas as áreas'), ...dados.AREAS.map((a) => el('option', { value: a.id }, a.nome)));
-    const fTipo = el('select', { 'aria-label': 'Filtrar por tipo' }, ...[['', 'Todos os tipos'], ['3D', 'Só 3D'], ['2D', 'Só 2D'], ['modelos livres', 'Com modelos livres'], ['áudio', 'Com áudio']].map(([v, r]) => el('option', { value: v }, r)));
+    const fTipo = el('select', { 'aria-label': 'Filtrar por tipo' }, ...[['', 'Todos os tipos'], ['3D', 'Só 3D'], ['2D', 'Só 2D'], ['modelos livres', 'Com modelos livres'], ['áudio', 'Com áudio'], ['dados reais', 'Com dados reais'], ['domínio público', 'Com obras em domínio público']].map(([v, r]) => el('option', { value: v }, r)));
     const gradeDemos = el('div', { class: 'grade grade-cards' });
     function pintarDemos() {
       const q = SQ.semAcento(busca.value);
@@ -115,7 +116,7 @@
 
     // ---------- esquemas ----------
     pagina.append(el('section', { class: 'secao conteudo', id: 'esquemas' },
-      el('div', { class: 'secao-titulo', html: '<div><h2>Esquemas</h2><p>Todos os casos do mapa. Os marcados como roteiro têm esquema e plano da demonstração, prontos para construir.</p></div>' }),
+      el('div', { class: 'secao-titulo', html: '<div><h2>Esquemas</h2><p>Todos os casos do mapa, cada um com esquema completo (interação → visualização → papel da IA → aprendizagem) e demonstração.</p></div>' }),
       el('div', { class: 'lista-esquemas' }, ...dados.SISTEMAS.map((s) => {
         const a = dados.areaPorId[s.area];
         return el('a', { class: 'bloco bloco-link item-esq', href: `area.html?a=${s.area}#${s.id}`, html: `
@@ -204,7 +205,9 @@
       el('div', { class: 'grade grade-cards', html: `
         <div class="bloco"><img src="assets/icones/globo.webp" alt="" style="width:64px"><h3 style="margin-top:8px">assets/dados/mundo.js</h3><p class="miudo texto-suave">177 países do Natural Earth 1:110m (domínio público) com nome em português, continente, sub-região, população, PIB e faixa de renda. Usado em Terra Interativa.</p></div>
         <div class="bloco"><img src="assets/icones/frasco-roxo.webp" alt="" style="width:64px"><h3 style="margin-top:8px">assets/dados/moleculas.js</h3><p class="miudo texto-suave">17 estruturas 3D: moléculas simples com geometria de referência e arquivos PDB dos exemplos do three.js (cafeína, glicose, fulereno, NaCl…).</p></div>
-        <div class="bloco"><img src="assets/icones/pergaminho.webp" alt="" style="width:64px"><h3 style="margin-top:8px">docs/mapa_sistemas_educacionais_IA.md</h3><p class="miudo texto-suave">O mapa original com os 35 sistemas. O catálogo em <code>js/catalogo.js</code> parte dele e acrescenta resumo, objetivos e roteiros.</p><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Abrir .md</a></div>` })));
+        <div class="bloco"><img src="assets/icones/grafico.webp" alt="" style="width:64px"><h3 style="margin-top:8px">Dados dentro das demos</h3><p class="miudo texto-suave">Valores pequenos ficam no próprio arquivo da demo: IPCA anual 2015–2024 (IBGE) no Economia Simulator, normais climatológicas aproximadas de seis cidades (INMET 1991–2020) no Clima Simulator, dados planetários da NASA no Universo 3D e o Censo 2022 (IBGE) na Máquina do Tempo.</p></div>
+        <div class="bloco"><img src="assets/icones/livro-aberto.webp" alt="" style="width:64px"><h3 style="margin-top:8px">Obras em domínio público</h3><p class="miudo texto-suave">Trechos de <i>Dom Casmurro</i> (Machado de Assis, 1899) e <i>Iracema</i> (José de Alencar, 1865) na Literatura Imersiva. No Museu Virtual, as pinturas são <b>releituras digitais desenhadas por código</b>, inspiradas em obras em domínio público — não são reproduções fotográficas.</p></div>
+        <div class="bloco"><img src="assets/icones/pergaminho.webp" alt="" style="width:64px"><h3 style="margin-top:8px">docs/mapa_sistemas_educacionais_IA.md</h3><p class="miudo texto-suave">O mapa original com os 35 sistemas. O catálogo em <code>js/catalogo.js</code> parte dele e acrescenta resumo, objetivos e as etapas de cada demonstração.</p><a class="botao branco pequeno" href="docs/mapa_sistemas_educacionais_IA.md">Abrir .md</a></div>` })));
 
     // ---------- créditos ----------
     const linhas = [
@@ -212,6 +215,10 @@
       ['Biblioteca 3D', 'three.js r180 e addons (OrbitControls, GLTFLoader, CSS2DRenderer, SkeletonUtils…)', 'MIT', 'https://github.com/mrdoob/three.js'],
       ['Países', 'Natural Earth — 1:110m Cultural Vectors (Tom Patterson, Nathaniel Vaughn Kelso e colaboradores)', 'Domínio público', 'https://www.naturalearthdata.com/'],
       ['Moléculas PDB', 'Arquivos dos exemplos do three.js, gerados pelo NCI/CADD Chemical Identifier Resolver', 'MIT (repositório)', 'https://github.com/mrdoob/three.js/tree/dev/examples/models/pdb'],
+      ['Inflação (IPCA)', 'Instituto Brasileiro de Geografia e Estatística — IPCA anual 2015–2024', 'Dados públicos', 'https://www.ibge.gov.br/explica/inflacao.php'],
+      ['Normais climatológicas', 'Instituto Nacional de Meteorologia — Normais 1991–2020 (valores arredondados para fins didáticos)', 'Dados públicos', 'https://portal.inmet.gov.br/normais'],
+      ['Literatura', 'Machado de Assis (Dom Casmurro, 1899) e José de Alencar (Iracema, 1865)', 'Domínio público', 'http://www.dominiopublico.gov.br/'],
+      ['Obras de arte', 'Releituras digitais inspiradas em Hokusai, Monet, Seurat, Van Gogh, Klimt, Malevich, Kandinsky e Mondrian', 'Originais em domínio público', ''],
       ['Fontes', 'Baloo 2 (Ek Type) e Nunito (Vernon Adams et al.) via Google Fonts', 'SIL OFL 1.1', 'https://fonts.google.com/'],
       ['Marca', 'Logotipos, mascote e ícones SQUEMA enviados pelo projeto; recortes e o avatar gerados a partir deles', 'Projeto SQUEMA', ''],
     ];

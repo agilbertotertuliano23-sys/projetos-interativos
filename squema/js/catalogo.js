@@ -1,7 +1,7 @@
 /* Catálogo SQUEMA — fonte única das áreas e dos sistemas.
    Base: docs/mapa_sistemas_educacionais_IA.md (35 sistemas em 17 áreas).
-   "demo" aponta para a demonstração interativa; quando é null o caso aparece
-   como roteiro (esquema pronto, demo a construir). */
+   "demo" aponta para a demonstração interativa; "roteiro" (quando existe) lista
+   as etapas da demonstração, mostradas na página da área. */
 (function () {
   const AREAS = [
     { id: 'biologia', nome: 'Biologia', icone: 'dna.webp', cor: '#36C04A', resumo: 'Vida em todas as escalas: do DNA às células, do corpo humano aos ecossistemas.' },
@@ -43,7 +43,7 @@
     S('biologia', 'genetica-lab', 'Genética Lab', 'DNA, cromossomos, heredogramas', 'gerar cruzamentos e explicar resultados', 5, 'demos/genetica-lab.html', {
       interacao: 'Escolhe os genótipos dos pais e sorteia filhotes',
       roteiro: ['Quadro de Punnett com genótipos dos pais escolhidos pelo aluno', 'Proporções de genótipo e fenótipo calculadas ao vivo', 'Sorteio de descendentes para comparar esperado × observado', 'IA explica o resultado e gera novos cruzamentos'],
-      resumo: 'Quadro de Punnett interativo para mono e di-hibridismo, com proporções, sorteio de descendentes e leitura dos resultados.',
+      resumo: 'Quadro de Punnett para mono e di-hibridismo, dominância incompleta e tipo sanguíneo ABO, com proporções, sorteio de descendentes, teste χ² e heredograma.',
       objetivos: ['Montar cruzamentos a partir dos genótipos', 'Distinguir genótipo e fenótipo', 'Comparar proporção esperada e resultado de uma amostra'],
       tags: ['2D'],
     }),
@@ -69,9 +69,9 @@
       tags: ['2D'],
     }),
     S('fisica', 'optica', 'Óptica Lab', 'luz, lentes, espelhos', 'gerar experimentos', 5, 'demos/optica.html', {
-      interacao: 'Arrasta o objeto e troca o tipo de lente',
+      interacao: 'Arrasta o objeto e troca lentes e espelhos',
       roteiro: ['Banco óptico com lente convergente e divergente', 'Raios principais traçados ao arrastar o objeto', 'Classificação da imagem e equação de Gauss', 'IA propõe experimentos com novas distâncias'],
-      resumo: 'Banco óptico com lente convergente ou divergente: arraste o objeto e veja os raios principais formarem a imagem.',
+      resumo: 'Banco óptico com lentes e espelhos: arraste o objeto, veja os raios principais formarem a imagem e cumpra experimentos gerados pelo guia.',
       objetivos: ['Traçar os raios principais', 'Classificar a imagem (real/virtual, direita/invertida)', 'Usar a equação de Gauss'],
       tags: ['2D'],
     }),
@@ -131,11 +131,11 @@
       tags: ['3D', 'dados reais'],
     }),
     S('geografia', 'clima-simulator', 'Clima Simulator', 'chuva, temperatura, massas de ar', 'simular cenários climáticos', 5, 'demos/clima-simulator.html', {
-      interacao: 'Muda estação, umidade e relevo',
-      resumo: 'Mapa com massas de ar, frentes e relevo; o aluno muda estação e umidade e vê chuva e temperatura responderem.',
+      interacao: 'Muda latitude, mês, umidade e altura da serra',
+      resumo: 'Perfil do terreno do oceano ao interior: o ar úmido sobe a serra, forma chuva orográfica e sombra de chuva; o climograma de cada ponto é comparado com climas reais do Brasil.',
       objetivos: ['Diferenciar tempo e clima', 'Entender massas de ar e frentes', 'Ler climogramas'],
       roteiro: ['Mapa regional com relevo e oceano', 'Massas de ar animadas com temperatura e umidade', 'Climograma gerado ao vivo', 'IA compara o cenário com climas reais'],
-      tags: ['2D'],
+      tags: ['2D', 'dados reais'],
     }),
     S('geografia', 'relevo-3d', 'Relevo 3D', 'montanhas, placas, vulcões', 'explicar formação geológica', 5, 'demos/relevo-3d.html', {
       interacao: 'Move as placas e acelera o tempo geológico',
@@ -147,10 +147,10 @@
     // ---------------- História ----------------
     S('historia', 'maquina-do-tempo', 'Máquina do Tempo', 'ambientes históricos', 'reconstruir acontecimentos', 5, 'demos/maquina-do-tempo.html', {
       interacao: 'Escolhe uma época e explora a cena',
-      resumo: 'Cenas históricas navegáveis em que o aluno escolhe um ponto no tempo e explora o ambiente com narração.',
+      resumo: 'Quatro cenas 3D — aldeia tupi, vila do ouro, Rio de 1905 e cidade atual — com objetos clicáveis, fontes históricas, narração por nível e caça aos anacronismos.',
       objetivos: ['Contextualizar acontecimentos', 'Comparar modos de vida em épocas diferentes', 'Trabalhar com fontes históricas'],
       roteiro: ['Seletor de época com cenários 3D', 'Personagens e objetos clicáveis com fontes', 'Narração adaptada à série do aluno', 'Desafio: encontrar anacronismos na cena'],
-      tags: ['3D'],
+      tags: ['3D', 'modelos livres'],
     }),
     S('historia', 'linha-do-tempo', 'Linha do Tempo IA', 'eventos conectados', 'explicar causa e consequência', 4, 'demos/linha-do-tempo.html', {
       interacao: 'Navega pelos eventos e segue as conexões',
@@ -175,10 +175,10 @@
     }),
     S('portugues', 'literatura-imersiva', 'Literatura Imersiva', 'cenário, personagens, relações', 'explicar obra e contexto', 5, 'demos/literatura-imersiva.html', {
       interacao: 'Navega pelos capítulos e personagens',
-      resumo: 'Obra literária como mapa de personagens e cenários, com linha narrativa e contexto histórico.',
+      resumo: 'Dom Casmurro e Iracema como mapas de personagens que mudam a cada ponto do enredo, com trechos, curva de tensão, foco narrativo e contexto histórico.',
       objetivos: ['Mapear personagens e suas relações', 'Relacionar obra e contexto de produção', 'Interpretar o foco narrativo'],
       roteiro: ['Grafo de personagens por capítulo', 'Cenários ilustrados com trechos da obra', 'Linha do enredo com pontos de virada', 'IA responde como guia de leitura'],
-      tags: ['2D'],
+      tags: ['2D', 'domínio público'],
     }),
     S('portugues', 'gramatica-visual', 'Gramática Visual', 'palavras conectadas', 'analisar sintaxe dinamicamente', 4, 'demos/gramatica-visual.html', {
       interacao: 'Escolhe ou digita frases e destaca funções',
@@ -190,10 +190,10 @@
     // ---------------- Idiomas ----------------
     S('idiomas', 'conversacao-ia', 'Conversação IA', 'avatar/personagem', 'diálogo adaptativo', 5, 'demos/conversacao-ia.html', {
       interacao: 'Conversa por voz ou texto com o personagem',
-      resumo: 'Personagem que conversa em inglês ajustando vocabulário e velocidade ao nível do aluno.',
+      resumo: 'O robô Robbie conversa em inglês em três situações (restaurante, aeroporto, escola), corrige com gentileza e ajusta vocabulário e velocidade ao nível do aluno.',
       objetivos: ['Praticar compreensão e produção oral', 'Ampliar vocabulário em contexto', 'Receber correção gentil'],
       roteiro: ['Avatar com situações (restaurante, aeroporto, escola)', 'Reconhecimento de voz e síntese de fala', 'Nível ajustado automaticamente', 'Relatório de palavras novas'],
-      tags: ['áudio'],
+      tags: ['3D', 'modelos livres', 'áudio'],
     }),
     S('idiomas', 'mundo-interativo', 'Mundo Interativo', 'objetos e ambientes clicáveis', 'ensinar vocabulário contextual', 5, 'demos/mundo-interativo.html', {
       interacao: 'Clica nos objetos, ouve as palavras e joga',
@@ -204,10 +204,10 @@
     // ---------------- Artes ----------------
     S('artes', 'museu-virtual', 'Museu Virtual', 'obras e movimentos', 'crítico/guia de arte IA', 5, 'demos/museu-virtual.html', {
       interacao: 'Caminha pelas salas e abre as obras',
-      resumo: 'Galeria navegável organizada por movimentos artísticos, com obras de domínio público e guia crítico.',
+      resumo: 'Galeria 3D com quatro salas, do ukiyo-e ao abstracionismo: releituras digitais de obras em domínio público, leitura guiada e comparador lado a lado.',
       objetivos: ['Reconhecer características de movimentos', 'Ler uma obra (cor, forma, tema)', 'Relacionar arte e contexto'],
       roteiro: ['Salas por movimento com obras em domínio público', 'Ficha da obra com leitura guiada', 'Comparador lado a lado', 'IA faz perguntas de apreciação'],
-      tags: ['3D'],
+      tags: ['3D', 'domínio público'],
     }),
     S('artes', 'estudio-criativo', 'Estúdio Criativo', 'composição, cor, perspectiva', 'orientar processo artístico', 5, 'demos/estudio-criativo.html', {
       interacao: 'Gira a roda de cores e ajusta a composição',
@@ -225,7 +225,7 @@
       tags: ['2D', 'áudio'],
     }),
     // ---------------- Filosofia ----------------
-    S('filosofia', 'debate-ia', 'Debate IA', 'mapa de argumentos', 'assumir posições filosóficas', 4, null, {
+    S('filosofia', 'debate-ia', 'Debate IA', 'mapa de argumentos', 'assumir posições filosóficas', 4, 'demos/debate-ia.html', {
       interacao: 'Escolhe a questão e expande razões e objeções',
       roteiro: ['Mapa de argumentos para questões clássicas', 'Tese, razões, objeções e réplicas expansíveis', 'Posições de diferentes escolas filosóficas', 'IA assume uma posição e debate com o aluno'],
       resumo: 'Mapa de argumentos para questões clássicas: tese, razões, objeções e réplicas de diferentes escolas filosóficas.',
@@ -233,7 +233,7 @@
       tags: ['2D'],
     }),
     // ---------------- Sociologia ----------------
-    S('sociologia', 'sociedade-simulator', 'Sociedade Simulator', 'grupos e relações sociais', 'gerar cenários e debates', 4, null, {
+    S('sociologia', 'sociedade-simulator', 'Sociedade Simulator', 'grupos e relações sociais', 'gerar cenários e debates', 4, 'demos/sociedade-simulator.html', {
       interacao: 'Ajusta tolerância e densidade e roda o modelo',
       roteiro: ['Modelo de Schelling em grade', 'Tolerância e densidade ajustáveis', 'Índice de segregação ao longo do tempo', 'IA gera cenários e perguntas para debate'],
       resumo: 'Modelo de Schelling: preferências individuais modestas geram segregação coletiva — ajuste a tolerância e veja.',
@@ -248,10 +248,10 @@
       tags: ['3D'],
     }),
     // ---------------- Programação ----------------
-    S('programacao', 'codigo-visual', 'Código Visual', 'execução, memória, objetos', 'tutor de programação', 5, null, {
+    S('programacao', 'codigo-visual', 'Código Visual', 'execução, memória, objetos', 'tutor de programação', 5, 'demos/codigo-visual.html', {
       interacao: 'Executa o programa passo a passo',
       roteiro: ['Programas curtos executados linha a linha', 'Variáveis, pilha de chamadas e saída visíveis', 'Laços e condicionais destacados', 'IA atua como tutor de programação'],
-      resumo: 'Programas curtos executados linha a linha com variáveis, pilha de chamadas e saída visíveis.',
+      resumo: 'Programas curtos em Python executados linha a linha, com variáveis, listas, pilha de chamadas e saída visíveis — e o aluno pode editar o código.',
       objetivos: ['Rastrear o valor das variáveis', 'Entender laços e condicionais', 'Ler a pilha de chamadas'],
       tags: ['2D'],
     }),
@@ -263,15 +263,15 @@
       tags: ['3D', 'modelos livres'],
     }),
     // ---------------- Economia ----------------
-    S('economia', 'economia-simulator', 'Economia Simulator', 'inflação, mercado, oferta/demanda', 'simular cenários', 4, null, {
+    S('economia', 'economia-simulator', 'Economia Simulator', 'inflação, mercado, oferta/demanda', 'simular cenários', 4, 'demos/economia-simulator.html', {
       interacao: 'Aplica choques de oferta e demanda',
       roteiro: ['Curvas de oferta e demanda deslocáveis', 'Choques de renda, custo e safra', 'Simulador de inflação acumulada', 'IA explica cada cenário'],
       resumo: 'Curvas de oferta e demanda que se deslocam com choques (renda, custos, safra) e simulador de inflação.',
       objetivos: ['Encontrar o equilíbrio de mercado', 'Diferenciar deslocamento da curva e movimento ao longo dela', 'Entender a inflação acumulada'],
-      tags: ['2D'],
+      tags: ['2D', 'dados reais'],
     }),
     // ---------------- Educação Financeira ----------------
-    S('financeira', 'vida-financeira', 'Vida Financeira', 'orçamento e decisões', 'aconselhamento educacional', 4, null, {
+    S('financeira', 'vida-financeira', 'Vida Financeira', 'orçamento e decisões', 'aconselhamento educacional', 4, 'demos/vida-financeira.html', {
       interacao: 'Distribui a renda e simula investimentos',
       roteiro: ['Orçamento mensal com a regra 50-30-20', 'Metas de poupança com prazo', 'Juros compostos a favor e contra', 'IA dá conselhos educativos sobre as escolhas'],
       resumo: 'Orçamento mensal com a regra 50-30-20, metas e simulador de juros compostos para guardar ou dever.',
