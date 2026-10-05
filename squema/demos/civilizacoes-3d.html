@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Civilizações 3D — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/coliseu.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .ponto-3d { width: 30px; height: 30px; border-radius: 50%; background: var(--amarelo); border: 3px solid var(--tinta); font: 900 14px/24px var(--fonte); text-align: center; color: var(--tinta); box-shadow: 0 3px 0 rgba(11, 20, 56, .35); cursor: pointer; pointer-events: auto; animation: pulso 2s ease-in-out infinite; }
+    .ponto-3d.ativo { background: var(--rosa); color: #fff; }
+    @keyframes pulso { 50% { transform: scale(1.12); } }
+    .linha-tempo { position: relative; height: 70px; margin: 6px 4px 0; }
+    .linha-tempo::before { content: ""; position: absolute; left: 0; right: 0; top: 30px; height: 4px; border-radius: 2px; background: var(--linha); }
+    .marco { position: absolute; top: 18px; transform: translateX(-50%); text-align: center; font-size: 11px; font-weight: 800; color: var(--texto-suave); white-space: nowrap; background: none; border: 0; padding: 0; }
+    .marco i { display: block; width: 26px; height: 26px; margin: 0 auto 4px; border-radius: 50%; border: 3px solid var(--tinta); background: #fff; }
+    .marco.ativo i { background: var(--amarelo); }
+    .marco.ativo { color: var(--tinta); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const MONUMENTOS = {
+    piramide: {
+      nome: 'Pirâmide de Quéops', lugar: 'Gizé, Egito', data: 'c. 2560 a.C.', ano: -2560, civ: 'Egito Antigo',
+      ficha: [['Altura original', '146,6 m'], ['Base', '230 m × 230 m'], ['Blocos', '≈ 2,3 milhões'], ['Função', 'Túmulo do faraó']],
+      quem: 'Foi construída para o faraó <b>Quéops (Khufu)</b>, da 4ª dinastia. Pesquisas em vilas de trabalhadores indicam que foi feita por equipes de operários pagos e organizados — não por escravos, como se dizia.',
+      para: 'Era o <b>túmulo</b> do faraó e parte de um complexo funerário. Para os egípcios, preservar o corpo e os bens ajudava o rei na vida após a morte.',
+      como: 'Com blocos de calcário e granito cortados com ferramentas de cobre e pedra, transportados em trenós e barcos pelo Nilo e erguidos por rampas. O alinhamento com os pontos cardeais é quase perfeito.',
+      tempo: 'Estima-se cerca de <b>20 anos</b> de obra. Foi a construção mais alta do mundo por quase 3.800 anos.',
+      pontos: [['Piramídio', 'O topo era coroado por um piramídio, possivelmente revestido de metal brilhante.', [0, 3.1, 0]], ['Câmara do Rei', 'No interior, uma câmara de granito guardava o sarcófago do faraó.', [0, 1.3, 0.2]], ['Revestimento', 'As faces eram cobertas por calcário branco polido — a pirâmide brilhava ao sol.', [1.4, 1.0, 1.4]], ['Entrada', 'A entrada original fica na face norte, alguns metros acima da base.', [0, 0.7, 2.1]]],
+    },
+    partenon: {
+      nome: 'Partenon', lugar: 'Acrópole de Atenas, Grécia', data: '447–432 a.C.', ano: -447, civ: 'Grécia Antiga',
+      ficha: [['Dimensões', '69,5 m × 30,9 m'], ['Colunas', '46 externas (dóricas)'], ['Material', 'Mármore pentélico'], ['Função', 'Templo de Atena']],
+      quem: 'Foi erguido na época de <b>Péricles</b>, com os arquitetos <b>Ictino e Calícrates</b> e o escultor <b>Fídias</b>, no auge da democracia ateniense.',
+      para: 'Era um <b>templo dedicado a Atena Partenos</b>, protetora de Atenas, e abrigava sua grande estátua de ouro e marfim. Também guardava o tesouro da cidade.',
+      como: 'Em mármore, com ajustes ópticos sutis: as colunas se inclinam levemente e são mais grossas no meio (êntase) para parecerem retas a distância.',
+      tempo: 'A estrutura principal levou cerca de <b>15 anos</b> (447–432 a.C.), incluindo as esculturas.',
+      pontos: [['Frontão', 'O triângulo da fachada exibia esculturas do nascimento de Atena e da disputa com Poseidon.', [0, 2.6, 1.8]], ['Colunas dóricas', 'Ordem dórica: colunas robustas, sem base, com capitel simples.', [2.2, 1.2, 1.5]], ['Friso', 'Faixa com esculturas (métopas e o friso das Panateneias).', [-2.2, 2.0, 1.4]], ['Estilóbato', 'A plataforma em degraus tem uma leve curvatura para escoar a água.', [2.6, 0.25, -1.2]]],
+    },
+    coliseu: {
+      nome: 'Coliseu', lugar: 'Roma, Itália', data: '72–80 d.C.', ano: 80, civ: 'Roma Antiga',
+      ficha: [['Dimensões', '188 m × 156 m'], ['Altura', '48 m'], ['Público', '≈ 50 mil pessoas'], ['Função', 'Anfiteatro']],
+      quem: 'Começou com o imperador <b>Vespasiano</b> e foi inaugurado por seu filho <b>Tito</b>, em 80 d.C. — por isso o nome oficial é Anfiteatro Flaviano.',
+      para: 'Recebia <b>espetáculos públicos</b>: lutas de gladiadores, caçadas a animais e encenações. Fazia parte da política de "pão e circo" para agradar a população.',
+      como: 'Com concreto romano, travertino e tijolos, e um sistema de arcos que distribuía o peso. Tinha 80 entradas numeradas e um toldo (velário) para proteger do sol.',
+      tempo: 'A obra principal levou cerca de <b>8 anos</b>. Terremotos e o reaproveitamento das pedras explicam a parte que falta hoje.',
+      pontos: [['Arena', 'O piso de madeira coberto de areia escondia o hipogeu, com túneis e elevadores para animais.', [0, 0.4, 0]], ['Arcos', 'Três andares de arcos — ordens toscana, jônica e coríntia — mais o ático no topo.', [3.0, 1.2, 1.2]], ['Arquibancadas', 'O público se sentava por classe social: senadores embaixo, povo em cima.', [-1.6, 1.4, -1.4]], ['Parte em ruína', 'Terremotos derrubaram parte do anel externo; pedras foram reaproveitadas em outras obras.', [-2.6, 1.0, 1.5]]],
+    },
+  };
+
+  SQ.demo('civilizacoes-3d', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · clique nos pontos numerados',
+    sala: ['Divida a turma: cada grupo apresenta um monumento usando os pontos de interesse.', 'Ordene os três na linha do tempo e calcule quantos anos separam a pirâmide do Coliseu.', 'Compare: túmulo, templo e anfiteatro — o que cada construção revela sobre a sociedade que a fez?'],
+    comoIA: 'O guia conhece o monumento selecionado e o ponto de interesse clicado e responde às perguntas em contexto ("quem construiu?", "para que servia?"). Com uma IA conectada, vira um guia conversacional que aceita perguntas livres.',
+    guia: {
+      ola: 'Sou seu guia histórico. Escolha um monumento e clique nos pontos numerados — ou me pergunte quem construiu, para que servia, como foi feito e quanto tempo levou.',
+      perguntas: [
+        { p: 'Quem construiu?', chaves: ['quem', 'construiu', 'fez'], r: (c) => MONUMENTOS[c.monumento].quem },
+        { p: 'Para que servia?', chaves: ['para que', 'servia', 'funcao', 'uso'], r: (c) => MONUMENTOS[c.monumento].para },
+        { p: 'Como foi construído?', chaves: ['como', 'construido', 'tecnica', 'material'], r: (c) => MONUMENTOS[c.monumento].como },
+        { p: 'Quanto tempo levou?', chaves: ['quanto tempo', 'anos', 'demorou', 'levou'], r: (c) => MONUMENTOS[c.monumento].tempo },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [7, 5, 8], alvo: [0, 1, 0], distancia: [5, 22], polarMax: 1.45, sombraRaio: 7 });
+      const chao = S3D.chao(6.2, 0xF2DDB0, { borda: 0xC98B4E }); c.scene.add(chao);
+      const cena = new T.Group(); c.scene.add(cena);
+      const AREIA = 0xF0D3A0, PEDRA = 0xE8C08A, MARMORE = 0xF4F7FF;
+      const fundir = (geos) => T.mergeGeometries(geos.map((g) => (g.index ? g.toNonIndexed() : g)), false);
+      let atual = null, pontoAtivo = null;
+
+      function piramide() {
+        const g = new T.Group(), camadas = 14, geos = [];
+        for (let i = 0; i < camadas; i++) {
+          const lado = 4.4 * (1 - i / camadas), b = new T.BoxGeometry(lado, 0.2, lado); b.translate(0, 0.1 + i * 0.2, 0); geos.push(b);
+        }
+        const corpo = new T.Mesh(fundir(geos), S3D.mat(AREIA, { rugosidade: 0.7, verniz: 0.2 })); corpo.castShadow = corpo.receiveShadow = true; g.add(corpo);
+        const topo = new T.Mesh(new T.ConeGeometry(0.32, 0.36, 4), S3D.mat(0xFFC21A, { metal: 0.3, rugosidade: 0.25 })); topo.rotation.y = Math.PI / 4; topo.position.y = 2.98; g.add(topo);
+        const porta = new T.Mesh(new T.BoxGeometry(0.28, 0.3, 0.05), S3D.mat(0x0B1438)); porta.position.set(0, 0.75, 1.62); g.add(porta);
+        S3D.contorno(g, 0.03);
+        // pirâmides menores ao fundo
+        for (const [x, z, s] of [[-3.6, -2.6, 0.45], [-2.2, -3.8, 0.32]]) { const p = corpo.clone(); p.scale.setScalar(s); p.position.set(x, 0, z); g.add(p); S3D.contorno(p, 0.03); }
+        return g;
+      }
+      function partenon() {
+        const g = new T.Group(), geos = [];
+        for (let i = 0; i < 3; i++) { const b = new T.BoxGeometry(5.6 - i * 0.24, 0.16, 2.9 - i * 0.24); b.translate(0, 0.08 + i * 0.16, 0); geos.push(b); }
+        const base = new T.Mesh(fundir(geos), S3D.mat(MARMORE, { rugosidade: 0.5 })); base.receiveShadow = base.castShadow = true; g.add(base);
+        const col = [], nx = 8, nz = 13, x0 = 2.5, z0 = 1.18, h = 1.6;
+        for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+          if (i > 0 && i < nx - 1 && j > 0 && j < nz - 1) continue;
+          const x = -x0 + (i / (nx - 1)) * 2 * x0, z = -z0 + (j / (nz - 1)) * 2 * z0;
+          const fuste = new T.CylinderGeometry(0.1, 0.13, h, 12); fuste.translate(z * 2.12, 0.48 + h / 2, x * 0.47); col.push(fuste);
+          const cap = new T.BoxGeometry(0.3, 0.08, 0.3); cap.translate(z * 2.12, 0.48 + h + 0.04, x * 0.47); col.push(cap);
+        }
+        const colunas = new T.Mesh(fundir(col), S3D.mat(MARMORE, { rugosidade: 0.45 })); colunas.castShadow = true; g.add(colunas);
+        const ent = new T.BoxGeometry(5.3, 0.36, 2.6); ent.translate(0, 0.48 + h + 0.26, 0);
+        const friso = new T.Mesh(ent, S3D.mat(0xE6EEFF, { rugosidade: 0.5 })); friso.castShadow = true; g.add(friso);
+        const tri = new T.Shape(); tri.moveTo(-1.3, 0); tri.lineTo(1.3, 0); tri.lineTo(0, 0.55); tri.closePath();
+        const front = new T.ExtrudeGeometry(tri, { depth: 5.3, bevelEnabled: false }); front.rotateY(Math.PI / 2); front.translate(-2.65, 0.48 + h + 0.44, 0);
+        const telhado = new T.Mesh(front, S3D.mat(0xF4F7FF)); telhado.castShadow = true; g.add(telhado);
+        const fris = new T.Mesh(new T.BoxGeometry(5.32, 0.1, 2.62), S3D.mat(0x2BB4F5)); fris.position.y = 0.48 + h + 0.3; g.add(fris);
+        S3D.contorno(g, 0.025);
+        g.rotation.y = Math.PI / 2;
+        return g;
+      }
+      function coliseu() {
+        const g = new T.Group();
+        const forma = new T.Shape(); forma.moveTo(-0.24, 0); forma.lineTo(0.24, 0); forma.lineTo(0.24, 0.62); forma.lineTo(-0.24, 0.62); forma.closePath();
+        const furo = new T.Path(); furo.moveTo(-0.14, 0); furo.lineTo(-0.14, 0.34); furo.absarc(0, 0.34, 0.14, Math.PI, 0, true); furo.lineTo(0.14, 0); furo.closePath(); forma.holes.push(furo);
+        const arco = new T.ExtrudeGeometry(forma, { depth: 0.22, bevelEnabled: false }); arco.translate(0, 0, -0.11);
+        const geos = [], a = 3.2, b = 2.6, n = 44;
+        for (let k = 0; k < 4; k++) for (let i = 0; i < n; i++) {
+          const t = (i / n) * Math.PI * 2, x = Math.cos(t) * a, z = Math.sin(t) * b;
+          const ruina = t > 2.2 && t < 3.6, alturaMax = ruina ? (t > 2.6 && t < 3.2 ? 1 : 2) : 4;
+          if (k >= alturaMax) continue;
+          let gg;
+          if (k < 3) gg = arco.clone(); else { gg = new T.BoxGeometry(0.48, 0.42, 0.22); gg.translate(0, 0.21, 0); }
+          const tan = Math.atan2(Math.cos(t) * b, -Math.sin(t) * a);
+          gg.rotateY(tan + Math.PI / 2); gg.translate(x, k * 0.62, z);
+          geos.push(gg);
+        }
+        const anel = new T.Mesh(fundir(geos), S3D.mat(PEDRA, { rugosidade: 0.6, verniz: 0.25 })); anel.castShadow = anel.receiveShadow = true; g.add(anel);
+        const arqGeo = new T.CylinderGeometry(1, 1, 1, 64, 1, true, 0, Math.PI * 2);
+        const arq = new T.Mesh(arqGeo, S3D.mat(0xD9A86C, { lados: T.DoubleSide, rugosidade: 0.8 })); arq.scale.set(2.5, 1.2, 1.95); arq.position.y = 0.6; g.add(arq);
+        const degraus = new T.Mesh(new T.CylinderGeometry(1, 0.7, 1, 64, 1, true), S3D.mat(0xE3B77E, { lados: T.DoubleSide, rugosidade: 0.8 })); degraus.scale.set(2.9, 1.3, 2.35); degraus.position.y = 1.0; g.add(degraus);
+        const arena = new T.Mesh(new T.CircleGeometry(1, 48), S3D.mat(0xF6E0B5, { rugosidade: 0.9, verniz: 0 })); arena.rotation.x = -Math.PI / 2; arena.scale.set(1.6, 1.15, 1); arena.position.y = 0.05; arena.receiveShadow = true; g.add(arena);
+        S3D.contorno(anel, 0.022); S3D.contorno(arena, 0.03);
+        return g;
+      }
+      const CONSTRUTOR = { piramide, partenon, coliseu };
+
+      function mostrar(id) {
+        atual = id; S3D.limpar(cena);
+        const m = MONUMENTOS[id], g = CONSTRUTOR[id](); cena.add(g);
+        g.scale.setScalar(0.6); c.tween(0.6, (k) => g.scale.setScalar(0.6 + 0.4 * k), { ease: 'mola' });
+        m.pontos.forEach(([titulo, texto, p], i) => {
+          const div = document.createElement('div'); div.className = 'ponto-3d'; div.textContent = i + 1; div.title = titulo;
+          div.addEventListener('click', () => {
+            cena.traverse((o) => o.isCSS2DObject && o.element.classList.remove('ativo')); div.classList.add('ativo');
+            pontoAtivo = titulo; guia.diz(`<b>${i + 1}. ${titulo}</b> — ${texto}`, { chave: 'ponto' });
+          });
+          const o = new T.CSS2DObject(div); o.position.set(...p); cena.add(o);
+        });
+        fichaEl.innerHTML = `<h3 style="font-size:22px;margin-bottom:2px">${m.nome}</h3><p class="miudo texto-suave" style="margin:0 0 8px">${m.lugar} · ${m.civ} · ${m.data}</p>
+          <div class="leituras">${m.ficha.map(([k, v]) => `<div class="leitura"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+        linhaEl.querySelectorAll('.marco').forEach((b) => b.classList.toggle('ativo', b.dataset.id === id));
+        const hoje = 2026, anos = hoje - m.ano;
+        guia.diz(`<b>${m.nome}</b> (${m.civ}, ${m.data}). Construído há cerca de <b>${SQ.num(anos, 0)} anos</b>. Clique nos pontos numerados ou pergunte: quem construiu?`, { chave: 'mon' });
+        pontoAtivo = null;
+      }
+
+      // ---------- painel ----------
+      const gMon = ui.grupo('Monumento');
+      const sel = ui.segmentado({ opcoes: [{ valor: 'piramide', rotulo: 'Pirâmide' }, { valor: 'partenon', rotulo: 'Partenon' }, { valor: 'coliseu', rotulo: 'Coliseu' }], valor: 'coliseu', pai: gMon, aoMudar: mostrar });
+      const fichaEl = SQ.el('div'); gMon.append(fichaEl);
+      const gTempo = ui.grupo('Linha do tempo');
+      const linhaEl = SQ.el('div', { class: 'linha-tempo' });
+      const x = (ano) => ((ano + 3000) / (2026 + 3000)) * 100;
+      for (const [id, m] of Object.entries(MONUMENTOS)) {
+        const b = SQ.el('button', { type: 'button', class: 'marco', 'data-id': id, style: { left: x(m.ano) + '%' } }, SQ.el('i'), m.data.replace('c. ', ''));
+        b.addEventListener('click', () => { sel.valor = id; mostrar(id); }); linhaEl.append(b);
+      }
+      linhaEl.append(SQ.el('span', { class: 'marco', style: { left: '100%' }, html: '<i style="background:#36C04A"></i>Hoje' }), SQ.el('span', { class: 'marco', style: { left: x(0) + '%', top: '42px' } }, 'ano 1'));
+      gTempo.append(linhaEl, SQ.el('p', { class: 'miudo texto-suave', style: { margin: '6px 0 0' } }, 'Escala de 3000 a.C. até hoje. A pirâmide estava mais distante no tempo dos romanos do que o Coliseu está de nós!'));
+
+      guia.contexto = () => ({ monumento: atual, ponto: pontoAtivo });
+      let girar = true; c.controls.addEventListener('start', () => (girar = false));
+      c.aoQuadro((dt) => { if (girar) cena.rotation.y += dt * 0.08; });
+      mostrar('coliseu');
+    },
+  });
+  </script>
+</body>
+</html>

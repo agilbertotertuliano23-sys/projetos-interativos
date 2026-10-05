@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ecossistema Vivo — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/planta.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .grafico { width: 100%; height: 170px; display: block; border: 2px solid var(--linha); border-radius: 12px; background: #fff; }
+    .leg-pop { display: flex; gap: 12px; font-size: 12px; font-weight: 800; margin-top: 6px; flex-wrap: wrap; }
+    .leg-pop i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  // Modelo plantas–coelhos–raposas (Lotka-Volterra com crescimento logístico das plantas).
+  const PAR = { a: 0.006, b: 0.0025, mh: 0.05, c: 0.04, d: 0.01, mc: 0.2 };
+  function passo(s, amb, dt) {
+    const fT = Math.exp(-(((amb.temp - 22) / 10) ** 2)), fC = Math.min(1.15, 0.2 + (amb.chuva / 100) * 1.1);
+    const K = 100 * Math.min(1, fC) * (1 - amb.desm / 100), r = 1.2 * fT * fC;
+    const dP = r * s.P * (1 - s.P / Math.max(K, 1)) - PAR.a * s.P * s.H;
+    const dH = PAR.b * s.P * s.H - PAR.mh * s.H - PAR.c * s.H * s.C;
+    const dC = PAR.d * s.H * s.C - PAR.mc * s.C;
+    s.P = Math.max(0, s.P + dP * dt); s.H = Math.max(0, s.H + dH * dt); s.C = Math.max(0, s.C + dC * dt);
+    if (s.H < 0.05) s.H = 0; if (s.C < 0.02) s.C = 0;
+    return { K, r };
+  }
+
+  SQ.demo('ecossistema-vivo', {
+    fundo: 'ceu',
+    dica: 'Arraste para girar · mude o clima no painel',
+    sala: ['Antes de mexer, peça que a turma desenhe como imagina os gráficos de coelhos e raposas ao longo do tempo.', 'Simule uma seca: quem sofre primeiro? Por quê?', 'Remova as raposas e observe os coelhos e as plantas. Discuta o papel dos predadores.'],
+    comoIA: 'O guia acompanha as populações e os parâmetros ambientais e comenta picos, quedas e extinções no momento em que acontecem. Uma IA conectada poderia propor cenários ("e se chegasse uma espécie invasora?") e explicar os resultados.',
+    guia: {
+      ola: 'Esta ilha tem plantas, coelhos e raposas — uma cadeia alimentar. A árvore e a flor são modelos Kenney (CC0) e a raposa é um modelo livre recolorido para a marca. Mude chuva, temperatura e desmatamento e veja as populações reagirem.',
+      perguntas: [
+        { p: 'Por que as populações sobem e descem?', chaves: ['sobe', 'desce', 'ciclo', 'oscila'], r: 'Mais coelhos → mais comida para raposas → as raposas aumentam → comem mais coelhos → os coelhos diminuem → as raposas passam fome e diminuem → os coelhos voltam a crescer. É o ciclo <b>presa–predador</b>, sempre com um atraso entre as curvas.' },
+        { p: 'O que são níveis tróficos?', chaves: ['trofico', 'troficos', 'nivel', 'cadeia'], r: 'São as posições na cadeia alimentar: <b>produtores</b> (plantas), <b>consumidores primários</b> (coelhos, herbívoros) e <b>secundários</b> (raposas, carnívoros). A energia diminui a cada nível.' },
+        { p: 'O que acontece sem predadores?', chaves: ['sem raposa', 'predador', 'extin'], r: 'Os coelhos crescem até o limite da comida, as plantas são consumidas e a população de herbívoros oscila presa à vegetação. Predadores ajudam a regular o ecossistema.' },
+        { p: 'Como o desmatamento afeta a ilha?', chaves: ['desmatamento', 'desmatar', 'arvore'], r: 'Menos vegetação reduz a <b>capacidade de suporte</b>: há menos comida para os herbívoros, e o efeito sobe pela cadeia até os predadores.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE, N = 7, L = 1.2;
+      const c = S3D.cena(palco, { camera: [7.5, 7.5, 9.5], alvo: [0, 0.3, 0], distancia: [6, 24], polarMax: 1.3, sombraRaio: 7 });
+      const agua = new T.Mesh(new T.CircleGeometry(9.5, 64), S3D.mat(0x2BB4F5, { rugosidade: 0.45, verniz: 0.3 })); agua.rotation.x = -Math.PI / 2; agua.position.y = -0.15; agua.receiveShadow = true; c.scene.add(agua);
+      const base = new T.Mesh(new T.CylinderGeometry(9.5, 9.5, 0.6, 64, 1, true), S3D.mat(0x1F5BE0)); base.position.y = -0.45; c.scene.add(base); S3D.contorno(base, 0.04);
+      const ilha = new T.Group(); c.scene.add(ilha);
+      const pos = (i) => (i - (N - 1) / 2) * L;
+      const rnd = ((a) => () => { a = (a * 16807) % 2147483647; return a / 2147483647; })(7);
+      const celulas = [];
+      const s = { P: 70, H: 10, C: 2 }, amb = { chuva: 60, temp: 22, desm: 0 };
+      let rodando = true, vel = 4, tempo = 0, hist = [];
+      const coelhos = [], raposas = [], flores = [];
+
+      (async () => {
+        const [grama, arv, arvA, flor] = await Promise.all(['grama', 'arvores', 'arvores-altas', 'flor'].map((id) => S3D.carregarModelo(id)));
+        const matSolo = S3D.mat(0xC98B4E, { rugosidade: 0.8, verniz: 0 });
+        for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+          if (Math.hypot(pos(x), pos(z)) > 4.4) continue;
+          const g = await S3D.instancia('grama', { tamanho: L }); g.obj.position.set(pos(x), 0, pos(z)); ilha.add(g.obj);
+          const solo = new T.Mesh(new T.BoxGeometry(L * 0.98, 0.14, L * 0.98), matSolo); solo.position.set(pos(x), 0.02, pos(z)); solo.visible = false; solo.receiveShadow = true; ilha.add(solo);
+          const t = await S3D.instancia(rnd() < 0.5 ? 'arvores' : 'arvores-altas', { tamanho: L }); t.obj.position.set(pos(x), 0, pos(z)); t.obj.rotation.y = Math.floor(rnd() * 4) * Math.PI / 2; t.obj.visible = false; ilha.add(t.obj);
+          celulas.push({ grama: g.obj, arvore: t.obj, solo, x: pos(x), z: pos(z), ordem: rnd(), ordemD: rnd() });
+        }
+        for (let i = 0; i < 18; i++) { const f = await S3D.instancia('flor', { tamanho: 0.42, porAltura: true }); const cel = celulas[Math.floor(rnd() * celulas.length)]; f.obj.position.set(cel.x + (rnd() - 0.5) * 0.8, 0.05, cel.z + (rnd() - 0.5) * 0.8); f.obj.visible = false; ilha.add(f.obj); flores.push({ obj: f.obj, cel }); }
+        for (let i = 0; i < 3; i++) { const n = await S3D.instancia('nuvem', { tamanho: 2.2 }); n.obj.position.set(-5 + i * 5, 5 + i * 0.4, -3 + i * 1.5); n.obj.userData.v = 0.2 + i * 0.07; nuvens.push(n.obj); c.scene.add(n.obj); }
+        void grama; void arv; void arvA; void flor;
+        atualizarCena(true);
+      })();
+      const nuvens = [];
+
+      // coelho procedural no estilo da marca
+      const matPelo = S3D.mat(0xF4F7FF, { rugosidade: 0.6 }), matRosa = S3D.mat(0xFF6B8A), matOlho = S3D.mat(0x0B1438);
+      function novoCoelho() {
+        const g = new T.Group();
+        const corpo = new T.Mesh(new T.SphereGeometry(0.2, 16, 12), matPelo); corpo.scale.set(1, 0.85, 1.25); corpo.position.y = 0.2;
+        const cab = new T.Mesh(new T.SphereGeometry(0.14, 16, 12), matPelo); cab.position.set(0, 0.36, 0.2);
+        for (const sx of [-1, 1]) {
+          const orelha = new T.Mesh(new T.CapsuleGeometry(0.035, 0.18, 4, 8), matPelo); orelha.position.set(sx * 0.06, 0.55, 0.17); orelha.rotation.z = sx * -0.2; g.add(orelha);
+          const olho = new T.Mesh(new T.SphereGeometry(0.025, 8, 6), matOlho); olho.position.set(sx * 0.06, 0.39, 0.32); g.add(olho);
+        }
+        const nariz = new T.Mesh(new T.SphereGeometry(0.025, 8, 6), matRosa); nariz.position.set(0, 0.35, 0.34);
+        const rabo = new T.Mesh(new T.SphereGeometry(0.07, 10, 8), matPelo); rabo.position.set(0, 0.24, -0.26);
+        g.add(corpo, cab, nariz, rabo); S3D.contorno(g, 0.018);
+        g.traverse((m) => { if (m.isMesh && !m.userData.ehContorno) m.castShadow = true; });
+        g.userData = { alvo: pontoAleatorio(), fase: rnd() * 6 };
+        g.position.copy(g.userData.alvo); ilha.add(g); return g;
+      }
+      function pontoAleatorio() { const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * 3.6; return new T.Vector3(Math.cos(a) * r, 0.08, Math.sin(a) * r); }
+      async function novaRaposa() {
+        const r = await S3D.instancia('raposa', { tamanho: 1.0 });
+        r.obj.userData = { alvo: pontoAleatorio(), mixer: r.mixer }; r.obj.position.copy(r.obj.userData.alvo);
+        r.acoes.Walk.play(); r.acoes.Walk.timeScale = 1.4; ilha.add(r.obj); return r.obj;
+      }
+
+      let alvoCoelhos = 0, alvoRaposas = 0, criandoRaposa = false;
+      function atualizarCena(forcar) {
+        if (!celulas.length) return;
+        const nArv = Math.round((s.P / 100) * celulas.length * 0.75), nSolo = Math.round((amb.desm / 100) * celulas.length);
+        const porArv = [...celulas].sort((a, b) => a.ordem - b.ordem), porSolo = [...celulas].sort((a, b) => a.ordemD - b.ordemD);
+        const soloSet = new Set(porSolo.slice(0, nSolo));
+        let colocadas = 0;
+        for (const cel of porArv) {
+          const nu = soloSet.has(cel);
+          cel.solo.visible = nu; cel.grama.visible = !nu;
+          const temArv = !nu && colocadas < nArv; if (temArv) colocadas++;
+          cel.arvore.visible = temArv;
+        }
+        flores.forEach((f, i) => (f.obj.visible = !soloSet.has(f.cel) && i < Math.round((s.P / 100) * flores.length)));
+        alvoCoelhos = Math.min(18, Math.round(s.H / 2.2)); alvoRaposas = Math.min(8, Math.round(s.C * 1.4));
+        while (coelhos.length < alvoCoelhos) coelhos.push(novoCoelho());
+        while (coelhos.length > alvoCoelhos) S3D.remover(coelhos.pop());
+        if (raposas.length < alvoRaposas && !criandoRaposa) { criandoRaposa = true; novaRaposa().then((r) => { raposas.push(r); criandoRaposa = false; }); }
+        while (raposas.length > alvoRaposas) S3D.remover(raposas.pop());
+        void forcar;
+      }
+
+      // chuva
+      const gotas = new Float32Array(400 * 6);
+      for (let i = 0; i < 400; i++) { const x = (rnd() - 0.5) * 12, y = rnd() * 6, z = (rnd() - 0.5) * 12; gotas.set([x, y, z, x, y - 0.25, z], i * 6); }
+      const geoChuva = new T.BufferGeometry(); geoChuva.setAttribute('position', new T.BufferAttribute(gotas, 3));
+      const chuva = new T.LineSegments(geoChuva, new T.LineBasicMaterial({ color: 0x5FA8FF, transparent: true, opacity: 0.7 })); c.scene.add(chuva);
+
+      // ---------- painel ----------
+      const gAmb = ui.grupo('Ambiente');
+      const narrarAmb = (txt) => guia.diz(txt, { chave: 'amb' });
+      ui.slider({ rotulo: 'Chuva', min: 0, max: 100, passo: 5, valor: amb.chuva, unidade: '%', pai: gAmb, aoMudar: (v) => { amb.chuva = v; narrarAmb(v < 30 ? '<b>Seca</b>: as plantas crescem devagar e a capacidade de suporte cai. Observe quem sente primeiro.' : v > 80 ? 'Muita chuva: as plantas se recuperam rápido — comida farta para os coelhos.' : 'Chuva moderada: boas condições para a vegetação.'); } });
+      ui.slider({ rotulo: 'Temperatura', min: 5, max: 40, passo: 1, valor: amb.temp, unidade: '°C', pai: gAmb, aoMudar: (v) => { amb.temp = v; c.sol.color.setHSL(0.11 - (v - 22) / 400, 0.6 + Math.abs(v - 22) / 60, 0.85); narrarAmb(Math.abs(v - 22) > 10 ? `A ${v} °C as plantas ficam estressadas (o ideal neste modelo é ~22 °C) e crescem menos.` : 'Temperatura próxima do ideal para as plantas desta ilha.'); } });
+      ui.slider({ rotulo: 'Desmatamento', min: 0, max: 80, passo: 5, valor: 0, unidade: '%', pai: gAmb, aoMudar: (v) => { amb.desm = v; narrarAmb(v ? `${v}% da ilha desmatada: menos vegetação possível, menos comida na base da cadeia.` : 'Sem desmatamento.'); atualizarCena(); } });
+      const gSim = ui.grupo('Simulação');
+      const leit = ui.leituras([{ id: 'P', rotulo: '🌳 Plantas' }, { id: 'H', rotulo: '🐰 Coelhos' }, { id: 'C', rotulo: '🦊 Raposas' }, { id: 't', rotulo: 'Tempo (meses)' }], gSim);
+      const tela = SQ.el('canvas', { class: 'grafico', role: 'img', 'aria-label': 'Gráfico das populações ao longo do tempo' });
+      gSim.append(SQ.el('div', { style: { marginTop: '10px' } }, tela), SQ.el('div', { class: 'leg-pop', html: '<span><i style="background:#36C04A"></i>Plantas (biomassa)</span><span><i style="background:#1F5BE0"></i>Coelhos</span><span><i style="background:#FF9416"></i>Raposas</span>' }));
+      ui.slider({ rotulo: 'Velocidade', min: 1, max: 10, passo: 1, valor: vel, unidade: '×', pai: gSim, aoMudar: (v) => (vel = v) });
+      const btP = ui.botao({ rotulo: '⏸ Pausar', classe: 'azul pequeno', aoClicar: () => { rodando = !rodando; btP.innerHTML = rodando ? '⏸ Pausar' : '▶ Continuar'; } });
+      ui.linha(gSim, btP,
+        ui.botao({ rotulo: '+3 raposas', classe: 'branco pequeno', aoClicar: () => { s.C += 3; guia.diz('Três raposas foram soltas na ilha. Com muitos coelhos, elas prosperam; com poucos, passam fome.', { chave: 'evt' }); } }),
+        ui.botao({ rotulo: 'Caçar raposas', classe: 'branco pequeno', aoClicar: () => { s.C *= 0.2; guia.diz('A caça removeu 80% das raposas. Fique de olho nos coelhos… e depois nas plantas.', { tipo: 'alerta', chave: 'evt' }); } }),
+        ui.botao({ rotulo: '⟲ Reiniciar', classe: 'branco pequeno', aoClicar: () => { Object.assign(s, { P: 70, H: 10, C: 2 }); hist = []; tempo = 0; } }));
+
+      function desenharGrafico() {
+        const ctx = tela.getContext('2d'), dpr = Math.min(devicePixelRatio || 1, 2), w = tela.clientWidth, h = tela.clientHeight;
+        if (tela.width !== Math.round(w * dpr)) { tela.width = Math.round(w * dpr); tela.height = Math.round(h * dpr); }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = '#E6EEFF'; ctx.lineWidth = 1;
+        for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(0, (h * i) / 4); ctx.lineTo(w, (h * i) / 4); ctx.stroke(); }
+        const series = [['P', 100, '#36C04A'], ['H', 40, '#1F5BE0'], ['C', 8, '#FF9416']];
+        for (const [k, max, cor] of series) {
+          ctx.strokeStyle = cor; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.beginPath();
+          hist.forEach((p, i) => { const x = (i / 239) * w, y = h - 6 - Math.min(1, p[k] / max) * (h - 12); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+          ctx.stroke();
+        }
+      }
+
+      // eventos narrados
+      let antes = { ...s }, subindoH = false, avisos = {};
+      function detectar() {
+        const agora = performance.now(), pode = (k) => !avisos[k] || agora - avisos[k] > 12000;
+        if (antes.C > 0 && s.C === 0 && pode('extC')) { avisos.extC = agora; guia.diz('⚠️ As <b>raposas foram extintas</b> na ilha. Sem predadores, os coelhos ficam limitados só pela comida. Use "+3 raposas" para reintroduzi-las.', { tipo: 'alerta', chave: 'evt' }); }
+        if (antes.H > 0 && s.H === 0 && pode('extH')) { avisos.extH = agora; guia.diz('⚠️ Os <b>coelhos foram extintos</b> — e as raposas perderam sua fonte de alimento.', { tipo: 'alerta', chave: 'evt' }); }
+        const sobe = s.H > antes.H;
+        if (subindoH && !sobe && s.H > 12 && pode('picoH')) { avisos.picoH = agora; guia.diz(`Pico de coelhos (~${Math.round(s.H)})! Com tanta presa, as raposas vão aumentar em seguida — repare no atraso entre as curvas azul e laranja.`, { chave: 'evt' }); }
+        subindoH = sobe; antes = { ...s };
+      }
+
+      let acum = 0;
+      c.aoQuadro((dt, t) => {
+        if (rodando) {
+          const sub = dt * vel; const n = Math.ceil(sub / 0.05);
+          for (let i = 0; i < n; i++) passo(s, amb, sub / n);
+          tempo += sub; acum += sub;
+          if (acum > 0.25) { acum = 0; hist.push({ ...s }); if (hist.length > 240) hist.shift(); atualizarCena(); detectar(); desenharGrafico(); }
+        }
+        leit.set('P', SQ.num(s.P, 0)); leit.set('H', SQ.num(s.H, 1)); leit.set('C', SQ.num(s.C, 1)); leit.set('t', SQ.num(tempo, 0));
+        // animais
+        for (const g of coelhos) {
+          const d = g.userData; d.fase += dt * 9;
+          const dir = d.alvo.clone().sub(g.position); dir.y = 0;
+          if (dir.length() < 0.2) d.alvo = pontoAleatorio(); else { dir.normalize(); g.position.addScaledVector(dir, dt * 0.7); g.rotation.y = Math.atan2(dir.x, dir.z); }
+          g.position.y = 0.08 + Math.abs(Math.sin(d.fase)) * 0.12;
+        }
+        for (const r of raposas) {
+          const d = r.userData; d.mixer.update(dt);
+          let alvo = d.alvo, perto = null, dmin = 2.2;
+          for (const g of coelhos) { const dd = g.position.distanceTo(r.position); if (dd < dmin) { dmin = dd; perto = g; } }
+          if (perto) alvo = perto.position;
+          const dir = alvo.clone().sub(r.position); dir.y = 0;
+          if (dir.length() < 0.25 && !perto) d.alvo = pontoAleatorio(); else { dir.normalize(); r.position.addScaledVector(dir, dt * (perto ? 1.2 : 0.8)); r.rotation.y = Math.atan2(dir.x, dir.z); }
+        }
+        nuvens.forEach((n) => { n.position.x += dt * n.userData.v; if (n.position.x > 8) n.position.x = -8; });
+        const intens = Math.max(0, (amb.chuva - 45) / 55);
+        chuva.visible = intens > 0.02; chuva.material.opacity = 0.25 + intens * 0.6;
+        const arr = geoChuva.attributes.position.array;
+        for (let i = 0; i < arr.length; i += 6) { arr[i + 1] -= dt * 9; arr[i + 4] -= dt * 9; if (arr[i + 1] < 0) { arr[i + 1] += 6; arr[i + 4] += 6; } }
+        geoChuva.attributes.position.needsUpdate = true;
+        agua.material.color.setHSL(0.56, 0.9, 0.5 + Math.sin(t) * 0.015);
+      });
+      guia.contexto = () => ({ populacoes: { plantas: Math.round(s.P), coelhos: Math.round(s.H), raposas: Math.round(s.C * 10) / 10 }, ambiente: amb, meses: Math.round(tempo) });
+      setTimeout(desenharGrafico, 100);
+    },
+  });
+  </script>
+</body>
+</html>

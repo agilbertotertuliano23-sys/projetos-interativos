@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Geometria Espacial — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/esquadro.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .problema { background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+    .resposta { display: flex; gap: 6px; }
+    .passos-sol { margin: 8px 0 0; padding-left: 20px; font: 700 14px/1.6 var(--fonte-mono); }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  const SOLIDOS = {
+    cubo: { nome: 'Cubo', usa: ['a'] },
+    prisma: { nome: 'Prisma', usa: ['n', 'a', 'h'] },
+    piramide: { nome: 'Pirâmide', usa: ['n', 'a', 'h'] },
+    cilindro: { nome: 'Cilindro', usa: ['r', 'h'] },
+    cone: { nome: 'Cone', usa: ['r', 'h'] },
+    esfera: { nome: 'Esfera', usa: ['r'] },
+  };
+  const NOME_POL = { 3: 'triangular', 4: 'quadrangular', 5: 'pentagonal', 6: 'hexagonal', 7: 'heptagonal', 8: 'octogonal' };
+  const PI = Math.PI;
+  function medidas(t, { n, a, h, r }) {
+    if (t === 'cubo') return { Ab: a * a, Al: 4 * a * a, At: 6 * a * a, V: a ** 3, euler: [8, 12, 6] };
+    if (t === 'prisma' || t === 'piramide') {
+      const Ab = (n * a * a) / (4 * Math.tan(PI / n)), ap = a / (2 * Math.tan(PI / n));
+      if (t === 'prisma') return { Ab, Al: n * a * h, At: 2 * Ab + n * a * h, V: Ab * h, euler: [2 * n, 3 * n, n + 2] };
+      const g = Math.hypot(h, ap); return { Ab, Al: (n * a * g) / 2, At: Ab + (n * a * g) / 2, V: (Ab * h) / 3, g, euler: [n + 1, 2 * n, n + 1] };
+    }
+    if (t === 'cilindro') return { Ab: PI * r * r, Al: 2 * PI * r * h, At: 2 * PI * r * r + 2 * PI * r * h, V: PI * r * r * h };
+    if (t === 'cone') { const g = Math.hypot(r, h); return { Ab: PI * r * r, Al: PI * r * g, At: PI * r * r + PI * r * g, V: (PI * r * r * h) / 3, g }; }
+    return { At: 4 * PI * r * r, V: (4 / 3) * PI * r ** 3 };
+  }
+  const aleat = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const f2 = (v) => SQ.num(v, 2);
+  const PROBLEMAS = [
+    () => { const r = aleat(2, 6), h = aleat(3, 9); return { t: 'cilindro', d: { r, h }, texto: `Uma caixa d'água cilíndrica tem raio de ${r} m e altura de ${h} m. Quantos m³ de água ela comporta?`, resp: PI * r * r * h, un: 'm³', passos: ['V = π · r² · h', `V = π · ${r}² · ${h}`, `V ≈ ${f2(PI * r * r * h)} m³ (com π ≈ 3,14: ${f2(3.14 * r * r * h)})`] }; },
+    () => { const r = aleat(2, 4), h = aleat(8, 12); return { t: 'cone', d: { r, h }, texto: `Uma casquinha de sorvete tem raio de ${r} cm e altura de ${h} cm. Qual é o seu volume?`, resp: (PI * r * r * h) / 3, un: 'cm³', passos: ['V = (π · r² · h) / 3', `V = (π · ${r}² · ${h}) / 3`, `V ≈ ${f2((PI * r * r * h) / 3)} cm³`] }; },
+    () => { const a = aleat(2, 9); return { t: 'cubo', d: { a }, texto: `Um dado gigante tem ${a} dm de aresta. Quanto papel (área total) é preciso para cobri-lo?`, resp: 6 * a * a, un: 'dm²', passos: ['At = 6 · a²', `At = 6 · ${a}²`, `At = ${6 * a * a} dm²`] }; },
+    () => { const a = aleat(2, 5), h = aleat(4, 9); const Ab = (Math.sqrt(3) / 4) * a * a; return { t: 'prisma', d: { n: 3, a, h }, texto: `Uma barraca tem forma de prisma de base triangular equilátera com lado ${a} m e comprimento ${h} m. Qual o volume interno?`, resp: Ab * h, un: 'm³', passos: ['Ab = (√3 / 4) · a²', `Ab = (√3 / 4) · ${a}² ≈ ${f2(Ab)} m²`, `V = Ab · h ≈ ${f2(Ab)} · ${h} ≈ ${f2(Ab * h)} m³`] }; },
+    () => { const a = aleat(4, 10), h = aleat(3, 9); return { t: 'piramide', d: { n: 4, a, h }, texto: `Uma pirâmide de base quadrada tem aresta da base ${a} m e altura ${h} m. Qual o volume?`, resp: (a * a * h) / 3, un: 'm³', passos: ['V = (Ab · h) / 3', `Ab = ${a}² = ${a * a} m²`, `V = (${a * a} · ${h}) / 3 = ${f2((a * a * h) / 3)} m³`] }; },
+    () => { const r = aleat(5, 12); return { t: 'esfera', d: { r }, texto: `Uma bola tem raio de ${r} cm. Qual é o seu volume?`, resp: (4 / 3) * PI * r ** 3, un: 'cm³', passos: ['V = (4/3) · π · r³', `V = (4/3) · π · ${r}³`, `V ≈ ${f2((4 / 3) * PI * r ** 3)} cm³`] }; },
+  ];
+
+  SQ.demo('geometria-espacial', {
+    fundo: 'papel',
+    dica: 'Arraste para girar · role para aproximar',
+    sala: ['Dobre e desdobre a planificação e peça que contem faces, arestas e vértices (V − A + F = 2).', 'Dobre a altura de um cilindro: o que acontece com o volume? E se dobrar o raio?', 'Use o gerador de problemas em duplas: um resolve, o outro confere no 3D.'],
+    comoIA: 'O guia gera problemas com valores novos a cada rodada, ajusta o sólido 3D às medidas do enunciado e explica a resolução passo a passo. Com uma IA conectada, os contextos dos problemas podem ser criados sob medida para a turma.',
+    guia: {
+      ola: 'Escolha um sólido, mexa nas medidas e veja área e volume mudarem ao vivo. Experimente "Planificar" e o gerador de problemas!',
+      perguntas: [
+        { p: 'Por que o volume da pirâmide tem ÷3?', chaves: ['pirâmide', 'piramide', 'terco', '3', 'divide'], r: 'Uma pirâmide ocupa exatamente <b>1/3</b> do prisma de mesma base e mesma altura. Dá para mostrar com três pirâmides que montam um cubo — ou enchendo de areia!' },
+        { p: 'O que é a relação de Euler?', chaves: ['euler', 'vertices', 'arestas', 'faces'], r: 'Em todo poliedro convexo: <b>V − A + F = 2</b> (vértices − arestas + faces). Confira na tabela para cubo, prismas e pirâmides.' },
+        { p: 'O que acontece se dobrar o raio?', chaves: ['dobrar', 'raio', 'dobro'], r: 'Num cilindro ou cone o volume depende de <b>r²</b>: dobrar o raio multiplica o volume por 4. Na esfera depende de <b>r³</b>: multiplica por 8!' },
+        { p: 'Por que a esfera não tem planificação?', chaves: ['esfera', 'planificacao', 'planificar'], r: 'A superfície da esfera tem curvatura em todas as direções: não dá para abri-la num plano sem esticar ou rasgar — é por isso que todo mapa-múndi distorce algo.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [6.5, 5, 8], alvo: [0, 1.6, 0], distancia: [4, 30], sombraRaio: 7, hemi: 1.1, sol: 2.2 });
+      const chao = S3D.chao(6.5, 0xF4F7FF); c.scene.add(chao);
+      const grupo = new T.Group(); c.scene.add(grupo);
+      let tipo = 'prisma', d = { n: 6, a: 3, h: 5, r: 3 }, planif = 0, alvoPlanif = 0, translucido = false;
+      const matSol = S3D.mat(0xFF9416, { facetado: true, verniz: 0.5 }), matFace = S3D.mat(0xFFC21A, { lados: T.DoubleSide, verniz: 0.4 });
+      const matLinha = new T.LineBasicMaterial({ color: 0x0B1438 });
+      let pivots = [], escala = 1;
+      const arestas = (geo, ref) => { const l = new T.LineSegments(new T.EdgesGeometry(geo, 25), matLinha); if (ref) { l.position.copy(ref.position); l.rotation.copy(ref.rotation); } return l; };
+
+      function construir() {
+        S3D.limpar(grupo); pivots = [];
+        const { n, a, h, r } = d;
+        const maior = tipo === 'cubo' ? a : tipo === 'esfera' ? 2 * r : Math.max(tipo === 'prisma' || tipo === 'piramide' ? a / (2 * Math.sin(PI / n)) * 2 : 2 * r, h);
+        escala = 4.2 / maior;
+        const S = (v) => v * escala;
+        matSol.transparent = translucido; matSol.opacity = translucido ? 0.45 : 1; matSol.depthWrite = !translucido; matSol.needsUpdate = true;
+        const solido = new T.Group(); grupo.add(solido);
+        let geo, alt = 0;
+        if (tipo === 'cubo') { geo = new T.BoxGeometry(S(a), S(a), S(a)); alt = S(a); }
+        else if (tipo === 'prisma') { geo = new T.CylinderGeometry(S(a / (2 * Math.sin(PI / n))), S(a / (2 * Math.sin(PI / n))), S(h), n); alt = S(h); }
+        else if (tipo === 'piramide') { geo = new T.ConeGeometry(S(a / (2 * Math.sin(PI / n))), S(h), n); alt = S(h); }
+        else if (tipo === 'cilindro') { geo = new T.CylinderGeometry(S(r), S(r), S(h), 72); alt = S(h); }
+        else if (tipo === 'cone') { geo = new T.ConeGeometry(S(r), S(h), 72); alt = S(h); }
+        else { geo = new T.SphereGeometry(S(r), 64, 32); alt = S(2 * r); }
+        const malha = new T.Mesh(geo, tipo === 'cilindro' || tipo === 'cone' || tipo === 'esfera' ? S3D.mat(0xFF9416, { verniz: 0.5, opacidade: translucido ? 0.45 : 1 }) : matSol);
+        malha.castShadow = true; malha.position.y = alt / 2; solido.add(malha);
+        if (tipo !== 'esfera') solido.add(arestas(geo, malha));
+        if (tipo === 'cilindro' || tipo === 'cone' || tipo === 'esfera') S3D.contorno(malha, 0.035);
+        // rótulos de medida
+        const rot = (txt, p) => { const l = S3D.rotulo(txt, { classe: 'ativo' }); l.position.set(...p); solido.add(l); };
+        if (tipo === 'cubo') rot(`a = ${SQ.num(a)}`, [S(a) / 2 + 0.2, S(a) / 2, S(a) / 2]);
+        if (tipo === 'prisma' || tipo === 'piramide') { rot(`a = ${SQ.num(a)}`, [0, 0.1, S(a / (2 * Math.tan(PI / n))) + 0.25]); rot(`h = ${SQ.num(h)}`, [S(a / (2 * Math.sin(PI / n))) + 0.6, alt / 2, 0]); }
+        if (tipo === 'cilindro' || tipo === 'cone') { rot(`r = ${SQ.num(r)}`, [S(r) / 2, 0.15, 0]); rot(`h = ${SQ.num(h)}`, [S(r) + 0.6, alt / 2, 0]); }
+        if (tipo === 'esfera') rot(`r = ${SQ.num(r)}`, [S(r) / 2, alt / 2 + 0.2, 0]);
+        if (tipo === 'cilindro' || tipo === 'cone' || tipo === 'esfera') {
+          const raioL = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(0, tipo === 'esfera' ? alt / 2 : 0.02, 0), new T.Vector3(S(r), tipo === 'esfera' ? alt / 2 : 0.02, 0)]), new T.LineDashedMaterial({ color: 0x0B1438, dashSize: 0.12, gapSize: 0.08, depthTest: false }));
+          raioL.computeLineDistances(); raioL.renderOrder = 4; solido.add(raioL);
+        }
+        solido.userData.solido = true;
+        // planificação
+        const plan = new T.Group(); plan.visible = false; grupo.add(plan);
+        if (tipo === 'cubo' || tipo === 'prisma' || tipo === 'piramide') montarPlanificacao(plan, tipo === 'cubo' ? 4 : n, S(a), S(tipo === 'cubo' ? a : h), tipo === 'piramide');
+        else if (tipo === 'cilindro' || tipo === 'cone') montarPlanoRedondo(plan, S(r), S(h), tipo === 'cone');
+        aplicarPlanif();
+        pintarMedidas();
+      }
+      function montarPlanificacao(plan, n, a, h, piramide) {
+        const R = a / (2 * Math.sin(PI / n)), ap = a / (2 * Math.tan(PI / n));
+        const base = new T.Mesh(new T.CircleGeometry(R, n, PI / 2 + PI / n), matFace); base.rotation.x = -PI / 2; base.position.y = 0.01; plan.add(base);
+        plan.add(arestas(base.geometry, base));
+        const dihedro = piramide ? Math.atan2(h, ap) : PI / 2, lateral = piramide ? Math.hypot(h, ap) : h;
+        const verts = Array.from({ length: n }, (_, i) => { const th = PI / 2 + PI / n + (i / n) * PI * 2; return new T.Vector3(Math.cos(th) * R, 0, -Math.sin(th) * R); });
+        for (let i = 0; i < n; i++) {
+          const p0 = verts[i], p1 = verts[(i + 1) % n];
+          const ex = p1.clone().sub(p0).normalize(), ez = p0.clone().add(p1).multiplyScalar(0.5).normalize(), ey = new T.Vector3().crossVectors(ez, ex);
+          const pivo = new T.Group(); pivo.position.copy(p0).setY(0.012);
+          pivo.quaternion.setFromRotationMatrix(new T.Matrix4().makeBasis(ex, ey, ez));
+          const forma = new T.Shape(); forma.moveTo(0, 0); forma.lineTo(a, 0);
+          if (piramide) forma.lineTo(a / 2, lateral); else { forma.lineTo(a, lateral); forma.lineTo(0, lateral); }
+          forma.closePath();
+          const fg = new T.ShapeGeometry(forma); fg.rotateX(PI / 2); // deita no plano XZ, crescendo em +Z
+          const face = new T.Mesh(fg, matFace); face.castShadow = true;
+          const giro = new T.Group(); giro.add(face, new T.LineSegments(new T.EdgesGeometry(fg), matLinha));
+          pivo.add(giro); plan.add(pivo);
+          pivots.push({ giro, dobra: PI - dihedro });
+          if (!piramide && i === 0) { // tampa presa à primeira face lateral
+            const tampaPivo = new T.Group(); tampaPivo.position.set(0, 0, lateral); giro.add(tampaPivo);
+            const tg = new T.CircleGeometry(R, n, 0); tg.rotateX(-PI / 2);
+            tg.rotateY(PI / 2 - PI / n); tg.translate(a / 2, 0, ap); // uma aresta sobre a dobradiça, polígono para fora
+            const tampa = new T.Group(); tampa.add(new T.Mesh(tg, matFace), new T.LineSegments(new T.EdgesGeometry(tg), matLinha));
+            tampaPivo.add(tampa); pivots.push({ giro: tampa, dobra: PI / 2, tampa: true });
+          }
+        }
+      }
+      function montarPlanoRedondo(plan, r, h, cone) {
+        if (!cone) {
+          const ret = new T.Mesh(new T.PlaneGeometry(2 * PI * r, h), matFace); ret.rotation.x = -PI / 2; ret.position.set(0, 0.01, 0); plan.add(ret);
+          for (const s of [-1, 1]) { const cc = new T.Mesh(new T.CircleGeometry(r, 64), matFace); cc.rotation.x = -PI / 2; cc.position.set(0, 0.01, s * (h / 2 + r)); plan.add(cc); }
+        } else {
+          const g = Math.hypot(r, h), ang = (2 * PI * r) / g;
+          const setor = new T.Mesh(new T.CircleGeometry(g, 64, PI / 2 - ang / 2, ang), matFace); setor.rotation.x = -PI / 2; setor.position.set(0, 0.01, -g * 0.35); plan.add(setor);
+          const cc = new T.Mesh(new T.CircleGeometry(r, 64), matFace); cc.rotation.x = -PI / 2; cc.position.set(0, 0.01, -g * 0.35 - g - r - 0.05); plan.add(cc);
+        }
+        plan.children.slice().forEach((m) => plan.add(arestas(m.geometry, m)));
+        plan.scale.setScalar(Math.min(1, 9 / (2 * PI * r + 0.01)));
+      }
+      function aplicarPlanif() {
+        const solido = grupo.children.find((o) => o.userData.solido), plan = grupo.children.find((o) => !o.userData.solido);
+        if (!solido || !plan) return;
+        const redondo = tipo === 'cilindro' || tipo === 'cone';
+        const t = planif; // 0 = sólido dobrado, 1 = planificado
+        solido.visible = redondo ? t < 0.5 : t < 0.001;
+        plan.visible = redondo ? t >= 0.5 : t >= 0.001;
+        for (const p of pivots) p.giro.rotation.x = -p.dobra * (1 - t);
+      }
+
+      // ---------- painel ----------
+      const gSol = ui.grupo('Sólido');
+      const sel = ui.segmentado({ opcoes: Object.entries(SOLIDOS).map(([k, v]) => ({ valor: k, rotulo: v.nome })), valor: tipo, pai: gSol, aoMudar: (v) => { tipo = v; ajustarControles(); construir(); narrar(); } });
+      const ctl = {
+        n: ui.slider({ rotulo: 'Lados da base (n)', min: 3, max: 8, passo: 1, valor: d.n, pai: gSol, formatar: (v) => `${v} (${NOME_POL[v]})`, aoMudar: (v) => { d.n = v; construir(); narrar(); } }),
+        a: ui.slider({ rotulo: 'Aresta (a)', min: 1, max: 10, passo: 0.5, valor: d.a, pai: gSol, aoMudar: (v) => { d.a = v; construir(); narrar('a'); } }),
+        r: ui.slider({ rotulo: 'Raio (r)', min: 1, max: 10, passo: 0.5, valor: d.r, pai: gSol, aoMudar: (v) => { d.r = v; construir(); narrar('r'); } }),
+        h: ui.slider({ rotulo: 'Altura (h)', min: 1, max: 12, passo: 0.5, valor: d.h, pai: gSol, aoMudar: (v) => { d.h = v; construir(); narrar('h'); } }),
+      };
+      function ajustarControles() { for (const k of Object.keys(ctl)) ctl[k].el.hidden = !SOLIDOS[tipo].usa.includes(k); }
+      const linhaVis = ui.linha(gSol);
+      const btPlan = ui.botao({ rotulo: '📐 Planificar', classe: 'azul pequeno', pai: linhaVis, aoClicar: () => {
+        if (tipo === 'esfera') { guia.diz('A esfera não tem planificação: não dá para abri-la no plano sem deformar.', { tipo: 'alerta', chave: 'plan' }); return; }
+        alvoPlanif = alvoPlanif ? 0 : 1; btPlan.innerHTML = alvoPlanif ? '🧊 Montar sólido' : '📐 Planificar';
+        c.voarPara(alvoPlanif ? [0.5, 13, 8.5] : [6.5, 5, 8], alvoPlanif ? [0, 0, 0] : [0, 1.6, 0], 1.2);
+        if (alvoPlanif) guia.diz(tipo === 'cilindro' ? 'O cilindro se abre em um <b>retângulo</b> (largura 2πr) e dois <b>círculos</b>. A área lateral é a do retângulo: 2πr · h.' : tipo === 'cone' ? 'O cone se abre num <b>setor circular</b> de raio g (geratriz) mais o círculo da base. Área lateral: π · r · g.' : 'Veja as faces se abrindo: a área total é a soma das áreas de todas elas.', { chave: 'plan' });
+      } });
+      ui.alternar({ rotulo: 'Sólido translúcido', valor: false, pai: gSol, aoMudar: (v) => { translucido = v; construir(); } });
+
+      const gMed = ui.grupo('Medidas');
+      const leit = ui.leituras([{ id: 'Ab', rotulo: 'Área da base' }, { id: 'Al', rotulo: 'Área lateral' }, { id: 'At', rotulo: 'Área total' }, { id: 'V', rotulo: 'Volume', destaque: true }, { id: 'eu', rotulo: 'V · A · F' }, { id: 'ok', rotulo: 'V − A + F' }], gMed);
+      function pintarMedidas() {
+        const m = medidas(tipo, d);
+        leit.set('Ab', m.Ab != null ? f2(m.Ab) : '—'); leit.set('Al', m.Al != null ? f2(m.Al) : '—'); leit.set('At', f2(m.At)); leit.set('V', f2(m.V));
+        leit.set('eu', m.euler ? m.euler.join(' · ') : 'não é poliedro'); leit.set('ok', m.euler ? String(m.euler[0] - m.euler[1] + m.euler[2]) : '—');
+      }
+      let vAnterior = null;
+      function narrar(qual) {
+        const m = medidas(tipo, d), nome = tipo === 'prisma' || tipo === 'piramide' ? `${SOLIDOS[tipo].nome} ${NOME_POL[d.n]}` : SOLIDOS[tipo].nome;
+        let t = `<b>${nome}</b>: volume ${f2(m.V)} e área total ${f2(m.At)}.`;
+        if (qual && vAnterior) { const k = m.V / vAnterior; t += ` O volume ficou ${k >= 1 ? SQ.num(k, 2) + '× maior' : SQ.num(1 / k, 2) + '× menor'}${qual === 'r' && tipo !== 'esfera' ? ' — repare: o raio entra ao quadrado!' : qual === 'r' ? ' — na esfera o raio entra ao cubo!' : ''}.`; }
+        vAnterior = m.V;
+        guia.diz(t, { chave: 'med' });
+      }
+
+      // ---------- gerador de problemas ----------
+      const gProb = ui.grupo('Problema gerado pelo guia');
+      const caixa = SQ.el('div', { class: 'problema' }, 'Clique em "Novo problema".');
+      const inp = SQ.el('input', { type: 'text', inputmode: 'decimal', placeholder: 'Sua resposta', 'aria-label': 'Resposta' });
+      const btConf = ui.botao({ rotulo: 'Conferir', classe: 'verde pequeno' });
+      const sol = SQ.el('ol', { class: 'passos-sol', hidden: true });
+      let prob = null, tentativas = 0;
+      gProb.append(caixa, SQ.el('div', { class: 'resposta' }, inp, btConf), sol);
+      ui.linha(gProb, ui.botao({ rotulo: '🎲 Novo problema', classe: 'pequeno', aoClicar: novoProblema }), ui.botao({ rotulo: 'Ver resolução', classe: 'branco pequeno', aoClicar: () => { if (prob) { sol.hidden = false; sol.innerHTML = prob.passos.map((p) => `<li>${p}</li>`).join(''); } } }));
+      function novoProblema() {
+        prob = PROBLEMAS[Math.floor(Math.random() * PROBLEMAS.length)](); tentativas = 0;
+        caixa.innerHTML = prob.texto; sol.hidden = true; inp.value = '';
+        tipo = prob.t; sel.valor = tipo; Object.assign(d, prob.d);
+        for (const [k, v] of Object.entries(prob.d)) ctl[k].valor = v;
+        ajustarControles(); alvoPlanif = 0; planif = 0; btPlan.innerHTML = '📐 Planificar'; construir();
+        guia.diz('Montei o sólido com as medidas do enunciado. Gire a figura, identifique a fórmula e responda — aceito arredondamentos (com π ≈ 3,14 também).', { chave: 'prob' });
+      }
+      btConf.addEventListener('click', () => {
+        if (!prob) return;
+        const v = parseFloat(inp.value.replace(/\./g, '').replace(',', '.'));
+        if (Number.isNaN(v)) { guia.diz('Digite um número (use vírgula para decimais).', { tipo: 'alerta', chave: 'prob' }); return; }
+        const alvo3 = prob.resp * (3.14 / PI);
+        const ok = Math.abs(v - prob.resp) / prob.resp < 0.02 || Math.abs(v - alvo3) / alvo3 < 0.02;
+        tentativas++;
+        if (ok) guia.diz(`✅ Isso! A resposta é ≈ ${f2(prob.resp)} ${prob.un}.`, { tipo: 'sucesso', chave: 'prob' });
+        else guia.diz(tentativas < 2 ? `Ainda não. Dica: comece pela fórmula — <b>${prob.passos[0]}</b>.` : `Quase lá? Confira a substituição: <b>${prob.passos[1]}</b>. Ou clique em "Ver resolução".`, { tipo: 'alerta', chave: 'prob' });
+      });
+
+      c.aoQuadro((dt) => {
+        if (Math.abs(planif - alvoPlanif) > 0.001) { planif += Math.sign(alvoPlanif - planif) * Math.min(Math.abs(alvoPlanif - planif), dt * 0.8); aplicarPlanif(); }
+      });
+      guia.contexto = () => ({ solido: tipo, medidas: d, resultado: medidas(tipo, d), problema: prob && prob.texto });
+      ajustarControles(); construir(); narrar();
+    },
+  });
+  </script>
+</body>
+</html>

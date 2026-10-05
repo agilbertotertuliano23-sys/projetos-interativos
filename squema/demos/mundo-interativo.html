@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mundo Interativo — SQUEMA</title>
+  <meta name="theme-color" content="#1F5BE0">
+  <link rel="icon" href="../assets/icones/globo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/squema.css">
+  <style>
+    .palavra { font: 800 34px/1 var(--fonte-titulo); color: var(--azul); }
+    .traducao { font-weight: 800; color: var(--texto-suave); }
+    .frase { font-size: 16px; margin: 8px 0 0; padding: 8px 10px; background: var(--nevoa); border-radius: 10px; border-left: 5px solid var(--celeste); }
+    .desafio { font: 800 26px/1.1 var(--fonte-titulo); color: var(--tinta); background: #FFF6D6; border: 2px solid var(--amarelo); border-radius: 14px; padding: 10px 12px; text-align: center; }
+    .vocab { display: flex; flex-wrap: wrap; gap: 5px; }
+    .vocab span { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 99px; border: 2px solid var(--linha); color: var(--texto-suave); }
+    .vocab span.visto { border-color: var(--verde); color: #11692A; background: #DDF7E1; }
+  </style>
+</head>
+<body data-raiz="../">
+  <script src="../js/catalogo.js"></script>
+  <script src="../js/squema.js"></script>
+  <script src="../vendor/three.squema.js"></script>
+  <script src="../js/squema3d.js"></script>
+  <script>
+  // [id do modelo, palavra, tradução, frase, posição [x, z], rotação (×90°), tamanho]
+  const OBJETOS = [
+    ['casa-a', 'house', 'casa', 'This is my house. It has a red door.', [-3.2, -2.2], 0, 1.6],
+    ['casa-b', 'house', 'casa', 'My friend lives in this house.', [-1.6, -2.2], 0, 1.6],
+    ['predio', 'building', 'prédio', 'The building is very tall.', [1.6, -2.2], 0, 1.6],
+    ['garagem', 'garage', 'garagem', 'The truck sleeps in the garage at night.', [3.2, -2.2], 0, 1.6],
+    ['fonte', 'fountain', 'fonte', 'There is a fountain in the square.', [0, 2.2], 0, 1.6],
+    ['arvores-altas', 'trees', 'árvores', 'The trees are tall and green.', [-3.2, 2.2], 0, 1.6],
+    ['arvores', 'trees', 'árvores', 'Birds live in the trees.', [3.2, 2.2], 1, 1.6],
+    ['caminhao', 'truck', 'caminhão', 'The yellow truck is on the street.', [-1.1, 0.25], 1, 1.25],
+    ['moto', 'motorcycle', 'moto', 'She rides a motorcycle to work.', [1.4, -0.35], 3, 0.9],
+    ['raposa', 'fox', 'raposa', 'The fox is orange and very fast.', [-1.6, 2.5], 1, 0.9],
+    ['robo', 'robot', 'robô', 'The robot can wave hello!', [1.6, 2.4], 0, 1.05],
+    ['flor', 'flower', 'flor', 'I like this pink flower.', [-2.4, -1.15], 0, 0.45],
+    ['bandeira', 'flag', 'bandeira', 'The flag is next to the fountain.', [0.85, 2.85], 0, 1.0],
+    ['moeda', 'coin', 'moeda', 'I found a gold coin!', [-0.5, 2.9], 0, 0.45],
+    ['barracas', 'tents', 'barracas', 'We sleep in tents when we go camping.', [-3.2, 4.0], 0, 1.6],
+    ['personagem', 'kid', 'criança', 'The kid is happy and says hello.', [0.6, 1.25], 2, 0.75],
+    ['nuvem', 'cloud', 'nuvem', 'There is a white cloud in the sky.', [-2, -3.4], 0, 1.6],
+  ];
+  const RUA = [[-3.2, 0], [-1.6, 0], [0, 0], [1.6, 0], [3.2, 0]];
+  const GRAMA = [[-1.6, 2.2], [1.6, 2.2], [-1.6, 4.0], [0, 4.0], [1.6, 4.0], [3.2, 4.0]];
+
+  SQ.demo('mundo-interativo', {
+    fundo: 'ceu',
+    dica: 'Clique nos objetos para ouvir a palavra em inglês',
+    interacao: 'Clica nos objetos, ouve as palavras e joga "Find the…"',
+    sala: ['Explore em grupo: cada aluno escolhe um objeto e cria uma frase nova com ele.', 'Jogue "Listen and find" (só o som) para treinar a escuta.', 'Use a cena para praticar preposições: next to, in front of, behind.'],
+    comoIA: 'O guia sabe qual objeto foi clicado e o desempenho no jogo, e ajusta dicas e frases. Com uma IA conectada (e reconhecimento de voz), o mesmo cenário vira o "Conversação IA": o personagem pergunta e o aluno responde falando.',
+    guia: {
+      ola: 'Welcome to the town! 🏡 Esta cidade foi montada com modelos 3D livres da Kenney, recoloridos com as cores SQUEMA. Clique em qualquer objeto: eu digo a palavra em inglês e uma frase de exemplo.',
+      perguntas: [
+        { p: 'Como se diz "rua" em inglês?', chaves: ['rua', 'street', 'road'], r: '<b>Street</b> (rua na cidade) ou <b>road</b> (estrada). "Look both ways before you cross the street!"' },
+        { p: 'Por que "trees" tem S?', chaves: ['plural', 'trees', ' s '], r: 'É o <b>plural</b>: tree (uma árvore) → trees (árvores). A maioria dos plurais em inglês leva -s; alguns mudam, como child → children.' },
+        { p: 'Como falo "ao lado de"?', chaves: ['lado', 'next', 'preposicao', 'perto'], r: '<b>Next to</b>. "The flag is next to the fountain." Outras: in front of (na frente de), behind (atrás de), between (entre).' },
+        { p: 'O áudio não toca. E agora?', chaves: ['audio', 'som', 'toca', 'voz'], r: 'A voz usa a síntese de fala do navegador. Verifique o volume; em alguns navegadores é preciso clicar uma vez na página antes. As palavras continuam aparecendo no painel.' },
+      ],
+    },
+    montar({ palco, guia, ui }) {
+      const T = THREE;
+      const c = S3D.cena(palco, { camera: [0, 8.5, 10], alvo: [0, 0, 0.8], distancia: [6, 22], polarMax: 1.25, sombraRaio: 8 });
+      const base = new T.Mesh(new T.RoundedBoxGeometry(9.6, 0.5, 8.0, 4, 0.2), S3D.mat(0x36C04A, { rugosidade: 0.7, verniz: 0.2 }));
+      base.position.set(0, -0.27, 0.9); base.receiveShadow = true; c.scene.add(base); S3D.contorno(base, 0.04);
+      const alvos = [], porObj = new Map(), vistos = new Set();
+      let modo = 'explorar', alvoJogo = null, pontos = 0, erros = 0, rodada = 0;
+      const rotulos = [];
+      (async () => {
+        for (const [x, z] of RUA) { const r = await S3D.instancia(x === 0 ? 'rua-postes' : 'rua', { tamanho: 1.6 }); r.obj.position.set(x, 0, z); r.obj.rotation.y = Math.PI / 2; c.scene.add(r.obj); }
+        for (const [x, z] of GRAMA) { const r = await S3D.instancia('grama', { tamanho: 1.6 }); r.obj.position.set(x, 0, z); c.scene.add(r.obj); }
+        for (const o of OBJETOS) {
+          const [id, en, pt, frase, [x, z], rot, tam] = o;
+          const r = await S3D.instancia(id, { tamanho: tam, porAltura: id === 'robo' || id === 'personagem' || id === 'flor' || id === 'raposa' });
+          const raiz = new T.Group(); raiz.add(r.obj); raiz.position.set(x, id === 'nuvem' ? 3.3 : id === 'moeda' ? 0.5 : 0, z); raiz.rotation.y = rot * Math.PI / 2;
+          raiz.userData = { en, pt, frase, id, mixer: r.mixer };
+          if (r.mixer) { const a = r.acoes.Idle || r.acoes.Survey || r.acoes.idle; a && a.play(); }
+          const rotulo = S3D.rotulo(en, { aoClicar: () => escolher(raiz) }); rotulo.position.y = id === 'nuvem' ? 1.1 : id === 'predio' ? 2.9 : id === 'personagem' || id === 'robo' ? tam + 0.25 : id === 'flor' || id === 'moeda' ? 0.75 : tam * 0.9 + 0.2;
+          raiz.add(rotulo); rotulos.push(rotulo);
+          c.scene.add(raiz); alvos.push(raiz); porObj.set(raiz, o);
+        }
+        pintarVocab();
+      })();
+
+      function falarEn(t) { if (somLigado && !SQ.falar(t, 'en-US')) guia.diz('Síntese de voz indisponível neste navegador — leia em voz alta!', { tipo: 'alerta', chave: 'voz' }); }
+      function pular(raiz) {
+        const y0 = raiz.position.y;
+        c.tween(0.45, (k) => { raiz.position.y = y0 + Math.sin(k * Math.PI) * 0.35; raiz.scale.setScalar(1 + Math.sin(k * Math.PI) * 0.08); });
+        const d = raiz.userData;
+        if (d.id === 'robo' && d.mixer) { /* acena */ }
+      }
+      function escolher(raiz) {
+        if (!raiz) return;
+        const d = raiz.userData;
+        pular(raiz);
+        if (modo === 'explorar') {
+          vistos.add(d.en); pintarVocab(); mostrarFicha(d);
+          falarEn(nivel === 'palavras' ? d.en : `${d.en}. ${d.frase}`);
+          guia.diz(`<b>${d.en}</b> = ${d.pt}. ${nivel === 'frases' ? `<i>“${d.frase}”</i>` : 'Repita em voz alta!'}`, { chave: 'obj' });
+        } else if (alvoJogo) {
+          if (d.en === alvoJogo.en) {
+            pontos++; rodada++; SQ.som(880, 0.12, 'triangle'); setTimeout(() => SQ.som(1320, 0.15, 'triangle'), 110);
+            guia.diz(`✅ <b>Yes! That's the ${d.en}.</b> (${d.pt})`, { tipo: 'sucesso', chave: 'jogo' });
+            vistos.add(d.en); pintarVocab(); placar(); setTimeout(novoDesafio, 1100);
+          } else {
+            erros++; SQ.som(200, 0.2, 'sawtooth', 0.04); placar();
+            guia.diz(`Not quite — this is the <b>${d.en}</b> (${d.pt}). Try again: <b>find the ${alvoJogo.en}</b>!`, { tipo: 'alerta', chave: 'jogo' });
+          }
+        }
+      }
+      c.escolher(alvos, escolher);
+
+      // ---------- painel ----------
+      const gModo = ui.grupo('Modo');
+      let nivel = 'palavras', somLigado = true;
+      ui.segmentado({ opcoes: [{ valor: 'explorar', rotulo: 'Explorar' }, { valor: 'achar', rotulo: 'Find the…' }, { valor: 'ouvir', rotulo: 'Listen & find' }], valor: modo, pai: gModo, aoMudar: (v) => {
+        modo = v; pontos = 0; erros = 0; rodada = 0; placar();
+        desafioEl.hidden = v === 'explorar'; ficha.hidden = v !== 'explorar';
+        rotulos.forEach((r) => (r.visible = v === 'explorar' && mostrarPalavras));
+        if (v === 'explorar') { alvoJogo = null; guia.diz('Modo explorar: clique nos objetos para aprender.', { chave: 'jogo' }); } else novoDesafio();
+      } });
+      ui.segmentado({ rotulo: 'Nível', opcoes: [{ valor: 'palavras', rotulo: 'Palavras (A1)' }, { valor: 'frases', rotulo: 'Frases (A2)' }], valor: nivel, pai: gModo, aoMudar: (v) => (nivel = v) });
+      let mostrarPalavras = true;
+      ui.alternar({ rotulo: 'Mostrar palavras na cena', valor: true, pai: gModo, aoMudar: (v) => { mostrarPalavras = v; rotulos.forEach((r) => (r.visible = v && modo === 'explorar')); } });
+      ui.alternar({ rotulo: 'Voz (pronúncia)', valor: true, pai: gModo, aoMudar: (v) => (somLigado = v) });
+
+      const gPal = ui.grupo('Palavra');
+      const ficha = SQ.el('div', { html: '<p class="texto-suave mb0">Clique num objeto da cidade.</p>' });
+      const desafioEl = SQ.el('div', { hidden: true });
+      const placarEl = ui.leituras([{ id: 'p', rotulo: 'Acertos' }, { id: 'e', rotulo: 'Tentativas erradas' }]);
+      desafioEl.append(SQ.el('div', { class: 'desafio' }), SQ.el('div', { style: { margin: '8px 0' } }, ui.botao({ rotulo: '🔊 Ouvir de novo', classe: 'branco pequeno', aoClicar: () => alvoJogo && falarEn(`Find the ${alvoJogo.en}`) })), placarEl.el);
+      gPal.append(ficha, desafioEl);
+      function mostrarFicha(d) {
+        ficha.innerHTML = `<div class="palavra">${d.en}</div><div class="traducao">${d.pt}</div><p class="frase">${d.frase}</p>`;
+        const b = ui.botao({ rotulo: '🔊 Ouvir', classe: 'branco pequeno', aoClicar: () => falarEn(`${d.en}. ${d.frase}`) }); b.style.marginTop = '8px'; ficha.append(b);
+      }
+      function placar() { placarEl.set('p', String(pontos)); placarEl.set('e', String(erros)); }
+      function novoDesafio() {
+        const unicos = [...new Map(OBJETOS.map((o) => [o[1], o])).values()];
+        let o; do { o = unicos[Math.floor(Math.random() * unicos.length)]; } while (alvoJogo && o[1] === alvoJogo.en && unicos.length > 1);
+        alvoJogo = { en: o[1], pt: o[2] };
+        desafioEl.querySelector('.desafio').textContent = modo === 'ouvir' ? '🔊 Listen…' : `Find the ${o[1]}!`;
+        falarEn(`Find the ${o[1]}`);
+        guia.diz(modo === 'ouvir' ? 'Ouça a palavra e clique no objeto certo. Não vale olhar a tradução! 😉' : `Rodada ${rodada + 1}: encontre o objeto na cidade.`, { chave: 'jogo' });
+      }
+      const gVoc = ui.grupo('Vocabulário da cena');
+      const vocab = SQ.el('div', { class: 'vocab' }); gVoc.append(vocab);
+      function pintarVocab() {
+        const unicos = [...new Set(OBJETOS.map((o) => o[1]))];
+        vocab.innerHTML = unicos.map((w) => `<span class="${vistos.has(w) ? 'visto' : ''}">${w}</span>`).join('');
+        if (vistos.size === unicos.length && !pintarVocab.parabens) { pintarVocab.parabens = true; guia.diz(`🎉 Você conheceu as ${unicos.length} palavras da cidade! Agora tente o modo "Listen & find".`, { tipo: 'sucesso', chave: 'obj' }); }
+      }
+
+      c.aoQuadro((dt, t) => {
+        for (const a of alvos) {
+          const d = a.userData; d.mixer && d.mixer.update(dt);
+          if (d.id === 'nuvem') a.position.x = Math.sin(t * 0.2) * 3;
+          if (d.id === 'moeda') a.rotation.y += dt * 2;
+        }
+      });
+      guia.contexto = () => ({ modo, nivel, alvo: alvoJogo, acertos: pontos, palavras_vistas: [...vistos] });
+    },
+  });
+  </script>
+</body>
+</html>

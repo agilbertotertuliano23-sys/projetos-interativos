@@ -59,7 +59,7 @@ export const MODELOS = [
     url: `${RAW}/mrdoob/three.js/dev/examples/models/gltf/Flower/Flower.glb`,
     credito: 'Kenney (Nature Pack); ajustes por Don McCurdy', licenca: 'CC0 1.0',
     pagina: 'https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/Flower',
-    cores: { Blossom: PALETA.amarelo, Stem: PALETA.verde },
+    cores: { Blossom: PALETA.rosa, Stem: PALETA.verde },
   },
   kenney('cidade', 'building-small-a', 'casa-a', 'Casa A', 'house'),
   kenney('cidade', 'building-small-b', 'casa-b', 'Casa B', 'house'),

@@ -40,8 +40,9 @@
       objetivos: ['Identificar organelas e suas funções', 'Relacionar núcleo, DNA e cromossomos', 'Ordenar as fases da mitose'],
       tags: ['3D'],
     }),
-    S('biologia', 'genetica-lab', 'Genética Lab', 'DNA, cromossomos, heredogramas', 'gerar cruzamentos e explicar resultados', 5, 'demos/genetica-lab.html', {
+    S('biologia', 'genetica-lab', 'Genética Lab', 'DNA, cromossomos, heredogramas', 'gerar cruzamentos e explicar resultados', 5, null, {
       interacao: 'Escolhe os genótipos dos pais e sorteia filhotes',
+      roteiro: ['Quadro de Punnett com genótipos dos pais escolhidos pelo aluno', 'Proporções de genótipo e fenótipo calculadas ao vivo', 'Sorteio de descendentes para comparar esperado × observado', 'IA explica o resultado e gera novos cruzamentos'],
       resumo: 'Quadro de Punnett interativo para mono e di-hibridismo, com proporções, sorteio de descendentes e leitura dos resultados.',
       objetivos: ['Montar cruzamentos a partir dos genótipos', 'Distinguir genótipo e fenótipo', 'Comparar proporção esperada e resultado de uma amostra'],
       tags: ['2D'],
@@ -53,33 +54,38 @@
       tags: ['3D', 'modelos livres'],
     }),
     // ---------------- Física ----------------
-    S('fisica', 'mecanica', 'Laboratório de Mecânica', 'forças, velocidade, colisões', 'modificar parâmetros e explicar resultados', 5, 'demos/mecanica.html', {
+    S('fisica', 'mecanica', 'Laboratório de Mecânica', 'forças, velocidade, colisões', 'modificar parâmetros e explicar resultados', 5, null, {
       interacao: 'Define ângulo, velocidade e massas; lança e colide',
+      roteiro: ['Lançamento oblíquo com ângulo e velocidade ajustáveis', 'Vetores de velocidade decompostos ao longo da trajetória', 'Trilho de colisões com massas e restituição', 'IA compara previsão do aluno com o resultado'],
       resumo: 'Lançamento oblíquo com vetores de velocidade e colisões em trilho com massas e coeficiente de restituição ajustáveis.',
       objetivos: ['Decompor a velocidade em componentes', 'Relacionar ângulo e alcance', 'Conservar momento linear em colisões'],
       tags: ['2D'],
     }),
-    S('fisica', 'eletricidade', 'Eletricidade Lab', 'circuitos e fluxo elétrico', 'diagnosticar circuito e orientar aluno', 5, 'demos/eletricidade.html', {
+    S('fisica', 'eletricidade', 'Eletricidade Lab', 'circuitos e fluxo elétrico', 'diagnosticar circuito e orientar aluno', 5, null, {
       interacao: 'Monta série ou paralelo, abre chaves e muda a tensão',
+      roteiro: ['Bancada com bateria, lâmpadas e chaves', 'Associação em série e em paralelo com fluxo animado', 'Medidas de tensão, corrente e resistência (Lei de Ohm)', 'IA diagnostica circuito aberto ou curto e orienta'],
       resumo: 'Circuito com bateria e lâmpadas em série ou paralelo, chaves que abrem e fecham, fluxo de cargas animado e diagnóstico.',
       objetivos: ['Aplicar a Lei de Ohm', 'Comparar associação em série e em paralelo', 'Diagnosticar circuito aberto'],
       tags: ['2D'],
     }),
-    S('fisica', 'optica', 'Óptica Lab', 'luz, lentes, espelhos', 'gerar experimentos', 5, 'demos/optica.html', {
+    S('fisica', 'optica', 'Óptica Lab', 'luz, lentes, espelhos', 'gerar experimentos', 5, null, {
       interacao: 'Arrasta o objeto e troca o tipo de lente',
+      roteiro: ['Banco óptico com lente convergente e divergente', 'Raios principais traçados ao arrastar o objeto', 'Classificação da imagem e equação de Gauss', 'IA propõe experimentos com novas distâncias'],
       resumo: 'Banco óptico com lente convergente ou divergente: arraste o objeto e veja os raios principais formarem a imagem.',
       objetivos: ['Traçar os raios principais', 'Classificar a imagem (real/virtual, direita/invertida)', 'Usar a equação de Gauss'],
       tags: ['2D'],
     }),
-    S('fisica', 'ondas', 'Ondas', 'som, frequência, interferência', 'transformar parâmetros em visualizações', 5, 'demos/ondas.html', {
+    S('fisica', 'ondas', 'Ondas', 'som, frequência, interferência', 'transformar parâmetros em visualizações', 5, null, {
       interacao: 'Muda frequência, amplitude e distância das fontes',
+      roteiro: ['Cuba de ondas com duas fontes', 'Frequência, amplitude e distância ajustáveis', 'Padrão de interferência e som correspondente', 'IA traduz parâmetros em explicações visuais'],
       resumo: 'Duas fontes em uma cuba de ondas mostram interferência; frequência e amplitude também podem ser ouvidas.',
       objetivos: ['Relacionar frequência, comprimento de onda e velocidade', 'Reconhecer interferência construtiva e destrutiva', 'Associar frequência à altura do som'],
       tags: ['2D', 'áudio'],
     }),
     // ---------------- Química ----------------
-    S('quimica', 'laboratorio-virtual', 'Laboratório Virtual', 'vidrarias e reações', 'conduzir experimento virtual', 5, 'demos/laboratorio-virtual.html', {
+    S('quimica', 'laboratorio-virtual', 'Laboratório Virtual', 'vidrarias e reações', 'conduzir experimento virtual', 5, null, {
       interacao: 'Goteja a base e escolhe o indicador',
+      roteiro: ['Bancada de titulação com bureta e erlenmeyer', 'Gotejamento controlado e indicador que muda de cor', 'Curva de pH desenhada ao vivo', 'IA conduz o procedimento e aponta o ponto de equivalência'],
       resumo: 'Titulação ácido-base em bancada: goteje a base, acompanhe o pH, a cor do indicador e a curva de titulação.',
       objetivos: ['Conhecer vidrarias de titulação', 'Interpretar a curva de pH', 'Identificar o ponto de equivalência'],
       tags: ['2D'],
@@ -103,14 +109,16 @@
       objetivos: ['Reconhecer elementos dos sólidos', 'Calcular área e volume', 'Resolver problemas com valores novos a cada rodada'],
       tags: ['3D'],
     }),
-    S('matematica', 'funcoes-visuais', 'Funções Visuais', 'gráficos vivos', 'explicar alteração de parâmetros', 5, 'demos/funcoes-visuais.html', {
+    S('matematica', 'funcoes-visuais', 'Funções Visuais', 'gráficos vivos', 'explicar alteração de parâmetros', 5, null, {
       interacao: 'Troca a família de funções e arrasta os parâmetros',
+      roteiro: ['Famílias afim, quadrática, exponencial e senoidal', 'Parâmetros deslizantes com gráfico ao vivo', 'Raízes, vértice e interceptos destacados', 'IA explica o efeito de cada parâmetro'],
       resumo: 'Afim, quadrática, exponencial e senoidal com parâmetros deslizantes — o gráfico e a explicação mudam juntos.',
       objetivos: ['Interpretar o papel de cada parâmetro', 'Encontrar raízes, vértice e interceptos', 'Comparar famílias de funções'],
       tags: ['2D'],
     }),
-    S('matematica', 'calculo-visual', 'Cálculo Visual', 'derivadas, integrais, áreas', 'explicar cada transformação', 4, 'demos/calculo-visual.html', {
+    S('matematica', 'calculo-visual', 'Cálculo Visual', 'derivadas, integrais, áreas', 'explicar cada transformação', 4, null, {
       interacao: 'Desliza o ponto da tangente e o número de retângulos',
+      roteiro: ['Reta tangente que desliza pela curva', 'Somas de Riemann com número de retângulos ajustável', 'Comparação com a integral exata', 'IA comenta cada transformação'],
       resumo: 'Reta tangente que desliza pela curva e somas de Riemann que se aproximam da integral à medida que os retângulos afinam.',
       objetivos: ['Interpretar a derivada como inclinação', 'Ver a integral como limite de somas', 'Relacionar sinal da derivada e crescimento'],
       tags: ['2D'],
@@ -129,8 +137,9 @@
       roteiro: ['Mapa regional com relevo e oceano', 'Massas de ar animadas com temperatura e umidade', 'Climograma gerado ao vivo', 'IA compara o cenário com climas reais'],
       tags: ['2D'],
     }),
-    S('geografia', 'relevo-3d', 'Relevo 3D', 'montanhas, placas, vulcões', 'explicar formação geológica', 5, 'demos/relevo-3d.html', {
+    S('geografia', 'relevo-3d', 'Relevo 3D', 'montanhas, placas, vulcões', 'explicar formação geológica', 5, null, {
       interacao: 'Move as placas e acelera o tempo geológico',
+      roteiro: ['Bloco de terreno 3D com placas tectônicas', 'Movimento convergente e divergente controlado pelo aluno', 'Erosão ao longo do tempo geológico', 'IA explica a formação de cada relevo'],
       resumo: 'Bloco de terreno 3D: aproxime ou afaste placas tectônicas e veja surgirem cordilheiras, fossas e vulcões, com erosão ao longo do tempo.',
       objetivos: ['Relacionar movimento de placas e relevo', 'Diferenciar limites convergentes e divergentes', 'Entender o papel da erosão'],
       tags: ['3D'],
@@ -143,8 +152,9 @@
       roteiro: ['Seletor de época com cenários 3D', 'Personagens e objetos clicáveis com fontes', 'Narração adaptada à série do aluno', 'Desafio: encontrar anacronismos na cena'],
       tags: ['3D'],
     }),
-    S('historia', 'linha-do-tempo', 'Linha do Tempo IA', 'eventos conectados', 'explicar causa e consequência', 4, 'demos/linha-do-tempo.html', {
+    S('historia', 'linha-do-tempo', 'Linha do Tempo IA', 'eventos conectados', 'explicar causa e consequência', 4, null, {
       interacao: 'Navega pelos eventos e segue as conexões',
+      roteiro: ['Linha do tempo navegável da história do Brasil', 'Eventos ligados por setas de causa e consequência', 'Zoom de séculos a anos', 'IA explica as conexões entre eventos'],
       resumo: 'Linha do tempo navegável da história do Brasil com conexões de causa e consequência entre eventos.',
       objetivos: ['Ordenar eventos cronologicamente', 'Identificar relações de causa e consequência', 'Reconhecer processos de longa duração'],
       tags: ['2D'],
@@ -170,8 +180,9 @@
       roteiro: ['Grafo de personagens por capítulo', 'Cenários ilustrados com trechos da obra', 'Linha do enredo com pontos de virada', 'IA responde como guia de leitura'],
       tags: ['2D'],
     }),
-    S('portugues', 'gramatica-visual', 'Gramática Visual', 'palavras conectadas', 'analisar sintaxe dinamicamente', 4, 'demos/gramatica-visual.html', {
+    S('portugues', 'gramatica-visual', 'Gramática Visual', 'palavras conectadas', 'analisar sintaxe dinamicamente', 4, null, {
       interacao: 'Escolhe ou digita frases e destaca funções',
+      roteiro: ['Frases decompostas em sujeito e predicado', 'Classes de palavras coloridas e ligações sintáticas', 'Modo desafio: o aluno marca as funções', 'IA analisa frases digitadas e explica'],
       resumo: 'Frases decompostas em sujeito, predicado e complementos, com classes de palavras coloridas e ligações sintáticas.',
       objetivos: ['Identificar sujeito e predicado', 'Reconhecer complementos e adjuntos', 'Classificar palavras pela função'],
       tags: ['2D'],
@@ -198,29 +209,33 @@
       roteiro: ['Salas por movimento com obras em domínio público', 'Ficha da obra com leitura guiada', 'Comparador lado a lado', 'IA faz perguntas de apreciação'],
       tags: ['3D'],
     }),
-    S('artes', 'estudio-criativo', 'Estúdio Criativo', 'composição, cor, perspectiva', 'orientar processo artístico', 5, 'demos/estudio-criativo.html', {
+    S('artes', 'estudio-criativo', 'Estúdio Criativo', 'composição, cor, perspectiva', 'orientar processo artístico', 5, null, {
       interacao: 'Gira a roda de cores e ajusta a composição',
+      roteiro: ['Roda de cores com harmonias', 'Composição com regra dos terços e ponto de fuga', 'Paletas aplicadas a uma cena', 'IA orienta escolhas de cor e composição'],
       resumo: 'Roda de cores com harmonias (complementar, análoga, tríade) aplicadas a uma composição com regra dos terços e perspectiva.',
       objetivos: ['Construir harmonias cromáticas', 'Equilibrar uma composição', 'Experimentar ponto de fuga'],
       tags: ['2D'],
     }),
     // ---------------- Música ----------------
-    S('musica', 'musica-visual', 'Música Visual', 'ondas, notas, acordes', 'reconhecer e explicar música', 5, 'demos/musica-visual.html', {
+    S('musica', 'musica-visual', 'Música Visual', 'ondas, notas, acordes', 'reconhecer e explicar música', 5, null, {
       interacao: 'Toca o teclado e monta acordes',
+      roteiro: ['Teclado sintetizado no navegador', 'Acordes montados por intervalos', 'Partitura e osciloscópio ao vivo', 'IA reconhece acordes e explica'],
       resumo: 'Teclado que soa no navegador, acordes montados por intervalos, partitura e osciloscópio com a forma de onda.',
       objetivos: ['Relacionar nota, frequência e oitava', 'Montar acordes maiores e menores', 'Ver o timbre na forma de onda'],
       tags: ['2D', 'áudio'],
     }),
     // ---------------- Filosofia ----------------
-    S('filosofia', 'debate-ia', 'Debate IA', 'mapa de argumentos', 'assumir posições filosóficas', 4, 'demos/debate-ia.html', {
+    S('filosofia', 'debate-ia', 'Debate IA', 'mapa de argumentos', 'assumir posições filosóficas', 4, null, {
       interacao: 'Escolhe a questão e expande razões e objeções',
+      roteiro: ['Mapa de argumentos para questões clássicas', 'Tese, razões, objeções e réplicas expansíveis', 'Posições de diferentes escolas filosóficas', 'IA assume uma posição e debate com o aluno'],
       resumo: 'Mapa de argumentos para questões clássicas: tese, razões, objeções e réplicas de diferentes escolas filosóficas.',
       objetivos: ['Distinguir tese, premissa e conclusão', 'Formular objeções', 'Reconhecer posições filosóficas'],
       tags: ['2D'],
     }),
     // ---------------- Sociologia ----------------
-    S('sociologia', 'sociedade-simulator', 'Sociedade Simulator', 'grupos e relações sociais', 'gerar cenários e debates', 4, 'demos/sociedade-simulator.html', {
+    S('sociologia', 'sociedade-simulator', 'Sociedade Simulator', 'grupos e relações sociais', 'gerar cenários e debates', 4, null, {
       interacao: 'Ajusta tolerância e densidade e roda o modelo',
+      roteiro: ['Modelo de Schelling em grade', 'Tolerância e densidade ajustáveis', 'Índice de segregação ao longo do tempo', 'IA gera cenários e perguntas para debate'],
       resumo: 'Modelo de Schelling: preferências individuais modestas geram segregação coletiva — ajuste a tolerância e veja.',
       objetivos: ['Entender fenômenos emergentes', 'Relacionar escolhas individuais e estrutura social', 'Debater políticas a partir de modelos'],
       tags: ['2D'],
@@ -233,8 +248,9 @@
       tags: ['3D'],
     }),
     // ---------------- Programação ----------------
-    S('programacao', 'codigo-visual', 'Código Visual', 'execução, memória, objetos', 'tutor de programação', 5, 'demos/codigo-visual.html', {
+    S('programacao', 'codigo-visual', 'Código Visual', 'execução, memória, objetos', 'tutor de programação', 5, null, {
       interacao: 'Executa o programa passo a passo',
+      roteiro: ['Programas curtos executados linha a linha', 'Variáveis, pilha de chamadas e saída visíveis', 'Laços e condicionais destacados', 'IA atua como tutor de programação'],
       resumo: 'Programas curtos executados linha a linha com variáveis, pilha de chamadas e saída visíveis.',
       objetivos: ['Rastrear o valor das variáveis', 'Entender laços e condicionais', 'Ler a pilha de chamadas'],
       tags: ['2D'],
@@ -247,15 +263,17 @@
       tags: ['3D', 'modelos livres'],
     }),
     // ---------------- Economia ----------------
-    S('economia', 'economia-simulator', 'Economia Simulator', 'inflação, mercado, oferta/demanda', 'simular cenários', 4, 'demos/economia-simulator.html', {
+    S('economia', 'economia-simulator', 'Economia Simulator', 'inflação, mercado, oferta/demanda', 'simular cenários', 4, null, {
       interacao: 'Aplica choques de oferta e demanda',
+      roteiro: ['Curvas de oferta e demanda deslocáveis', 'Choques de renda, custo e safra', 'Simulador de inflação acumulada', 'IA explica cada cenário'],
       resumo: 'Curvas de oferta e demanda que se deslocam com choques (renda, custos, safra) e simulador de inflação.',
       objetivos: ['Encontrar o equilíbrio de mercado', 'Diferenciar deslocamento da curva e movimento ao longo dela', 'Entender a inflação acumulada'],
       tags: ['2D'],
     }),
     // ---------------- Educação Financeira ----------------
-    S('financeira', 'vida-financeira', 'Vida Financeira', 'orçamento e decisões', 'aconselhamento educacional', 4, 'demos/vida-financeira.html', {
+    S('financeira', 'vida-financeira', 'Vida Financeira', 'orçamento e decisões', 'aconselhamento educacional', 4, null, {
       interacao: 'Distribui a renda e simula investimentos',
+      roteiro: ['Orçamento mensal com a regra 50-30-20', 'Metas de poupança com prazo', 'Juros compostos a favor e contra', 'IA dá conselhos educativos sobre as escolhas'],
       resumo: 'Orçamento mensal com a regra 50-30-20, metas e simulador de juros compostos para guardar ou dever.',
       objetivos: ['Planejar um orçamento', 'Comparar juros compostos a favor e contra', 'Tomar decisões com metas'],
       tags: ['2D'],
