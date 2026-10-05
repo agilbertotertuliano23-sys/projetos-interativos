@@ -1,27 +1,16 @@
 /**
- * Tailwind v4 completo (com Preflight) — o projeto é só a estante.
+ * Tailwind v4 completo (com Preflight). O BooksShowcase usa utilitárias do
+ * Tailwind; o resto da página usa src/styles/site.css.
  * `dark:` é baseado em CLASSE: vale dentro de qualquer `.dark`
- * (o <main> do App já tem `.dark`), sem depender do tema do sistema.
+ * (o wrapper `.site` do App já tem `.dark`), sem depender do tema do sistema.
  */
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 html,
-body,
-#root {
-  height: 100%;
+body {
   margin: 0;
-  background: #0b0b0f;
-  color: #ececf2;
-}
-
-/* O BooksShowcase usa `container-type: size`: precisa de altura explícita. */
-.estante {
-  height: 100svh;
-  min-height: 560px;
-  overflow: hidden;
-}
-.estante .book-showcase {
-  height: 100%;
+  background: #07060c;
+  color: #f4f1ff;
 }

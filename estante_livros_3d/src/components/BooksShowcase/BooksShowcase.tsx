@@ -60,7 +60,41 @@ export interface BooksShowcaseProps {
   };
   className?: string;
   onBookSelect?: (book: BookCfg | null) => void;
+  /**
+   * Asks the showcase to open a book by id. A new `nonce` re-triggers the same id.
+   * The request waits until the showcase is on screen and idle, brings the book
+   * into the visible carousel window if needed, then opens it.
+   */
+  openRequest?: { id: string; nonce: number } | null;
+  /** UI strings (defaults are English). */
+  labels?: Partial<ShowcaseLabels>;
+  /** Text shown next to the stars in the detail panel. Defaults to "Goodreads". */
+  detailMeta?: (book: BookCfg) => string;
+  /** Replaces the default action buttons of the detail panel. */
+  renderDetailActions?: (book: BookCfg) => React.ReactNode;
 }
+
+export interface ShowcaseLabels {
+  open: string;
+  prev: string;
+  next: string;
+  close: string;
+  empty: string;
+  noWebgl: string;
+  index: string;
+  region: string;
+}
+
+const DEFAULT_LABELS: ShowcaseLabels = {
+  open: 'Open',
+  prev: 'Previous books',
+  next: 'Next books',
+  close: 'Close detail view',
+  empty: 'Add at least one book to display the showcase.',
+  noWebgl: 'This experience needs WebGL, which your browser blocked or does not support.',
+  index: 'INDEX',
+  region: 'book showcase',
+};
 
 function ChevronLeft() {
   return (
@@ -90,7 +124,12 @@ export function BooksShowcase({
   themeColors,
   className,
   onBookSelect,
+  openRequest = null,
+  labels,
+  detailMeta,
+  renderDetailActions,
 }: BooksShowcaseProps) {
+  const L = { ...DEFAULT_LABELS, ...labels };
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const openBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -102,6 +141,18 @@ export function BooksShowcase({
   useEffect(() => {
     onBookSelectRef.current = onBookSelect;
   }, [onBookSelect]);
+
+  // Pending "open this book" request, consumed by the frame loop below.
+  const openRequestRef = useRef(openRequest);
+  useEffect(() => {
+    if (openRequest) openRequestRef.current = openRequest;
+  }, [openRequest?.id, openRequest?.nonce]);
+
+  // Strings painted into canvases are read once per scene build.
+  const indexLabelRef = useRef(L.index);
+  indexLabelRef.current = L.index;
+  const noWebglRef = useRef(L.noWebgl);
+  noWebglRef.current = L.noWebgl;
 
   const [uiMode, setUiMode] = useState<'hero' | 'opening' | 'detail' | 'closing'>('hero');
   const [selectedCfg, setSelectedCfg] = useState<BookCfg | null>(null);
@@ -117,6 +168,10 @@ export function BooksShowcase({
   useEffect(() => {
     const root = rootRef.current;
     const canvasEl = canvasRef.current;
+    // A rebuild (new `books`) always starts from the hero layout.
+    setUiMode('hero');
+    setSelectedCfg(null);
+    root?.classList.remove('bs-transit', 'bs-detail-open');
     if (!root || !canvasEl || books.length === 0) return;
 
     let cancelled = false;
@@ -205,7 +260,7 @@ export function BooksShowcase({
       const fail = document.createElement('div');
       fail.className =
         'absolute inset-0 z-50 flex items-center justify-center p-10 text-center text-lg leading-relaxed text-[var(--bs-lav)]';
-      fail.textContent = 'This experience needs WebGL, which your browser blocked or does not support.';
+      fail.textContent = noWebglRef.current;
       root.appendChild(fail);
       return () => {
         fail.remove();
@@ -515,7 +570,7 @@ export function BooksShowcase({
       x.fillStyle = '#2f2a23';
       x.textAlign = 'center';
       x.font = '700 84px Georgia';
-      x.fillText('INDEX', w / 2, 190);
+      x.fillText(indexLabelRef.current, w / 2, 190);
       x.globalAlpha = 0.26;
       x.fillRect(220, 225, w - 440, 3);
       x.globalAlpha = 1;
@@ -1041,6 +1096,34 @@ export function BooksShowcase({
     }
     shiftCarouselRef.current = shiftCarousel;
 
+    // Snap the carousel so book `idx` sits in the middle slot, without the fly-in.
+    function jumpTo(idx: number) {
+      if (currentWindow.includes(idx)) return;
+      carouselStart = VISIBLE >= 3 ? (((idx - 1) % N) + N) % N : idx;
+      const incoming = windowIndices(carouselStart, N, VISIBLE);
+      currentWindow.forEach((bi) => {
+        if (!incoming.includes(bi)) bookInstances[bi].root.visible = false;
+      });
+      incoming.forEach((bi, i) => {
+        const slot = SLOTS.hero[i];
+        if (!slot) return;
+        const b = bookInstances[bi];
+        b.root.visible = true;
+        if (!currentWindow.includes(bi)) {
+          b.springs.px.set(slot.p[0]);
+          b.springs.py.set(slot.p[1]);
+          b.springs.pz.set(slot.p[2]);
+          b.springs.rx.set(slot.r[0]);
+          b.springs.ry.set(slot.r[1]);
+          b.springs.rz.set(slot.r[2]);
+          b.springs.sc.set(slot.s);
+        }
+        setTargets(b, slot);
+      });
+      currentWindow = incoming;
+      rebuildHitMeshes();
+    }
+
     const camX = new Spring(0, 13, 6.5),
       camY = new Spring(0.1, 13, 6.5),
       camZ = new Spring(9.6, 13, 6.5);
@@ -1459,6 +1542,38 @@ export function BooksShowcase({
 
     let rafId = 0;
     let isInViewport = true;
+    const bornAt = performance.now();
+
+    // Serve `openRequest`: wait for the entrance and for the section to settle on
+    // screen, close another open book first, then bring the target in and open it.
+    function servicePending() {
+      const req = openRequestRef.current;
+      if (!req) return;
+      const age = performance.now() - bornAt;
+      if (age < 1100) return;
+      const idx = bookInstances.findIndex((b) => b.cfg.id === req.id);
+      if (idx < 0) {
+        openRequestRef.current = null; // not part of this book set
+        return;
+      }
+      const r = root!.getBoundingClientRect();
+      if (Math.abs(r.top) > dims.h * 0.2) return;
+      const target = bookInstances[idx];
+      if (state.mode === 'detail') {
+        if (state.selected === target) openRequestRef.current = null;
+        else close();
+        return;
+      }
+      if (state.mode !== 'hero' || carouselBusy) return;
+      openRequestRef.current = null;
+      if (currentWindow.includes(idx)) {
+        open(target);
+      } else {
+        jumpTo(idx);
+        setT(() => open(target), 420);
+      }
+    }
+
     function animate(timestamp?: number) {
       if (cancelled || !isInViewport || document.hidden) {
         rafId = 0;
@@ -1468,6 +1583,7 @@ export function BooksShowcase({
       timer.update(timestamp);
       const dt = Math.min(timer.getDelta(), 0.05);
       const t = timer.getElapsed();
+      servicePending();
 
       if (ptr.seen && (ptr.type === 'mouse' || ptr.down)) castRay();
       let hov: Book | null = null;
@@ -1601,6 +1717,7 @@ export function BooksShowcase({
     // Cleanup
     return () => {
       cancelled = true;
+      if (state.mode !== 'hero') onBookSelectRef.current?.(null);
       if (rafId) cancelAnimationFrame(rafId);
       timeouts.forEach((id) => clearTimeout(id));
       if (orientationTimeout) clearTimeout(orientationTimeout);
@@ -1676,7 +1793,7 @@ export function BooksShowcase({
       ref={rootRef}
       tabIndex={0}
       role="region"
-      aria-label={`${heroTitle} book showcase`}
+      aria-label={`${heroTitle} — ${L.region}`}
       data-state={uiMode}
       className={cn(
         'book-showcase relative isolate h-full min-h-[560px] overflow-hidden font-sans outline-none [container-type:size] [-webkit-tap-highlight-color:transparent]',
@@ -1694,7 +1811,11 @@ export function BooksShowcase({
         className={`pointer-events-none absolute left-1/2 top-[18%] z-[1] -translate-x-1/2 select-none transition-all duration-500 ease-out ${heroWordVisible ? 'translate-y-0 opacity-100' : uiMode === 'hero' ? '-translate-y-0 translate-y-[60px] opacity-0' : '-translate-y-11 opacity-0'
           }`}
       >
-        <span className="block whitespace-nowrap text-current text-[clamp(4.5rem,22.5cqw,18rem)] font-extrabold leading-[0.85] tracking-[-0.015em]">
+        <span
+          data-hero-word
+          className="block whitespace-nowrap text-current font-extrabold leading-[0.85] tracking-[-0.015em]"
+          style={{ fontSize: `clamp(3rem, min(22.5cqw, ${(112 / Math.max(heroTitle.length, 5)).toFixed(2)}cqw), 18rem)` }}
+        >
           {heroTitle}
         </span>
       </div>
@@ -1703,7 +1824,7 @@ export function BooksShowcase({
 
       {books.length === 0 && (
         <div className="absolute inset-0 z-10 flex items-center justify-center p-8 text-center text-sm text-current opacity-60">
-          Add at least one book to display the showcase.
+          {L.empty}
         </div>
       )}
 
@@ -1725,7 +1846,7 @@ export function BooksShowcase({
         <>
           <button
             type="button"
-            aria-label="Previous books"
+            aria-label={L.prev}
             onClick={() => shiftCarouselRef.current(-1)}
             className={`absolute left-3 top-1/2 z-30 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--bs-cream)]/90 text-[var(--bs-navy)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[var(--bs-cream)] @min-[768px]:left-6 @min-[768px]:h-12 @min-[768px]:w-12 ${uiMode === 'hero' ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
               }`}
@@ -1734,7 +1855,7 @@ export function BooksShowcase({
           </button>
           <button
             type="button"
-            aria-label="Next books"
+            aria-label={L.next}
             onClick={() => shiftCarouselRef.current(1)}
             className={`absolute right-3 top-1/2 z-30 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--bs-cream)]/90 text-[var(--bs-navy)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[var(--bs-cream)] @min-[768px]:right-6 @min-[768px]:h-12 @min-[768px]:w-12 ${uiMode === 'hero' ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
               }`}
@@ -1759,12 +1880,12 @@ export function BooksShowcase({
           OPEN_BTN_OFF.join(' ')
         }
       >
-        Open
+        {L.open}
       </button>
 
       <button
         ref={closeBtnRef}
-        aria-label="Close detail view"
+        aria-label={L.close}
         className={`absolute left-1/2 top-[30px] z-40 -translate-x-1/2 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-[var(--bs-cream)]/40 bg-transparent text-[17px] leading-none text-[var(--bs-cream)] transition-[opacity,border-color] duration-300 delay-150 hover:border-[var(--bs-cream)]/90 @max-[760px]:left-auto @max-[760px]:right-[18px] @max-[760px]:top-[18px] @max-[760px]:translate-x-0 [-webkit-tap-highlight-color:transparent] ${uiMode === 'detail' ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
           }`}
       >
@@ -1797,34 +1918,40 @@ export function BooksShowcase({
               ))}
             </div>
             <div className="h-6 w-px bg-[var(--bs-lav)]/[0.28]" />
-            <div className="text-[19px] italic text-[#98a4d6]">Goodreads</div>
+            <div className="text-[19px] italic text-[#98a4d6]">{selectedCfg ? (detailMeta ? detailMeta(selectedCfg) : 'Goodreads') : ''}</div>
             <div className="ml-auto text-[19px] italic text-[#98a4d6]">{selectedCfg?.year}</div>
           </div>
           <div className={`mt-[26px] border-t border-[var(--bs-lav)]/[0.18] @max-[760px]:mt-4 ${dpChild(270)}`} />
           <div
             className={`pointer-events-auto mt-8 inline-flex items-center gap-[10px] rounded-full bg-[#1a2140] p-[10px] shadow-[0_24px_60px_rgba(0,0,0,0.45)] @max-[760px]:mt-[18px] @max-[760px]:flex-wrap @max-[760px]:rounded-[28px] ${dpChild(330)}`}
           >
-            <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-cream)] px-[26px] text-[16.5px] font-semibold text-[var(--bs-navy)] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M3 12h18M12 3c2.8 2.6 2.8 15.4 0 18M12 3c-2.8 2.6-2.8 15.4 0 18" />
-              </svg>
-              <span>English</span>
-            </button>
-            <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-peri)] px-[26px] text-[16.5px] font-semibold text-[#10152c] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
-              Buy Now
-            </button>
-            <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-peri)] px-[26px] text-[16.5px] font-semibold text-[#10152c] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
-              Buy Audiobook
-            </button>
-            <button
-              aria-label="Save"
-              className="inline-flex h-[54px] w-[54px] items-center justify-center gap-[10px] rounded-full bg-[#242c50] px-0 text-[var(--bs-lav)] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5">
-                <path d="M7 3h10v18l-5-4-5 4z" />
-              </svg>
-            </button>
+            {selectedCfg && renderDetailActions ? (
+              renderDetailActions(selectedCfg)
+            ) : (
+              <>
+                <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-cream)] px-[26px] text-[16.5px] font-semibold text-[var(--bs-navy)] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M3 12h18M12 3c2.8 2.6 2.8 15.4 0 18M12 3c-2.8 2.6-2.8 15.4 0 18" />
+                  </svg>
+                  <span>English</span>
+                </button>
+                <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-peri)] px-[26px] text-[16.5px] font-semibold text-[#10152c] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
+                  Buy Now
+                </button>
+                <button className="inline-flex h-[54px] items-center gap-[10px] rounded-full bg-[var(--bs-peri)] px-[26px] text-[16.5px] font-semibold text-[#10152c] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105 @max-[760px]:h-12 @max-[760px]:px-5 @max-[760px]:text-[15px]">
+                  Buy Audiobook
+                </button>
+                <button
+                  aria-label="Save"
+                  className="inline-flex h-[54px] w-[54px] items-center justify-center gap-[10px] rounded-full bg-[#242c50] px-0 text-[var(--bs-lav)] transition-[transform,filter] duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04] hover:brightness-105"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5">
+                    <path d="M7 3h10v18l-5-4-5 4z" />
+                  </svg>
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
