@@ -74,8 +74,9 @@ e `ferramentas/verificar-demo.cjs` testa uma demo no desktop e no celular.
 Mais **35 sistemas** — 5 novos para cada área fundamental (Matemática, Português, Física,
 Química, Biologia, História e Geografia) — estão planejados em
 [`docs/planos/`](docs/planos/README.md): pesquisa de currículo (BNCC/ENEM) e de mecânicas
-interativas por área, e um plano por sistema com ficha do catálogo, modelo, dados, desafios,
-roteiro do guia e checklist de verificação. As demonstrações ainda não foram construídas.
+interativas por área, e um plano por sistema — especificação completa (ficha, modelo, dados,
+desafios, roteiro do guia, checklist) em Matemática e Física, e a proposta selecionada da
+pesquisa nas demais áreas. As demonstrações ainda não foram construídas.
 
 ## O guia (mascote) e a IA
 

@@ -3,7 +3,7 @@
 > **Área:** Física · **id:** `toque-termico` · **Tipo:** 2D · **Fundo:** papel · **Potencial visual:** ★★★★★
 > **Público:** 7º ano (temperatura, calor, sensação térmica e propagação: EF07CI02–04) e 2º ano do Ensino Médio (calorimetria e termologia, o 2º bloco mais cobrado do ENEM); a curva de aquecimento com partículas atende ao 9º ano (EF09CI01)
 > **BNCC:** EF07CI02, EF07CI03, EF07CI04, EF09CI01, EM13CNT101, EM13CNT102
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/toque-termico.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/toque-termico.html`
 
 Placas de alumínio, cerâmica, madeira, lã e isopor marcam os mesmos 25 °C, mas a mão sente o metal mais frio. Completam a demo um calorímetro que pede a previsão do equilíbrio, uma curva de aquecimento com patamares e uma garrafa térmica montada camada por camada.
 

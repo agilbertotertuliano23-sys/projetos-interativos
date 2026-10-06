@@ -3,7 +3,7 @@
 > **Área:** Matemática · **id:** `escala-e-proporcao` · **Tipo:** misto · **Fundo:** ceu · **Potencial visual:** ★★★★★
 > **Público:** 6º ao 9º ano (escalas, plantas baixas, ampliação e redução, grandezas direta e inversamente proporcionais, regra de três) e 1º ano do EM (k² e k³, grandezas determinadas por razão ou produto). É o núcleo da 'matemática básica', o bloco mais cobrado do ENEM (cerca de 37%).
 > **BNCC:** EF06MA21, EF06MA28, EF07MA17, EF08MA12, EF08MA13, EF09MA07, EF09MA08, EM13MAT314
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/escala-e-proporcao.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/escala-e-proporcao.html`
 
 Um cubo e uma casa ampliados em 3D se montam com k² placas e k³ cópias do original. Uma planta baixa e um mapa são medidos com régua arrastável, e pares de grandezas viram pontos numa reta ou retângulos de área constante.
 

@@ -1,7 +1,7 @@
 # Sítio Arqueológico
 
 > **Área:** História · **id:** `sitio-arqueologico` · **Tipo sugerido:** misto
-> **Status:** proposta selecionada da pesquisa — a especificação completa (ficha, modelo, dados, guia) está em síntese
+> **Status:** planejado — proposta selecionada da pesquisa (ficha, modelo, dados e guia a detalhar na construção)
 > Demo a construir em `demos/sitio-arqueologico.html`
 
 ## Propostas de pesquisa que formam este sistema

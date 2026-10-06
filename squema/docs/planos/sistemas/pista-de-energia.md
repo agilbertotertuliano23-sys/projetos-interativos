@@ -3,7 +3,7 @@
 > **Área:** Física · **id:** `pista-de-energia` · **Tipo:** 2D · **Fundo:** ceu · **Potencial visual:** ★★★★★
 > **Público:** 1º ano do Ensino Médio (trabalho, energia e conservação para o ENEM); 8º e 9º ano para formas e transformações de energia, no modo 'Desenhe a pista'
 > **BNCC:** EM13CNT101, EM13CNT301, EF08CI01
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/pista-de-energia.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/pista-de-energia.html`
 
 Quatro rampas de mesma altura disputam uma corrida: a ciclóide vence, mas todas chegam com a mesma velocidade. Há também uma pista desenhada pelo aluno com barras de energia ao vivo e um looping que só se completa largando de 2,5 R ou mais.
 

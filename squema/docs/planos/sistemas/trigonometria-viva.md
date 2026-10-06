@@ -3,7 +3,7 @@
 > **Área:** Matemática · **id:** `trigonometria-viva` · **Tipo:** misto · **Fundo:** ceu · **Potencial visual:** ★★★★★
 > **Público:** 9º ano (semelhança de triângulos, razões trigonométricas, ângulos notáveis, medição indireta) e 1º e 2º anos do EM (lei dos senos, ciclo trigonométrico, radianos, fenômenos periódicos). Cerca de 3,7% do ENEM e muito cobrada em vestibulares.
 > **BNCC:** EF09MA12, EF09MA14, EM13MAT306, EM13MAT308
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/trigonometria-viva.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/trigonometria-viva.html`
 
 Triângulos que crescem sem mudar o seno; uma praça 3D onde o aluno mede o prédio, a árvore e o rio pela sombra, pelo clinômetro e pela lei dos senos; e um ciclo trigonométrico que desenrola a senoide e mostra o que é um radiano.
 

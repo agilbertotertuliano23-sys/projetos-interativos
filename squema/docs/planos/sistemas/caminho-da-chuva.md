@@ -1,7 +1,7 @@
 # Caminho da Chuva
 
 > **Área:** Geografia · **id:** `caminho-da-chuva` · **Tipo sugerido:** 3D
-> **Status:** proposta selecionada da pesquisa — a especificação completa (ficha, modelo, dados, guia) está em síntese
+> **Status:** planejado — proposta selecionada da pesquisa (ficha, modelo, dados e guia a detalhar na construção)
 > Demo a construir em `demos/caminho-da-chuva.html`
 
 ## Propostas de pesquisa que formam este sistema

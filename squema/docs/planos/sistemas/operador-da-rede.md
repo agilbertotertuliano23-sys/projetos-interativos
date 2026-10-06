@@ -1,7 +1,7 @@
 # Operador da Rede
 
 > **Área:** Geografia · **id:** `operador-da-rede` · **Tipo sugerido:** misto
-> **Status:** proposta selecionada da pesquisa — a especificação completa (ficha, modelo, dados, guia) está em síntese
+> **Status:** planejado — proposta selecionada da pesquisa (ficha, modelo, dados e guia a detalhar na construção)
 > Demo a construir em `demos/operador-da-rede.html`
 
 ## Propostas de pesquisa que formam este sistema

@@ -3,7 +3,7 @@
 > **Área:** Física · **id:** `do-ima-a-tomada` · **Tipo:** misto · **Fundo:** noite · **Potencial visual:** ★★★★★
 > **Público:** 8º ano (fontes, usinas, consumo e eficiência: EF08CI01 e EF08CI04–06, nos modos 2 e 3) e 3º ano do Ensino Médio (eletromagnetismo e potência elétrica: EM13CNT107; revisão de eletrodinâmica, o bloco mais cobrado do ENEM)
 > **BNCC:** EM13CNT107, EM13CNT106, EM13CNT308, EF08CI01, EF08CI04, EF08CI05, EF08CI06
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/do-ima-a-tomada.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/do-ima-a-tomada.html`
 
 Um ímã de barra em 3D, com linhas de campo, atravessa uma bobina ligada a um galvanômetro e a dois LEDs. Depois o aluno gira um gerador para acender uma casa, que fica mais 'pesada' a cada aparelho ligado, e vê a curva de potência de um dia virar kWh e conta de luz.
 

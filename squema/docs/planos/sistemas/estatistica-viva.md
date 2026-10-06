@@ -3,7 +3,7 @@
 > **Área:** Matemática · **id:** `estatistica-viva` · **Tipo:** 2D · **Fundo:** papel · **Potencial visual:** ★★★★★
 > **Público:** 7º ao 9º ano (gangorra, média, moda, mediana, classes de frequência e gráficos enganosos) e Ensino Médio (variância, desvio padrão, quartis, box plot e leitura crítica). Estatística responde por cerca de 11% das questões do ENEM.
 > **BNCC:** EF06MA31, EF07MA35, EF07MA37, EF08MA23, EF08MA24, EF08MA25, EF09MA21, EF09MA22, EM13MAT102, EM13MAT316, EM13MAT406, EM13MAT407
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/estatistica-viva.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/estatistica-viva.html`
 
 A média é o ponto de equilíbrio de uma gangorra de bolinhas e os desvios viram quadrados de verdade. Duas turmas de média 6 ganham histograma e box plot, e o aluno faz papel de marqueteiro para manipular gráficos e medir o fator de mentira.
 

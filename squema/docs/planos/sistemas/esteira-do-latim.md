@@ -1,7 +1,7 @@
 # Esteira do Latim
 
 > **Área:** Português · **id:** `esteira-do-latim` · **Tipo sugerido:** 2D
-> **Status:** proposta selecionada da pesquisa — a especificação completa (ficha, modelo, dados, guia) está em síntese
+> **Status:** planejado — proposta selecionada da pesquisa (ficha, modelo, dados e guia a detalhar na construção)
 > Demo a construir em `demos/esteira-do-latim.html`
 
 ## Propostas de pesquisa que formam este sistema

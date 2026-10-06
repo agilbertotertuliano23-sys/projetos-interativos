@@ -3,7 +3,7 @@
 > **Área:** Física · **id:** `forcas-em-acao` · **Tipo:** 2D · **Fundo:** papel · **Potencial visual:** ★★★★★
 > **Público:** 1º ano do Ensino Médio (dinâmica para o ENEM e vestibulares); 9º ano como introdução a forças e movimento
 > **BNCC:** EM13CNT101, EM13CNT204, EM13CNT301, EM13CNT306
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/forcas-em-acao.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/forcas-em-acao.html`
 
 Um disco de hóquei de ar que só se move por petelecos, um caixote com diagrama de corpo livre e atrito ao vivo, e um elevador com balança. Nos três, o aluno prevê antes de testar as leis de Newton.
 

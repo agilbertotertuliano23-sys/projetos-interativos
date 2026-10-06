@@ -3,7 +3,7 @@
 > **Área:** Matemática · **id:** `maquina-do-acaso` · **Tipo:** 2D · **Fundo:** papel · **Potencial visual:** ★★★★★
 > **Público:** 6º ao 9º ano (frequência relativa, espaço amostral, eventos dependentes e independentes) e Ensino Médio (eventos sucessivos, probabilidade condicional, valor esperado e risco). Probabilidade responde por cerca de 5% do ENEM.
 > **BNCC:** EF06MA30, EF07MA34, EF08MA22, EF09MA20, EM13MAT106, EM13MAT311, EM13MAT312, EM13MAT511
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/maquina-do-acaso.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/maquina-do-acaso.html`
 
 Antes de cada experimento o aluno aposta 36 fichas no resultado que espera. Depois, dados, urnas, um teste para uma doença rara e uma roleta rodam até 10.000 vezes e mostram onde a intuição falha e o espaço amostral acerta.
 

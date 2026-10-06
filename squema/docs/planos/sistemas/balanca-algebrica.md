@@ -3,7 +3,7 @@
 > **Área:** Matemática · **id:** `balanca-algebrica` · **Tipo:** misto · **Fundo:** papel · **Potencial visual:** ★★★★☆
 > **Público:** 6º e 7º anos (balança e propriedades da igualdade, equações do 1º grau), 8º ano (equação com duas incógnitas como reta, sistemas 2×2) e 2º ano do EM (sistemas 3×3, escalonamento e classificação). As equações estão no bloco de 'matemática básica' do ENEM.
 > **BNCC:** EF06MA14, EF07MA13, EF07MA18, EF08MA07, EF08MA08, EM13MAT301
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/balanca-algebrica.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/balanca-algebrica.html`
 
 Equações viram balanças com caixas, pesos e balões, que tombam se a operação for feita num prato só. Sistemas 2×2 são duas balanças com retas que se cruzam, e sistemas 3×3 são três planos em 3D que o escalonamento gira até revelar a solução.
 

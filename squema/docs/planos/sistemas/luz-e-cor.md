@@ -3,7 +3,7 @@
 > **Área:** Física · **id:** `luz-e-cor` · **Tipo:** misto · **Fundo:** noite · **Potencial visual:** ★★★★★
 > **Público:** 9º ano (cores da luz e dos objetos: EF09CI04, modos 1 e 2) e 2º ano do Ensino Médio (refração, reflexão total e dispersão para o ENEM, modo 3)
 > **BNCC:** EF09CI04, EF09CI05, EM13CNT301, EM13CNT308
-> **Status:** planejado (especificação revisada) · demo a construir em `demos/luz-e-cor.html`
+> **Status:** planejado — especificação completa da síntese (sem revisão adversarial) · demo a construir em `demos/luz-e-cor.html`
 
 Numa sala escura em 3D, três holofotes (vermelho, verde e azul) formam sombras ciano, magenta e amarela, e as frutas mudam de cor (a folha fica preta sob luz vermelha). Num modo 2D, um laser atravessa água, vidro e diamante até a reflexão total, passa por um prisma e por uma gota de chuva.
 
