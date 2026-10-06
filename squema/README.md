@@ -66,6 +66,16 @@ do caso (aluno → visualização → papel da IA → aprendizagem), objetivos e
 Para criar uma nova demo, copie uma parecida, troque o `id` em `SQ.demo('<id>', …)` e aponte
 `demo: 'demos/<id>.html'` no catálogo. Demos 2D usam `SQ.canvas2d` e, para gráficos,
 `SQ.vista` + `SQ.d.eixos` (escala, grade, zoom e curvas); demos 3D usam `S3D.cena`.
+O passo a passo completo está em [`docs/planos/GUIA_CONSTRUCAO.md`](docs/planos/GUIA_CONSTRUCAO.md),
+e `ferramentas/verificar-demo.cjs` testa uma demo no desktop e no celular.
+
+## Próximos sistemas (planejados)
+
+Mais **35 sistemas** — 5 novos para cada área fundamental (Matemática, Português, Física,
+Química, Biologia, História e Geografia) — estão planejados em
+[`docs/planos/`](docs/planos/README.md): pesquisa de currículo (BNCC/ENEM) e de mecânicas
+interativas por área, e um plano por sistema com ficha do catálogo, modelo, dados, desafios,
+roteiro do guia e checklist de verificação. As demonstrações ainda não foram construídas.
 
 ## O guia (mascote) e a IA
 
@@ -104,8 +114,8 @@ squema/
 ├─ assets/dados/          mundo.js (Natural Earth) e moleculas.js
 ├─ assets/capturas/       miniaturas das demos
 ├─ vendor/                three.js r180 + addons empacotados (MIT)
-├─ docs/                  mapa original dos sistemas
-└─ ferramentas/           scripts que geram vendor/ e assets/ (não são necessários para usar)
+├─ docs/                  mapa original dos sistemas e planos dos próximos (docs/planos/)
+└─ ferramentas/           scripts que geram vendor/ e assets/ e o verificador de demos (não são necessários para usar)
 ```
 
 ## Modelos 3D livres e recoloração
